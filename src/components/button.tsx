@@ -4,7 +4,6 @@ import React, { useState } from 'react';
 export interface ButtonProps extends HaiNodeAttributes {
   fileName: string | string[];
   label?: string;
-  animation?: boolean;
   text?: string;
   fontSize?: number;
   color?: string | string[];
@@ -13,13 +12,14 @@ export interface ButtonProps extends HaiNodeAttributes {
   targetWidth?: number;
   targetHeight?: number;
   onClick?: (e: HaiEvent) => void;
+  lockOn?: 'idle' | 'hover' | 'press';
+  textAlign?: 'left' | 'center' | 'right';
 }
 
 export function Button(props: ButtonProps) {
   const {
     fileName,
     label,
-    animation = false,
     text,
     fontSize,
     color,
@@ -30,19 +30,12 @@ export function Button(props: ButtonProps) {
     bounds,
     targetWidth,
     targetHeight,
+    lockOn,
     ...restProps
   } = props;
 
+  const [buttonState, setButtonState] = useState(lockOn ?? 'idle');
   const [pressed, setPressed] = useState(false);
-
-  const [springs, api] = useSpring(() => ({
-    from: {
-      idle_opacity: 1,
-      hover_opacity: 0,
-      visible: true,
-      click_opacity: 0,
-    },
-  }));
 
   const handleEnter = (evt: HaiEvent) => {
     if (evt.targetId === evt.currentTargetId) {
@@ -50,56 +43,26 @@ export function Button(props: ButtonProps) {
       return;
     }
 
-    api.start({
-      to: {
-        idle_opacity: 0,
-        hover_opacity: 1,
-        click_opacity: +pressed,
-        visible: !pressed,
-      },
-      immediate: !animation,
-    });
+    setButtonState(pressed ? 'press' : 'hover');
   };
 
   const handleLeave = () => {
+    setButtonState('idle');
     setPressed(false);
-    api.start({
-      to: {
-        idle_opacity: 1,
-        hover_opacity: 0,
-        click_opacity: 0,
-        visible: true,
-      },
-      immediate: !animation,
-    });
   };
 
   const handleMouseDown = () => {
     setPressed(true);
-    api.start({
-      to: {
-        click_opacity: 1,
-        visible: false,
-      },
-      immediate: !animation,
-      config: {
-        duration: 30,
-      },
-    });
+    setButtonState('press');
   };
 
-  const handleMouseUp = () => {
+  const handleMouseUp = (e: HaiEvent) => {
+    // trigger callback before reset state or it may be flash in some cases
+    if (pressed) {
+      onClick?.(e);
+    }
     setPressed(false);
-    api.start({
-      to: {
-        click_opacity: 0,
-        visible: true,
-      },
-      immediate: !animation,
-      config: {
-        duration: 30,
-      },
-    });
+    setButtonState('hover');
   };
 
   const filenames = Array.isArray(fileName)
@@ -107,6 +70,17 @@ export function Button(props: ButtonProps) {
     : [`${fileName}.png`, `${fileName}_hover.png`, `${fileName}_click.png`];
 
   const colors = Array.isArray(color) ? color : [color, color, color];
+
+  const index = ['idle', 'hover', 'press'].indexOf(lockOn ?? buttonState);
+  let textAnchor = [0.5, 0.5] as [number, number];
+  let textPivot = [0.5, 0.5] as [number, number];
+  if (props.textAlign === 'left') {
+    textPivot = [0, 0.5];
+    textAnchor = [0, 0.5];
+  } else if (props.textAlign === 'right') {
+    textPivot = [1, 0.5];
+    textAnchor = [1, 0.5];
+  }
 
   return (
     <container
@@ -119,16 +93,13 @@ export function Button(props: ButtonProps) {
       onTouchStart={handleMouseDown}
       onTouchEnd={handleMouseUp}
       onTouchCancel={handleMouseUp}
-      onClick={onClick}
       pivot={anchor}
       anchor={anchor}
     >
       <animated.sprite
-        label="button_idle"
-        src={filenames[0]}
-        visible={springs.visible}
-        opacity={springs.idle_opacity}
-        cursor={'pointer'}
+        label={`${label}_sprite`}
+        src={filenames[index]}
+        cursor="pointer"
         pivot={anchor}
         anchor={anchor}
         tint={tint}
@@ -142,61 +113,10 @@ export function Button(props: ButtonProps) {
             text={text}
             glyphGridSize={fontSize}
             fontSize={fontSize}
-            fillColor={colors[0]}
+            fillColor={colors[index]}
             interactive={false}
-            pivot={[0.5, 0.5]}
-            anchor={[0.5, 0.5]}
-          />
-        )}
-      </animated.sprite>
-      <animated.sprite
-        label="button_hover"
-        src={filenames[1]}
-        visible={springs.visible}
-        opacity={springs.hover_opacity}
-        interactive={false}
-        pivot={anchor}
-        anchor={anchor}
-        tint={tint}
-        mode={mode}
-        bounds={bounds}
-        targetWidth={targetWidth}
-        targetHeight={targetHeight}
-      >
-        {text && (
-          <text
-            text={text}
-            glyphGridSize={fontSize}
-            fontSize={fontSize}
-            fillColor={colors[1]}
-            interactive={false}
-            pivot={[0.5, 0.5]}
-            anchor={[0.5, 0.5]}
-          />
-        )}
-      </animated.sprite>
-      <animated.sprite
-        label="button_click"
-        src={filenames[2]}
-        opacity={springs.click_opacity}
-        interactive={false}
-        pivot={anchor}
-        anchor={anchor}
-        tint={tint}
-        mode={mode}
-        bounds={bounds}
-        targetWidth={targetWidth}
-        targetHeight={targetHeight}
-      >
-        {text && (
-          <text
-            text={text}
-            glyphGridSize={fontSize}
-            fontSize={fontSize}
-            fillColor={colors[2]}
-            interactive={false}
-            pivot={[0.5, 0.5]}
-            anchor={[0.5, 0.5]}
+            pivot={textPivot}
+            anchor={textAnchor}
           />
         )}
       </animated.sprite>
