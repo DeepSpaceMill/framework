@@ -1,4 +1,4 @@
-import { type HaiEvent, animated, hai } from '@hai/lib';
+import { type HaiEvent, animated, hai } from '@doufu-moe/kit';
 import React, { useContext, useState } from 'react';
 
 import { Button } from '../components/button';
@@ -46,9 +46,17 @@ export function Title() {
   };
 
   return (
-    <container label="title" scale={1280 / 1920}>
+    <container label="title">
       <animated.sprite {...logoStyle} src={uiTitle.logo} onClick={logoSkip} />
-      <animated.container {...contentStyle} label="content" onClick={contentSkip}>
+      <animated.container
+        {...contentStyle}
+        label="content"
+        onClick={(e) => {
+          if (e.targetId === e.currentTargetId) {
+            contentSkip();
+          }
+        }}
+      >
         <sprite src="new/bg.jpg" />
 
         <Button

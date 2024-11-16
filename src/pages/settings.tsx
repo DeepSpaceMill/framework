@@ -2,6 +2,7 @@ import type { Node } from '@doufu-moe/kit';
 import React, { useRef, useState } from 'react';
 import { TEXT_COLOR } from '../constants';
 import { Select } from '../components/select';
+import { Slider } from '../components/slider';
 
 export function Settings() {
   const textWindowRef = useRef<Node>(null);
@@ -17,21 +18,22 @@ export function Settings() {
   };
   return (
     <container onClick={handleClick}>
-      <sprite label="透明遮罩" src="new2/transparent-full.png" scale={1280 / 1920} />
-      <sprite label="背景图" src="new2/bg.png" scale={1280 / 1920} pivot={[0.5, 0.5]} x={640} y={360} />
+      <sprite label="透明遮罩" src="new2/transparent-full.png" />
+      <sprite label="背景图" src="new2/bg.png" pivot={[0.5, 0.5]} x={960} y={540} />
       <text
         label="标题"
         text="设置"
         fontSize={64}
         fillColor="white"
-        x={120}
-        y={50}
+        x={180}
+        y={75}
         stroke
         strokeColor={TEXT_COLOR.DEFAULT_IDLE}
         strokeWidth={5}
       />
 
       <container x={120} y={200} scale={1280 / 1920}>
+      <container x={180} y={300}>
         <text text="窗口尺寸" fontSize={36} fillColor={TEXT_COLOR.DEFAULT_IDLE} />
         <Select
           x={180}
