@@ -32,7 +32,11 @@ export function Settings() {
         strokeWidth={5}
       />
 
-      <container x={120} y={200} scale={1280 / 1920}>
+      <container x={180} y={390}>
+        <text text="音量大小" fontSize={36} fillColor={TEXT_COLOR.DEFAULT_IDLE} />
+        <Slider x={180} targetWidth={360} targetHeight={54} />
+      </container>
+
       <container x={180} y={300}>
         <text text="窗口尺寸" fontSize={36} fillColor={TEXT_COLOR.DEFAULT_IDLE} />
         <Select
