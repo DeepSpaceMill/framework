@@ -1,4 +1,4 @@
-import type { HaiEvent } from '@hai/lib';
+import type { HaiEvent } from '@doufu-moe/kit';
 import React from 'react';
 import { CONTENT_WIDTH, NORMAL_TEXT_STYLE } from '../constants';
 

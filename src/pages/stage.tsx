@@ -1,4 +1,4 @@
-import type { Node } from '@hai/lib';
+import type { Node } from '@doufu-moe/kit';
 import React, { useRef } from 'react';
 
 export function Stage() {

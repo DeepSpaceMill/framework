@@ -1,4 +1,4 @@
-import type { HaiTextAttribute } from '@hai/lib';
+import type { HaiTextAttribute } from '@doufu-moe/kit';
 
 export const SIDEBAR_WIDTH = 320;
 export const SIDEBAR_HEIGHT = 720;

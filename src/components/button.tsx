@@ -1,4 +1,4 @@
-import { type HaiEvent, type HaiNodeAttributes, animated, useSpring } from '@hai/lib';
+import { type HaiEvent, type HaiNodeAttributes, animated, useSpring } from '@doufu-moe/kit';
 import React, { useState } from 'react';
 
 export interface ButtonProps extends HaiNodeAttributes {

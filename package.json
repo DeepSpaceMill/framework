@@ -1,5 +1,5 @@
 {
-  "name": "doufu-template",
+  "name": "@doufu-moe/framework",
   "version": "0.1.0",
   "description": "Base library of Hai no Engine",
   "main": "src/index.tsx",
@@ -18,7 +18,7 @@
   },
   "devDependencies": {
     "@biomejs/biome": "1.9.4",
-    "@hai/lib": "portal:../hai/packages/lib",
+    "@doufu-moe/kit": "portal:../hai/packages/kit",
     "@rspack/cli": "^1.0.14",
     "@rspack/core": "^1.0.14",
     "@types/node": ">=20",

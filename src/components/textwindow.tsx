@@ -1,4 +1,4 @@
-import { type Node, animated, useSpring } from '@hai/lib';
+import { type Node, animated, useSpring } from '@doufu-moe/kit';
 import React, { useEffect, useRef } from 'react';
 import { Button } from './button';
 
