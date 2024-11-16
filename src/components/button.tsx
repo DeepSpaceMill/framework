@@ -1,5 +1,6 @@
 import { type HaiEvent, type HaiNodeAttributes, animated, useSpring } from '@doufu-moe/kit';
 import React, { useState } from 'react';
+import { mergeEvent } from '../utils/mergeEvent';
 
 export interface ButtonProps extends HaiNodeAttributes {
   fileName: string | string[];
@@ -86,13 +87,14 @@ export function Button(props: ButtonProps) {
     <container
       label={label}
       {...restProps}
-      onMouseEnter={handleEnter}
-      onMouseLeave={handleLeave}
-      onMouseDown={handleMouseDown}
-      onMouseUp={handleMouseUp}
-      onTouchStart={handleMouseDown}
-      onTouchEnd={handleMouseUp}
-      onTouchCancel={handleMouseUp}
+      onMouseEnter={mergeEvent(props.onMouseEnter, handleEnter)}
+      onMouseLeave={mergeEvent(props.onMouseLeave, handleLeave)}
+      onMouseDown={mergeEvent(props.onMouseDown, handleMouseDown)}
+      onMouseUp={mergeEvent(props.onMouseUp, handleMouseUp)}
+      onTouchStart={mergeEvent(props.onTouchStart, handleMouseDown)}
+      onTouchEnd={mergeEvent(props.onTouchEnd, handleMouseUp)}
+      onTouchCancel={mergeEvent(props.onTouchCancel, handleLeave)}
+      onClick={(e) => e.stopPropagation()}
       pivot={anchor}
       anchor={anchor}
     >
