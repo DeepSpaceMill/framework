@@ -1,4 +1,4 @@
-import { type HaiTextAttribute, type SpringValue, animated, useSpring } from '@hai/lib';
+import { type HaiTextAttribute, type SpringValue, animated, useSpring } from '@doufu-moe/kit';
 import React from 'react';
 
 const LIST_TEXT_LAYOUT_STYLE: HaiTextAttribute = {

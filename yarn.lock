@@ -112,16 +112,15 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@hai/lib@portal:../hai/packages/lib::locator=doufu-template%40workspace%3A.":
+"@doufu-moe/kit@portal:../hai/packages/kit::locator=doufu-template%40workspace%3A.":
   version: 0.0.0-use.local
-  resolution: "@hai/lib@portal:../hai/packages/lib::locator=doufu-template%40workspace%3A."
+  resolution: "@doufu-moe/kit@portal:../hai/packages/kit::locator=doufu-template%40workspace%3A."
   dependencies:
     "@react-spring/animated": "npm:^9.7.3"
     "@react-spring/core": "npm:^9.7.3"
     "@react-spring/rafz": "npm:^9.7.3"
     "@react-spring/shared": "npm:^9.7.3"
-    lodash-es: "npm:^4.17.21"
-    react-reconciler: "npm:^0.29.0"
+    react-reconciler: "npm:^0.29.2"
   peerDependencies:
     react: ^18.2.0
   languageName: node
@@ -567,16 +566,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@types/node@npm:*":
-  version: 20.11.17
-  resolution: "@types/node@npm:20.11.17"
-  dependencies:
-    undici-types: "npm:~5.26.4"
-  checksum: 10c0/1f30dae80b416cbf38f133a619ffb0e9fb9e7bc58f82d900bf73816ae5781740c4640892bf5971dd9c12570d5d05241646be3e7540bb4e059322ec6af4e51e15
-  languageName: node
-  linkType: hard
-
-"@types/node@npm:>=20":
+"@types/node@npm:*, @types/node@npm:>=20":
   version: 22.7.9
   resolution: "@types/node@npm:22.7.9"
   dependencies:
@@ -1247,7 +1237,7 @@ __metadata:
   resolution: "doufu-template@workspace:."
   dependencies:
     "@biomejs/biome": "npm:1.9.4"
-    "@hai/lib": "portal:../hai/packages/lib"
+    "@doufu-moe/kit": "portal:../hai/packages/kit"
     "@rspack/cli": "npm:^1.0.14"
     "@rspack/core": "npm:^1.0.14"
     "@types/node": "npm:>=20"
@@ -2060,13 +2050,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"lodash-es@npm:^4.17.21":
-  version: 4.17.21
-  resolution: "lodash-es@npm:4.17.21"
-  checksum: 10c0/fb407355f7e6cd523a9383e76e6b455321f0f153a6c9625e21a8827d10c54c2a2341bd2ae8d034358b60e07325e1330c14c224ff582d04612a46a4f0479ff2f2
-  languageName: node
-  linkType: hard
-
 "lodash@npm:^4.17.20":
   version: 4.17.21
   resolution: "lodash@npm:4.17.21"
@@ -2633,7 +2616,7 @@ __metadata:
   languageName: node
   linkType: hard
 
-"react-reconciler@npm:^0.29.0":
+"react-reconciler@npm:^0.29.2":
   version: 0.29.2
   resolution: "react-reconciler@npm:0.29.2"
   dependencies:
@@ -3261,13 +3244,6 @@ __metadata:
     tsc: bin/tsc
     tsserver: bin/tsserver
   checksum: 10c0/7c9d2e07c81226d60435939618c91ec2ff0b75fbfa106eec3430f0fcf93a584bc6c73176676f532d78c3594fe28a54b36eb40b3d75593071a7ec91301533ace7
-  languageName: node
-  linkType: hard
-
-"undici-types@npm:~5.26.4":
-  version: 5.26.5
-  resolution: "undici-types@npm:5.26.5"
-  checksum: 10c0/bb673d7876c2d411b6eb6c560e0c571eef4a01c1c19925175d16e3a30c4c428181fb8d7ae802a261f283e4166a0ac435e2f505743aa9e45d893f9a3df017b501
   languageName: node
   linkType: hard
 

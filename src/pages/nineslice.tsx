@@ -1,4 +1,4 @@
-import type { Cursor, HaiEvent } from '@hai/lib';
+import type { Cursor, HaiEvent } from '@doufu-moe/kit';
 import React, { useRef, useState } from 'react';
 import { CONTENT_HEIGHT, CONTENT_WIDTH, SIDEBAR_WIDTH, SMALL_TEXT_STYLE } from '../constants';
 

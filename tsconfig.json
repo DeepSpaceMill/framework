@@ -13,7 +13,8 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
-    "jsx": "react",
+    "jsx": "react-jsx",
+    "jsxImportSource": "@doufu-moe/kit",
     "outDir": "dist",
     "declaration": true,
     "sourceMap": true
