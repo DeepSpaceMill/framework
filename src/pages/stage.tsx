@@ -13,14 +13,14 @@ export function Stage() {
   };
   return (
     <container onClick={handleClick}>
-      <sprite label="背景图" src="classroom1.png" scale={1280 / 1344} />
+      <sprite label="背景图" src="classroom1.png" scale={1920 / 1344} />
       <container label="立绘容器">
         {/* <sprite label="立绘-中" src="fgimage/fg01_01.png" pivot={[0.5, 1]} x={640} y={720} /> */}
-        <sprite label="立绘-右" src="fgimage/fg01_01.png" tint="#333" pivot={[1, 1]} x={1280} y={720} />
-        <sprite label="立绘-左" src="fgimage/fg03_01.png" pivot={[0, 1]} x={0} y={720} />
+        <sprite label="立绘-右" src="fgimage/fg01_01.png" tint="#333" pivot={[1, 1]} scale={1.5} x={1920} y={1080} />
+        <sprite label="立绘-左" src="fgimage/fg03_01.png" pivot={[0, 1]} scale={1.5} x={0} y={1080} />
       </container>
       <container label="文本框容器">
-        <sprite label="文本框" src="new2/文本框-小.png" scale={1280 / 1920} pivot={[0.5, 1]} x={640} y={690}>
+        <sprite label="文本框" src="new2/文本框-小.png" pivot={[0.5, 1]} x={960} y={1035}>
           <text
             label="姓名"
             text="???"
