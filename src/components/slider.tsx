@@ -11,6 +11,8 @@ export interface SliderProps extends HaiNodeAttributes {
   onComplete?: (value: number) => void;
 }
 
+const SLIDER_WIDTH = 40;
+
 export function Slider(props: SliderProps) {
   const { label, anchor, targetWidth = 0, targetHeight = 0, ...restProps } = props;
 
@@ -31,7 +33,7 @@ export function Slider(props: SliderProps) {
     }
     const delta = (e.clientX ?? 0) - startPosition.current;
     const value = startValue.current;
-    const newValue = Math.max(0, Math.min(1, value + delta / targetWidth));
+    const newValue = Math.max(0, Math.min(1, value + delta / (targetWidth - SLIDER_WIDTH)));
     setValue(newValue);
     props.onChange?.(newValue);
   };
@@ -77,11 +79,11 @@ export function Slider(props: SliderProps) {
           fileName={['new2/idle.png', 'new2/hover.png', 'new2/press.png']}
           mode="nineslice"
           bounds={[0.25, 0.25, 0.25, 0.25]}
-          targetWidth={20}
+          targetWidth={SLIDER_WIDTH}
           targetHeight={(targetHeight * 0.8) << 0}
           anchor={[0, 0.5]}
           pivot={[0, 0.5]}
-          x={(value * (targetWidth - 20)) << 0}
+          x={(value * (targetWidth - SLIDER_WIDTH)) << 0}
           onMouseDown={handleStart}
           onTouchStart={handleStart}
         />
