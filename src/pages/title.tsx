@@ -1,18 +1,17 @@
 import { type HaiEvent, animated, hai } from '@doufu-moe/kit';
-import React, { useContext, useState } from 'react';
+import React, { useContext, useEffect, useState } from 'react';
 
 import { Button } from '../components/button';
 import { Dialog } from '../components/dialog';
 import { uiTitle } from '../configs/uititle';
 import { TEXT_COLOR } from '../constants';
 import { useFadeIn, useFadeInOut } from '../hooks/useFadeInOut';
-import { EntryContext } from './entry';
+import { EntryContext } from '../entry';
+import type { MouseEvent } from '@doufu-moe/kit';
+import { executePluginCommand } from '@doufu-moe/kit/dist/hai';
 
 export function Title() {
   const [contentStyle, contentApi, contentSkip] = useFadeIn(500, true);
-  const [logoStyle, , logoSkip] = useFadeInOut(500, 1500, 1000, false, () => {
-    contentApi.start({ pause: false });
-  });
 
   const context = useContext(EntryContext);
 
@@ -23,12 +22,14 @@ export function Title() {
   const handleDialogConfirm = (yes?: boolean) => {
     console.info('点击了', yes ? '确定' : '取消');
     if (yes) {
-      hai.quit();
+      executePluginCommand('system', {
+        subCommand: 'quit',
+      });
     }
     setShowDialog(false);
   };
 
-  const handleStart = (e: HaiEvent) => {
+  const handleStart = (e: MouseEvent) => {
     contentApi.start({
       to: { opacity: 0 },
       delay: 0,
@@ -45,9 +46,12 @@ export function Title() {
     setShowDialog(true);
   };
 
+  useEffect(() => {
+    contentApi.start({ pause: false });
+  }, [contentApi]);
+
   return (
     <container label="title">
-      <animated.sprite {...logoStyle} src={uiTitle.logo} onClick={logoSkip} />
       <animated.container
         {...contentStyle}
         label="content"
@@ -87,6 +91,7 @@ export function Title() {
           bounds={[0.25, 0.25, 0.25, 0.25]}
           targetWidth={140}
           targetHeight={70}
+          onClick={() => context.setOverlayPage('settings')}
         />
 
         <Button

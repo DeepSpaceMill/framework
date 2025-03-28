@@ -1,4 +1,4 @@
-import { hai, type HaiEvent, type HaiNodeAttributes } from '@doufu-moe/kit';
+import { hai, type MouseEvent, type HaiNodeAttributes, addEventListener, TouchEvent } from '@doufu-moe/kit';
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from './button';
 
@@ -20,13 +20,13 @@ export function Slider(props: SliderProps) {
   const startValue = useRef<number>(0);
   const [value, setValue] = useState(props.value ?? props.defaultValue ?? 0);
 
-  const handleStart = (e: HaiEvent) => {
+  const handleStart = (e: MouseEvent | TouchEvent) => {
     e.stopPropagation();
     startPosition.current = e.clientX ?? 0;
     startValue.current = value;
   };
 
-  const handleMove = (e: HaiEvent) => {
+  const handleMove = (e: MouseEvent) => {
     e.stopPropagation();
     if (startPosition.current === null) {
       return;
@@ -38,7 +38,7 @@ export function Slider(props: SliderProps) {
     props.onChange?.(newValue);
   };
 
-  const handleEnd = (e: HaiEvent) => {
+  const handleEnd = (e: MouseEvent) => {
     e.stopPropagation();
     startPosition.current = null;
     props.onComplete?.(value);
@@ -46,22 +46,22 @@ export function Slider(props: SliderProps) {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    return hai.addEventListener('mousemove', handleMove);
+    return addEventListener('mousemove', handleMove);
   }, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    return hai.addEventListener('mouseup', handleEnd);
+    return addEventListener('mouseup', handleEnd);
   }, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    return hai.addEventListener('touchmove', handleEnd);
+    return addEventListener('touchmove', handleEnd);
   }, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
-    return hai.addEventListener('touchend', handleEnd);
+    return addEventListener('touchend', handleEnd);
   }, []);
 
   return (

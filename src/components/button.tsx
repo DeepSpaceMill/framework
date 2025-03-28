@@ -1,4 +1,4 @@
-import { type HaiEvent, type HaiNodeAttributes, animated, useSpring } from '@doufu-moe/kit';
+import { type HaiEvent, type HaiNodeAttributes, type MouseEvent, animated, useSpring } from '@doufu-moe/kit';
 import React, { useState } from 'react';
 import { mergeEvent } from '../utils/mergeEvent';
 
@@ -12,7 +12,7 @@ export interface ButtonProps extends HaiNodeAttributes {
   bounds?: [number, number, number, number];
   targetWidth?: number;
   targetHeight?: number;
-  onClick?: (e: HaiEvent) => void;
+  onClick?: (e: MouseEvent) => void;
   lockOn?: 'idle' | 'hover' | 'press';
   textAlign?: 'left' | 'center' | 'right';
 }
@@ -38,7 +38,7 @@ export function Button(props: ButtonProps) {
   const [buttonState, setButtonState] = useState(lockOn ?? 'idle');
   const [pressed, setPressed] = useState(false);
 
-  const handleEnter = (evt: HaiEvent) => {
+  const handleEnter = (evt: MouseEvent) => {
     if (evt.targetId === evt.currentTargetId) {
       evt.stopPropagation();
       return;
@@ -57,7 +57,7 @@ export function Button(props: ButtonProps) {
     setButtonState('press');
   };
 
-  const handleMouseUp = (e: HaiEvent) => {
+  const handleMouseUp = (e: MouseEvent) => {
     // trigger callback before reset state or it may be flash in some cases
     if (pressed) {
       onClick?.(e);

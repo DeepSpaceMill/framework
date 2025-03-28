@@ -1,15 +1,25 @@
 import type { Node } from '@doufu-moe/kit';
 import React, { useRef } from 'react';
 
+let value = 1;
+
 export function Stage() {
   const textWindowRef = useRef<Node>(null);
+  const progress = useRef(0);
 
   const handleClick = () => {
-    console.log('click');
-    textWindowRef.current?.executeCommand({
-      subCommand: 'setText',
-      text: '测试文字测试文字测试文字测试文字，测试文字测试文字',
-    });
+    if (progress.current < 1) {
+      textWindowRef.current?.executeCommand({
+        subCommand: 'finishPrinting',
+      });
+      progress.current = 1;
+    } else {
+      textWindowRef.current?.executeCommand({
+        subCommand: 'setText',
+        text: `测试文字测试文字测试文字测试文字，测试文字测试文字???${value}`,
+      });
+      value += 1;
+    }
   };
   return (
     <container onClick={handleClick}>
@@ -31,7 +41,7 @@ export function Stage() {
             y={24}
             stroke
             strokeColor="#0e2a59"
-            strokeWidth={3}
+            strokeWidth={6}
           />
           <text
             label="姓名-副"
@@ -59,6 +69,15 @@ export function Stage() {
             strokeWidth={3}
             printMode="typewriter"
             printSpeed={20}
+            onStart={() => {
+              progress.current = 0;
+            }}
+            onProgress={(v) => {
+              progress.current = v;
+            }}
+            onFinish={() => {
+              progress.current = 1;
+            }}
           />
         </sprite>
       </container>

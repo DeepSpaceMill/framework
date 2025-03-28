@@ -1,8 +1,12 @@
 {
   "$schema": "https://gist.githubusercontent.com/Icemic/55a8cd86b02c0c310f51833e88f7d083/raw/doufu-config.schema.json",
+  "appName": "doufu",
   "surfaceSize": "1280x720",
   "stageSize": "1920x1080",
+  "backgroundColor": "white",
   "windowTitle": "My First Game",
-  "entryFilename": "demo.js",
-  "fontFile": "fonts/default.subset.otf"
+  "entryFilename": "./dist/demo.js",
+  "autorun": "native-only",
+  "fontFile": "fonts/default.subset.otf",
+  "enableGamepads": true
 }

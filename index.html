@@ -3,12 +3,29 @@
   <head>
     <meta charset="UTF-8" />
     <link rel="icon" type="image/x-icon" href="src/favicon.ico" />
-    <meta name="viewport" content="width=1280, initial-scale=1.0" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Doufu</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        border: none;
+      }
+      #root {
+        width: 100vw;
+        height: 100vh;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      #root canvas {
+        outline: none;
+      }
+    </style>
   </head>
 
   <body>
     <div id="root"></div>
-    <script type="module" src="./index.tsx"></script>
+    <script type="module" src="./src/index.tsx"></script>
   </body>
 </html>
