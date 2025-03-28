@@ -1,4 +1,4 @@
-import type { HaiEvent, HaiEventHandler } from "@doufu-moe/kit";
+import type { BubbleEvent, HaiEvent, HaiEventHandler } from '@doufu-moe/kit';
 
 /**
  * Merge multiple event handlers into one.
@@ -9,20 +9,20 @@ import type { HaiEvent, HaiEventHandler } from "@doufu-moe/kit";
  * @param defaultHandler - The default event handler.
  * @returns The merged event handler.
  */
-export function mergeEvent(
-  handlers: HaiEventHandler | HaiEventHandler[] | undefined,
-  defaultHandler?: HaiEventHandler
+export function mergeEvent<T extends BubbleEvent, K extends BubbleEvent>(
+  handlers: HaiEventHandler<T> | HaiEventHandler<T>[] | undefined,
+  defaultHandler?: HaiEventHandler<K>,
 ) {
-  return (e: HaiEvent) => {
+  return (e: T | K) => {
     if (!handlers) {
-      return defaultHandler?.(e);
+      return defaultHandler?.(e as K);
     }
 
-    let _handlers: HaiEventHandler[];
+    let _handlers: HaiEventHandler<T | K>[];
     if (!Array.isArray(handlers)) {
-      _handlers = [handlers];
+      _handlers = [handlers as HaiEventHandler<T | K>];
     } else {
-      _handlers = handlers;
+      _handlers = handlers as HaiEventHandler<T | K>[];
     }
 
     for (const handler of _handlers) {
@@ -30,7 +30,7 @@ export function mergeEvent(
     }
 
     if (!e.defaultPrevented) {
-      defaultHandler?.(e);
+      defaultHandler?.(e as K);
     }
   };
 }
