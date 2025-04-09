@@ -1,4 +1,4 @@
-import { type SpringRef, type SpringValues, useSpring } from '@doufu-moe/kit';
+import { type SpringRef, type SpringValues, useSpring } from '@momoyu-ink/kit';
 
 export function useFadeInOut(
   inTime: number,

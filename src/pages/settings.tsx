@@ -1,10 +1,10 @@
-import type { Node } from '@doufu-moe/kit';
+import type { Node } from '@momoyu-ink/kit';
 import React, { useContext, useEffect, useRef, useState } from 'react';
 import { TEXT_COLOR } from '../constants';
 import { Select } from '../components/select';
 import { Slider } from '../components/slider';
 import { EntryContext } from '../entry';
-import { executePluginCommand } from '@doufu-moe/kit/dist/hai';
+import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
 
 const PREVIEW_TEXT = '测试文字测试文字测试文字测试文字，测试文字测试文字';
 

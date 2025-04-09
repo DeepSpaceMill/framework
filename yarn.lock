@@ -147,43 +147,6 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@doufu-moe/framework@workspace:.":
-  version: 0.0.0-use.local
-  resolution: "@doufu-moe/framework@workspace:."
-  dependencies:
-    "@biomejs/biome": "npm:1.9.4"
-    "@doufu-moe/kit": "portal:../doufu/packages/kit"
-    "@rspack/cli": "npm:^1.0.14"
-    "@rspack/core": "npm:^1.0.14"
-    "@rspack/plugin-react-refresh": "npm:1.0.1"
-    "@types/node": "npm:>=20"
-    "@types/react": "npm:^18.3.18"
-    "@types/react-dom": "npm:^18.3.5"
-    "@types/react-refresh": "npm:^0.14.6"
-    "@vitejs/plugin-react-swc": "npm:^3.5.0"
-    react: "npm:18.2.0"
-    react-dom: "npm:^18.3.1"
-    react-error-boundary: "npm:^4.0.12"
-    react-refresh: "npm:^0.16.0"
-    typescript: "npm:^5.6.3"
-    vite: "npm:^6.0.5"
-  languageName: unknown
-  linkType: soft
-
-"@doufu-moe/kit@portal:../doufu/packages/kit::locator=%40doufu-moe%2Fframework%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@doufu-moe/kit@portal:../doufu/packages/kit::locator=%40doufu-moe%2Fframework%40workspace%3A."
-  dependencies:
-    "@react-spring/animated": "npm:^9.7.3"
-    "@react-spring/core": "npm:^9.7.3"
-    "@react-spring/rafz": "npm:^9.7.3"
-    "@react-spring/shared": "npm:^9.7.3"
-    react-reconciler: "npm:^0.29.2"
-  peerDependencies:
-    react: ^18.2.0
-  languageName: node
-  linkType: soft
-
 "@esbuild/aix-ppc64@npm:0.24.2":
   version: 0.24.2
   resolution: "@esbuild/aix-ppc64@npm:0.24.2"
@@ -447,6 +410,43 @@ __metadata:
   checksum: 10c0/6a2423efe16a63d7059face6af07d282efc1cfa04a16397d1b354c5eb8541ffa314d32d4da8f7863e0b14f92b0f67270f313c2797e13f63f635bc94988115abf
   languageName: node
   linkType: hard
+
+"@momoyu-ink/framework@workspace:.":
+  version: 0.0.0-use.local
+  resolution: "@momoyu-ink/framework@workspace:."
+  dependencies:
+    "@biomejs/biome": "npm:1.9.4"
+    "@momoyu-ink/kit": "portal:../moyu/packages/kit"
+    "@rspack/cli": "npm:^1.0.14"
+    "@rspack/core": "npm:^1.0.14"
+    "@rspack/plugin-react-refresh": "npm:1.0.1"
+    "@types/node": "npm:>=20"
+    "@types/react": "npm:^18.3.18"
+    "@types/react-dom": "npm:^18.3.5"
+    "@types/react-refresh": "npm:^0.14.6"
+    "@vitejs/plugin-react-swc": "npm:^3.5.0"
+    react: "npm:18.2.0"
+    react-dom: "npm:^18.3.1"
+    react-error-boundary: "npm:^4.0.12"
+    react-refresh: "npm:^0.16.0"
+    typescript: "npm:^5.6.3"
+    vite: "npm:^6.0.5"
+  languageName: unknown
+  linkType: soft
+
+"@momoyu-ink/kit@portal:../moyu/packages/kit::locator=%40momoyu-ink%2Fframework%40workspace%3A.":
+  version: 0.0.0-use.local
+  resolution: "@momoyu-ink/kit@portal:../moyu/packages/kit::locator=%40momoyu-ink%2Fframework%40workspace%3A."
+  dependencies:
+    "@react-spring/animated": "npm:^9.7.3"
+    "@react-spring/core": "npm:^9.7.3"
+    "@react-spring/rafz": "npm:^9.7.3"
+    "@react-spring/shared": "npm:^9.7.3"
+    react-reconciler: "npm:^0.29.2"
+  peerDependencies:
+    react: ^18.2.0
+  languageName: node
+  linkType: soft
 
 "@npmcli/agent@npm:^2.0.0":
   version: 2.2.2

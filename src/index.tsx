@@ -1,13 +1,13 @@
 import React, { useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { addEventListener, createRoot } from '@doufu-moe/kit';
+import { addEventListener, createRoot } from '@momoyu-ink/kit';
 
 import { Entry } from './entry';
 import { ErrorFallback } from './error';
-import { executePluginCommand } from '@doufu-moe/kit/dist/hai';
+import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
 
-// import doufu from '../hai/hai_lib.js';
-// import * as hai from '../hai/hai_lib.js';
+// import doufu from '../moyu/moyu_lib.js';
+// import * as moyu from '../moyu/moyu_lib.js';
 
 function Main() {
   const logError = (error: Error, info: React.ErrorInfo) => {
@@ -87,16 +87,16 @@ root.render(<Main />);
 
 // document.addEventListener('DOMContentLoaded', async () => {
 //   await doufu();
-//   window.hai = {
+//   window.moyu = {
 //     pushCommand(name: string, args: any[]) {
-//       return hai[name](...args);
+//       return moyu[name](...args);
 //     },
 //     executeNodeCommand(...args: any[]) {
-//       return hai.execute_node_command(...args);
+//       return moyu.execute_node_command(...args);
 //     },
 //     executePluginCommand(...args: any[]) {
-//       return hai.execute_plugin_command(...args);
+//       return moyu.execute_plugin_command(...args);
 //     },
 //   };
-//   await hai.doufu_init('root');
+//   await moyu.doufu_init('root');
 // });

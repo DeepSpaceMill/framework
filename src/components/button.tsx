@@ -1,8 +1,8 @@
-import { type HaiEvent, type HaiNodeAttributes, type MouseEvent, animated, useSpring } from '@doufu-moe/kit';
+import { type MoyuEvent, type MoyuNodeAttributes, type MouseEvent, animated, useSpring } from '@momoyu-ink/kit';
 import React, { useState } from 'react';
 import { mergeEvent } from '../utils/mergeEvent';
 
-export interface ButtonProps extends HaiNodeAttributes {
+export interface ButtonProps extends MoyuNodeAttributes {
   fileName: string | string[];
   label?: string;
   text?: string;

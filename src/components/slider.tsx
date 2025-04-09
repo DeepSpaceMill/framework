@@ -1,8 +1,8 @@
-import { hai, type MouseEvent, type HaiNodeAttributes, addEventListener, TouchEvent } from '@doufu-moe/kit';
+import { moyu, type MouseEvent, type MoyuNodeAttributes, addEventListener, TouchEvent } from '@momoyu-ink/kit';
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from './button';
 
-export interface SliderProps extends HaiNodeAttributes {
+export interface SliderProps extends MoyuNodeAttributes {
   value?: number;
   defaultValue?: number;
   targetWidth?: number;

@@ -1,4 +1,4 @@
-import type { Node } from '@doufu-moe/kit';
+import type { Node } from '@momoyu-ink/kit';
 import React, { useRef } from 'react';
 
 let value = 1;

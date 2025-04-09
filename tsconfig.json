@@ -14,7 +14,7 @@
     "isolatedModules": true,
     "noEmit": false,
     "jsx": "react-jsx",
-    "jsxImportSource": "@doufu-moe/kit",
+    "jsxImportSource": "@momoyu-ink/kit",
     "outDir": "dist",
     "declaration": true,
     "sourceMap": true

@@ -1,7 +1,7 @@
 {
-  "name": "@doufu-moe/framework",
+  "name": "@momoyu-ink/framework",
   "version": "0.1.0",
-  "description": "Base library of Hai no Engine",
+  "description": "Base library of Moyu Engine",
   "main": "src/index.tsx",
   "scripts": {
     "dev": "rspack dev",
@@ -16,7 +16,7 @@
   "author": "Icemic <bingfeng.web@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@doufu-moe/kit": "portal:../doufu/packages/kit",
+    "@momoyu-ink/kit": "portal:../moyu/packages/kit",
     "react": "18.2.0",
     "react-error-boundary": "^4.0.12"
   },
