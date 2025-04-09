@@ -1,4 +1,4 @@
-import type { HaiTextAttribute } from '@doufu-moe/kit';
+import type { MoyuTextAttribute } from '@momoyu-ink/kit';
 
 export const SIDEBAR_WIDTH = 320;
 export const SIDEBAR_HEIGHT = 720;
@@ -15,7 +15,7 @@ export const TEXT_COLOR = {
   PRIMARY_TINT: '#ffffff',
 };
 
-export const NORMAL_TEXT_STYLE: HaiTextAttribute = {
+export const NORMAL_TEXT_STYLE: MoyuTextAttribute = {
   direction: 'horizontal' as const,
   // boxWidth: 200,
   // boxHeight: 36,
@@ -29,7 +29,7 @@ export const NORMAL_TEXT_STYLE: HaiTextAttribute = {
   // shadow: {},
 };
 
-export const SMALL_TEXT_STYLE: HaiTextAttribute = {
+export const SMALL_TEXT_STYLE: MoyuTextAttribute = {
   direction: 'horizontal' as const,
   // boxWidth: 200,
   // boxHeight: 36,

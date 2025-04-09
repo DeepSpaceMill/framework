@@ -1,4 +1,4 @@
-import type { HaiEvent } from '@doufu-moe/kit';
+import type { MoyuEvent } from '@momoyu-ink/kit';
 import React from 'react';
 import { CONTENT_WIDTH, NORMAL_TEXT_STYLE } from '../constants';
 
@@ -12,7 +12,7 @@ export function MouseAndTouch() {
   const [location, setLocation] = React.useState({ x: 0, y: 0, clientX: 0, clientY: 0, screenX: 0, screenY: 0 });
   const [clickLocation, setClickLocation] = React.useState({ x: 0, y: 0 });
 
-  const handleLocation = (event: HaiEvent) => {
+  const handleLocation = (event: MoyuEvent) => {
     setLocation({
       x: Math.round((event.layerX ?? 0) * BOX_WIDTH),
       y: Math.round((event.layerY ?? 0) * BOX_HEIGHT),
@@ -28,7 +28,7 @@ export function MouseAndTouch() {
     event.preventDefault();
   };
 
-  const handleClick = (event: HaiEvent) => {
+  const handleClick = (event: MoyuEvent) => {
     setClickLocation({
       x: event.layerX ?? 0,
       y: event.layerY ?? 0,

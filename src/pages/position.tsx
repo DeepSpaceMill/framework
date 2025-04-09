@@ -1,4 +1,4 @@
-import type { Cursor, HaiEvent } from '@doufu-moe/kit';
+import type { Cursor, MoyuEvent } from '@momoyu-ink/kit';
 import React, { useRef, useState } from 'react';
 import { CONTENT_HEIGHT, CONTENT_WIDTH, SIDEBAR_WIDTH, SMALL_TEXT_STYLE } from '../constants';
 
@@ -10,7 +10,7 @@ export function Position() {
   const [cursor, setCursor] = useState<Cursor>('default');
   const state = useRef({ pressed: false });
 
-  const handleMouseDown = (event: HaiEvent) => {
+  const handleMouseDown = (event: MoyuEvent) => {
     const x = (event.clientX ?? 0) - BOX_X;
     const y = (event.clientY ?? 0) - BOX_Y;
     if (x >= 0 && x <= size.width && y >= 0 && y <= size.height) {
@@ -23,7 +23,7 @@ export function Position() {
     state.current.pressed = false;
   };
 
-  const handleMouseMove = (event: HaiEvent) => {
+  const handleMouseMove = (event: MoyuEvent) => {
     console.log('over', event.targetLabel);
     if (state.current.pressed) {
       setSize({

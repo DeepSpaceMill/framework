@@ -1,14 +1,14 @@
-import { type HaiTextAttribute, type SpringValue, animated, useSpring } from '@doufu-moe/kit';
+import { type MoyuTextAttribute, type SpringValue, animated, useSpring } from '@momoyu-ink/kit';
 import React from 'react';
 
-const LIST_TEXT_LAYOUT_STYLE: HaiTextAttribute = {
+const LIST_TEXT_LAYOUT_STYLE: MoyuTextAttribute = {
   direction: 'horizontal' as const,
   boxWidth: 200,
   boxHeight: 36,
   glyphGridSize: 24,
 };
 
-const LIST_TEXT_STYLE_DEFAULT: HaiTextAttribute = {
+const LIST_TEXT_STYLE_DEFAULT: MoyuTextAttribute = {
   fontSize: 24,
   lineHeight: 1.5,
   fillColor: 'rgba(255, 255, 255, 0.6)',

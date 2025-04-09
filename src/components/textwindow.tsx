@@ -1,4 +1,4 @@
-import { type Node, animated, useSpring } from '@doufu-moe/kit';
+import { type Node, animated, useSpring } from '@momoyu-ink/kit';
 import React, { useEffect, useRef } from 'react';
 import { Button } from './button';
 

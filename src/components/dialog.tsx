@@ -1,9 +1,9 @@
-import { type HaiNodeAttributes, animated, useSpring, useTransition } from '@doufu-moe/kit';
+import { type MoyuNodeAttributes, animated, useSpring, useTransition } from '@momoyu-ink/kit';
 import React, { useEffect } from 'react';
 import { TEXT_COLOR } from '../constants';
 import { Button } from './button';
 
-export interface DialogProps extends HaiNodeAttributes {
+export interface DialogProps extends MoyuNodeAttributes {
   title: string;
   content: string;
   mode: 'alert' | 'confirm';

@@ -1,4 +1,4 @@
-import { type HaiEvent, animated, hai } from '@doufu-moe/kit';
+import { type MoyuEvent, animated, moyu } from '@momoyu-ink/kit';
 import React, { useContext, useEffect, useState } from 'react';
 
 import { Button } from '../components/button';
@@ -7,8 +7,8 @@ import { uiTitle } from '../configs/uititle';
 import { TEXT_COLOR } from '../constants';
 import { useFadeIn, useFadeInOut } from '../hooks/useFadeInOut';
 import { EntryContext } from '../entry';
-import type { MouseEvent } from '@doufu-moe/kit';
-import { executePluginCommand } from '@doufu-moe/kit/dist/hai';
+import type { MouseEvent } from '@momoyu-ink/kit';
+import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
 
 export function Title() {
   const [contentStyle, contentApi, contentSkip] = useFadeIn(500, true);

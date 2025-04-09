@@ -1,6 +1,6 @@
 import React from 'react';
 import { useContext, useEffect, useState } from 'react';
-import { useSpring, animated, useSpringRef } from '@doufu-moe/kit';
+import { useSpring, animated, useSpringRef } from '@momoyu-ink/kit';
 import { EntryContext } from '../entry';
 
 export interface LogoPageProps {
