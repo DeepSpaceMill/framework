@@ -1,20 +1,79 @@
-import { type MoyuEvent, type MoyuNodeAttributes, type MouseEvent, animated, useSpring } from '@momoyu-ink/kit';
-import React, { useState } from 'react';
-import { mergeEvent } from '../utils/mergeEvent';
+import {
+  type MoyuEvent,
+  type MoyuNodeAttributes,
+  type MouseEvent,
+  type TouchEvent,
+  animated,
+  useSpring,
+} from '@momoyu-ink/kit';
+import React from 'react';
+import {
+  useButton,
+  type ButtonState,
+  type UseButtonOptions,
+} from '../hooks/useButton';
 
-export interface ButtonProps extends MoyuNodeAttributes {
+export interface ButtonProps
+  extends MoyuNodeAttributes,
+    Omit<UseButtonOptions, 'initialState' | 'customHandlers'> {
+  /**
+   * Button image file name(s). Can be one of:
+   * - A single string: Will append .png, _hover.png, _click.png
+   * - An array of three strings: [idle, hover, pressed]
+   */
   fileName: string | string[];
+  /**
+   * Optional label for the button (accessibility)
+   */
   label?: string;
+  /**
+   * Text to display on the button
+   */
   text?: string;
+  /**
+   * Font size for the button text
+   */
   fontSize?: number;
+  /**
+   * Color for the button text. Can be one of:
+   * - A single string: Same color for all states
+   * - An array of three strings: [idle, hover, pressed]
+   */
   color?: string | string[];
+  /**
+   * Button rendering mode
+   */
   mode?: 'normal' | 'nineslice';
+  /**
+   * Nineslice bounds [left, top, right, bottom]
+   */
   bounds?: [number, number, number, number];
+  /**
+   * Target width for the button
+   */
   targetWidth?: number;
+  /**
+   * Target height for the button
+   */
   targetHeight?: number;
-  onClick?: (e: MouseEvent) => void;
-  lockOn?: 'idle' | 'hover' | 'press';
+  /**
+   * Lock button in a specific state
+   */
+  lockOn?: ButtonState;
+  /**
+   * Text alignment within the button
+   */
   textAlign?: 'left' | 'center' | 'right';
+  /**
+   * Additional event handlers
+   */
+  onMouseEnter?: (evt: MouseEvent) => void;
+  onMouseLeave?: () => void;
+  onMouseDown?: () => void;
+  onMouseUp?: (e: MouseEvent) => void;
+  onTouchStart?: () => void;
+  onTouchEnd?: (e: TouchEvent) => void;
+  onTouchCancel?: () => void;
 }
 
 export function Button(props: ButtonProps) {
@@ -32,39 +91,30 @@ export function Button(props: ButtonProps) {
     targetWidth,
     targetHeight,
     lockOn,
+    onMouseEnter,
+    onMouseLeave,
+    onMouseDown,
+    onMouseUp,
+    onTouchStart,
+    onTouchEnd,
+    onTouchCancel,
     ...restProps
   } = props;
 
-  const [buttonState, setButtonState] = useState(lockOn ?? 'idle');
-  const [pressed, setPressed] = useState(false);
-
-  const handleEnter = (evt: MouseEvent) => {
-    if (evt.targetId === evt.currentTargetId) {
-      evt.stopPropagation();
-      return;
-    }
-
-    setButtonState(pressed ? 'press' : 'hover');
-  };
-
-  const handleLeave = () => {
-    setButtonState('idle');
-    setPressed(false);
-  };
-
-  const handleMouseDown = () => {
-    setPressed(true);
-    setButtonState('press');
-  };
-
-  const handleMouseUp = (e: MouseEvent) => {
-    // trigger callback before reset state or it may be flash in some cases
-    if (pressed) {
-      onClick?.(e);
-    }
-    setPressed(false);
-    setButtonState('hover');
-  };
+  // Pass all event handlers as customHandlers
+  const { buttonState, handlers, getStateIndex } = useButton({
+    lockOn,
+    onClick,
+    customHandlers: {
+      onMouseEnter,
+      onMouseLeave,
+      onMouseDown,
+      onMouseUp,
+      onTouchStart,
+      onTouchEnd,
+      onTouchCancel,
+    },
+  });
 
   const filenames = Array.isArray(fileName)
     ? fileName
@@ -72,7 +122,7 @@ export function Button(props: ButtonProps) {
 
   const colors = Array.isArray(color) ? color : [color, color, color];
 
-  const index = ['idle', 'hover', 'press'].indexOf(lockOn ?? buttonState);
+  const index = getStateIndex();
   let textAnchor = [0.5, 0.5] as [number, number];
   let textPivot = [0.5, 0.5] as [number, number];
   if (props.textAlign === 'left') {
@@ -82,19 +132,11 @@ export function Button(props: ButtonProps) {
     textPivot = [1, 0.5];
     textAnchor = [1, 0.5];
   }
-
   return (
     <container
       label={label}
       {...restProps}
-      onMouseEnter={mergeEvent(props.onMouseEnter, handleEnter)}
-      onMouseLeave={mergeEvent(props.onMouseLeave, handleLeave)}
-      onMouseDown={mergeEvent(props.onMouseDown, handleMouseDown)}
-      onMouseUp={mergeEvent(props.onMouseUp, handleMouseUp)}
-      onTouchStart={mergeEvent(props.onTouchStart, handleMouseDown)}
-      onTouchEnd={mergeEvent(props.onTouchEnd, handleMouseUp)}
-      onTouchCancel={mergeEvent(props.onTouchCancel, handleLeave)}
-      onClick={(e) => e.stopPropagation()}
+      {...handlers}
       pivot={anchor}
       anchor={anchor}
     >
