@@ -9,6 +9,7 @@ import { useFadeIn, useFadeInOut } from '../hooks/useFadeInOut';
 import { EntryContext } from '../entry';
 import type { MouseEvent } from '@momoyu-ink/kit';
 import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
+import { useSoundEffect } from '../hooks/useSoundEffect';
 
 export function Title() {
   const [contentStyle, contentApi, contentSkip] = useFadeIn(500, true);
@@ -18,6 +19,8 @@ export function Title() {
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState('');
   const [dialogTitle, setDialogTitle] = useState('');
+
+  const playButtonSound = useSoundEffect('audio/a.mp3');
 
   const handleDialogConfirm = (yes?: boolean) => {
     console.info('点击了', yes ? '确定' : '取消');
@@ -67,7 +70,11 @@ export function Title() {
           fileName={['new2/idle.png', 'new2/hover.png', 'new2/press.png']}
           text={'开始游戏'}
           fontSize={34}
-          color={[TEXT_COLOR.DEFAULT_IDLE, TEXT_COLOR.DEFAULT_HOVER, TEXT_COLOR.DEFAULT_PRESS]}
+          color={[
+            TEXT_COLOR.DEFAULT_IDLE,
+            TEXT_COLOR.DEFAULT_HOVER,
+            TEXT_COLOR.DEFAULT_PRESS,
+          ]}
           x={160}
           y={940}
           pivot={[0.5, 0.5]}
@@ -82,7 +89,11 @@ export function Title() {
           fileName={['new2/idle.png', 'new2/hover.png', 'new2/press.png']}
           text={'设置'}
           fontSize={34}
-          color={[TEXT_COLOR.DEFAULT_IDLE, TEXT_COLOR.DEFAULT_HOVER, TEXT_COLOR.DEFAULT_PRESS]}
+          color={[
+            TEXT_COLOR.DEFAULT_IDLE,
+            TEXT_COLOR.DEFAULT_HOVER,
+            TEXT_COLOR.DEFAULT_PRESS,
+          ]}
           x={460}
           y={940}
           pivot={[0.5, 0.5]}
@@ -98,7 +109,11 @@ export function Title() {
           fileName={['new2/idle.png', 'new2/hover.png', 'new2/press.png']}
           text={'退出'}
           fontSize={34}
-          color={[TEXT_COLOR.DEFAULT_IDLE, TEXT_COLOR.DEFAULT_HOVER, TEXT_COLOR.DEFAULT_PRESS]}
+          color={[
+            TEXT_COLOR.DEFAULT_IDLE,
+            TEXT_COLOR.DEFAULT_HOVER,
+            TEXT_COLOR.DEFAULT_PRESS,
+          ]}
           x={1760}
           y={940}
           pivot={[0.5, 0.5]}
@@ -108,6 +123,7 @@ export function Title() {
           targetWidth={140}
           targetHeight={70}
           onClick={handleExit}
+          onMouseEnter={playButtonSound}
         />
       </animated.container>
       <Dialog
