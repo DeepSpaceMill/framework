@@ -42,8 +42,6 @@ export function useSoundEffect(src: string) {
     executePluginCommand('audio', {
       subCommand: 'play',
       name: src,
-    }).catch((error: any) => {
-      console.error(`Failed to play sound effect ${src}:`, error);
     });
   };
 }
