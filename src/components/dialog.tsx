@@ -1,10 +1,12 @@
-import { type MoyuNodeAttributes, animated, useSpring, useTransition } from '@momoyu-ink/kit';
-import React, { useEffect } from 'react';
+import {
+  type MoyuNodeAttributes,
+  animated,
+  useTransition,
+} from '@momoyu-ink/kit';
 import { TEXT_COLOR } from '../constants';
 import { Button } from './button';
 
 export interface DialogProps extends MoyuNodeAttributes {
-  title: string;
   content: string;
   mode: 'alert' | 'confirm';
   show: boolean;
@@ -12,9 +14,7 @@ export interface DialogProps extends MoyuNodeAttributes {
 }
 
 export function Dialog(props: DialogProps) {
-  const { title, content, mode, show, onConfirm } = props;
-
-  console.log('dialog show', show);
+  const { content, mode, show, onConfirm } = props;
 
   const transitions = useTransition(show ? [0] : [], {
     keys: (item) => item,
@@ -39,19 +39,20 @@ export function Dialog(props: DialogProps) {
 
   return transitions((style, _) => (
     <container x={1920 / 2} y={1080 / 2}>
-      <sprite label="对话框遮罩" src="new/mask.png" pivot={[0.5, 0.5]} anchor={[0.5, 0.5]} opacity={show ? 1 : 0} />
-      <animated.sprite label="对话框" src="new2/对话框-小-bg.png" pivot={[0.5, 0.5]} anchor={[0.5, 0.5]} {...style}>
-        <text
-          label="对话框标题"
-          text={title}
-          fontSize={36}
-          lineHeight={1.5}
-          fillColor={TEXT_COLOR.DEFAULT_PRESS}
-          pivot={[0.5, 0]}
-          anchor={[0.5, 0]}
-          x={0}
-          y={10}
-        />
+      <sprite
+        label="对话框遮罩"
+        src="ui/mask.png"
+        pivot={[0.5, 0.5]}
+        anchor={[0.5, 0.5]}
+        opacity={show ? 1 : 0}
+      />
+      <animated.sprite
+        label="对话框"
+        src="ui/dialog_bg.png"
+        pivot={[0.5, 0.5]}
+        anchor={[0.5, 0.5]}
+        {...style}
+      >
         <text
           label="对话框内容"
           text={content}
@@ -61,57 +62,69 @@ export function Dialog(props: DialogProps) {
           lineHeight={1.5}
           fillColor={TEXT_COLOR.DEFAULT_IDLE}
           x={0}
-          y={120}
+          y={75}
         />
         {mode === 'alert' && (
           <Button
-            fileName={['new2/idle.png', 'new2/hover.png', 'new2/press.png']}
+            fileNames={[
+              'ui/dialog_confirm.png',
+              'ui/dialog_confirm_hover.png',
+              'ui/dialog_confirm_press.png',
+            ]}
             label="对话框确认按钮"
             pivot={[0.5, 0.5]}
             anchor={[0.5, 0.5]}
             x={0}
-            y={120}
+            y={72}
             tint={TEXT_COLOR.PRIMARY_TINT}
             text="好的"
-            color={[TEXT_COLOR.PRIMARY_IDLE, TEXT_COLOR.PRIMARY_HOVER, TEXT_COLOR.PRIMARY_PRESS]}
-            mode="nineslice"
-            bounds={[0.25, 0.25, 0.25, 0.25]}
-            targetWidth={168}
-            targetHeight={80}
+            color={[
+              TEXT_COLOR.PRIMARY_IDLE,
+              TEXT_COLOR.PRIMARY_HOVER,
+              TEXT_COLOR.PRIMARY_PRESS,
+            ]}
             onClick={() => onConfirm?.()}
           />
         )}
         {mode === 'confirm' && (
           <>
             <Button
-              fileName={['new2/idle.png', 'new2/hover.png', 'new2/press.png']}
+              fileNames={[
+                'ui/dialog_confirm.png',
+                'ui/dialog_confirm_hover.png',
+                'ui/dialog_confirm_press.png',
+              ]}
               label="对话框同意按钮"
               pivot={[0.5, 0.5]}
               anchor={[0.5, 0.5]}
-              x={-120}
-              y={120}
+              x={-178}
+              y={72}
               tint={TEXT_COLOR.PRIMARY_TINT}
               text="确定"
-              color={[TEXT_COLOR.PRIMARY_IDLE, TEXT_COLOR.PRIMARY_HOVER, TEXT_COLOR.PRIMARY_PRESS]}
-              mode="nineslice"
-              bounds={[0.25, 0.25, 0.25, 0.25]}
-              targetWidth={168}
-              targetHeight={80}
+              color={[
+                TEXT_COLOR.PRIMARY_IDLE,
+                TEXT_COLOR.PRIMARY_HOVER,
+                TEXT_COLOR.PRIMARY_PRESS,
+              ]}
               onClick={() => onConfirm?.(true)}
             />
             <Button
-              fileName={['new2/idle.png', 'new2/hover.png', 'new2/press.png']}
+              fileNames={[
+                'ui/dialog_cancel.png',
+                'ui/dialog_cancel_hover.png',
+                'ui/dialog_cancel_press.png',
+              ]}
               label="对话框拒绝按钮"
               pivot={[0.5, 0.5]}
               anchor={[0.5, 0.5]}
-              x={120}
-              y={120}
+              x={178}
+              y={72}
               text="取消"
-              color={[TEXT_COLOR.DEFAULT_IDLE, TEXT_COLOR.DEFAULT_HOVER, TEXT_COLOR.DEFAULT_PRESS]}
-              mode="nineslice"
-              bounds={[0.25, 0.25, 0.25, 0.25]}
-              targetWidth={168}
-              targetHeight={80}
+              color={[
+                TEXT_COLOR.DEFAULT_IDLE,
+                TEXT_COLOR.DEFAULT_HOVER,
+                TEXT_COLOR.DEFAULT_PRESS,
+              ]}
               onClick={() => onConfirm?.(false)}
             />
           </>

@@ -1,4 +1,10 @@
-import { moyu, type MouseEvent, type MoyuNodeAttributes, addEventListener, TouchEvent } from '@momoyu-ink/kit';
+import {
+  moyu,
+  type MouseEvent,
+  type MoyuNodeAttributes,
+  addEventListener,
+  TouchEvent,
+} from '@momoyu-ink/kit';
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from './button';
 
@@ -11,10 +17,16 @@ export interface SliderProps extends MoyuNodeAttributes {
   onComplete?: (value: number) => void;
 }
 
-const SLIDER_WIDTH = 40;
+const SLIDER_WIDTH = 24;
 
 export function Slider(props: SliderProps) {
-  const { label, anchor, targetWidth = 0, targetHeight = 0, ...restProps } = props;
+  const {
+    label,
+    anchor,
+    targetWidth = 0,
+    targetHeight = 0,
+    ...restProps
+  } = props;
 
   const startPosition = useRef<number | null>(null);
   const startValue = useRef<number>(0);
@@ -33,7 +45,10 @@ export function Slider(props: SliderProps) {
     }
     const delta = (e.clientX ?? 0) - startPosition.current;
     const value = startValue.current;
-    const newValue = Math.max(0, Math.min(1, value + delta / (targetWidth - SLIDER_WIDTH)));
+    const newValue = Math.max(
+      0,
+      Math.min(1, value + delta / (targetWidth - SLIDER_WIDTH))
+    );
     setValue(newValue);
     props.onChange?.(newValue);
   };
@@ -67,20 +82,24 @@ export function Slider(props: SliderProps) {
   return (
     <container {...restProps} pivot={anchor} anchor={anchor}>
       <sprite
-        src="new2/press2.png"
+        src="ui/slider_track.png"
         mode="nineslice"
         bounds={[0, 0, 0, 0]}
         targetWidth={targetWidth}
-        targetHeight={(targetHeight * 0.2) << 0}
+        targetHeight={targetHeight}
         pivot={[0, 0.5]}
         y={(targetHeight / 2) << 0}
       >
         <Button
-          fileName={['new2/idle.png', 'new2/hover.png', 'new2/press.png']}
+          fileNames={[
+            'ui/slider_handle.png',
+            'ui/slider_handle_hover.png',
+            'ui/slider_handle_press.png',
+          ]}
           mode="nineslice"
           bounds={[0.25, 0.25, 0.25, 0.25]}
           targetWidth={SLIDER_WIDTH}
-          targetHeight={(targetHeight * 0.8) << 0}
+          targetHeight={targetHeight}
           anchor={[0, 0.5]}
           pivot={[0, 0.5]}
           x={(value * (targetWidth - SLIDER_WIDTH)) << 0}

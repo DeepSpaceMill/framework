@@ -1,4 +1,9 @@
-import { type MoyuEvent, type MoyuNodeAttributes, animated, useSpring } from '@momoyu-ink/kit';
+import {
+  type MoyuEvent,
+  type MoyuNodeAttributes,
+  animated,
+  useSpring,
+} from '@momoyu-ink/kit';
 import React, { useState } from 'react';
 import { Button } from './button';
 
@@ -51,7 +56,11 @@ export function Select(props: SelectProps) {
   return (
     <container label={label} {...restProps} pivot={anchor} anchor={anchor}>
       <Button
-        fileName={filenames}
+        fileNames={[
+          'ui/dropdown.png',
+          'ui/dropdown_hover.png',
+          'ui/dropdown_hover.png',
+        ]}
         text={currentOption?.text}
         fontSize={fontSize}
         color={colors}
@@ -65,17 +74,20 @@ export function Select(props: SelectProps) {
       />
       {active && (
         <sprite
-          src="new2/idle.png"
+          src="ui/dropdown_list.png"
           mode="nineslice"
           bounds={[0.25, 0.25, 0.25, 0.25]}
           targetWidth={targetWidth}
-          targetHeight={(targetHeight * (options.length + 0.5)) << 0}
-          y={targetHeight + 10}
+          targetHeight={targetHeight * options.length + 3}
+          y={targetHeight}
         >
           {options.map((option, index) => (
             <Button
-              key={option.value}
-              fileName={['new2/idle2.png', 'new2/hover2.png', 'new2/press2.png']}
+              fileNames={[
+                'ui/dropdown_listitem.png',
+                'ui/dropdown_listitem_hover.png',
+                'ui/dropdown_listitem_press.png',
+              ]}
               text={option.text}
               fontSize={fontSize}
               color={colors}
@@ -90,7 +102,7 @@ export function Select(props: SelectProps) {
               pivot={[0.5, 0]}
               anchor={[0.5, 0]}
               textAlign="center"
-              y={(targetHeight * (index + 0.25)) << 0}
+              y={targetHeight * index}
               lockOn={props.value === option.value ? 'press' : undefined}
             />
           ))}

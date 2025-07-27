@@ -17,11 +17,10 @@ export interface ButtonProps
   extends MoyuNodeAttributes,
     Omit<UseButtonOptions, 'initialState' | 'customHandlers'> {
   /**
-   * Button image file name(s). Can be one of:
-   * - A single string: Will append .png, _hover.png, _click.png
+   * Button image file name(s).
    * - An array of three strings: [idle, hover, pressed]
    */
-  fileName: string | string[];
+  fileNames: string[];
   /**
    * Optional label for the button (accessibility)
    */
@@ -78,7 +77,7 @@ export interface ButtonProps
 
 export function Button(props: ButtonProps) {
   const {
-    fileName,
+    fileNames = [],
     label,
     text,
     fontSize,
@@ -116,10 +115,6 @@ export function Button(props: ButtonProps) {
     },
   });
 
-  const filenames = Array.isArray(fileName)
-    ? fileName
-    : [`${fileName}.png`, `${fileName}_hover.png`, `${fileName}_click.png`];
-
   const colors = Array.isArray(color) ? color : [color, color, color];
 
   const index = getStateIndex();
@@ -142,7 +137,7 @@ export function Button(props: ButtonProps) {
     >
       <animated.sprite
         label={`${label}_sprite`}
-        src={filenames[index]}
+        src={fileNames[index]}
         cursor="pointer"
         pivot={anchor}
         anchor={anchor}
