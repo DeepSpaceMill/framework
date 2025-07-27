@@ -29,17 +29,19 @@ function Main() {
 
         const gamepad = gamepads.find((g?: Gamepad) => g !== null);
 
-        executePluginCommand('gamepad', {
-          subCommand: 'playEffect',
-          index: gamepad.index,
-          effect: 'dual-rumble',
-          params: {
-            startDelay: 0,
-            duration: 200,
-            weakMagnitude: 1.0,
-            strongMagnitude: 1.0,
-          },
-        });
+        if (gamepad) {
+          executePluginCommand('gamepad', {
+            subCommand: 'playEffect',
+            index: gamepad.index,
+            effect: 'dual-rumble',
+            params: {
+              startDelay: 0,
+              duration: 200,
+              weakMagnitude: 1.0,
+              strongMagnitude: 1.0,
+            },
+          });
+        }
       } catch (e) {
         console.error(e);
       }
