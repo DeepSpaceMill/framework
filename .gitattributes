@@ -2,3 +2,5 @@
 /.yarn/releases/*    binary
 /.yarn/plugins/**/*  binary
 /.pnp.*              binary linguist-generated
+/assets/**/*.* filter=lfs diff=lfs merge=lfs -text
+/assets/**/*.sixu !filter !diff !merge text
