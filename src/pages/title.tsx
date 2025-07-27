@@ -3,7 +3,6 @@ import React, { useContext, useEffect, useState } from 'react';
 
 import { Button } from '../components/button';
 import { Dialog } from '../components/dialog';
-import { uiTitle } from '../configs/uititle';
 import { TEXT_COLOR } from '../constants';
 import { useFadeIn, useFadeInOut } from '../hooks/useFadeInOut';
 import { EntryContext } from '../entry';
@@ -18,7 +17,6 @@ export function Title() {
 
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState('');
-  const [dialogTitle, setDialogTitle] = useState('');
 
   const playButtonSound = useSoundEffect('audio/a.mp3');
 
@@ -45,7 +43,6 @@ export function Title() {
 
   const handleExit = () => {
     setDialogContent('确定要退出游戏吗？');
-    setDialogTitle('确认');
     setShowDialog(true);
   };
 
@@ -64,71 +61,91 @@ export function Title() {
           }
         }}
       >
-        <sprite src="new/bg.jpg" />
+        <sprite src="non-free/bg.jpg" />
 
         <Button
-          fileName={['new2/idle.png', 'new2/hover.png', 'new2/press.png']}
+          fileNames={[
+            'ui/mainmenu_button.png',
+            'ui/mainmenu_button_hover.png',
+            'ui/mainmenu_button_press.png',
+          ]}
           text={'开始游戏'}
-          fontSize={34}
+          fontSize={36}
           color={[
             TEXT_COLOR.DEFAULT_IDLE,
             TEXT_COLOR.DEFAULT_HOVER,
             TEXT_COLOR.DEFAULT_PRESS,
           ]}
-          x={160}
-          y={940}
+          x={960}
+          y={670}
           pivot={[0.5, 0.5]}
           anchor={[0.5, 0.5]}
-          mode="nineslice"
-          bounds={[0.25, 0.25, 0.25, 0.25]}
-          targetWidth={240}
-          targetHeight={70}
           onClick={handleStart}
+          onMouseEnter={playButtonSound}
         />
         <Button
-          fileName={['new2/idle.png', 'new2/hover.png', 'new2/press.png']}
-          text={'设置'}
-          fontSize={34}
+          fileNames={[
+            'ui/mainmenu_button.png',
+            'ui/mainmenu_button_hover.png',
+            'ui/mainmenu_button_press.png',
+          ]}
+          text={'读取存档'}
+          fontSize={36}
           color={[
             TEXT_COLOR.DEFAULT_IDLE,
             TEXT_COLOR.DEFAULT_HOVER,
             TEXT_COLOR.DEFAULT_PRESS,
           ]}
-          x={460}
-          y={940}
+          x={960}
+          y={760}
           pivot={[0.5, 0.5]}
           anchor={[0.5, 0.5]}
-          mode="nineslice"
-          bounds={[0.25, 0.25, 0.25, 0.25]}
-          targetWidth={140}
-          targetHeight={70}
+          onMouseEnter={playButtonSound}
+        />
+        <Button
+          fileNames={[
+            'ui/mainmenu_button.png',
+            'ui/mainmenu_button_hover.png',
+            'ui/mainmenu_button_press.png',
+          ]}
+          text={'设置'}
+          fontSize={36}
+          color={[
+            TEXT_COLOR.DEFAULT_IDLE,
+            TEXT_COLOR.DEFAULT_HOVER,
+            TEXT_COLOR.DEFAULT_PRESS,
+          ]}
+          x={960}
+          y={850}
+          pivot={[0.5, 0.5]}
+          anchor={[0.5, 0.5]}
           onClick={() => context.setOverlayPage('settings')}
+          onMouseEnter={playButtonSound}
         />
 
         <Button
-          fileName={['new2/idle.png', 'new2/hover.png', 'new2/press.png']}
+          fileNames={[
+            'ui/mainmenu_button.png',
+            'ui/mainmenu_button_hover.png',
+            'ui/mainmenu_button_press.png',
+          ]}
           text={'退出'}
-          fontSize={34}
+          fontSize={36}
           color={[
             TEXT_COLOR.DEFAULT_IDLE,
             TEXT_COLOR.DEFAULT_HOVER,
             TEXT_COLOR.DEFAULT_PRESS,
           ]}
-          x={1760}
+          x={960}
           y={940}
           pivot={[0.5, 0.5]}
           anchor={[0.5, 0.5]}
-          mode="nineslice"
-          bounds={[0.25, 0.25, 0.25, 0.25]}
-          targetWidth={140}
-          targetHeight={70}
           onClick={handleExit}
           onMouseEnter={playButtonSound}
         />
       </animated.container>
       <Dialog
         show={showDialog}
-        title={dialogTitle}
         content={dialogContent}
         mode="confirm"
         onConfirm={handleDialogConfirm}
