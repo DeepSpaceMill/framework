@@ -33,12 +33,12 @@ export interface UseButtonOptions {
    */
   customHandlers?: {
     onMouseEnter?: MoyuEventHandler<MouseEvent>;
-    onMouseLeave?: MoyuEventHandler<BubbleEvent>;
-    onMouseDown?: MoyuEventHandler<BubbleEvent>;
+    onMouseLeave?: MoyuEventHandler<MouseEvent>;
+    onMouseDown?: MoyuEventHandler<MouseEvent>;
     onMouseUp?: MoyuEventHandler<MouseEvent>;
-    onTouchStart?: MoyuEventHandler<BubbleEvent>;
+    onTouchStart?: MoyuEventHandler<TouchEvent>;
     onTouchEnd?: MoyuEventHandler<TouchEvent>;
-    onTouchCancel?: MoyuEventHandler<BubbleEvent>;
+    onTouchCancel?: MoyuEventHandler<TouchEvent>;
     onClick?: MoyuEventHandler<MouseEvent>;
   };
 }

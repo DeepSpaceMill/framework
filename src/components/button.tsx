@@ -68,12 +68,12 @@ export interface ButtonProps
    * Additional event handlers
    */
   onMouseEnter?: (evt: MouseEvent) => void;
-  onMouseLeave?: () => void;
-  onMouseDown?: () => void;
+  onMouseLeave?: (e: MouseEvent) => void;
+  onMouseDown?: (e: MouseEvent) => void;
   onMouseUp?: (e: MouseEvent) => void;
-  onTouchStart?: () => void;
+  onTouchStart?: (e: TouchEvent) => void;
   onTouchEnd?: (e: TouchEvent) => void;
-  onTouchCancel?: () => void;
+  onTouchCancel?: (e: TouchEvent) => void;
 }
 
 export function Button(props: ButtonProps) {
