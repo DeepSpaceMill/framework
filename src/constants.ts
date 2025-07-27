@@ -6,12 +6,12 @@ export const CONTENT_WIDTH = 960;
 export const CONTENT_HEIGHT = 720;
 
 export const TEXT_COLOR = {
-  DEFAULT_IDLE: '#3c3c3c',
-  DEFAULT_HOVER: '#3c3c3c',
-  DEFAULT_PRESS: '#f0f0f0',
-  PRIMARY_IDLE: '#3c3c3c',
-  PRIMARY_HOVER: '#3c3c3c',
-  PRIMARY_PRESS: '#f0f0f0',
+  DEFAULT_IDLE: '#ffffff',
+  DEFAULT_HOVER: '#ffffff',
+  DEFAULT_PRESS: '#ffffff',
+  PRIMARY_IDLE: '#ffffff',
+  PRIMARY_HOVER: '#ffffff',
+  PRIMARY_PRESS: '#ffffff',
   PRIMARY_TINT: '#ffffff',
 };
 
