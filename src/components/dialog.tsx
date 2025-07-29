@@ -38,7 +38,7 @@ export function Dialog(props: DialogProps) {
   });
 
   return transitions((style, _) => (
-    <container x={1920 / 2} y={1080 / 2}>
+    <container x={1920 / 2} y={1080 / 2} interactive={show}>
       <sprite
         label="对话框遮罩"
         src="ui/mask.png"
