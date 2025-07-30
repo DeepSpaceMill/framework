@@ -1,6 +1,9 @@
 import { executePluginCommand } from '@momoyu-ink/kit';
 import { useEffect } from 'react';
 
+// avoid loading or releasing the same sound effect multiple times
+const LOADED_SOUNDS = new Set<string>();
+
 /**
  * Used to load a sound effect and provide a function to play it.
  */
@@ -17,9 +20,15 @@ export function useSoundEffect(src: string) {
       } catch (error) {
         console.error(`Failed to load sound effect ${src}:`, error);
       }
+      LOADED_SOUNDS.add(src);
     };
 
-    loadSound();
+    let needRelease = false;
+
+    if (!LOADED_SOUNDS.has(src)) {
+      loadSound();
+      needRelease = true;
+    }
 
     // Cleanup function to unload the sound effect when the component unmounts
     return () => {
@@ -32,8 +41,11 @@ export function useSoundEffect(src: string) {
         } catch (error) {
           console.error(`Failed to release sound effect ${src}:`, error);
         }
+        LOADED_SOUNDS.delete(src);
       };
-      releaseSound();
+      if (needRelease) {
+        releaseSound();
+      }
     };
   }, [src]);
 
