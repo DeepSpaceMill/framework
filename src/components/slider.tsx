@@ -7,6 +7,7 @@ import {
 } from '@momoyu-ink/kit';
 import React, { useState, useRef, useEffect } from 'react';
 import { Button } from './button';
+import { useButton } from '../hooks/useButton';
 
 export interface SliderProps extends MoyuNodeAttributes {
   value?: number;
@@ -25,12 +26,32 @@ export function Slider(props: SliderProps) {
     anchor,
     targetWidth = 0,
     targetHeight = 0,
+    onMouseEnter,
+    onMouseLeave,
+    onMouseDown,
+    onMouseUp,
+    onTouchStart,
+    onTouchEnd,
+    onTouchCancel,
     ...restProps
   } = props;
 
   const startPosition = useRef<number | null>(null);
   const startValue = useRef<number>(0);
   const [value, setValue] = useState(props.value ?? props.defaultValue ?? 0);
+
+  const { buttonState, handlers, getStateIndex } = useButton({
+    lockOn: startPosition.current !== null ? 'press' : undefined,
+    customHandlers: {
+      onMouseEnter,
+      onMouseLeave,
+      onMouseDown,
+      onMouseUp,
+      onTouchStart,
+      onTouchEnd,
+      onTouchCancel,
+    },
+  });
 
   const handleStart = (e: MouseEvent | TouchEvent) => {
     e.stopPropagation();
@@ -80,9 +101,15 @@ export function Slider(props: SliderProps) {
   }, []);
 
   return (
-    <container {...restProps} pivot={anchor} anchor={anchor}>
+    <container {...restProps} {...handlers} pivot={anchor} anchor={anchor}>
       <sprite
-        src="ui/slider_track.png"
+        src={`ui/slider_track${
+          getStateIndex() === 0
+            ? ''
+            : getStateIndex() === 1
+            ? '_hover'
+            : '_press'
+        }.png`}
         mode="nineslice"
         bounds={[0, 0, 0, 0]}
         targetWidth={targetWidth}
@@ -96,6 +123,7 @@ export function Slider(props: SliderProps) {
             'ui/slider_handle_hover.png',
             'ui/slider_handle_press.png',
           ]}
+          lockOn={startPosition.current !== null ? 'press' : undefined}
           mode="nineslice"
           bounds={[0.25, 0.25, 0.25, 0.25]}
           targetWidth={SLIDER_WIDTH}
