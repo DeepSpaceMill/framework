@@ -9,7 +9,7 @@ import { Button } from '../components/button';
 import { Checkbox } from '../components/checkbox';
 import { useSoundEffect } from '../hooks/useSoundEffect';
 
-const PREVIEW_TEXT = '测试文字测试文字测试文字测试文字，测试文字测试文字';
+const PREVIEW_TEXT = '点击这里预览文本框的效果设置';
 
 export interface SettingsData {
   display: string;
@@ -293,18 +293,23 @@ export function Settings() {
           y={680}
           onClick={handlePreviewClick}
         >
-          <sprite label="文本框" src="new2/文本框-小.png">
+          <sprite
+            label="文本框"
+            src="ui/settings_preview.png"
+            anchor={[0.5, 0.5]}
+            cursor="pointer"
+          >
             <text
               label="对话内容"
               ref={textWindowRef}
               text={PREVIEW_TEXT}
               fontSize={36}
-              lineHeight={1}
               fillColor={TEXT_COLOR.DEFAULT_IDLE}
-              x={72}
-              y={28}
+              anchor={[0.5, 0.5]}
+              pivot={[0.5, 0.5]}
               printMode="typewriter"
               printSpeed={20}
+              interactive={false}
             />
           </sprite>
         </container>
