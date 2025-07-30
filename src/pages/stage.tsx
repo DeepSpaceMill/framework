@@ -7,6 +7,8 @@ import {
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useScenario } from '../hooks/useScenario';
 import { Button } from '../components/button';
+import { Notification } from '../components/notification';
+import { type NotificationHandle } from '../hooks/useNotification';
 
 enum TextBoxButton {
   SAVE = 'SAVE',
@@ -19,6 +21,7 @@ enum TextBoxButton {
 
 export function Stage() {
   const textWindowRef = useRef<Node>(null);
+  const notificationRef = useRef<NotificationHandle>(null);
   const progress = useRef(0);
 
   const [name, setName] = useState('');
@@ -169,6 +172,9 @@ export function Stage() {
                 ]}
                 onClick={() => {
                   console.log(`Button ${button} clicked`);
+                  if (button === TextBoxButton.SAVE) {
+                    notificationRef.current?.show('已保存成功');
+                  }
                 }}
               />
             ))}
@@ -220,6 +226,8 @@ export function Stage() {
           />
         </sprite>
       </container>
+
+      <Notification ref={notificationRef} />
     </container>
   );
 }
