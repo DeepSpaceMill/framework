@@ -159,7 +159,7 @@ export function useButton(options: UseButtonOptions = {}): UseButtonResult {
   };
 
   return {
-    buttonState,
+    buttonState: lockOn ?? buttonState,
     pressed,
     handlers,
     getStateIndex,
