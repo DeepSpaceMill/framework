@@ -2,38 +2,73 @@
 applyTo: "**"
 ---
 
-# Domain knowledge
+# Moyu Visual Novel Framework
 
-This project is using TypeScript and React, but not a normal frontend project. It will be running in a game engine named Moyu (末语 in Chinese), which is a game engine that written in Rust and uses quickjs to support JavaScript. We do not use react-dom, but use a custom renderer from `@momoyu-ink/kit`, and many other utils in it as well. We do not use normal dom elements, we have our own IntrinsicElements defined in `@momoyu-ink/kit`, so you should not use normal HTML elements like `div`, `span`, etc. Instead, you should use the elements defined in `@momoyu-ink/kit`, such as `sprite`, `text`, `container`, etc. You can find the full list of elements in the [@momoyu-ink/kit](../../node_modules/@momoyu-ink/kit/dist/declaration.d.ts) package. You should only use elements defined in `@momoyu-ink/kit`.
+This is a TypeScript + React framework for building Visual Novel games in the **Moyu** game engine (末语).
 
-This project is a _framework_ or _template_ for building games in Moyu, so it should be easy to use and extend. It should provide a good starting point for building games, with a focus on simplicity and ease of use. The project should be well-documented and easy to understand, with clear examples and explanations of how to use the components and utilities provided.
+## Core Technologies
 
-And the components, hooks, and utilities will finally be move to the `@momoyu-ink/kit` package, once they are stable and well-tested. So the code should be written in a way that is easy to move to the `@momoyu-ink/kit` package, with clear separation of concerns and good organization. However, at the moment, you can treat `components/` as a UI library, `hooks/` as a hook library, and `utils/` as a utility library.
+- **Engine**: Moyu (Rust-based with QuickJS JavaScript runtime)
+- **Renderer**: Custom renderer from `@momoyu-ink/kit` (NOT react-dom)
+- **Elements**: Custom JSX elements (`container`, `sprite`, `text`) - NO HTML elements
+- **State**: Jotai for state management
+- **Animation**: react-spring (from `@momoyu-ink/kit`)
 
-When implementing a new component, you will always prefer to separate the logic and the UI. The logic should be implemented in a custom hook, and the UI should be implemented in a functional component that uses the custom hook. You can see the existing components and hooks for examples of how to do this.
+## Key Constraints
 
-The `executePluginCommand` and `executeNodeCommand` functions are used to execute commands in the game engine. However, you cannot get command definition for now, you should guess it or ask me before using it.
+- ❌ No HTML elements (`div`, `span`, etc.)
+- ✅ Only use `@momoyu-ink/kit` elements (see [declaration.d.ts](../../node_modules/@momoyu-ink/kit/dist/declaration.d.ts))
+- ✅ Assets reference: `<sprite src="image.png" />` → `assets/image.png`
+- ✅ Future migration to `@momoyu-ink/kit` package
 
-When you want to listen to events, you should use the `addEventListener` function from `@momoyu-ink/kit`. Most of times, it has the same API as the native `addEventListener`, but it returns a function to remove the event listener, so you should always call it and store the returned function in a variable, then call it in the `useEffect` cleanup function. It lacks the definition for the same reason above for now.
+## Element Reference
 
-You can implement animations using `react-spring` but must using the version exported from `@momoyu-ink/kit`. Anything should be the same as the normal one;
+You can find all available elements and their properties in the [@momoyu-ink/kit declaration file](../../node_modules/@momoyu-ink/kit/dist/declaration.d.ts). Key elements include:
 
-All assets (images, sounds, etc.) are stored in the `assets/` folder. You can refer it in code such as `<sprite src="image.png" />` which means the `assets/image.png` file.
+- `container` - Basic container element
+- `sprite` - Image/texture element with nine-slice support
+- `text` - Text element with typewriter effects
+- `video` - Video playback element
 
-We use `jotai` for state management, and usually sync the state with the game engine using `executePluginCommand` or `executeNodeCommand`. You can see the existing code for examples of how to do this.
+## Architecture & Design Patterns
 
-# Details on our engine
+**Component Structure**: Always separate logic from UI
 
-Our engine is made for **Visual Novel** games. A Visual Novel game is usually consisting of a title screen, a main game screen, and a settings screen, and maybe a gallery screen, etc. This screen are implemented as pages in the `pages/` folder, and the most important one is the main game screen in `pages/stage.tsx`.
+- Logic → Custom hooks (e.g., `useButton`, `useNotification`)
+- UI → Functional components using the hooks
 
-# Coding standards
+**Engine Integration**:
 
-- Use TypeScript and React.
-- Use `@momoyu-ink/kit` for rendering and utilities.
-- Use the elements defined in `@momoyu-ink/kit`, not normal HTML elements, especially text nodes.
-- Use functional components and hooks.
-- Use `useState`, `useEffect`, and other React hooks as needed.
-- Beautiful comments and documentation in English.
+- `executePluginCommand` / `executeNodeCommand` - Execute engine commands
+- `addEventListener` (from `@momoyu-ink/kit`) - Listen to events, returns cleanup function
+- State sync with engine via jotai + execute commands
+- Note: Command and event definitions are not available yet, will be provided later
+
+**Assets**: All resources in `assets/` folder
+
+```tsx
+<sprite src="image.png" /> // → assets/image.png
+```
+
+**Animation**: Use react-spring from `@momoyu-ink/kit` (same API as standard react-spring)
+
+# Visual Novel Game Structure
+
+Visual Novel games consist of multiple screens implemented as pages in `pages/`:
+
+- **Title Screen** - Main menu and game entry point
+- **Game Stage** (`pages/stage.tsx`) - Core gameplay with dialogue, characters, etc.
+- **Settings** - Game configuration and preferences
+- **Save&Load** - Save/load functionality
+- **Gallery** - Character/scene gallery, or music player
+
+# Development Standards
+
+- **Language**: TypeScript + React functional components
+- **Rendering**: `@momoyu-ink/kit` elements only (no HTML elements)
+- **State**: Jotai for state management
+- **Hooks**: React built-in hooks (`useState`, `useEffect`, etc.) and custom hooks
+- **Comments**: Clear English documentation
 
 # Folder structure
 
