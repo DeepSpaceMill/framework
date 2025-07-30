@@ -100,6 +100,7 @@ export function Title() {
           y={760}
           pivot={[0.5, 0.5]}
           anchor={[0.5, 0.5]}
+          onClick={() => context.setOverlayPage('load')}
           onMouseEnter={playButtonSound}
         />
         <Button

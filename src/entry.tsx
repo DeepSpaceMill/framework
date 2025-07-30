@@ -4,6 +4,7 @@ import { createContext, useEffect, useState } from 'react';
 import { Stage } from './pages/stage';
 import { Title } from './pages/title';
 import { Settings } from './pages/settings';
+import { SaveLoad } from './pages/saveload';
 
 export const EntryContext = createContext({
   setPage: (page: GamePage) => {},
@@ -22,8 +23,8 @@ export type GamePage =
 const pages: Record<GamePage, React.FC> = {
   title: Title,
   stage: Stage,
-  save: () => null,
-  load: () => null,
+  save: () => <SaveLoad type="save" />,
+  load: () => <SaveLoad type="load" />,
   settings: Settings,
   cg: () => null,
   bgm: () => null,
