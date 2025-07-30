@@ -1,18 +1,35 @@
-import { addEventListener, type Node } from '@momoyu-ink/kit';
-import React, { useEffect, useMemo, useRef } from 'react';
+import { addEventListener, MouseEvent, type Node } from '@momoyu-ink/kit';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import { useScenario } from '../hooks/useScenario';
+import { Button } from '../components/button';
+
+enum TextBoxButton {
+  SAVE = 'SAVE',
+  LOAD = 'LOAD',
+  AUTO = 'AUTO',
+  SKIP = 'SKIP',
+  HIST = 'HIST',
+  CONF = 'CONF',
+}
 
 export function Stage() {
   const textWindowRef = useRef<Node>(null);
   const progress = useRef(0);
 
-  const [name, setName] = React.useState('');
-  const [text, setText] = React.useState('');
+  const [name, setName] = useState('');
+  const [text, setText] = useState('');
+  const [textBoxEntered, setTextBoxEntered] = useState(false);
+  const [hideTextBox, setHideTextBox] = useState(false);
 
   const stories = useMemo(() => ['example'], []);
   const nextLine = useScenario(stories, 'example');
 
   const handleClick = () => {
+    if (hideTextBox) {
+      setHideTextBox(false);
+      return;
+    }
+
     if (progress.current < 1) {
       textWindowRef.current?.executeCommand({
         subCommand: 'finishPrinting',
@@ -21,6 +38,14 @@ export function Stage() {
     } else {
       nextLine();
     }
+  };
+
+  const handleMouseEnter = (e: MouseEvent) => {
+    setTextBoxEntered(true);
+  };
+
+  const handleMouseLeave = (e: MouseEvent) => {
+    setTextBoxEntered(false);
   };
 
   useEffect(() => {
@@ -73,13 +98,63 @@ export function Stage() {
           y={1080}
         />
       </container>
-      <container label="文本框容器">
+      <container
+        label="文本框容器"
+        visible={!hideTextBox}
+        interactive={!hideTextBox}
+      >
         <sprite
           label="文本框"
           src="ui/textbox.png"
           x={206}
           y={830}
+          onMouseEnter={handleMouseEnter}
+          onMouseLeave={handleMouseLeave}
         >
+          <Button
+            fileNames={[
+              'ui/textbox_close.png',
+              'ui/textbox_close_hover.png',
+              'ui/textbox_close_press.png',
+            ]}
+            x={1466}
+            y={18}
+            onClick={() => {
+              console.log('Close button clicked');
+              setHideTextBox(true);
+            }}
+            visible={textBoxEntered}
+          />
+          <container x={840} y={158} visible={textBoxEntered}>
+            {[
+              TextBoxButton.SAVE,
+              TextBoxButton.LOAD,
+              TextBoxButton.AUTO,
+              TextBoxButton.SKIP,
+              TextBoxButton.HIST,
+              TextBoxButton.CONF,
+            ].map((button, index) => (
+              <Button
+                fileNames={[
+                  `ui/textbox_button.png`,
+                  `ui/textbox_button.png`,
+                  `ui/textbox_button.png`,
+                ]}
+                x={100 * index}
+                text={button}
+                fontSize={24}
+                color={[
+                  'rgba(255,255,255,0.3)',
+                  'rgba(255,255,255,0.7)',
+                  'rgba(255,255,255,0.9)',
+                ]}
+                onClick={() => {
+                  console.log(`Button ${button} clicked`);
+                }}
+              />
+            ))}
+          </container>
+
           <text
             label="对话内容"
             ref={textWindowRef}
@@ -102,6 +177,7 @@ export function Stage() {
             onFinish={() => {
               progress.current = 1;
             }}
+            interactive={false}
           />
         </sprite>
         <sprite
