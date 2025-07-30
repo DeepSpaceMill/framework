@@ -80,6 +80,18 @@ export function Slider(props: SliderProps) {
     props.onComplete?.(value);
   };
 
+  const handleTrackClick = (e: MouseEvent) => {
+    e.stopPropagation();
+    const clickX = e.layerX;
+    const newValue = Math.max(
+      0,
+      Math.min(1, (clickX - SLIDER_WIDTH / 2) / (targetWidth - SLIDER_WIDTH))
+    );
+    setValue(newValue);
+    props.onChange?.(newValue);
+    props.onComplete?.(newValue);
+  };
+
   // biome-ignore lint/correctness/useExhaustiveDependencies: <explanation>
   useEffect(() => {
     return addEventListener('mousemove', handleMove);
@@ -116,6 +128,7 @@ export function Slider(props: SliderProps) {
         targetHeight={targetHeight}
         pivot={[0, 0.5]}
         y={(targetHeight / 2) << 0}
+        onClick={handleTrackClick}
       >
         <Button
           fileNames={[
