@@ -1,4 +1,4 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useState } from 'react';
 import {
   type MouseEvent,
   type TouchEvent,
@@ -71,10 +71,19 @@ export function useButton(options: UseButtonOptions = {}): UseButtonResult {
     customHandlers = {},
   } = options;
 
-  const [buttonState, setButtonState] = useState<ButtonState>(
-    lockOn ?? initialState
-  );
+  const [buttonState, setButtonState] = useState<ButtonState>(initialState);
   const [pressed, setPressed] = useState(false);
+
+  useEffect(() => {
+    // Reset button state when lockOn changes
+    if (lockOn) {
+      setButtonState(lockOn);
+      setPressed(lockOn === 'press');
+    } else {
+      setButtonState(initialState);
+      setPressed(false);
+    }
+  }, [lockOn, initialState]);
 
   const handleEnter = useCallback(
     (evt: MouseEvent) => {
