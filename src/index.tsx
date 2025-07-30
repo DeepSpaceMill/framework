@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { addEventListener, createRoot } from '@momoyu-ink/kit';
+import { addEventListener, createRoot, KeyboardEvent } from '@momoyu-ink/kit';
 
 import { Entry } from './entry';
 import { ErrorFallback } from './error';
@@ -16,16 +16,11 @@ function Main() {
   };
 
   useEffect(() => {
-    return addEventListener('keydown', (e) => {
-      const str = `KeyboardEvent: key='${e.key}' | code='${e.code}'`;
-      console.log(str);
-
+    return addEventListener('keydown', (_: KeyboardEvent) => {
       try {
         const gamepads = executePluginCommand('gamepad', {
           subCommand: 'getGamepads',
         });
-
-        console.log('gamepads', JSON.stringify(gamepads));
 
         const gamepad = gamepads.find((g?: Gamepad) => g !== null);
 
