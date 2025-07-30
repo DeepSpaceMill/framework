@@ -1,4 +1,9 @@
-import { addEventListener, MouseEvent, type Node } from '@momoyu-ink/kit';
+import {
+  addEventListener,
+  KeyboardEvent,
+  MouseEvent,
+  type Node,
+} from '@momoyu-ink/kit';
 import { useEffect, useMemo, useRef, useState } from 'react';
 import { useScenario } from '../hooks/useScenario';
 import { Button } from '../components/button';
@@ -62,6 +67,20 @@ export function Stage() {
       }
     });
   }, []);
+
+  useEffect(() => {
+    return addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        handleClick();
+      } else if (e.key === 'Escape') {
+        if (hideTextBox) {
+          setHideTextBox(false);
+        } else {
+          setHideTextBox(true);
+        }
+      }
+    });
+  }, [hideTextBox]);
 
   return (
     <container onClick={handleClick}>
