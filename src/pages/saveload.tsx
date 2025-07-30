@@ -1,12 +1,9 @@
 import type { Node } from '@momoyu-ink/kit';
-import React, { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef, useState } from 'react';
 import { TEXT_COLOR } from '../constants';
-import { Select } from '../components/select';
-import { Slider } from '../components/slider';
 import { EntryContext } from '../entry';
-import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
 import { Button } from '../components/button';
-import { Checkbox } from '../components/checkbox';
+import { useSoundEffect } from '../hooks/useSoundEffect';
 
 export interface SaveLoadProps {
   type: 'save' | 'load';
@@ -16,12 +13,18 @@ export function SaveLoad(props: SaveLoadProps) {
   const context = useContext(EntryContext);
   const textWindowRef = useRef<Node>(null);
 
+  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.ogg');
+  const backButtonSound = useSoundEffect('audio/back_style_5_001.ogg');
+
   const [currentPage, setCurrentPage] = useState(0);
 
   const { type } = props;
 
   const handleExit = () => {
-    context.setOverlayPage(null);
+    backButtonSound();
+    setTimeout(() => {
+      context.setOverlayPage(null);
+    }, 100);
   };
 
   return (
@@ -96,6 +99,7 @@ export function SaveLoad(props: SaveLoadProps) {
                   'ui/sl_item_hover.png',
                   'ui/sl_item_press.png',
                 ]}
+                onMouseEnter={hoverButtonSound}
                 interactive={data[2] || type === 'save'}
               />
               {!data[2] && (

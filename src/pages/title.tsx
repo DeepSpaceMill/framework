@@ -18,19 +18,23 @@ export function Title() {
   const [showDialog, setShowDialog] = useState(false);
   const [dialogContent, setDialogContent] = useState('');
 
-  const playButtonSound = useSoundEffect('audio/a.mp3');
+  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.ogg');
+  const startButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.ogg');
 
   const handleDialogConfirm = (yes?: boolean) => {
-    console.info('点击了', yes ? '确定' : '取消');
     if (yes) {
-      executePluginCommand('system', {
-        subCommand: 'quit',
-      });
+      // wait for the fade out animation and sound effect to finish
+      setTimeout(() => {
+        executePluginCommand('system', {
+          subCommand: 'quit',
+        });
+      }, 300);
     }
     setShowDialog(false);
   };
 
   const handleStart = (e: MouseEvent) => {
+    startButtonSound();
     contentApi.start({
       to: { opacity: 0 },
       delay: 0,
@@ -81,7 +85,7 @@ export function Title() {
           pivot={[0.5, 0.5]}
           anchor={[0.5, 0.5]}
           onClick={handleStart}
-          onMouseEnter={playButtonSound}
+          onMouseEnter={hoverButtonSound}
         />
         <Button
           fileNames={[
@@ -101,7 +105,7 @@ export function Title() {
           pivot={[0.5, 0.5]}
           anchor={[0.5, 0.5]}
           onClick={() => context.setOverlayPage('load')}
-          onMouseEnter={playButtonSound}
+          onMouseEnter={hoverButtonSound}
         />
         <Button
           fileNames={[
@@ -121,7 +125,7 @@ export function Title() {
           pivot={[0.5, 0.5]}
           anchor={[0.5, 0.5]}
           onClick={() => context.setOverlayPage('settings')}
-          onMouseEnter={playButtonSound}
+          onMouseEnter={hoverButtonSound}
         />
 
         <Button
@@ -142,7 +146,7 @@ export function Title() {
           pivot={[0.5, 0.5]}
           anchor={[0.5, 0.5]}
           onClick={handleExit}
-          onMouseEnter={playButtonSound}
+          onMouseEnter={hoverButtonSound}
         />
       </animated.container>
       <Dialog

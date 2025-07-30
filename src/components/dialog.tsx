@@ -5,6 +5,7 @@ import {
 } from '@momoyu-ink/kit';
 import { TEXT_COLOR } from '../constants';
 import { Button } from './button';
+import { useSoundEffect } from '../hooks/useSoundEffect';
 
 export interface DialogProps extends MoyuNodeAttributes {
   content: string;
@@ -15,6 +16,11 @@ export interface DialogProps extends MoyuNodeAttributes {
 
 export function Dialog(props: DialogProps) {
   const { content, mode, show, onConfirm } = props;
+
+  const confirmButtonSound = useSoundEffect(
+    'audio/confirm_style_5_echo_001.ogg'
+  );
+  const cancelButtonSound = useSoundEffect('audio/error_style_4_001.ogg');
 
   const transitions = useTransition(show ? [0] : [], {
     keys: (item) => item,
@@ -83,7 +89,10 @@ export function Dialog(props: DialogProps) {
               TEXT_COLOR.PRIMARY_HOVER,
               TEXT_COLOR.PRIMARY_PRESS,
             ]}
-            onClick={() => onConfirm?.()}
+            onClick={() => {
+              confirmButtonSound();
+              onConfirm?.();
+            }}
           />
         )}
         {mode === 'confirm' && (
@@ -106,7 +115,10 @@ export function Dialog(props: DialogProps) {
                 TEXT_COLOR.PRIMARY_HOVER,
                 TEXT_COLOR.PRIMARY_PRESS,
               ]}
-              onClick={() => onConfirm?.(true)}
+              onClick={() => {
+                confirmButtonSound();
+                onConfirm?.(true);
+              }}
             />
             <Button
               fileNames={[
@@ -125,7 +137,10 @@ export function Dialog(props: DialogProps) {
                 TEXT_COLOR.DEFAULT_HOVER,
                 TEXT_COLOR.DEFAULT_PRESS,
               ]}
-              onClick={() => onConfirm?.(false)}
+              onClick={() => {
+                cancelButtonSound();
+                onConfirm?.(false);
+              }}
             />
           </>
         )}

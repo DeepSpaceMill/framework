@@ -7,6 +7,7 @@ import { EntryContext } from '../entry';
 import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
 import { Button } from '../components/button';
 import { Checkbox } from '../components/checkbox';
+import { useSoundEffect } from '../hooks/useSoundEffect';
 
 const PREVIEW_TEXT = '测试文字测试文字测试文字测试文字，测试文字测试文字';
 
@@ -23,6 +24,9 @@ export interface SettingsData {
 export function Settings() {
   const context = useContext(EntryContext);
   const textWindowRef = useRef<Node>(null);
+
+  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.ogg');
+  const backButtonSound = useSoundEffect('audio/back_style_5_001.ogg');
 
   const [settings, setSettings] = useState(() => {
     const data = executePluginCommand('scenario', {
@@ -93,6 +97,7 @@ export function Settings() {
   };
 
   const handleExit = () => {
+    backButtonSound();
     context.setOverlayPage(null);
   };
 
@@ -157,6 +162,7 @@ export function Settings() {
             targetHeight={40}
             value={settings.volume_bgm}
             onChange={(v) => setValue('volume_bgm', v)}
+            onMouseEnter={hoverButtonSound}
           />
         </container>
 
@@ -173,6 +179,7 @@ export function Settings() {
             targetHeight={40}
             value={settings.volume_se}
             onChange={(v) => setValue('volume_se', v)}
+            onMouseEnter={hoverButtonSound}
           />
         </container>
 
@@ -189,6 +196,7 @@ export function Settings() {
             targetHeight={40}
             value={settings.volume_voice}
             onChange={(v) => setValue('volume_voice', v)}
+            onMouseEnter={hoverButtonSound}
           />
         </container>
 
@@ -222,6 +230,7 @@ export function Settings() {
               { text: '1280 x 720', value: '720' },
             ]}
             onSelect={(value) => setValue('display', value)}
+            onMouseEnter={hoverButtonSound}
           />
         </container>
 
@@ -238,6 +247,7 @@ export function Settings() {
             targetHeight={40}
             value={settings.text_speed}
             onChange={(v) => setValue('text_speed', v)}
+            onMouseEnter={hoverButtonSound}
           />
         </container>
 
@@ -254,6 +264,7 @@ export function Settings() {
             targetHeight={40}
             value={settings.auto_interval}
             onChange={(v) => setValue('auto_interval', v)}
+            onMouseEnter={hoverButtonSound}
           />
         </container>
 
@@ -272,6 +283,7 @@ export function Settings() {
             targetHeight={48}
             checked={settings.skip_voice}
             onChange={(checked) => setValue('skip_voice', checked)}
+            onMouseEnter={hoverButtonSound}
           />
         </container>
 
