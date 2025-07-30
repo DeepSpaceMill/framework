@@ -14,5 +14,5 @@
   [角色B] 这是一行文字7
 
 
-  #replace(story="test", paragraph="entry")
+  #replace(paragraph="entry")
 }
