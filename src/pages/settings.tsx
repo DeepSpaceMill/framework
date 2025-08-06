@@ -98,7 +98,9 @@ export function Settings() {
 
   const handleExit = () => {
     backButtonSound();
-    context.setOverlayPage(null);
+    setTimeout(() => {
+      context.setOverlayPage(null);
+    }, 100);
   };
 
   const setValue = (key: keyof SettingsData, value: any) => {
