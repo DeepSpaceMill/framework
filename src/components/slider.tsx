@@ -129,6 +129,7 @@ export function Slider(props: SliderProps) {
         pivot={[0, 0.5]}
         y={(targetHeight / 2) << 0}
         onClick={handleTrackClick}
+        cursor="pointer"
       >
         <Button
           fileNames={[
