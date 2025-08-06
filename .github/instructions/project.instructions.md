@@ -72,7 +72,9 @@ Visual Novel games consist of multiple screens implemented as pages in `pages/`:
 
 # Folder structure
 
+- `assets/`: Contains all the static assets (images, sounds, etc.).
 - `src/`: The source code of the project.
+  - `actors/`: Contains all the actors (backgrounds, characters, dialogues, effects, and so on).
   - `components/`: Reusable components.
   - `hooks/`: Custom hooks.
   - `utils/`: Utility functions.
