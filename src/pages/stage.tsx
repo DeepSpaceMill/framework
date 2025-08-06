@@ -1,231 +1,113 @@
-import {
-  addEventListener,
-  KeyboardEvent,
-  MouseEvent,
-  type Node,
-} from '@momoyu-ink/kit';
-import { useEffect, useMemo, useRef, useState } from 'react';
+import { addEventListener, KeyboardEvent } from '@momoyu-ink/kit';
+import { useEffect, useMemo, useRef } from 'react';
 import { useScenario } from '../hooks/useScenario';
-import { Button } from '../components/button';
 import { Notification } from '../components/notification';
 import { type NotificationHandle } from '../hooks/useNotification';
-
-enum TextBoxButton {
-  SAVE = 'SAVE',
-  LOAD = 'LOAD',
-  AUTO = 'AUTO',
-  SKIP = 'SKIP',
-  HIST = 'HIST',
-  CONF = 'CONF',
-}
+import {
+  BackgroundActor,
+  useBackground,
+  CharacterActor,
+  useCharacters,
+  TextBoxActor,
+  useTextBox,
+  type TextBoxHandle,
+  TextBoxButton,
+  useStageManager,
+} from '../actors';
 
 export function Stage() {
-  const textWindowRef = useRef<Node>(null);
   const notificationRef = useRef<NotificationHandle>(null);
-  const progress = useRef(0);
-
-  const [name, setName] = useState('');
-  const [text, setText] = useState('');
-  const [textBoxEntered, setTextBoxEntered] = useState(false);
-  const [hideTextBox, setHideTextBox] = useState(false);
+  const textBoxRef = useRef<TextBoxHandle>(null);
 
   const stories = useMemo(() => ['example'], []);
   const nextLine = useScenario(stories, 'example');
 
+  // Initialize actors
+  const { backgroundState } = useBackground();
+  const { characterState, setSpeaker } = useCharacters();
+  const { textBoxState, progress, hideTextBox, showTextBox } = useTextBox();
+  const { stageState, handleAdvance, handleToggleTextBox } =
+    useStageManager(nextLine);
+
   const handleClick = () => {
-    if (hideTextBox) {
-      setHideTextBox(false);
-      return;
-    }
+    const shouldShowTextBox = handleAdvance(
+      textBoxState.visible,
+      progress.current,
+      () => textBoxRef.current?.finishPrinting()
+    );
 
-    if (progress.current < 1) {
-      textWindowRef.current?.executeCommand({
-        subCommand: 'finishPrinting',
-      });
-      progress.current = 1;
-    } else {
-      nextLine();
+    if (shouldShowTextBox) {
+      showTextBox();
     }
   };
 
-  const handleMouseEnter = (e: MouseEvent) => {
-    setTextBoxEntered(true);
+  const handleButtonClick = (button: TextBoxButton) => {
+    console.log(`TextBox button clicked: ${button}`);
+    switch (button) {
+      case TextBoxButton.SAVE:
+        notificationRef.current?.show('已保存成功');
+        break;
+      case TextBoxButton.LOAD:
+        notificationRef.current?.show('读档功能待实现');
+        break;
+      case TextBoxButton.AUTO:
+        notificationRef.current?.show('自动模式切换');
+        break;
+      case TextBoxButton.SKIP:
+        notificationRef.current?.show('跳过模式切换');
+        break;
+      case TextBoxButton.HIST:
+        notificationRef.current?.show('历史记录功能待实现');
+        break;
+      case TextBoxButton.CONF:
+        notificationRef.current?.show('设置功能待实现');
+        break;
+      default:
+        console.warn(`Unknown button: ${button}`);
+    }
   };
 
-  const handleMouseLeave = (e: MouseEvent) => {
-    setTextBoxEntered(false);
-  };
-
+  // Sync character speaker with textbox name
   useEffect(() => {
-    return addEventListener('scenarionextline', (e) => {
-      console.log('line', JSON.stringify(e));
-      if (e.type === 'commandline') {
-      } else if (e.type === 'text') {
-        setName(e.leading || '');
-        setText(e.text || '');
-      } else if (e.type === 'extrasystemcall') {
-      } else if (e.type === 'finished') {
-      } else {
-        console.warn('Unknown event type:', e.type);
-      }
-    });
-  }, []);
+    if (textBoxState.name) {
+      setSpeaker(textBoxState.name);
+    }
+  }, [textBoxState.name, setSpeaker]);
 
   useEffect(() => {
     return addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         handleClick();
       } else if (e.key === 'Escape') {
-        if (hideTextBox) {
-          setHideTextBox(false);
+        const newVisible = handleToggleTextBox(textBoxState.visible);
+        if (newVisible) {
+          showTextBox();
         } else {
-          setHideTextBox(true);
+          hideTextBox();
         }
       }
     });
-  }, [hideTextBox]);
+  }, [
+    textBoxState.visible,
+    handleClick,
+    handleToggleTextBox,
+    showTextBox,
+    hideTextBox,
+  ]);
 
   return (
     <container onClick={handleClick}>
-      <sprite
-        label="背景图"
-        src="non-free/classroom1.png"
-        scale={1920 / 1344}
-      />
-      <container label="立绘容器">
-        <sprite
-          label="立绘-右"
-          src="non-free/fg01_01.png"
-          tint={name === '角色A' ? '#333' : '#fff'}
-          pivot={[1, 1]}
-          scale={1.5}
-          x={1920}
-          y={1080}
-        />
-        <sprite
-          label="立绘-左"
-          src="non-free/fg03_01.png"
-          tint={name === '角色B' ? '#333' : '#fff'}
-          pivot={[0, 1]}
-          scale={1.5}
-          x={0}
-          y={1080}
-        />
-        <sprite
-          label="立绘-中"
-          src="non-free/fg02_01.png"
-          pivot={[0.5, 1]}
-          scale={1.5}
-          x={1920 / 2}
-          y={1080}
-        />
-      </container>
-      <container
-        label="文本框容器"
-        visible={!hideTextBox}
-        interactive={!hideTextBox}
-      >
-        <sprite
-          label="文本框"
-          src="ui/textbox.png"
-          x={206}
-          y={830}
-          onMouseEnter={handleMouseEnter}
-          onMouseLeave={handleMouseLeave}
-        >
-          <Button
-            fileNames={[
-              'ui/textbox_close.png',
-              'ui/textbox_close_hover.png',
-              'ui/textbox_close_press.png',
-            ]}
-            x={1466}
-            y={18}
-            onClick={() => {
-              console.log('Close button clicked');
-              setHideTextBox(true);
-            }}
-            visible={textBoxEntered}
-          />
-          <container x={840} y={158} visible={textBoxEntered}>
-            {[
-              TextBoxButton.SAVE,
-              TextBoxButton.LOAD,
-              TextBoxButton.AUTO,
-              TextBoxButton.SKIP,
-              TextBoxButton.HIST,
-              TextBoxButton.CONF,
-            ].map((button, index) => (
-              <Button
-                fileNames={[
-                  `ui/textbox_button.png`,
-                  `ui/textbox_button.png`,
-                  `ui/textbox_button.png`,
-                ]}
-                x={100 * index}
-                text={button}
-                fontSize={24}
-                color={[
-                  'rgba(255,255,255,0.3)',
-                  'rgba(255,255,255,0.7)',
-                  'rgba(255,255,255,0.9)',
-                ]}
-                onClick={() => {
-                  console.log(`Button ${button} clicked`);
-                  if (button === TextBoxButton.SAVE) {
-                    notificationRef.current?.show('已保存成功');
-                  }
-                }}
-              />
-            ))}
-          </container>
+      <BackgroundActor backgroundState={backgroundState} />
 
-          <text
-            label="对话内容"
-            ref={textWindowRef}
-            text={text}
-            fontSize={32}
-            lineHeight={1.5}
-            boxWidth={1384}
-            boxHeight={110}
-            fillColor="#f0f0f0"
-            x={72}
-            y={54}
-            printMode="typewriter"
-            printSpeed={20}
-            onStart={() => {
-              progress.current = 0;
-            }}
-            onProgress={(v) => {
-              progress.current = v;
-            }}
-            onFinish={() => {
-              progress.current = 1;
-            }}
-            interactive={false}
-          />
-        </sprite>
-        <sprite
-          label="姓名框"
-          src="ui/namebox.png"
-          x={278}
-          y={794}
-          anchor={[0.5, 0.5]}
-          opacity={name.length > 0 ? 1 : 0}
-        >
-          <text
-            label="姓名"
-            text={name}
-            fontSize={32}
-            lineHeight={1.5}
-            fillColor="#f0f0f0"
-            anchor={[0.5, 0.5]}
-            pivot={[0.5, 0.5]}
-            x={0}
-            y={0}
-          />
-        </sprite>
-      </container>
+      <CharacterActor characterState={characterState} />
+
+      <TextBoxActor
+        ref={textBoxRef}
+        textBoxState={textBoxState}
+        progress={progress}
+        onButtonClick={handleButtonClick}
+        onHideTextBox={hideTextBox}
+      />
 
       <Notification ref={notificationRef} />
     </container>
