@@ -1,20 +1,10 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useAtom } from 'jotai';
 import { addEventListener } from '@momoyu-ink/kit';
-
-interface BackgroundState {
-  src: string;
-  scale?: number;
-  opacity?: number;
-  visible?: boolean;
-}
+import { backgroundAtom, type BackgroundState } from '../atoms';
 
 export function useBackground() {
-  const [backgroundState, setBackgroundState] = useState<BackgroundState>({
-    src: 'non-free/classroom1.png',
-    scale: 1920 / 1344,
-    opacity: 1,
-    visible: true,
-  });
+  const [backgroundState, setBackgroundState] = useAtom(backgroundAtom);
 
   useEffect(() => {
     return addEventListener('scenarionextline', (e) => {

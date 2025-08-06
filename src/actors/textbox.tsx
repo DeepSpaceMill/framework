@@ -5,8 +5,10 @@ import {
   forwardRef,
   useImperativeHandle,
 } from 'react';
+import { useAtom } from 'jotai';
 import { addEventListener, MouseEvent, type Node } from '@momoyu-ink/kit';
 import { Button } from '../components/button';
+import { textBoxAtom, type TextBoxState as AtomTextBoxState } from '../atoms';
 
 interface TextBoxState {
   name: string;
@@ -30,32 +32,28 @@ export enum TextBoxButton {
 }
 
 export function useTextBox() {
-  const [textBoxState, setTextBoxState] = useState<TextBoxState>({
-    name: '',
-    text: '',
-    visible: true,
-  });
+  const [textBoxState, setTextBoxState] = useAtom(textBoxAtom);
 
   const progress = useRef(0);
 
   useEffect(() => {
     return addEventListener('scenarionextline', (e) => {
       if (e.type === 'text') {
-        setTextBoxState((prev) => ({
+        setTextBoxState((prev: AtomTextBoxState) => ({
           ...prev,
           name: e.leading || '',
           text: e.text || '',
         }));
       }
     });
-  }, []);
+  }, [setTextBoxState]);
 
   const hideTextBox = () => {
-    setTextBoxState((prev) => ({ ...prev, visible: false }));
+    setTextBoxState((prev: AtomTextBoxState) => ({ ...prev, visible: false }));
   };
 
   const showTextBox = () => {
-    setTextBoxState((prev) => ({ ...prev, visible: true }));
+    setTextBoxState((prev: AtomTextBoxState) => ({ ...prev, visible: true }));
   };
 
   return {

@@ -1,22 +1,11 @@
-import { useState, useEffect } from 'react';
+import { useEffect } from 'react';
+import { useAtom } from 'jotai';
 import { addEventListener } from '@momoyu-ink/kit';
-
-interface CharacterInfo {
-  id: string;
-  src: string;
-  position: 'left' | 'center' | 'right';
-  scale: number;
-  tint: string;
-  visible: boolean;
-  x: number;
-  y: number;
-  pivot: [number, number];
-}
-
-interface CharacterState {
-  characters: Record<string, CharacterInfo>;
-  currentSpeaker?: string;
-}
+import {
+  characterAtom,
+  type CharacterInfo,
+  type CharacterState,
+} from '../atoms';
 
 const DEFAULT_CHARACTERS: Record<string, Omit<CharacterInfo, 'id'>> = {
   left: {
@@ -52,14 +41,7 @@ const DEFAULT_CHARACTERS: Record<string, Omit<CharacterInfo, 'id'>> = {
 };
 
 export function useCharacters() {
-  const [characterState, setCharacterState] = useState<CharacterState>({
-    characters: {
-      left: { id: 'left', ...DEFAULT_CHARACTERS.left },
-      center: { id: 'center', ...DEFAULT_CHARACTERS.center },
-      right: { id: 'right', ...DEFAULT_CHARACTERS.right },
-    },
-    currentSpeaker: undefined,
-  });
+  const [characterState, setCharacterState] = useAtom(characterAtom);
 
   useEffect(() => {
     return addEventListener('scenarionextline', (e) => {
@@ -72,7 +54,7 @@ export function useCharacters() {
   }, []);
 
   const setSpeaker = (speaker: string) => {
-    setCharacterState((prev) => ({
+    setCharacterState((prev: CharacterState) => ({
       ...prev,
       currentSpeaker: speaker,
       characters: Object.fromEntries(
@@ -104,7 +86,7 @@ export function useCharacters() {
     position: 'left' | 'center' | 'right'
   ) => {
     const defaults = DEFAULT_CHARACTERS[position];
-    setCharacterState((prev) => ({
+    setCharacterState((prev: CharacterState) => ({
       ...prev,
       characters: {
         ...prev.characters,
@@ -119,7 +101,7 @@ export function useCharacters() {
   };
 
   const hideCharacter = (id: string) => {
-    setCharacterState((prev) => ({
+    setCharacterState((prev: CharacterState) => ({
       ...prev,
       characters: {
         ...prev.characters,

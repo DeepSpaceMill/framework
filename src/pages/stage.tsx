@@ -1,6 +1,7 @@
 import { addEventListener, KeyboardEvent } from '@momoyu-ink/kit';
 import { useEffect, useMemo, useRef } from 'react';
 import { useScenario } from '../hooks/useScenario';
+import { useSaveLoad } from '../hooks/useSaveLoad';
 import { Notification } from '../components/notification';
 import { type NotificationHandle } from '../hooks/useNotification';
 import {
@@ -22,6 +23,9 @@ export function Stage() {
   const stories = useMemo(() => ['example'], []);
   const nextLine = useScenario(stories, 'example');
 
+  // Initialize save/load functionality
+  const { quickSave, quickLoad, hasAutoSave } = useSaveLoad();
+
   // Initialize actors
   const { backgroundState } = useBackground();
   const { characterState, setSpeaker } = useCharacters();
@@ -41,29 +45,44 @@ export function Stage() {
     }
   };
 
-  const handleButtonClick = (button: TextBoxButton) => {
+  const handleButtonClick = async (button: TextBoxButton) => {
     console.log(`TextBox button clicked: ${button}`);
-    switch (button) {
-      case TextBoxButton.SAVE:
-        notificationRef.current?.show('已保存成功');
-        break;
-      case TextBoxButton.LOAD:
-        notificationRef.current?.show('读档功能待实现');
-        break;
-      case TextBoxButton.AUTO:
-        notificationRef.current?.show('自动模式切换');
-        break;
-      case TextBoxButton.SKIP:
-        notificationRef.current?.show('跳过模式切换');
-        break;
-      case TextBoxButton.HIST:
-        notificationRef.current?.show('历史记录功能待实现');
-        break;
-      case TextBoxButton.CONF:
-        notificationRef.current?.show('设置功能待实现');
-        break;
-      default:
-        console.warn(`Unknown button: ${button}`);
+    try {
+      switch (button) {
+        case TextBoxButton.SAVE:
+          await quickSave();
+          notificationRef.current?.show('快速保存成功');
+          break;
+        case TextBoxButton.LOAD:
+          if (hasAutoSave) {
+            const success = await quickLoad();
+            if (success) {
+              notificationRef.current?.show('快速读档成功');
+            } else {
+              notificationRef.current?.show('快速读档失败');
+            }
+          } else {
+            notificationRef.current?.show('没有可读取的存档');
+          }
+          break;
+        case TextBoxButton.AUTO:
+          notificationRef.current?.show('自动模式切换');
+          break;
+        case TextBoxButton.SKIP:
+          notificationRef.current?.show('跳过模式切换');
+          break;
+        case TextBoxButton.HIST:
+          notificationRef.current?.show('历史记录功能待实现');
+          break;
+        case TextBoxButton.CONF:
+          notificationRef.current?.show('设置功能待实现');
+          break;
+        default:
+          console.warn(`Unknown button: ${button}`);
+      }
+    } catch (error) {
+      console.error('操作失败:', error);
+      notificationRef.current?.show('操作失败，请重试');
     }
   };
 
