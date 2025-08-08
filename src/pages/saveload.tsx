@@ -1,7 +1,9 @@
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Button } from '../components/button';
+import { Notification } from '../components/notification';
 import { TEXT_COLOR } from '../constants';
 import { EntryContext } from '../entry';
+import { type NotificationHandle } from '../hooks/useNotification';
 import { SaveSlot, useSaveLoad } from '../hooks/useSaveLoad';
 import { useSoundEffect } from '../hooks/useSoundEffect';
 
@@ -17,18 +19,10 @@ export function SaveLoad(props: SaveLoadProps) {
 
   const [currentPage, setCurrentPage] = useState(0);
   const [saveSlots, setSaveSlots] = useState<SaveSlot[]>([]);
-  const [notification, setNotification] = useState<string>('');
-  const [showNotification, setShowNotification] = useState(false);
+  const notificationRef = useRef<NotificationHandle>(null);
 
   const { type } = props;
   const { saveToSlot, loadFromSlot, getSaveSlots, deleteSaveSlot } = useSaveLoad();
-
-  // Simple notification implementation
-  const showNotificationMessage = (message: string) => {
-    setNotification(message);
-    setShowNotification(true);
-    setTimeout(() => setShowNotification(false), 2000);
-  };
 
   // Load save slots when component mounts
   useEffect(() => {
@@ -63,7 +57,7 @@ export function SaveLoad(props: SaveLoadProps) {
           // Save to auto-save
           slotId = 'auto-save';
           await saveToSlot(slotId);
-          showNotificationMessage('快速存档保存成功');
+          notificationRef.current?.show('快速存档保存成功');
         } else {
           // Save to regular slot - calculate slot ID based on position
           // Skip auto-save slot if it exists in the list
@@ -71,7 +65,7 @@ export function SaveLoad(props: SaveLoadProps) {
           const adjustedIndex = autoSaveExists ? globalSlotIndex : globalSlotIndex + 1;
           slotId = String(adjustedIndex);
           await saveToSlot(slotId);
-          showNotificationMessage(`保存到存档槽 ${slotId} 成功`);
+          notificationRef.current?.show(`保存到存档槽 ${slotId} 成功`);
         }
 
         // Reload save slots to update UI
@@ -82,16 +76,16 @@ export function SaveLoad(props: SaveLoadProps) {
         const success = await loadFromSlot(slot.id);
         if (success) {
           const slotName = slot.id === 'auto-save' ? '快速存档' : `存档槽 ${slot.id}`;
-          showNotificationMessage(`读取${slotName}成功`);
+          notificationRef.current?.show(`读取${slotName}成功`);
           handleExit();
         } else {
           const slotName = slot.id === 'auto-save' ? '快速存档' : `存档槽 ${slot.id}`;
-          showNotificationMessage(`读取${slotName}失败`);
+          notificationRef.current?.show(`读取${slotName}失败`);
         }
       }
     } catch (error) {
       console.error(`${type} operation failed:`, error);
-      showNotificationMessage(`${type === 'save' ? '保存' : '读取'}失败`);
+      notificationRef.current?.show(`${type === 'save' ? '保存' : '读取'}失败`);
     }
   };
 
@@ -101,14 +95,14 @@ export function SaveLoad(props: SaveLoadProps) {
 
     try {
       await deleteSaveSlot(slot.id);
-      showNotificationMessage(`删除存档槽 ${slot.id} 成功`);
+      notificationRef.current?.show(`删除存档槽 ${slot.id} 成功`);
 
       // Reload save slots to update UI
       const updatedSlots = await getSaveSlots();
       setSaveSlots(updatedSlots);
     } catch (error) {
       console.error('Delete slot failed:', error);
-      showNotificationMessage(`删除存档槽 ${slot.id} 失败`);
+      notificationRef.current?.show(`删除存档槽 ${slot.id} 失败`);
     }
   };
 
@@ -239,12 +233,7 @@ export function SaveLoad(props: SaveLoadProps) {
         </container>
       </sprite>
 
-      {/* Notification component */}
-      <container x={960} y={100} pivot={[0.5, 0]}>
-        <sprite src="ui/notification_bg.png" visible={showNotification} pivot={[0.5, 0]}>
-          <text text={notification} fontSize={24} fillColor="white" pivot={[0.5, 0.5]} x={200} y={25} />
-        </sprite>
-      </container>
+      <Notification ref={notificationRef} />
     </container>
   );
 }
