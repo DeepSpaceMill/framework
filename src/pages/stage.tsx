@@ -1,20 +1,20 @@
 import { addEventListener, KeyboardEvent } from '@momoyu-ink/kit';
-import { useEffect, useMemo, useRef } from 'react';
-import { useScenario } from '../hooks/useScenario';
-import { useSaveLoad } from '../hooks/useSaveLoad';
-import { Notification } from '../components/notification';
-import { type NotificationHandle } from '../hooks/useNotification';
+import { useCallback, useEffect, useMemo, useRef } from 'react';
 import {
   BackgroundActor,
-  useBackground,
   CharacterActor,
-  useCharacters,
   TextBoxActor,
-  useTextBox,
-  type TextBoxHandle,
   TextBoxButton,
+  type TextBoxHandle,
+  useBackground,
+  useCharacters,
   useStageManager,
+  useTextBox,
 } from '../actors';
+import { Notification } from '../components/notification';
+import { type NotificationHandle } from '../hooks/useNotification';
+import { useSaveLoad } from '../hooks/useSaveLoad';
+import { useScenario } from '../hooks/useScenario';
 
 export function Stage() {
   const notificationRef = useRef<NotificationHandle>(null);
@@ -24,38 +24,37 @@ export function Stage() {
   const nextLine = useScenario(stories, 'example');
 
   // Initialize save/load functionality
-  const { quickSave, quickLoad, hasAutoSave } = useSaveLoad();
+  const { saveToSlot, loadFromSlot, checkAutoSaveExists } = useSaveLoad();
 
   // Initialize actors
   const { backgroundState } = useBackground();
   const { characterState, setSpeaker } = useCharacters();
   const { textBoxState, progress, hideTextBox, showTextBox } = useTextBox();
-  const { stageState, handleAdvance, handleToggleTextBox } =
-    useStageManager(nextLine);
+  const { handleAdvance, handleToggleTextBox } = useStageManager(nextLine);
 
-  const handleClick = () => {
-    const shouldShowTextBox = handleAdvance(
-      textBoxState.visible,
-      progress.current,
-      () => textBoxRef.current?.finishPrinting()
+  const handleClick = useCallback(() => {
+    const shouldShowTextBox = handleAdvance(textBoxState.visible, progress.current, () =>
+      textBoxRef.current?.finishPrinting(),
     );
 
     if (shouldShowTextBox) {
       showTextBox();
     }
-  };
+  }, [handleAdvance, textBoxState.visible, progress, showTextBox]);
 
   const handleButtonClick = async (button: TextBoxButton) => {
     console.log(`TextBox button clicked: ${button}`);
     try {
       switch (button) {
         case TextBoxButton.SAVE:
-          await quickSave();
+          await saveToSlot('auto-save');
           notificationRef.current?.show('快速保存成功');
           break;
-        case TextBoxButton.LOAD:
-          if (hasAutoSave) {
-            const success = await quickLoad();
+        case TextBoxButton.LOAD: {
+          // Check if auto-save exists in engine
+          const autoSaveExists = await checkAutoSaveExists();
+          if (autoSaveExists) {
+            const success = await loadFromSlot('auto-save');
             if (success) {
               notificationRef.current?.show('快速读档成功');
             } else {
@@ -65,6 +64,7 @@ export function Stage() {
             notificationRef.current?.show('没有可读取的存档');
           }
           break;
+        }
         case TextBoxButton.AUTO:
           notificationRef.current?.show('自动模式切换');
           break;
@@ -106,13 +106,7 @@ export function Stage() {
         }
       }
     });
-  }, [
-    textBoxState.visible,
-    handleClick,
-    handleToggleTextBox,
-    showTextBox,
-    hideTextBox,
-  ]);
+  }, [textBoxState.visible, handleClick, handleToggleTextBox, showTextBox, hideTextBox]);
 
   return (
     <container onClick={handleClick}>
