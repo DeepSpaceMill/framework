@@ -98,20 +98,3 @@ export const gameStateAtom = atom((get) => ({
   // Add scenario progress and other game state as needed
   timestamp: Date.now(),
 }));
-
-// Save slot management
-export interface SaveSlot {
-  id: string;
-  timestamp: number;
-  gameState: ReturnType<(typeof gameStateAtom)['read']>;
-  metadata?: {
-    scenarioName?: string;
-    currentLine?: string;
-    screenshot?: string; // Base64 encoded screenshot for future use
-  };
-}
-
-export const saveSlotAtom = atom<Record<string, SaveSlot>>({});
-
-// Auto-save atom for quick save/load
-export const autoSaveSlotAtom = atom<SaveSlot | null>(null);

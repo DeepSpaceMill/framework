@@ -1,7 +1,7 @@
 import { executePluginCommand } from '@momoyu-ink/kit';
 import { useAtomValue, useSetAtom } from 'jotai';
 import { useCallback } from 'react';
-import { backgroundAtom, characterAtom, gameStateAtom, type SaveSlot, textBoxAtom } from '../atoms';
+import { backgroundAtom, characterAtom, gameStateAtom, textBoxAtom } from '../atoms';
 
 // Engine save game interface
 interface FileEntry {
@@ -9,6 +9,18 @@ interface FileEntry {
   isDir: boolean;
   size: number;
   lastModified: number;
+}
+
+// Save slot management
+export interface SaveSlot {
+  id: string;
+  timestamp: number;
+  gameState: ReturnType<(typeof gameStateAtom)['read']>;
+  metadata?: {
+    scenarioName?: string;
+    currentLine?: string;
+    screenshot?: string; // Base64 encoded screenshot for future use
+  };
 }
 
 export interface SaveLoadHookReturn {

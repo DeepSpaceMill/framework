@@ -1,9 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
-import type { SaveSlot } from '../atoms';
 import { Button } from '../components/button';
 import { TEXT_COLOR } from '../constants';
 import { EntryContext } from '../entry';
-import { useSaveLoad } from '../hooks/useSaveLoad';
+import { SaveSlot, useSaveLoad } from '../hooks/useSaveLoad';
 import { useSoundEffect } from '../hooks/useSoundEffect';
 
 export interface SaveLoadProps {
