@@ -17,12 +17,14 @@ export interface TextBoxHandle {
 }
 
 export enum TextBoxButton {
+  QSAVE = 'QSAV',
+  QLOAD = 'QLOD',
   SAVE = 'SAVE',
   LOAD = 'LOAD',
   AUTO = 'AUTO',
-  SKIP = 'SKIP',
+  // SKIP = 'SKIP',
   HIST = 'HIST',
-  CONF = 'CONF',
+  MENU = 'MENU',
 }
 
 export function useTextBox() {
@@ -111,14 +113,16 @@ export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(
             }}
             visible={isHovered}
           />
-          <container x={840} y={158} visible={isHovered}>
+          <container x={740} y={158} visible={isHovered}>
             {[
+              TextBoxButton.QSAVE,
+              TextBoxButton.QLOAD,
               TextBoxButton.SAVE,
               TextBoxButton.LOAD,
               TextBoxButton.AUTO,
-              TextBoxButton.SKIP,
+              // TextBoxButton.SKIP,
               TextBoxButton.HIST,
-              TextBoxButton.CONF,
+              TextBoxButton.MENU,
             ].map((button, index) => (
               <Button
                 key={button}
@@ -128,7 +132,6 @@ export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(
                 fontSize={24}
                 color={['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.7)', 'rgba(255,255,255,0.9)']}
                 onClick={() => {
-                  console.log(`Button ${button} clicked`);
                   onButtonClick(button);
                 }}
               />

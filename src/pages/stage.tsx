@@ -43,14 +43,13 @@ export function Stage() {
   }, [handleAdvance, textBoxState.visible, progress, showTextBox]);
 
   const handleButtonClick = async (button: TextBoxButton) => {
-    console.log(`TextBox button clicked: ${button}`);
     try {
       switch (button) {
-        case TextBoxButton.SAVE:
+        case TextBoxButton.QSAVE:
           await saveToSlot('auto-save');
           notificationRef.current?.show('快速保存成功');
           break;
-        case TextBoxButton.LOAD: {
+        case TextBoxButton.QLOAD: {
           // Check if auto-save exists in engine
           const autoSaveExists = await checkAutoSaveExists();
           if (autoSaveExists) {
@@ -65,24 +64,29 @@ export function Stage() {
           }
           break;
         }
+        case TextBoxButton.SAVE:
+          break;
+        case TextBoxButton.LOAD: {
+          break;
+        }
         case TextBoxButton.AUTO:
-          notificationRef.current?.show('自动模式切换');
+          notificationRef.current?.show('自动模式待实现');
           break;
-        case TextBoxButton.SKIP:
-          notificationRef.current?.show('跳过模式切换');
-          break;
+        // case TextBoxButton.SKIP:
+        //   notificationRef.current?.show('跳过模式切换');
+        //   break;
         case TextBoxButton.HIST:
           notificationRef.current?.show('历史记录功能待实现');
           break;
-        case TextBoxButton.CONF:
-          notificationRef.current?.show('设置功能待实现');
+        case TextBoxButton.MENU:
+          notificationRef.current?.show('菜单功能待实现');
           break;
         default:
           console.warn(`Unknown button: ${button}`);
       }
     } catch (error) {
       console.error('操作失败:', error);
-      notificationRef.current?.show('操作失败，请重试');
+      notificationRef.current?.show('遇到问题，这是一个 BUG');
     }
   };
 
