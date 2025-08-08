@@ -1,5 +1,5 @@
-import { useState, useEffect } from 'react';
-import { addEventListener, KeyboardEvent } from '@momoyu-ink/kit';
+import { addEventListener } from '@momoyu-ink/kit';
+import { useEffect, useState } from 'react';
 
 interface StageState {
   paused: boolean;
@@ -27,11 +27,7 @@ export function useStageManager(nextLine: () => void) {
     });
   }, []);
 
-  const handleAdvance = (
-    textBoxVisible: boolean,
-    textProgress: number,
-    finishPrinting: () => void
-  ) => {
+  const handleAdvance = (textBoxVisible: boolean, textProgress: number, finishPrinting: () => void) => {
     if (!textBoxVisible) {
       return true; // Show textbox
     }

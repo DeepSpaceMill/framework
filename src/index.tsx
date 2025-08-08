@@ -1,10 +1,9 @@
+import { addEventListener, createRoot, KeyboardEvent } from '@momoyu-ink/kit';
+import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
 import React, { useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { addEventListener, createRoot, KeyboardEvent } from '@momoyu-ink/kit';
-
 import { Entry } from './entry';
 import { ErrorFallback } from './error';
-import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
 
 // import doufu from '../moyu/moyu_lib.js';
 // import * as moyu from '../moyu/moyu_lib.js';

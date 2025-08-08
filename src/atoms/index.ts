@@ -68,11 +68,11 @@ const DEFAULT_CHARACTERS: Record<string, Omit<CharacterInfo, 'id'>> = {
 
 export const characterAtom = atom<CharacterState>({
   characters: Object.entries(DEFAULT_CHARACTERS).reduce(
-    (acc, [id, character]) => ({
-      ...acc,
-      [id]: { id, ...character },
-    }),
-    {}
+    (acc, [id, character]) => {
+      acc[id] = { id, ...character };
+      return acc;
+    },
+    {} as Record<string, CharacterInfo>,
   ),
   currentSpeaker: undefined,
 });

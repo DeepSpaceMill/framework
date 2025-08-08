@@ -1,6 +1,5 @@
-import type { MoyuNodeAttributes, MouseEvent } from '@momoyu-ink/kit';
-import React from 'react';
-import { Button, type ButtonProps } from './button';
+import type { MouseEvent, MoyuNodeAttributes } from '@momoyu-ink/kit';
+import { Button } from './button';
 
 export interface CheckboxProps extends Omit<MoyuNodeAttributes, 'onClick'> {
   /**
@@ -39,18 +38,9 @@ export interface CheckboxProps extends Omit<MoyuNodeAttributes, 'onClick'> {
  * Uses ui/unchecked.png, ui/unchecked_hover.png, ui/unchecked_press.png for unchecked state
  */
 export function Checkbox(props: CheckboxProps) {
-  const {
-    checked = false,
-    onChange,
-    label,
-    targetWidth,
-    targetHeight,
-    mode,
-    bounds,
-    ...restProps
-  } = props;
+  const { checked = false, onChange, label, targetWidth, targetHeight, mode, bounds, ...restProps } = props;
 
-  const handleClick = (e: MouseEvent) => {
+  const handleClick = (_e: MouseEvent) => {
     onChange?.(!checked);
   };
 

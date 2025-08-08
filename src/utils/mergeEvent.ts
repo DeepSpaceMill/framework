@@ -1,4 +1,4 @@
-import type { BubbleEvent, MoyuEvent, MoyuEventHandler } from '@momoyu-ink/kit';
+import type { BubbleEvent, MoyuEventHandler } from '@momoyu-ink/kit';
 
 /**
  * Merge multiple event handlers into one.
@@ -11,7 +11,7 @@ import type { BubbleEvent, MoyuEvent, MoyuEventHandler } from '@momoyu-ink/kit';
  */
 export function mergeEvent<T extends BubbleEvent, K extends BubbleEvent>(
   handlers: MoyuEventHandler<T> | MoyuEventHandler<T>[] | undefined,
-  defaultHandler?: MoyuEventHandler<K>,
+  defaultHandler?: MoyuEventHandler<K>
 ) {
   return (e: T | K) => {
     if (!handlers) {

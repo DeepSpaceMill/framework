@@ -1,5 +1,5 @@
 import { useSpring } from '@momoyu-ink/kit';
-import { useState, useRef, useEffect } from 'react';
+import { useEffect, useRef, useState } from 'react';
 
 export interface UseNotificationOptions {
   /** Display duration, default 2000ms */
@@ -32,11 +32,7 @@ export function useNotification() {
   }));
 
   const show = (message: string, options: UseNotificationOptions = {}) => {
-    const {
-      duration = 2000,
-      fadeInDuration = 300,
-      fadeOutDuration = 300,
-    } = options;
+    const { duration = 2000, fadeInDuration = 300, fadeOutDuration = 300 } = options;
 
     // Stop current animation if any
     if (isAnimatingRef.current) {

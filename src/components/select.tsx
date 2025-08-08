@@ -1,10 +1,5 @@
-import {
-  type MoyuEvent,
-  type MoyuNodeAttributes,
-  animated,
-  useSpring,
-} from '@momoyu-ink/kit';
-import React, { useState } from 'react';
+import { type MoyuNodeAttributes } from '@momoyu-ink/kit';
+import { useState } from 'react';
 import { Button } from './button';
 
 export interface SelectProps extends MoyuNodeAttributes {
@@ -35,7 +30,6 @@ export function Select(props: SelectProps) {
     color = 'black',
     onSelect,
     anchor,
-    tint,
     mode,
     bounds,
     targetWidth = 0,
@@ -45,7 +39,7 @@ export function Select(props: SelectProps) {
 
   const [active, setActive] = useState(false);
 
-  const filenames = Array.isArray(fileName)
+  const _filenames = Array.isArray(fileName)
     ? fileName
     : [`${fileName}.png`, `${fileName}_hover.png`, `${fileName}_click.png`];
 
@@ -56,11 +50,7 @@ export function Select(props: SelectProps) {
   return (
     <container label={label} {...restProps} pivot={anchor} anchor={anchor}>
       <Button
-        fileNames={[
-          'ui/dropdown.png',
-          'ui/dropdown_hover.png',
-          'ui/dropdown_hover.png',
-        ]}
+        fileNames={['ui/dropdown.png', 'ui/dropdown_hover.png', 'ui/dropdown_hover.png']}
         text={currentOption?.text}
         fontSize={fontSize}
         color={colors}
@@ -83,6 +73,7 @@ export function Select(props: SelectProps) {
         >
           {options.map((option, index) => (
             <Button
+              key={option.value}
               fileNames={[
                 'ui/dropdown_listitem.png',
                 'ui/dropdown_listitem_hover.png',
@@ -95,7 +86,7 @@ export function Select(props: SelectProps) {
               bounds={[0.25, 0.25, 0.25, 0.25]}
               targetWidth={targetWidth - 6}
               targetHeight={targetHeight}
-              onClick={(e) => {
+              onClick={(_e) => {
                 onSelect?.(option.value, option.text);
                 setActive(false);
               }}

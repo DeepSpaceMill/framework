@@ -1,14 +1,8 @@
-import {
-  useState,
-  useEffect,
-  useRef,
-  forwardRef,
-  useImperativeHandle,
-} from 'react';
+import { addEventListener, type Node } from '@momoyu-ink/kit';
 import { useAtom } from 'jotai';
-import { addEventListener, MouseEvent, type Node } from '@momoyu-ink/kit';
+import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { type TextBoxState as AtomTextBoxState, textBoxAtom } from '../atoms';
 import { Button } from '../components/button';
-import { textBoxAtom, type TextBoxState as AtomTextBoxState } from '../atoms';
 
 interface TextBoxState {
   name: string;
@@ -76,11 +70,11 @@ export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(
     const textWindowRef = useRef<Node>(null);
     const [isHovered, setIsHovered] = useState(false);
 
-    const handleMouseEnter = (e: MouseEvent) => {
+    const handleMouseEnter = () => {
       setIsHovered(true);
     };
 
-    const handleMouseLeave = (e: MouseEvent) => {
+    const handleMouseLeave = () => {
       setIsHovered(false);
     };
 
@@ -98,11 +92,7 @@ export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(
     }));
 
     return (
-      <container
-        label="文本框容器"
-        visible={textBoxState.visible}
-        interactive={textBoxState.visible}
-      >
+      <container label="文本框容器" visible={textBoxState.visible} interactive={textBoxState.visible}>
         <sprite
           label="文本框"
           src="ui/textbox.png"
@@ -112,11 +102,7 @@ export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(
           onMouseLeave={handleMouseLeave}
         >
           <Button
-            fileNames={[
-              'ui/textbox_close.png',
-              'ui/textbox_close_hover.png',
-              'ui/textbox_close_press.png',
-            ]}
+            fileNames={['ui/textbox_close.png', 'ui/textbox_close_hover.png', 'ui/textbox_close_press.png']}
             x={1466}
             y={18}
             onClick={() => {
@@ -135,19 +121,12 @@ export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(
               TextBoxButton.CONF,
             ].map((button, index) => (
               <Button
-                fileNames={[
-                  `ui/textbox_button.png`,
-                  `ui/textbox_button.png`,
-                  `ui/textbox_button.png`,
-                ]}
+                key={button}
+                fileNames={[`ui/textbox_button.png`, `ui/textbox_button.png`, `ui/textbox_button.png`]}
                 x={100 * index}
                 text={button}
                 fontSize={24}
-                color={[
-                  'rgba(255,255,255,0.3)',
-                  'rgba(255,255,255,0.7)',
-                  'rgba(255,255,255,0.9)',
-                ]}
+                color={['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.7)', 'rgba(255,255,255,0.9)']}
                 onClick={() => {
                   console.log(`Button ${button} clicked`);
                   onButtonClick(button);
@@ -203,5 +182,5 @@ export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(
         </sprite>
       </container>
     );
-  }
+  },
 );

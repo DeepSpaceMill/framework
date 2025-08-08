@@ -1,5 +1,5 @@
 import { executePluginCommand } from '@momoyu-ink/kit';
-import { useCallback, useEffect, useMemo } from 'react';
+import { useCallback, useEffect } from 'react';
 
 /**
  * Custom hook to load a scenario with multiple stories and start a specific story.
@@ -42,7 +42,7 @@ export function useScenario(stories: string[], startName: string) {
         name: startName,
       });
     };
-  }, [stories]);
+  }, [stories, startName]);
 
   return useCallback(() => {
     executePluginCommand('scenario', {

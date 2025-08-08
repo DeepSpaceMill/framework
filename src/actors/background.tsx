@@ -1,7 +1,7 @@
-import { useEffect } from 'react';
-import { useAtom } from 'jotai';
 import { addEventListener } from '@momoyu-ink/kit';
-import { backgroundAtom, type BackgroundState } from '../atoms';
+import { useAtom } from 'jotai';
+import { useEffect } from 'react';
+import { type BackgroundState, backgroundAtom } from '../atoms';
 
 export function useBackground() {
   const [backgroundState, setBackgroundState] = useAtom(backgroundAtom);

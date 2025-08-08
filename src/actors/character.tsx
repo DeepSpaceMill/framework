@@ -1,11 +1,7 @@
-import { useEffect } from 'react';
-import { useAtom } from 'jotai';
 import { addEventListener } from '@momoyu-ink/kit';
-import {
-  characterAtom,
-  type CharacterInfo,
-  type CharacterState,
-} from '../atoms';
+import { useAtom } from 'jotai';
+import { useEffect } from 'react';
+import { type CharacterInfo, type CharacterState, characterAtom } from '../atoms';
 
 const DEFAULT_CHARACTERS: Record<string, Omit<CharacterInfo, 'id'>> = {
   left: {
@@ -64,27 +60,16 @@ export function useCharacters() {
             ...char,
             tint:
               speaker === char.id ||
-              speaker ===
-                `角色${
-                  char.position === 'left'
-                    ? 'B'
-                    : char.position === 'right'
-                    ? 'A'
-                    : 'C'
-                }`
+              speaker === `角色${char.position === 'left' ? 'B' : char.position === 'right' ? 'A' : 'C'}`
                 ? '#333'
                 : '#fff',
           },
-        ])
+        ]),
       ),
     }));
   };
 
-  const showCharacter = (
-    id: string,
-    src: string,
-    position: 'left' | 'center' | 'right'
-  ) => {
+  const showCharacter = (id: string, src: string, position: 'left' | 'center' | 'right') => {
     const defaults = DEFAULT_CHARACTERS[position];
     setCharacterState((prev: CharacterState) => ({
       ...prev,

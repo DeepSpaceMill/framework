@@ -1,24 +1,15 @@
-import React from 'react';
-import { createContext, useEffect, useState } from 'react';
-
+import React, { createContext, useState } from 'react';
+import { SaveLoad } from './pages/saveload';
+import { Settings } from './pages/settings';
 import { Stage } from './pages/stage';
 import { Title } from './pages/title';
-import { Settings } from './pages/settings';
-import { SaveLoad } from './pages/saveload';
 
 export const EntryContext = createContext({
-  setPage: (page: GamePage) => {},
-  setOverlayPage: (page: GamePage | null) => {},
+  setPage: (_page: GamePage) => {},
+  setOverlayPage: (_page: GamePage | null) => {},
 });
 
-export type GamePage =
-  | 'title'
-  | 'stage'
-  | 'save'
-  | 'load'
-  | 'settings'
-  | 'cg'
-  | 'bgm';
+export type GamePage = 'title' | 'stage' | 'save' | 'load' | 'settings' | 'cg' | 'bgm';
 
 const pages: Record<GamePage, React.FC> = {
   title: Title,

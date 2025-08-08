@@ -1,10 +1,5 @@
+import { type BubbleEvent, type MouseEvent, type MoyuEventHandler, type TouchEvent } from '@momoyu-ink/kit';
 import { useCallback, useEffect, useState } from 'react';
-import {
-  type MouseEvent,
-  type TouchEvent,
-  type MoyuEventHandler,
-  type BubbleEvent,
-} from '@momoyu-ink/kit';
 import { mergeEvent } from '../utils/mergeEvent';
 
 /**
@@ -64,12 +59,7 @@ export interface UseButtonResult {
 }
 
 export function useButton(options: UseButtonOptions = {}): UseButtonResult {
-  const {
-    initialState = 'idle',
-    lockOn,
-    onClick,
-    customHandlers = {},
-  } = options;
+  const { initialState = 'idle', lockOn, onClick, customHandlers = {} } = options;
 
   const [buttonState, setButtonState] = useState<ButtonState>(initialState);
   const [pressed, setPressed] = useState(false);
@@ -94,15 +84,15 @@ export function useButton(options: UseButtonOptions = {}): UseButtonResult {
 
       setButtonState(pressed ? 'press' : 'hover');
     },
-    [pressed]
+    [pressed],
   );
 
-  const handleLeave = useCallback((e: BubbleEvent) => {
+  const handleLeave = useCallback((_e: BubbleEvent) => {
     setButtonState('idle');
     setPressed(false);
   }, []);
 
-  const handleMouseDown = useCallback((e: BubbleEvent) => {
+  const handleMouseDown = useCallback((_e: BubbleEvent) => {
     setPressed(true);
     setButtonState('press');
   }, []);
@@ -116,7 +106,7 @@ export function useButton(options: UseButtonOptions = {}): UseButtonResult {
       setPressed(false);
       setButtonState('hover');
     },
-    [onClick, pressed]
+    [onClick, pressed],
   );
 
   const handleTouchEnd = useCallback(
@@ -134,7 +124,7 @@ export function useButton(options: UseButtonOptions = {}): UseButtonResult {
       setPressed(false);
       setButtonState('hover');
     },
-    [onClick, pressed]
+    [onClick, pressed],
   );
 
   const handleStopPropagation = useCallback((e: MouseEvent) => {

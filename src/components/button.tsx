@@ -1,21 +1,7 @@
-import {
-  type MoyuEvent,
-  type MoyuNodeAttributes,
-  type MouseEvent,
-  type TouchEvent,
-  animated,
-  useSpring,
-} from '@momoyu-ink/kit';
-import React from 'react';
-import {
-  useButton,
-  type ButtonState,
-  type UseButtonOptions,
-} from '../hooks/useButton';
+import { animated, type MouseEvent, type MoyuNodeAttributes, type TouchEvent } from '@momoyu-ink/kit';
+import { type ButtonState, type UseButtonOptions, useButton } from '../hooks/useButton';
 
-export interface ButtonProps
-  extends MoyuNodeAttributes,
-    Omit<UseButtonOptions, 'initialState' | 'customHandlers'> {
+export interface ButtonProps extends MoyuNodeAttributes, Omit<UseButtonOptions, 'initialState' | 'customHandlers'> {
   /**
    * Button image file name(s).
    * - An array of three strings: [idle, hover, pressed]
@@ -101,7 +87,7 @@ export function Button(props: ButtonProps) {
   } = props;
 
   // Pass all event handlers as customHandlers
-  const { buttonState, handlers, getStateIndex } = useButton({
+  const { handlers, getStateIndex } = useButton({
     lockOn,
     onClick,
     customHandlers: {
@@ -128,13 +114,7 @@ export function Button(props: ButtonProps) {
     textAnchor = [1, 0.5];
   }
   return (
-    <container
-      label={label}
-      {...restProps}
-      {...handlers}
-      pivot={anchor}
-      anchor={anchor}
-    >
+    <container label={label} {...restProps} {...handlers} pivot={anchor} anchor={anchor}>
       <animated.sprite
         label={`${label}_sprite`}
         src={fileNames[index]}

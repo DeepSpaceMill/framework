@@ -2,8 +2,8 @@ import { type SpringRef, type SpringValues, useSpring } from '@momoyu-ink/kit';
 
 export function useFadeInOut(
   inTime: number,
-  keepTime: number,
-  outTime: number,
+  _keepTime: number,
+  _outTime: number,
   pause = false,
   onFinished?: () => void,
 ): [SpringValues<{ opacity: number }>, SpringRef<{ opacity: number }>, () => void] {
