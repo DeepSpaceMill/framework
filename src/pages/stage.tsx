@@ -1,5 +1,5 @@
 import { addEventListener, KeyboardEvent } from '@momoyu-ink/kit';
-import { useCallback, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import {
   BackgroundActor,
   CharacterActor,
@@ -15,8 +15,10 @@ import { Notification } from '../components/notification';
 import { type NotificationHandle } from '../hooks/useNotification';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 import { useScenario } from '../hooks/useScenario';
+import { EntryContext } from '../entry';
 
 export function Stage() {
+  const context = useContext(EntryContext);
   const notificationRef = useRef<NotificationHandle>(null);
   const textBoxRef = useRef<TextBoxHandle>(null);
 
@@ -65,8 +67,10 @@ export function Stage() {
           break;
         }
         case TextBoxButton.SAVE:
+          context.setOverlayPage('save');
           break;
         case TextBoxButton.LOAD: {
+          context.setOverlayPage('load');
           break;
         }
         case TextBoxButton.AUTO:
