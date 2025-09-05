@@ -49,6 +49,12 @@ export function SaveLoad(props: SaveLoadProps) {
 
         if (success) {
           notificationRef.current?.show(`读取${slotName}成功`);
+
+          // Check the current page, if loading from the title screen, then navigate to the game stage
+          if (context.getCurrentPage() === 'title') {
+            context.navigateToPage('stage');
+          }
+
           handleExit();
         } else {
           notificationRef.current?.show(`读取${slotName}失败`);
