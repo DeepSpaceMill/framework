@@ -4,7 +4,7 @@ applyTo: "**"
 
 # Moyu Visual Novel Framework
 
-This is a TypeScript + React framework for building Visual Novel games in the **Moyu** game engine (末语).
+This is a TypeScript + React framework for building Visual Novel games in the **Moyu** game engine (末语). It will run on both native and web (WebAssembly) platforms.
 
 ## Core Technologies
 
@@ -44,6 +44,14 @@ You can find all available elements and their properties in the [@momoyu-ink/kit
 - State sync with engine via valtio + execute commands
 - Note: Command and event definitions are not available yet, will be provided later
 
+**Coding Note**
+
+- Do minimized changes to existing code when implementing new features or fixing bugs.
+- Stop and ask for confirmation when a large refactoring is needed.
+- Be wise about performance implications when making changes.
+- Decline changes and provide detailed explanations when requirements are contradictory.
+- Read the codebase before making changes to avoid creating duplicate content.
+
 **Assets**: All resources in `assets/` folder
 
 ```tsx
@@ -78,8 +86,9 @@ Visual Novel games consist of multiple screens implemented as pages in `pages/`:
   - `components/`: Reusable components.
   - `hooks/`: Custom hooks.
   - `utils/`: Utility functions.
+  - `state/`: State management including game state and ui state.
   - `pages/`: Page components.
   - `constants.ts`: Storage for constants used across the application.
   - `error.tsx`: A component to display error messages.
-  - `entry.tsx`: A simple router that renders the page components based on the state.
+  - `router.tsx`: The router that renders the page components and overlays based on the state.
   - `index.tsx`: The main point of the application.
