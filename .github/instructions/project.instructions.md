@@ -41,7 +41,7 @@ You can find all available elements and their properties in the [@momoyu-ink/kit
 
 - `executePluginCommand` / `executeNodeCommand` - Execute engine commands
 - `addEventListener` (from `@momoyu-ink/kit`) - Listen to events, returns cleanup function
-- State sync with engine via jotai + execute commands
+- State sync with engine via valtio + execute commands
 - Note: Command and event definitions are not available yet, will be provided later
 
 **Assets**: All resources in `assets/` folder
