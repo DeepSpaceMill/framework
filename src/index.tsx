@@ -2,8 +2,10 @@ import { addEventListener, createRoot, KeyboardEvent } from '@momoyu-ink/kit';
 import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
 import React, { useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
-import { Entry } from './entry';
 import { ErrorFallback } from './error';
+import { useSnapshot } from 'valtio';
+import { EntryContext, pages, overlayComponents } from './router';
+import { uiState, uiActions } from './state/ui';
 
 // import doufu from '../moyu/moyu_lib.js';
 // import * as moyu from '../moyu/moyu_lib.js';
@@ -66,9 +68,19 @@ function Main() {
     });
   }, []);
 
+  const snapshot = useSnapshot(uiState);
+
+  const Page = pages[snapshot.currentPage];
+
   return (
     <ErrorBoundary FallbackComponent={ErrorFallback} onError={logError}>
-      <Entry />
+      <EntryContext.Provider value={uiActions}>
+        <Page />
+        {snapshot.overlayStack.map((overlay) => {
+          const OverlayComponent = overlayComponents[overlay.type];
+          return <OverlayComponent key={overlay.id} {...overlay.props} />;
+        })}
+      </EntryContext.Provider>
     </ErrorBoundary>
   );
 }

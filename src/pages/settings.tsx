@@ -6,7 +6,7 @@ import { Checkbox } from '../components/checkbox';
 import { Select } from '../components/select';
 import { Slider } from '../components/slider';
 import { TEXT_COLOR } from '../constants';
-import { EntryContext } from '../entry';
+import { EntryContext } from '../router';
 import { useSoundEffect } from '../hooks/useSoundEffect';
 
 const PREVIEW_TEXT = '点击这里预览文本框的效果设置';

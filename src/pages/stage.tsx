@@ -15,7 +15,7 @@ import { Notification } from '../components/notification';
 import { type NotificationHandle } from '../hooks/useNotification';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 import { useScenario } from '../hooks/useScenario';
-import { EntryContext } from '../entry';
+import { EntryContext } from '../router';
 
 export function Stage() {
   const context = useContext(EntryContext);

@@ -5,7 +5,7 @@ import { useContext, useEffect, useState } from 'react';
 import { Button } from '../components/button';
 import { Dialog } from '../components/dialog';
 import { TEXT_COLOR } from '../constants';
-import { EntryContext } from '../entry';
+import { EntryContext } from '../router';
 import { useFadeIn } from '../hooks/useFadeInOut';
 import { useSoundEffect } from '../hooks/useSoundEffect';
 

@@ -2,7 +2,7 @@ import { useContext, useRef, useState } from 'react';
 import { Button } from '../components/button';
 import { Notification } from '../components/notification';
 import { TEXT_COLOR } from '../constants';
-import { EntryContext } from '../entry';
+import { EntryContext } from '../router';
 import { type NotificationHandle } from '../hooks/useNotification';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 import { useSoundEffect } from '../hooks/useSoundEffect';
