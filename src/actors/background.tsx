@@ -1,7 +1,7 @@
 import { addEventListener } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
-import { type BackgroundState, gameState } from '../state';
+import { type BackgroundState, gameState } from '../state/game';
 
 export function useBackground() {
   const snap = useSnapshot(gameState);

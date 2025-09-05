@@ -1,7 +1,7 @@
 import { addEventListener, type Node } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { gameState } from '../state';
+import { gameState } from '../state/game';
 import { Button } from '../components/button';
 
 interface TextBoxState {

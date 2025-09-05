@@ -1,7 +1,7 @@
 import { executePluginCommand } from '@momoyu-ink/kit';
 import { useCallback, useEffect, useState } from 'react';
 import { snapshot } from 'valtio';
-import { gameState, type GameState } from '../state';
+import { gameState, type GameState } from '../state/game';
 
 // Engine save game interface
 interface FileEntry {
