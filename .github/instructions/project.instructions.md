@@ -34,7 +34,7 @@ You can find all available elements and their properties in the [@momoyu-ink/kit
 
 **Component Structure**: Always separate logic from UI
 
-- Logic → Custom hooks (e.g., `useButton`, `useNotification`)
+- Logic → Custom hooks (e.g., `useButton`, `useSaveLoad`)
 - UI → Functional components using the hooks
 
 **Engine Integration**:
