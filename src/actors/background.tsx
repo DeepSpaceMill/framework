@@ -1,10 +1,10 @@
 import { addEventListener } from '@momoyu-ink/kit';
-import { useAtom } from 'jotai';
+import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
-import { type BackgroundState, backgroundAtom } from '../atoms';
+import { type BackgroundState, gameState } from '../state';
 
 export function useBackground() {
-  const [backgroundState, setBackgroundState] = useAtom(backgroundAtom);
+  const snap = useSnapshot(gameState);
 
   useEffect(() => {
     return addEventListener('scenarionextline', (e) => {
@@ -17,15 +17,14 @@ export function useBackground() {
   }, []);
 
   const setBackground = (src: string, options?: Partial<BackgroundState>) => {
-    setBackgroundState((prev) => ({
-      ...prev,
-      src,
-      ...options,
-    }));
+    gameState.background.src = src;
+    if (options) {
+      Object.assign(gameState.background, options);
+    }
   };
 
   return {
-    backgroundState,
+    backgroundState: snap.background,
     setBackground,
   };
 }

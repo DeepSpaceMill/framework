@@ -1,7 +1,7 @@
 import { executePluginCommand } from '@momoyu-ink/kit';
-import { useAtomValue, useSetAtom } from 'jotai';
 import { useCallback, useEffect, useState } from 'react';
-import { backgroundAtom, characterAtom, gameStateAtom, textBoxAtom } from '../atoms';
+import { snapshot } from 'valtio';
+import { gameState, type GameState } from '../state';
 
 // Engine save game interface
 interface FileEntry {
@@ -15,7 +15,7 @@ interface FileEntry {
 export interface SaveSlot {
   id: string;
   timestamp: number;
-  gameState: ReturnType<(typeof gameStateAtom)['read']>;
+  gameState: GameState;
   metadata?: {
     scenarioName?: string;
     currentLine?: string;
@@ -24,13 +24,6 @@ export interface SaveSlot {
 }
 
 export function useSaveLoad() {
-  const gameState = useAtomValue(gameStateAtom);
-
-  // Setters for individual atoms (for loading game state)
-  const setBackground = useSetAtom(backgroundAtom);
-  const setCharacter = useSetAtom(characterAtom);
-  const setTextBox = useSetAtom(textBoxAtom);
-
   const [slots, setSlots] = useState<Map<string, SaveSlot>>(new Map());
 
   // Check if auto-save exists in engine
@@ -66,9 +59,8 @@ export function useSaveLoad() {
           gameState: {
             // Placeholder game state for display purposes
             background: { src: '', visible: true },
-            character: { characters: {} },
+            characters: { characters: {} },
             textbox: { name: '', text: '', visible: true },
-            timestamp: file.lastModified,
           },
           metadata: {
             scenarioName: `存档 ${slotId}`,
@@ -86,11 +78,13 @@ export function useSaveLoad() {
 
   const saveToSlot = useCallback(
     async (slotId: string) => {
+      const currentGameState = snapshot(gameState);
+
       // Save game state to engine variables before saving
       await executePluginCommand('scenario', {
         subCommand: 'setVariables',
         variables: {
-          gameState: gameState,
+          gameState: currentGameState,
         },
       });
 
@@ -104,41 +98,36 @@ export function useSaveLoad() {
 
       refreshSlots();
     },
-    [gameState, refreshSlots],
+    [refreshSlots],
   );
 
-  const loadFromSlot = useCallback(
-    async (slotId: string): Promise<boolean> => {
-      try {
-        // Use engine load functionality
-        await executePluginCommand('scenario', {
-          subCommand: 'loadGame',
-          name: slotId,
-          overwrite: true,
-        });
+  const loadFromSlot = useCallback(async (slotId: string): Promise<boolean> => {
+    try {
+      // Use engine load functionality
+      await executePluginCommand('scenario', {
+        subCommand: 'loadGame',
+        name: slotId,
+        overwrite: true,
+      });
 
-        // Get the loaded game state from engine variables
-        const loadedGameState = (await executePluginCommand('scenario', {
-          subCommand: 'getVariable',
-          name: 'gameState',
-        })) as typeof gameState;
+      // Get the loaded game state from engine variables
+      const loadedGameState = (await executePluginCommand('scenario', {
+        subCommand: 'getVariable',
+        name: 'gameState',
+      })) as GameState;
 
-        // Update local atoms with loaded state
-        if (loadedGameState) {
-          setBackground(loadedGameState.background);
-          setCharacter(loadedGameState.character);
-          setTextBox(loadedGameState.textbox);
-        }
-
-        console.log(`Load from slot ${slotId} completed`);
-        return true;
-      } catch (error) {
-        console.error(`Load from slot ${slotId} failed:`, error);
-        return false;
+      // Update local state with loaded state - much simpler with valtio!
+      if (loadedGameState) {
+        Object.assign(gameState, loadedGameState);
       }
-    },
-    [setBackground, setCharacter, setTextBox],
-  );
+
+      console.log(`Load from slot ${slotId} completed`);
+      return true;
+    } catch (error) {
+      console.error(`Load from slot ${slotId} failed:`, error);
+      return false;
+    }
+  }, []);
 
   const deleteSaveSlot = useCallback(
     async (slotId: string): Promise<void> => {

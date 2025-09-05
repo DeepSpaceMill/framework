@@ -1,7 +1,7 @@
 import { addEventListener, type Node } from '@momoyu-ink/kit';
-import { useAtom } from 'jotai';
+import { useSnapshot } from 'valtio';
 import { forwardRef, useEffect, useImperativeHandle, useRef, useState } from 'react';
-import { type TextBoxState as AtomTextBoxState, textBoxAtom } from '../atoms';
+import { gameState } from '../state';
 import { Button } from '../components/button';
 
 interface TextBoxState {
@@ -28,32 +28,28 @@ export enum TextBoxButton {
 }
 
 export function useTextBox() {
-  const [textBoxState, setTextBoxState] = useAtom(textBoxAtom);
-
+  const snap = useSnapshot(gameState);
   const progress = useRef(0);
 
   useEffect(() => {
     return addEventListener('scenarionextline', (e) => {
       if (e.type === 'text') {
-        setTextBoxState((prev: AtomTextBoxState) => ({
-          ...prev,
-          name: e.leading || '',
-          text: e.text || '',
-        }));
+        gameState.textbox.name = e.leading || '';
+        gameState.textbox.text = e.text || '';
       }
     });
-  }, [setTextBoxState]);
+  }, []);
 
   const hideTextBox = () => {
-    setTextBoxState((prev: AtomTextBoxState) => ({ ...prev, visible: false }));
+    gameState.textbox.visible = false;
   };
 
   const showTextBox = () => {
-    setTextBoxState((prev: AtomTextBoxState) => ({ ...prev, visible: true }));
+    gameState.textbox.visible = true;
   };
 
   return {
-    textBoxState,
+    textBoxState: snap.textbox,
     progress,
     hideTextBox,
     showTextBox,

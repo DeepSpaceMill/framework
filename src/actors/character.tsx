@@ -1,43 +1,10 @@
 import { addEventListener } from '@momoyu-ink/kit';
-import { useAtom } from 'jotai';
+import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
-import { type CharacterInfo, type CharacterState, characterAtom } from '../atoms';
-
-const DEFAULT_CHARACTERS: Record<string, Omit<CharacterInfo, 'id'>> = {
-  left: {
-    src: 'non-free/fg03_01.png',
-    position: 'left',
-    scale: 1.5,
-    tint: '#fff',
-    visible: true,
-    x: 0,
-    y: 1080,
-    pivot: [0, 1],
-  },
-  center: {
-    src: 'non-free/fg02_01.png',
-    position: 'center',
-    scale: 1.5,
-    tint: '#fff',
-    visible: true,
-    x: 1920 / 2,
-    y: 1080,
-    pivot: [0.5, 1],
-  },
-  right: {
-    src: 'non-free/fg01_01.png',
-    position: 'right',
-    scale: 1.5,
-    tint: '#fff',
-    visible: true,
-    x: 1920,
-    y: 1080,
-    pivot: [1, 1],
-  },
-};
+import { gameState, type CharacterState } from '../state';
 
 export function useCharacters() {
-  const [characterState, setCharacterState] = useAtom(characterAtom);
+  const snap = useSnapshot(gameState);
 
   useEffect(() => {
     return addEventListener('scenarionextline', (e) => {
@@ -50,56 +17,37 @@ export function useCharacters() {
   }, []);
 
   const setSpeaker = (speaker: string) => {
-    setCharacterState((prev: CharacterState) => ({
-      ...prev,
-      currentSpeaker: speaker,
-      characters: Object.fromEntries(
-        Object.entries(prev.characters).map(([id, char]) => [
-          id,
-          {
-            ...char,
-            tint:
-              speaker === char.id ||
-              speaker === `角色${char.position === 'left' ? 'B' : char.position === 'right' ? 'A' : 'C'}`
-                ? '#333'
-                : '#fff',
-          },
-        ]),
-      ),
-    }));
+    gameState.characters.currentSpeaker = speaker;
+
+    // Update character tints based on current speaker
+    Object.keys(gameState.characters.characters).forEach((id) => {
+      const char = gameState.characters.characters[id];
+      const isSpeaking =
+        speaker === char.id ||
+        speaker === `角色${char.position === 'left' ? 'B' : char.position === 'right' ? 'A' : 'C'}`;
+
+      gameState.characters.characters[id].tint = isSpeaking ? '#333' : '#fff';
+    });
   };
 
   const showCharacter = (id: string, src: string, position: 'left' | 'center' | 'right') => {
-    const defaults = DEFAULT_CHARACTERS[position];
-    setCharacterState((prev: CharacterState) => ({
-      ...prev,
-      characters: {
-        ...prev.characters,
-        [id]: {
-          ...defaults,
-          id,
-          src,
-          position,
-        },
-      },
-    }));
+    const defaultChar = gameState.characters.characters[position];
+    gameState.characters.characters[id] = {
+      ...defaultChar,
+      id,
+      src,
+      position,
+    };
   };
 
   const hideCharacter = (id: string) => {
-    setCharacterState((prev: CharacterState) => ({
-      ...prev,
-      characters: {
-        ...prev.characters,
-        [id]: {
-          ...prev.characters[id],
-          visible: false,
-        },
-      },
-    }));
+    if (gameState.characters.characters[id]) {
+      gameState.characters.characters[id].visible = false;
+    }
   };
 
   return {
-    characterState,
+    characterState: snap.characters,
     setSpeaker,
     showCharacter,
     hideCharacter,
