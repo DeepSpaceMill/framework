@@ -6,6 +6,7 @@ import { ErrorFallback } from './error';
 import { useSnapshot } from 'valtio';
 import { EntryContext, pages, overlayComponents } from './router';
 import { uiState, uiActions } from './state/ui';
+import { Notification } from './components/notification';
 
 // import doufu from '../moyu/moyu_lib.js';
 // import * as moyu from '../moyu/moyu_lib.js';
@@ -80,6 +81,7 @@ function Main() {
           const OverlayComponent = overlayComponents[overlay.type];
           return <OverlayComponent key={overlay.id} {...overlay.props} />;
         })}
+        <Notification />
       </EntryContext.Provider>
     </ErrorBoundary>
   );

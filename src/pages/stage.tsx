@@ -11,15 +11,12 @@ import {
   useStageManager,
   useTextBox,
 } from '../actors';
-import { Notification } from '../components/notification';
-import { type NotificationHandle } from '../hooks/useNotification';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 import { useScenario } from '../hooks/useScenario';
 import { EntryContext } from '../router';
 
 export function Stage() {
   const context = useContext(EntryContext);
-  const notificationRef = useRef<NotificationHandle>(null);
   const textBoxRef = useRef<TextBoxHandle>(null);
 
   const stories = useMemo(() => ['example'], []);
@@ -49,7 +46,7 @@ export function Stage() {
       switch (button) {
         case TextBoxButton.QSAVE:
           await saveToSlot('auto-save');
-          notificationRef.current?.show('快速保存成功');
+          context.notify('快速保存成功');
           break;
         case TextBoxButton.QLOAD: {
           // Check if auto-save exists in engine
@@ -57,12 +54,12 @@ export function Stage() {
           if (autoSaveExists) {
             const success = await loadFromSlot('auto-save');
             if (success) {
-              notificationRef.current?.show('快速读档成功');
+              context.notify('快速读档成功');
             } else {
-              notificationRef.current?.show('快速读档失败');
+              context.notify('快速读档失败');
             }
           } else {
-            notificationRef.current?.show('没有可读取的存档');
+            context.notify('没有可读取的存档');
           }
           break;
         }
@@ -74,23 +71,23 @@ export function Stage() {
           break;
         }
         case TextBoxButton.AUTO:
-          notificationRef.current?.show('自动模式待实现');
+          context.notify('自动模式待实现');
           break;
         // case TextBoxButton.SKIP:
-        //   notificationRef.current?.show('跳过模式切换');
+        //   context.notify('跳过模式切换');
         //   break;
         case TextBoxButton.HIST:
-          notificationRef.current?.show('历史记录功能待实现');
+          context.notify('历史记录功能待实现');
           break;
         case TextBoxButton.MENU:
-          notificationRef.current?.show('菜单功能待实现');
+          context.notify('菜单功能待实现');
           break;
         default:
           console.warn(`Unknown button: ${button}`);
       }
     } catch (error) {
       console.error('操作失败:', error);
-      notificationRef.current?.show('遇到问题，这是一个 BUG');
+      context.notify('遇到问题，这是一个 BUG');
     }
   };
 
@@ -129,8 +126,6 @@ export function Stage() {
         onButtonClick={handleButtonClick}
         onHideTextBox={hideTextBox}
       />
-
-      <Notification ref={notificationRef} />
     </container>
   );
 }

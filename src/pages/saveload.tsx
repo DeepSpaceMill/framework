@@ -1,9 +1,7 @@
-import { useContext, useRef, useState } from 'react';
+import { useContext, useState } from 'react';
 import { Button } from '../components/button';
-import { Notification } from '../components/notification';
 import { TEXT_COLOR } from '../constants';
 import { EntryContext } from '../router';
-import { type NotificationHandle } from '../hooks/useNotification';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 import { useSoundEffect } from '../hooks/useSoundEffect';
 
@@ -20,7 +18,6 @@ export function SaveLoad(props: SaveLoadProps) {
   const backButtonSound = useSoundEffect('audio/back_style_5_001.ogg');
 
   const [currentPage, setCurrentPage] = useState(0);
-  const notificationRef = useRef<NotificationHandle>(null);
 
   const { type } = props;
   const { slots, saveToSlot, loadFromSlot, deleteSaveSlot } = useSaveLoad();
@@ -38,9 +35,9 @@ export function SaveLoad(props: SaveLoadProps) {
         await saveToSlot(slotId);
 
         if (slotId === 'auto-save') {
-          notificationRef.current?.show('快速存档保存成功');
+          context.notify('快速存档保存成功');
         } else {
-          notificationRef.current?.show(`保存到存档槽 ${slotId} 成功`);
+          context.notify(`保存到存档槽 ${slotId} 成功`);
         }
       } else if (type === 'load') {
         const success = await loadFromSlot(slotId);
@@ -48,7 +45,7 @@ export function SaveLoad(props: SaveLoadProps) {
         const slotName = slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId}`;
 
         if (success) {
-          notificationRef.current?.show(`读取${slotName}成功`);
+          context.notify(`读取${slotName}成功`);
 
           // Check the current page, if loading from the title screen, then navigate to the game stage
           if (context.getCurrentPage() === 'title') {
@@ -57,22 +54,22 @@ export function SaveLoad(props: SaveLoadProps) {
 
           handleExit();
         } else {
-          notificationRef.current?.show(`读取${slotName}失败`);
+          context.notify(`读取${slotName}失败`);
         }
       }
     } catch (error) {
       console.error(`${type} operation failed:`, error);
-      notificationRef.current?.show(`${type === 'save' ? '保存' : '读取'}失败`);
+      context.notify(`${type === 'save' ? '保存' : '读取'}失败`);
     }
   };
 
   const handleDeleteSlot = async (slotId: string) => {
     try {
       await deleteSaveSlot(slotId);
-      notificationRef.current?.show(`删除存档槽 ${slotId} 成功`);
+      context.notify(`删除存档槽 ${slotId} 成功`);
     } catch (error) {
       console.error('Delete slot failed:', error);
-      notificationRef.current?.show(`删除存档槽 ${slotId} 失败`);
+      context.notify(`删除存档槽 ${slotId} 失败`);
     }
   };
 
@@ -211,8 +208,6 @@ export function SaveLoad(props: SaveLoadProps) {
           })}
         </container>
       </sprite>
-
-      <Notification ref={notificationRef} />
     </container>
   );
 }

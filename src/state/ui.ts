@@ -13,22 +13,38 @@ export interface OverlayInfo {
   id: string;
 }
 
+// 通知信息接口
+export interface NotificationInfo {
+  id: string;
+  message: string;
+  duration: number;
+  fadeInDuration: number;
+  fadeOutDuration: number;
+}
+
 // UI 路由状态接口
 export interface UIState {
   currentPage: GamePage;
   overlayStack: OverlayInfo[];
+  notifications: NotificationInfo[];
 }
 
 // 创建 UI 状态
 export const uiState = proxy<UIState>({
   currentPage: 'title',
   overlayStack: [],
+  notifications: [],
 });
 
 // 生成唯一ID的辅助函数
 let overlayIdCounter = 0;
 const generateOverlayId = (): string => {
   return `overlay-${++overlayIdCounter}-${Date.now()}`;
+};
+
+let notificationIdCounter = 0;
+const generateNotificationId = (): string => {
+  return `notification-${++notificationIdCounter}-${Date.now()}`;
 };
 
 // 路由操作函数
@@ -97,5 +113,48 @@ export const uiActions = {
         }
       },
     });
+  },
+
+  // 通知管理
+  /**
+   * 显示全局通知
+   * @param message 通知消息
+   * @param options 通知选项
+   * @example context.notify('操作成功', { duration: 3000 })
+   */
+  notify: (
+    message: string,
+    options: {
+      duration?: number;
+      fadeInDuration?: number;
+      fadeOutDuration?: number;
+    } = {},
+  ) => {
+    const notification: NotificationInfo = {
+      id: generateNotificationId(),
+      message,
+      duration: options.duration ?? 2000,
+      fadeInDuration: options.fadeInDuration ?? 300,
+      fadeOutDuration: options.fadeOutDuration ?? 300,
+    };
+    uiState.notifications.push(notification);
+  },
+
+  /**
+   * 手动移除指定通知
+   * @param id 通知ID
+   */
+  removeNotification: (id: string) => {
+    const index = uiState.notifications.findIndex((n) => n.id === id);
+    if (index !== -1) {
+      uiState.notifications.splice(index, 1);
+    }
+  },
+
+  /**
+   * 清除所有通知
+   */
+  clearNotifications: () => {
+    uiState.notifications.length = 0;
   },
 };
