@@ -26,6 +26,13 @@ export function SaveLoad(props: SaveLoadProps) {
   const { slots, saveToSlot, loadFromSlot, deleteSaveSlot } = useSaveLoad();
 
   const handleSlotAction = async (slotId: string) => {
+    const slotName = slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId}`;
+    const actionText = type === 'save' ? '保存到' : '读取';
+
+    context.confirm(`确定要${actionText}${slotName}吗？`, () => performSlotAction(slotId));
+  };
+
+  const performSlotAction = async (slotId: string) => {
     try {
       if (type === 'save') {
         await saveToSlot(slotId);

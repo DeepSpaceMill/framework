@@ -4,7 +4,7 @@ import { proxy } from 'valtio';
 export type GamePage = 'title' | 'stage' | 'cg' | 'bgm' | 'credits';
 
 // 浮层类型定义
-export type OverlayType = 'settings' | 'save' | 'load' | 'menu' | 'history' | 'dialog';
+export type OverlayType = 'settings' | 'save' | 'load' | 'menu' | 'history' | 'confirm';
 
 // 浮层信息接口
 export interface OverlayInfo {
@@ -68,7 +68,7 @@ export const uiActions = {
   },
 
   isOverlayActive: (type: OverlayType): boolean => {
-    return uiState.overlayStack.some(overlay => overlay.type === type);
+    return uiState.overlayStack.some((overlay) => overlay.type === type);
   },
 
   // 向后兼容的方法
@@ -82,5 +82,20 @@ export const uiActions = {
     } else {
       uiActions.pushOverlay(overlayType);
     }
+  },
+
+  // 便捷方法：显示确认对话框
+  confirm: (message: string, onConfirm?: () => void, onCancel?: () => void) => {
+    uiActions.pushOverlay('confirm', {
+      message,
+      onConfirm: (confirmed: boolean) => {
+        uiActions.popOverlay(); // 关闭确认对话框
+        if (confirmed && onConfirm) {
+          onConfirm();
+        } else if (!confirmed && onCancel) {
+          onCancel();
+        }
+      },
+    });
   },
 };

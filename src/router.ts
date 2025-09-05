@@ -4,6 +4,7 @@ import { SaveLoad } from './pages/saveload';
 import { Settings } from './pages/settings';
 import { Stage } from './pages/stage';
 import { Title } from './pages/title';
+import { Dialog } from './components/dialog';
 import { type GamePage, type OverlayType } from './state/ui';
 
 export const pages: Record<GamePage, React.FC> = {
@@ -20,7 +21,13 @@ export const overlayComponents: Record<OverlayType, React.FC<any>> = {
   settings: Settings,
   menu: () => null,
   history: () => null,
-  dialog: () => null,
+  confirm: (props: any) =>
+    React.createElement(Dialog, {
+      mode: 'confirm',
+      show: true,
+      content: props.message || '',
+      onConfirm: props.onConfirm,
+    }),
 };
 
 export const EntryContext = createContext(uiActions);

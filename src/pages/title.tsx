@@ -1,9 +1,8 @@
 import type { MouseEvent } from '@momoyu-ink/kit';
 import { animated } from '@momoyu-ink/kit';
 import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect } from 'react';
 import { Button } from '../components/button';
-import { Dialog } from '../components/dialog';
 import { TEXT_COLOR } from '../constants';
 import { EntryContext } from '../router';
 import { useFadeIn } from '../hooks/useFadeInOut';
@@ -14,23 +13,8 @@ export function Title() {
 
   const context = useContext(EntryContext);
 
-  const [showDialog, setShowDialog] = useState(false);
-  const [dialogContent, setDialogContent] = useState('');
-
   const hoverButtonSound = useSoundEffect('audio/cursor_style_4.ogg');
   const startButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.ogg');
-
-  const handleDialogConfirm = (yes?: boolean) => {
-    if (yes) {
-      // wait for the fade out animation and sound effect to finish
-      setTimeout(() => {
-        executePluginCommand('system', {
-          subCommand: 'quit',
-        });
-      }, 300);
-    }
-    setShowDialog(false);
-  };
 
   const handleStart = (e: MouseEvent) => {
     startButtonSound();
@@ -45,8 +29,13 @@ export function Title() {
   };
 
   const handleExit = () => {
-    setDialogContent('确定要退出游戏吗？');
-    setShowDialog(true);
+    context.confirm('确定要退出游戏吗？', () => {
+      setTimeout(() => {
+        executePluginCommand('system', {
+          subCommand: 'quit',
+        });
+      }, 300);
+    });
   };
 
   useEffect(() => {
@@ -116,7 +105,6 @@ export function Title() {
           onMouseEnter={hoverButtonSound}
         />
       </animated.container>
-      <Dialog show={showDialog} content={dialogContent} mode="confirm" onConfirm={handleDialogConfirm} />
     </container>
   );
 }
