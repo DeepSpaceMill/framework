@@ -80,7 +80,7 @@ export function Stage() {
           context.notify('历史记录功能待实现');
           break;
         case TextBoxButton.MENU:
-          context.notify('菜单功能待实现');
+          context.setOverlayPage('menu');
           break;
         default:
           console.warn(`Unknown button: ${button}`);
