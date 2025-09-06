@@ -32,9 +32,9 @@ export function useSoundEffect(src: string) {
 
     // Cleanup function to unload the sound effect when the component unmounts
     return () => {
-      const releaseSound = async () => {
+      const releaseSound = () => {
         try {
-          await executePluginCommand('audio', {
+          executePluginCommand('audio', {
             subCommand: 'release',
             name: src,
           });
@@ -51,9 +51,13 @@ export function useSoundEffect(src: string) {
 
   // Function to play the sound effect
   return () => {
-    executePluginCommand('audio', {
-      subCommand: 'play',
-      name: src,
-    });
+    try {
+      executePluginCommand('audio', {
+        subCommand: 'play',
+        name: src,
+      });
+    } catch (error) {
+      console.error(`Failed to play sound effect ${src}:`, error);
+    }
   };
 }
