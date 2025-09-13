@@ -1,6 +1,5 @@
 import type { Node } from '@momoyu-ink/kit';
-import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
-import { useContext, useEffect, useRef, useState } from 'react';
+import { useContext, useRef } from 'react';
 import { Button } from '../components/button';
 import { Checkbox } from '../components/checkbox';
 import { Select } from '../components/select';
@@ -8,6 +7,8 @@ import { Slider } from '../components/slider';
 import { TEXT_COLOR } from '../constants';
 import { EntryContext } from '../router';
 import { useSoundEffect } from '../hooks/useSoundEffect';
+import { useSnapshot } from 'valtio';
+import { settingsState } from '../state/settings';
 
 const PREVIEW_TEXT = '点击这里预览文本框的效果设置';
 
@@ -28,65 +29,7 @@ export function Settings() {
   const hoverButtonSound = useSoundEffect('audio/cursor_style_4.ogg');
   const backButtonSound = useSoundEffect('audio/back_style_5_001.ogg');
 
-  const [settings, setSettings] = useState(() => {
-    const data = executePluginCommand('scenario', {
-      subCommand: 'getPermanentVariables',
-    }) as SettingsData;
-
-    let settings: SettingsData;
-    if (data instanceof Map) {
-      settings = Object.fromEntries(data);
-    } else {
-      settings = data;
-    }
-
-    // set default values
-    if (Object.keys(settings).length === 0) {
-      Object.assign(settings, {
-        display: '720',
-        volume_bgm: 1,
-        volume_se: 0.5,
-        volume_voice: 1,
-        text_speed: 1,
-        auto_interval: 0.8,
-        skip_voice: false,
-      });
-    }
-
-    return settings;
-  });
-
-  useEffect(() => {
-    // do nothing if display is not set
-    if (!settings.display) {
-      return;
-    }
-
-    if (settings.display === 'fullscreen') {
-      executePluginCommand('system', {
-        subCommand: 'setWindowState',
-        state: 'fullscreen',
-      });
-    } else {
-      executePluginCommand('system', {
-        subCommand: 'setWindowState',
-        state: 'idle',
-      });
-      if (settings.display === '1080') {
-        executePluginCommand('system', {
-          subCommand: 'setWindowSize',
-          width: 1920,
-          height: 1080,
-        });
-      } else if (settings.display === '720') {
-        executePluginCommand('system', {
-          subCommand: 'setWindowSize',
-          width: 1280,
-          height: 720,
-        });
-      }
-    }
-  }, [settings.display]);
+  const settings = useSnapshot(settingsState);
 
   const handlePreviewClick = () => {
     console.log('setting bg click');
@@ -104,18 +47,7 @@ export function Settings() {
   };
 
   const setValue = (key: keyof SettingsData, value: any) => {
-    setSettings((prev: SettingsData) => {
-      const next: SettingsData = { ...prev, [key]: value };
-
-      setTimeout(async () => {
-        await executePluginCommand('scenario', {
-          subCommand: 'setPermanentVariables',
-          variables: next,
-        });
-      }, 0);
-
-      return next;
-    });
+    (settingsState[key] as any) = value;
   };
 
   return (
