@@ -6,14 +6,12 @@ import {
   TextBoxActor,
   TextBoxButton,
   type TextBoxHandle,
-  useBackground,
   useCharacters,
-  useStageManager,
-  useTextBox,
 } from '../actors';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 import { useScenario } from '../hooks/useScenario';
 import { EntryContext } from '../router';
+import { gameState, useScenarioCommands } from '../state/game';
 
 export function Stage() {
   const context = useContext(EntryContext);
@@ -26,20 +24,20 @@ export function Stage() {
   const { saveToSlot, loadFromSlot, checkAutoSaveExists } = useSaveLoad();
 
   // Initialize actors
-  const { backgroundState } = useBackground();
   const { characterState, setSpeaker } = useCharacters();
-  const { textBoxState, progress, hideTextBox, showTextBox } = useTextBox();
-  const { handleAdvance, handleToggleTextBox } = useStageManager(nextLine);
+
+  useScenarioCommands();
 
   const handleClick = useCallback(() => {
-    const shouldShowTextBox = handleAdvance(textBoxState.visible, progress.current, () =>
-      textBoxRef.current?.finishPrinting(),
-    );
-
-    if (shouldShowTextBox) {
-      showTextBox();
+    if (!gameState.textbox.visible) {
+      gameState.textbox.visible = true;
     }
-  }, [handleAdvance, textBoxState.visible, progress, showTextBox]);
+
+    // Try to finish printing first, if not printing or already finished, go to next line
+    if (!textBoxRef.current?.tryFinishPrinting()) {
+      nextLine();
+    }
+  }, [nextLine]);
 
   const handleButtonClick = async (button: TextBoxButton) => {
     try {
@@ -92,40 +90,32 @@ export function Stage() {
   };
 
   // Sync character speaker with textbox name
-  useEffect(() => {
-    if (textBoxState.name) {
-      setSpeaker(textBoxState.name);
-    }
-  }, [textBoxState.name, setSpeaker]);
+  // useEffect(() => {
+  //   if (gameState.textbox.name) {
+  //     setSpeaker(gameState.textbox.name);
+  //   }
+  // }, [gameState.textbox.name, setSpeaker]);
 
   useEffect(() => {
     return addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         handleClick();
       } else if (e.key === 'Escape') {
-        const newVisible = handleToggleTextBox(textBoxState.visible);
+        const newVisible = !gameState.textbox.visible;
         if (newVisible) {
-          showTextBox();
+          gameState.textbox.visible = true;
         } else {
-          hideTextBox();
+          gameState.textbox.visible = false;
         }
       }
     });
-  }, [textBoxState.visible, handleClick, handleToggleTextBox, showTextBox, hideTextBox]);
+  }, [handleClick]);
 
   return (
     <container onClick={handleClick}>
-      <BackgroundActor backgroundState={backgroundState} />
-
+      <BackgroundActor />
       <CharacterActor characterState={characterState} />
-
-      <TextBoxActor
-        ref={textBoxRef}
-        textBoxState={textBoxState}
-        progress={progress}
-        onButtonClick={handleButtonClick}
-        onHideTextBox={hideTextBox}
-      />
+      <TextBoxActor ref={textBoxRef} onButtonClick={handleButtonClick} />
     </container>
   );
 }

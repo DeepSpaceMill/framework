@@ -1,11 +1,10 @@
-import { Tuple2 } from '@momoyu-ink/kit';
+import { addEventListener, Tuple2 } from '@momoyu-ink/kit';
+import { useEffect } from 'react';
 import { proxy, ref } from 'valtio';
 
 export interface BackgroundState {
   src: string;
-  scale?: number;
-  opacity?: number;
-  visible?: boolean;
+  fadeTime: number;
 }
 
 export interface CharacterInfo {
@@ -42,10 +41,8 @@ export interface GameState {
 // Create the main game state store using valtio
 export const gameState = proxy<GameState>({
   background: {
-    src: 'non-free/classroom1.png',
-    scale: 1920 / 1344,
-    opacity: 1,
-    visible: true,
+    src: '',
+    fadeTime: 1000,
   },
   characters: {
     characters: {
@@ -91,3 +88,14 @@ export const gameState = proxy<GameState>({
     visible: false,
   },
 });
+
+export function useScenarioCommands() {
+  useEffect(() => {
+    return addEventListener('scenarionextline', (e) => {
+      if (e.type === 'text') {
+        gameState.textbox.name = e.leading || '';
+        gameState.textbox.text = e.text || '';
+      }
+    });
+  }, []);
+}

@@ -1,20 +1,8 @@
-import { addEventListener } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
-import { useEffect } from 'react';
 import { gameState, type CharacterState } from '../state/game';
 
 export function useCharacters() {
   const characterState = useSnapshot(gameState.characters);
-
-  useEffect(() => {
-    return addEventListener('scenarionextline', (e) => {
-      if (e.type === 'commandline') {
-        // Handle character commands
-        // Example: show character_a left fade_in 1000
-        // This will be implemented when command definitions are available
-      }
-    });
-  }, []);
 
   const setSpeaker = (speaker: string) => {
     gameState.characters.currentSpeaker = speaker;
