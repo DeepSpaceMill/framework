@@ -28,7 +28,7 @@ export enum TextBoxButton {
 }
 
 export function useTextBox() {
-  const snap = useSnapshot(gameState);
+  const textBoxState = useSnapshot(gameState.textbox);
   const progress = useRef(0);
 
   useEffect(() => {
@@ -49,7 +49,7 @@ export function useTextBox() {
   };
 
   return {
-    textBoxState: snap.textbox,
+    textBoxState,
     progress,
     hideTextBox,
     showTextBox,

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { gameState, type CharacterState } from '../state/game';
 
 export function useCharacters() {
-  const snap = useSnapshot(gameState);
+  const characterState = useSnapshot(gameState.characters);
 
   useEffect(() => {
     return addEventListener('scenarionextline', (e) => {
@@ -47,7 +47,7 @@ export function useCharacters() {
   };
 
   return {
-    characterState: snap.characters,
+    characterState,
     setSpeaker,
     showCharacter,
     hideCharacter,

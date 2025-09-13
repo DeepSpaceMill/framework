@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { type BackgroundState, gameState } from '../state/game';
 
 export function useBackground() {
-  const snap = useSnapshot(gameState);
+  const backgroundState = useSnapshot(gameState.background);
 
   useEffect(() => {
     return addEventListener('scenarionextline', (e) => {
@@ -24,7 +24,7 @@ export function useBackground() {
   };
 
   return {
-    backgroundState: snap.background,
+    backgroundState,
     setBackground,
   };
 }
