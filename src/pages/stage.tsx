@@ -23,9 +23,6 @@ export function Stage() {
   // Initialize save/load functionality
   const { saveToSlot, loadFromSlot, checkAutoSaveExists } = useSaveLoad();
 
-  // Initialize actors
-  const { characterState, setSpeaker } = useCharacters();
-
   useScenarioCommands();
 
   const handleClick = useCallback(() => {
@@ -89,13 +86,6 @@ export function Stage() {
     }
   };
 
-  // Sync character speaker with textbox name
-  // useEffect(() => {
-  //   if (gameState.textbox.name) {
-  //     setSpeaker(gameState.textbox.name);
-  //   }
-  // }, [gameState.textbox.name, setSpeaker]);
-
   useEffect(() => {
     return addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
@@ -114,7 +104,7 @@ export function Stage() {
   return (
     <container onClick={handleClick}>
       <BackgroundActor />
-      <CharacterActor characterState={characterState} />
+      <CharacterActor />
       <TextBoxActor ref={textBoxRef} onButtonClick={handleButtonClick} />
     </container>
   );

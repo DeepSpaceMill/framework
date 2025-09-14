@@ -1,67 +1,88 @@
+import { animated, useTransition, useSpring } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
-import { gameState, type CharacterState } from '../state/game';
+import { useEffect } from 'react';
+import { gameState, Character } from '../state/game';
 
-export function useCharacters() {
-  const characterState = useSnapshot(gameState.characters);
+export function CharacterActor() {
+  const characterState = useSnapshot(gameState.character);
+  const textboxState = useSnapshot(gameState.textbox);
 
-  const setSpeaker = (speaker: string) => {
-    gameState.characters.currentSpeaker = speaker;
+  const transitions = useTransition(
+    Object.values(characterState.characters).filter((char) => char.visible),
+    {
+      keys: (char) => char.src,
+      from: { opacity: 0 },
+      enter: { opacity: 1 },
+      leave: { opacity: 0 },
+      config: (char) => ({
+        duration: char.fadeTime,
+      }),
+    },
+  );
 
-    // Update character tints based on current speaker
-    Object.keys(gameState.characters.characters).forEach((id) => {
-      const char = gameState.characters.characters[id];
-      const isSpeaking =
-        speaker === char.id ||
-        speaker === `角色${char.position === 'left' ? 'B' : char.position === 'right' ? 'A' : 'C'}`;
-
-      gameState.characters.characters[id].tint = isSpeaking ? '#333' : '#fff';
-    });
-  };
-
-  const showCharacter = (id: string, src: string, position: 'left' | 'center' | 'right') => {
-    const defaultChar = gameState.characters.characters[position];
-    gameState.characters.characters[id] = {
-      ...defaultChar,
-      id,
-      src,
-      position,
-    };
-  };
-
-  const hideCharacter = (id: string) => {
-    if (gameState.characters.characters[id]) {
-      gameState.characters.characters[id].visible = false;
-    }
-  };
-
-  return {
-    characterState,
-    setSpeaker,
-    showCharacter,
-    hideCharacter,
-  };
-}
-
-interface CharacterActorProps {
-  characterState: CharacterState;
-}
-
-export function CharacterActor({ characterState }: CharacterActorProps) {
   return (
     <container label="立绘容器">
-      {Object.values(characterState.characters).map((character) => (
-        <sprite
-          key={character.id}
-          label={`立绘-${character.position}`}
-          src={character.src}
-          tint={character.tint}
-          pivot={character.pivot}
-          scale={character.scale}
-          x={character.x}
-          y={character.y}
-          visible={character.visible}
+      {transitions((style, character) => (
+        <CharacterSprite
+          key={character.name}
+          character={character}
+          isCurrentSpeaker={character.name === textboxState.name}
+          opacity={style.opacity}
         />
       ))}
     </container>
+  );
+}
+
+interface CharacterSpriteProps {
+  character: Character;
+  isCurrentSpeaker: boolean;
+  opacity: any; // react-spring's SpringValue
+}
+
+function CharacterSprite({ character, isCurrentSpeaker, opacity }: CharacterSpriteProps) {
+  const [springs, api] = useSpring(() => ({
+    x: character.x,
+    y: character.y,
+    scale: character.scale,
+    tint: isCurrentSpeaker ? character.tint : '#333',
+    config: {
+      duration: character.fadeTime,
+    },
+  }));
+
+  // transition for x, y, scale with character.fadeTime
+  useEffect(() => {
+    api.start({
+      x: character.x,
+      y: character.y,
+      scale: character.scale,
+      config: {
+        duration: character.fadeTime,
+      },
+    });
+  }, [character.x, character.y, character.scale, character.fadeTime, api]);
+
+  // transition for tint when isCurrentSpeaker changes
+  useEffect(() => {
+    api.start({
+      tint: isCurrentSpeaker ? character.tint : '#333',
+      config: {
+        duration: 200,
+      },
+    });
+  }, [isCurrentSpeaker, character.tint, api]);
+
+  return (
+    <animated.sprite
+      src={character.src}
+      tint={springs.tint}
+      pivot={character.pivot}
+      visible={character.visible}
+      opacity={opacity}
+      x={springs.x}
+      y={springs.y}
+      scale={springs.scale}
+    />
   );
 }

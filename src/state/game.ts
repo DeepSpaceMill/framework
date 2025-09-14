@@ -2,15 +2,17 @@ import { addEventListener, Tuple2 } from '@momoyu-ink/kit';
 import { useEffect } from 'react';
 import { proxy, ref } from 'valtio';
 
-export interface BackgroundState {
-  src: string;
+export interface Animation {
   fadeTime: number;
 }
 
-export interface CharacterInfo {
-  id: string;
+export interface BackgroundState extends Animation {
   src: string;
-  position: 'left' | 'center' | 'right';
+}
+
+export interface Character extends Animation {
+  name: string;
+  src: string;
   scale: number;
   tint: string;
   visible: boolean;
@@ -20,7 +22,7 @@ export interface CharacterInfo {
 }
 
 export interface CharacterState {
-  characters: Record<string, CharacterInfo>;
+  characters: Character[];
   currentSpeaker?: string;
 }
 
@@ -34,7 +36,7 @@ export interface TextBoxState {
 // Main game state interface
 export interface GameState {
   background: BackgroundState;
-  characters: CharacterState;
+  character: CharacterState;
   textbox: TextBoxState;
 }
 
@@ -44,42 +46,20 @@ export const gameState = proxy<GameState>({
     src: '',
     fadeTime: 1000,
   },
-  characters: {
-    characters: {
-      left: {
-        id: 'left',
-        src: 'non-free/fg03_01.png',
-        position: 'left',
-        scale: 1.5,
+  character: {
+    characters: [
+      {
+        name: '角色A',
+        src: 'non-free/josei_20_a.png',
+        scale: 0.6,
         tint: '#fff',
         visible: true,
-        x: 0,
-        y: 1080,
-        pivot: ref([0, 1]),
+        x: 1600,
+        y: 800,
+        pivot: ref([1, 0.5]),
+        fadeTime: 500,
       },
-      center: {
-        id: 'center',
-        src: 'non-free/fg02_01.png',
-        position: 'center',
-        scale: 1.5,
-        tint: '#fff',
-        visible: true,
-        x: 1920 / 2,
-        y: 1080,
-        pivot: ref([0.5, 1]),
-      },
-      right: {
-        id: 'right',
-        src: 'non-free/fg01_01.png',
-        position: 'right',
-        scale: 1.5,
-        tint: '#fff',
-        visible: true,
-        x: 1920,
-        y: 1080,
-        pivot: ref([1, 1]),
-      },
-    },
+    ],
     currentSpeaker: undefined,
   },
   textbox: {

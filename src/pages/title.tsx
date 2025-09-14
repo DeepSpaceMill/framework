@@ -53,7 +53,7 @@ export function Title() {
           }
         }}
       >
-        <sprite src="non-free/bg.jpg" />
+        <sprite src="non-free/L3-夜晚开灯.png" />
 
         <Button
           fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
