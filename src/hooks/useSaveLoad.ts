@@ -56,12 +56,7 @@ export function useSaveLoad() {
         slots.set(slotId, {
           id: slotId,
           timestamp: file.lastModified,
-          gameState: {
-            // Placeholder game state for display purposes
-            background: { src: '', visible: true },
-            characters: { characters: {} },
-            textbox: { name: '', text: '', visible: true },
-          },
+          gameState: {} as any,
           metadata: {
             scenarioName: `存档 ${slotId}`,
             currentLine: '', // Placeholder
