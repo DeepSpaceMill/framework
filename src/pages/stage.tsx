@@ -17,8 +17,8 @@ export function Stage() {
   const context = useContext(EntryContext);
   const textBoxRef = useRef<TextBoxHandle>(null);
 
-  const stories = useMemo(() => ['example'], []);
-  const nextLine = useScenario(stories, 'example');
+  const stories = useMemo(() => ['start'], []);
+  const nextLine = useScenario(stories, 'start');
 
   // Initialize save/load functionality
   const { saveToSlot, loadFromSlot, checkAutoSaveExists } = useSaveLoad();
