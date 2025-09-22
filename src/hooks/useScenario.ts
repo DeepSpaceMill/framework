@@ -45,8 +45,11 @@ export function useScenario(stories: string[], startName: string) {
   }, [stories, startName]);
 
   return useCallback(() => {
-    executePluginCommand('scenario', {
-      subCommand: 'nextLine',
-    });
+    // avoid deadlock, this is a bug in rust side
+    setTimeout(() => {
+      executePluginCommand('scenario', {
+        subCommand: 'nextLine',
+      });
+    }, 0);
   }, []);
 }
