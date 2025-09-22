@@ -16,7 +16,7 @@ export function Stage() {
   // Initialize save/load functionality
   const { saveToSlot, loadFromSlot, checkAutoSaveExists } = useSaveLoad();
 
-  useScenarioCommands();
+  useScenarioCommands(nextLine);
 
   const handleClick = useCallback(() => {
     if (!gameState.textbox.visible) {

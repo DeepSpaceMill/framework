@@ -57,7 +57,7 @@ export const gameState = proxy<GameState>({
   },
 });
 
-export function useScenarioCommands() {
+export function useScenarioCommands(nextLine: () => void) {
   useEffect(() => {
     return addEventListener('scenariotext', (e: TextLine) => {
       gameState.textbox.name = e.leading || '';
@@ -99,8 +99,10 @@ export function useScenarioCommands() {
           });
         }
       }
+
+      nextLine();
     });
-  }, []);
+  }, [nextLine]);
 }
 
 interface TextLine {
