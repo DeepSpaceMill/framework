@@ -1,13 +1,6 @@
 import { addEventListener, KeyboardEvent } from '@momoyu-ink/kit';
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
-import {
-  BackgroundActor,
-  CharacterActor,
-  TextBoxActor,
-  TextBoxButton,
-  type TextBoxHandle,
-  useCharacters,
-} from '../actors';
+import { BackgroundActor, CharacterActor, TextBoxActor, TextBoxButton, type TextBoxHandle } from '../actors';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 import { useScenario } from '../hooks/useScenario';
 import { EntryContext } from '../router';
