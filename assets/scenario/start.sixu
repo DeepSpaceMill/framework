@@ -1,9 +1,26 @@
 ::entry {
   // @aaa flag foo="bar" abc=123 xx=false
 
-  @changebg src="non-free/L0-白天.png"
+  @changebg src="non-free/L0-白天.png" fadeTime=500
+
+  @addchar name="角色A" src="non-free/josei_20_a.png" scale=0.6 x=1600 y=800 pivot=[1,0.5] fadeTime=500
+
+  // @addchar name="角色A" src="non-free/角色A-微笑.png" preset="left" fadeTime=500
+  // @addchar name="角色B" src="non-free/角色B-微笑.png" preset="right" fadeTime=500
+  // @addchar name="角色C" src="non-free/角色C-微笑.png" preset="center" fadeTime=500
+
+  // @addchar name="角色A" src="non-free/角色A-微笑.png" x=100 y=100 scale=1 tint="#999" fadeTime=500
+
+  // @movechar name="角色A" x=200 y=100 scale=1.2 tint="#fff" fadeTime=500
+  // @movechar name="角色B" preset="left" fadeTime=500
+
+  // @removechar name="角色C" fadeTime=500
+
+  // @setname name="角色A" displayName="小明"
+
 
   [角色A] 这是一行示例文字，你能通过它看到文字的基础样式、字距、行距、换行，以及各种富文本功能，如[fillColor=#E7931C]颜色变化[/fillColor]或[underline]添加装饰[/underline]。
+  @changebg src="non-free/L3-夜晚开灯.png"
   [角色A] 这是一行[fillColor=#ff6600]文字[/fillColor]这是一行文字这是[bold]一行文字[/bold]这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字1
   这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字2
   这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字3
