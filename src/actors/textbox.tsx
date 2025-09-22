@@ -25,7 +25,7 @@ interface TextBoxActorProps {
 
 export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(({ onButtonClick }, ref) => {
   const textWindowRef = useRef<Node>(null);
-  const progress = useRef(0);
+  const progress = useRef(1);
   const [isHovered, setIsHovered] = useState(false);
 
   const textBoxState = useSnapshot(gameState.textbox);
