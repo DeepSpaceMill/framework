@@ -51,6 +51,18 @@ function Main() {
     });
   }, []);
 
+  useEffect(() => {
+    return addEventListener('beforeunload', (e) => {
+      uiActions.confirm('确定要退出游戏吗？', () => {
+        setTimeout(() => {
+          executePluginCommand('system', {
+            subCommand: 'quit',
+          });
+        }, 300);
+      });
+    });
+  }, []);
+
   // useEffect(() => {
   //   return addEventListener('gamepadbuttonup', (e) => {
   //     console.log('gamepadbuttonup', JSON.stringify(e));
