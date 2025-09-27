@@ -5,7 +5,7 @@
   "stageSize": "1920x1080",
   "backgroundColor": "white",
   "windowTitle": "My First Game",
-  "entryFilename": "./dist/demo.js",
+  "entryFilename": "./main.js",
   "autorun": "native-only",
   "fontFile": "fonts/SourceHanSansSC-Regular.otf",
   "enableGamepads": true

@@ -6,11 +6,7 @@ const isDev = process.env.NODE_ENV === 'development';
  */
 module.exports = {
   context: __dirname,
-  entry: {
-    demo: {
-      import: './src/index.tsx',
-    },
-  },
+  entry: './src/index.tsx',
   resolve: {
     symlinks: false,
     extensions: ['...', '.ts', '.tsx', '.jsx'],
