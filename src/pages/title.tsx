@@ -7,6 +7,7 @@ import { TEXT_COLOR } from '../constants';
 import { EntryContext } from '../router';
 import { useFadeIn } from '../hooks/useFadeInOut';
 import { useSoundEffect } from '../hooks/useSoundEffect';
+import { resetGameState } from '../state/game';
 
 export function Title() {
   const [contentStyle, contentApi, contentSkip] = useFadeIn(500, true);
@@ -18,6 +19,7 @@ export function Title() {
 
   const handleStart = (e: MouseEvent) => {
     startButtonSound();
+    resetGameState();
     contentApi.start({
       to: { opacity: 0 },
       delay: 0,

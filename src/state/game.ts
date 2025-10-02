@@ -57,6 +57,22 @@ export const gameState = proxy<GameState>({
   },
 });
 
+export function resetGameState() {
+  gameState.background = {
+    src: '',
+    fadeTime: 1000,
+  };
+  gameState.character = {
+    characters: [],
+    currentSpeaker: undefined,
+  };
+  gameState.textbox = {
+    name: '',
+    text: '',
+    visible: false,
+  };
+}
+
 export function useScenarioCommands(nextLine: () => void) {
   useEffect(() => {
     return addEventListener('scenariotext', (e: TextLine) => {
