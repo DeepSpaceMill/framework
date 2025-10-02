@@ -5,6 +5,7 @@ import { useSaveLoad } from '../hooks/useSaveLoad';
 import { useScenario } from '../hooks/useScenario';
 import { EntryContext } from '../router';
 import { gameState, useScenarioCommands } from '../state/game';
+import { uiState } from '../state/ui';
 
 export function Stage() {
   const context = useContext(EntryContext);
@@ -92,6 +93,12 @@ export function Stage() {
         }
       }
     });
+  }, [handleClick]);
+
+  useEffect(() => {
+    if (uiState.isNewGame) {
+      handleClick();
+    }
   }, [handleClick]);
 
   return (

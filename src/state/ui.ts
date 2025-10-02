@@ -25,6 +25,7 @@ export interface NotificationInfo {
 // UI 路由状态接口
 export interface UIState {
   currentPage: GamePage;
+  isNewGame: boolean;
   overlayStack: OverlayInfo[];
   notifications: NotificationInfo[];
 }
@@ -32,6 +33,7 @@ export interface UIState {
 // 创建 UI 状态
 export const uiState = proxy<UIState>({
   currentPage: 'title',
+  isNewGame: true,
   overlayStack: [],
   notifications: [],
 });
@@ -98,6 +100,11 @@ export const uiActions = {
     } else {
       uiActions.pushOverlay(overlayType);
     }
+  },
+
+  // 设置新游戏状态
+  setIsNewGame: (isNew: boolean) => {
+    uiState.isNewGame = isNew;
   },
 
   // 便捷方法：显示确认对话框

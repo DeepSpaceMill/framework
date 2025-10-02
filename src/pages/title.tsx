@@ -22,6 +22,7 @@ export function Title() {
       to: { opacity: 0 },
       delay: 0,
       onRest: () => {
+        context?.setIsNewGame(true);
         context?.setPage('stage');
       },
     });

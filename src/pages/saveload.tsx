@@ -40,6 +40,7 @@ export function SaveLoad(props: SaveLoadProps) {
           context.notify(`保存到存档槽 ${slotId} 成功`);
         }
       } else if (type === 'load') {
+        context?.setIsNewGame(false);
         const success = await loadFromSlot(slotId);
 
         const slotName = slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId}`;
