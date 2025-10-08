@@ -1,4 +1,5 @@
 import { executePluginCommand } from '@momoyu-ink/kit';
+import debounce from 'lodash.debounce';
 import { proxy, subscribe } from 'valtio';
 import { subscribeKey } from 'valtio/utils';
 
@@ -47,11 +48,14 @@ setDisplay(_settings.display);
 export const settingsState = proxy<SettingsData>(_settings);
 
 // subscribe to changes and save to permanent variables
-subscribe(settingsState, () => {
+const saveSettings = debounce(() => {
   executePluginCommand('scenario', {
     subCommand: 'setPermanentVariables',
     variables: _settings,
   });
+}, 300);
+subscribe(settingsState, () => {
+  saveSettings();
 });
 
 // subscribe to display changes and apply
