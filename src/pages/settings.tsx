@@ -8,19 +8,9 @@ import { TEXT_COLOR } from '../constants';
 import { EntryContext } from '../router';
 import { useSoundEffect } from '../hooks/useSoundEffect';
 import { useSnapshot } from 'valtio';
-import { settingsState } from '../state/settings';
+import { SettingsData, settingsState } from '../state/settings';
 
 const PREVIEW_TEXT = '点击这里预览文本框的效果设置';
-
-export interface SettingsData {
-  display: string;
-  volume_bgm: number;
-  volume_se: number;
-  volume_voice: number;
-  text_speed: number;
-  auto_interval: number;
-  skip_voice: boolean;
-}
 
 export function Settings() {
   const context = useContext(EntryContext);
