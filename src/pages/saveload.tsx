@@ -155,7 +155,7 @@ export function SaveLoad(props: SaveLoadProps) {
                     <container interactive={false}>
                       <sprite src="non-free/snapshot.png" x={2} y={2} />
                       <text
-                        text={slotData.metadata?.scenarioName ?? 'Untitled'}
+                        text={`${slotData.name === 'auto-save' ? '（快速存档）' : slotData.name.replace('save-', '存档 ')}`}
                         fontSize={28}
                         lineHeight={1.2}
                         fillColor={TEXT_COLOR.DEFAULT_IDLE}
@@ -163,7 +163,7 @@ export function SaveLoad(props: SaveLoadProps) {
                         y={7}
                       />
                       <text
-                        text={slotData.metadata?.currentLine ?? ''}
+                        text={slotData.extra?.text ?? ''}
                         fontSize={20}
                         lineHeight={1.3}
                         boxWidth={442}
@@ -173,16 +173,7 @@ export function SaveLoad(props: SaveLoadProps) {
                         y={50}
                       />
                       <text
-                        text={new Date(slotData.timestamp)
-                          .toLocaleString('zh-CN', {
-                            year: 'numeric',
-                            month: '2-digit',
-                            day: '2-digit',
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            second: '2-digit',
-                          })
-                          .replace(/\//g, '\\/')}
+                        text={formatTimestamp(slotData.metadata.timestamp)}
                         fontSize={16}
                         lineHeight={1.2}
                         fillColor={TEXT_COLOR.DEFAULT_IDLE}
@@ -211,4 +202,16 @@ export function SaveLoad(props: SaveLoadProps) {
       </sprite>
     </container>
   );
+}
+
+// we do not have Intl support in the engine yet, so use this simple formatter
+function formatTimestamp(timestamp: number): string {
+  const date = new Date(timestamp);
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${year}\\/${month}\\/${day} ${hours}:${minutes}:${seconds}`;
 }

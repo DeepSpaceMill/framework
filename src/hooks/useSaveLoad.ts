@@ -4,27 +4,20 @@ import { snapshot } from 'valtio';
 import { gameState, type GameState } from '../state/game';
 
 // Engine save game interface
-interface FileEntry {
+interface GameSave {
   name: string;
-  isDir: boolean;
-  size: number;
-  lastModified: number;
-}
-
-// Save slot management
-export interface SaveSlot {
-  id: string;
-  timestamp: number;
-  gameState: GameState;
-  metadata?: {
-    scenarioName?: string;
-    currentLine?: string;
-    screenshot?: string; // Base64 encoded screenshot for future use
+  metadata: {
+    edition: number;
+    saveByVersion: string;
+    timestamp: number;
+  };
+  extra?: {
+    text: string;
   };
 }
 
 export function useSaveLoad() {
-  const [slots, setSlots] = useState<Map<string, SaveSlot>>(new Map());
+  const [slots, setSlots] = useState<Map<string, GameSave>>(new Map());
 
   // Check if auto-save exists in engine
   const checkAutoSaveExists = useCallback(async (): Promise<boolean> => {
@@ -32,7 +25,7 @@ export function useSaveLoad() {
       const gameList = (await executePluginCommand('scenario', {
         subCommand: 'getGameList',
         pattern: 'auto-save',
-      })) as FileEntry[];
+      })) as GameSave[];
 
       return gameList.length > 0;
     } catch (error) {
@@ -43,26 +36,17 @@ export function useSaveLoad() {
 
   const refreshSlots = useCallback(async () => {
     try {
-      const slots: Map<string, SaveSlot> = new Map();
+      const slots: Map<string, GameSave> = new Map();
 
       // Check if auto-save exists and add it first
-      const gameList = (await executePluginCommand('scenario', {
+      const saveList = (await executePluginCommand('scenario', {
         subCommand: 'getGameList',
         pattern: '{auto-save,save-*}',
-      })) as FileEntry[];
+      })) as GameSave[];
 
-      for (const file of gameList) {
-        const slotId = file.name;
-        slots.set(slotId, {
-          id: slotId,
-          timestamp: file.lastModified,
-          gameState: {} as any,
-          metadata: {
-            scenarioName: `存档 ${slotId}`,
-            currentLine: '', // Placeholder
-            screenshot: 'non-free/snapshot.png',
-          },
-        });
+      for (const save of saveList) {
+        const slotId = save.name;
+        slots.set(slotId, save);
       }
 
       setSlots(slots);
@@ -87,6 +71,9 @@ export function useSaveLoad() {
       await executePluginCommand('scenario', {
         subCommand: 'saveGame',
         name: slotId,
+        extra: {
+          text: currentGameState.textbox.text,
+        },
       });
 
       console.log(`Save to slot ${slotId} completed`);
