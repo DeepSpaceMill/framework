@@ -14,8 +14,8 @@ export function Title() {
 
   const context = useContext(EntryContext);
 
-  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.ogg');
-  const startButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.ogg');
+  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
+  const startButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.opus');
 
   const handleStart = (e: MouseEvent) => {
     startButtonSound();

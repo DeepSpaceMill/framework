@@ -14,8 +14,8 @@ const SLOTS_PER_PAGE = 10;
 export function SaveLoad(props: SaveLoadProps) {
   const context = useContext(EntryContext);
 
-  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.ogg');
-  const backButtonSound = useSoundEffect('audio/back_style_5_001.ogg');
+  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
+  const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
 
   const [currentPage, setCurrentPage] = useState(0);
 

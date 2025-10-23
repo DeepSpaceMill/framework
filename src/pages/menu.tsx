@@ -8,9 +8,9 @@ import { executePluginCommand } from '@momoyu-ink/kit';
 export function Menu() {
   const context = useContext(EntryContext);
 
-  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.ogg');
-  const backButtonSound = useSoundEffect('audio/back_style_5_001.ogg');
-  const startButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.ogg');
+  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
+  const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
+  const startButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.opus');
 
   const transitions = useTransition([0], {
     keys: (item) => item,

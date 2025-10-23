@@ -13,8 +13,8 @@ export interface DialogProps extends MoyuNodeAttributes {
 export function Dialog(props: DialogProps) {
   const { content, mode, show, onConfirm } = props;
 
-  const confirmButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.ogg');
-  const cancelButtonSound = useSoundEffect('audio/error_style_4_001.ogg');
+  const confirmButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.opus');
+  const cancelButtonSound = useSoundEffect('audio/error_style_4_001.opus');
 
   const transitions = useTransition(show ? [0] : [], {
     keys: (item) => item,

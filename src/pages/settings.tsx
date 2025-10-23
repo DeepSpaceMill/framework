@@ -16,8 +16,8 @@ export function Settings() {
   const context = useContext(EntryContext);
   const textWindowRef = useRef<Node>(null);
 
-  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.ogg');
-  const backButtonSound = useSoundEffect('audio/back_style_5_001.ogg');
+  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
+  const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
 
   const settings = useSnapshot(settingsState);
 
