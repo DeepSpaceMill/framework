@@ -6,6 +6,8 @@ import { gameState, type GameState } from '../state/game';
 // Engine save game interface
 interface GameSave {
   name: string;
+  // `data:` or `saves:` scheme
+  snapshot: string;
   metadata: {
     edition: number;
     saveByVersion: string;

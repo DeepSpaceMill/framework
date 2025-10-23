@@ -1,4 +1,4 @@
-import { addEventListener, KeyboardEvent } from '@momoyu-ink/kit';
+import { addEventListener, executePluginCommand, KeyboardEvent } from '@momoyu-ink/kit';
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
 import { BackgroundActor, CharacterActor, TextBoxActor, TextBoxButton, type TextBoxHandle } from '../actors';
 import { useSaveLoad } from '../hooks/useSaveLoad';
@@ -34,6 +34,11 @@ export function Stage() {
     try {
       switch (button) {
         case TextBoxButton.QSAVE:
+          await executePluginCommand('system', {
+            subCommand: 'takeSnapshot',
+            width: 226,
+            height: 127,
+          });
           await saveToSlot('auto-save');
           context.notify('快速保存成功');
           break;
@@ -53,6 +58,11 @@ export function Stage() {
           break;
         }
         case TextBoxButton.SAVE:
+          await executePluginCommand('system', {
+            subCommand: 'takeSnapshot',
+            width: 226,
+            height: 127,
+          });
           context.setOverlayPage('save');
           break;
         case TextBoxButton.LOAD: {

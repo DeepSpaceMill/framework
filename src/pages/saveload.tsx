@@ -153,7 +153,7 @@ export function SaveLoad(props: SaveLoadProps) {
                 {slotData && (
                   <container>
                     <container interactive={false}>
-                      <sprite src="non-free/snapshot.png" x={2} y={2} />
+                      <sprite src={slotData.snapshot} x={2} y={2} />
                       <text
                         text={`${slotData.name === 'auto-save' ? '（快速存档）' : slotData.name.replace('save-', '存档 ')}`}
                         fontSize={28}
