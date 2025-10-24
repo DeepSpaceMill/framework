@@ -6,12 +6,14 @@ import { useScenario } from '../hooks/useScenario';
 import { EntryContext } from '../router';
 import { gameState, useScenarioCommands } from '../state/game';
 import { uiState } from '../state/ui';
+import { BackgroundHandle } from '../actors/background';
 
 export function Stage() {
   const context = useContext(EntryContext);
   const textBoxRef = useRef<TextBoxHandle>(null);
+  const backgroundRef = useRef<BackgroundHandle>(null);
 
-  const stories = useMemo(() => ['start'], []);
+  const stories = useMemo(() => ['start', 'transform/nar2_1'], []);
   const nextLine = useScenario(stories, 'start');
 
   // Initialize save/load functionality
@@ -24,8 +26,14 @@ export function Stage() {
       gameState.textbox.visible = true;
     }
 
+    let shouldCallNextLine = true;
+
     // Try to finish printing first, if not printing or already finished, go to next line
-    if (!textBoxRef.current?.tryFinishPrinting()) {
+    shouldCallNextLine = shouldCallNextLine && !textBoxRef.current?.tryFinishPrinting();
+    // Try to finish background transition next
+    shouldCallNextLine = shouldCallNextLine && !backgroundRef.current?.tryFinish();
+
+    if (shouldCallNextLine) {
       nextLine();
     }
   }, [nextLine]);
@@ -113,7 +121,7 @@ export function Stage() {
 
   return (
     <container onClick={handleClick}>
-      <BackgroundActor />
+      <BackgroundActor ref={backgroundRef} />
       <CharacterActor />
       <TextBoxActor ref={textBoxRef} onButtonClick={handleButtonClick} />
     </container>
