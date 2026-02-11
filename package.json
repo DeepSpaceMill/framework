@@ -13,7 +13,7 @@
   "author": "Icemic <bingfeng.web@gmail.com>",
   "license": "MIT",
   "dependencies": {
-    "@momoyu-ink/kit": "portal:../moyu/packages/kit",
+    "@momoyu-ink/kit": "^0.1.0",
     "lodash.debounce": "^4.0.8",
     "react": "19.2.1",
     "react-error-boundary": "^6.0.0",

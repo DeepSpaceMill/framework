@@ -232,7 +232,7 @@ __metadata:
   resolution: "@momoyu-ink/framework@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^2.1.4"
-    "@momoyu-ink/kit": "portal:../moyu/packages/kit"
+    "@momoyu-ink/kit": "npm:^0.1.0"
     "@rspack/cli": "npm:^1.0.14"
     "@rspack/core": "npm:^1.0.14"
     "@rspack/plugin-react-refresh": "npm:1.0.1"
@@ -252,9 +252,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@momoyu-ink/kit@portal:../moyu/packages/kit::locator=%40momoyu-ink%2Fframework%40workspace%3A.":
-  version: 0.0.0-use.local
-  resolution: "@momoyu-ink/kit@portal:../moyu/packages/kit::locator=%40momoyu-ink%2Fframework%40workspace%3A."
+"@momoyu-ink/kit@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@momoyu-ink/kit@npm:0.1.0"
   dependencies:
     "@react-spring/animated": "npm:^10.0.3"
     "@react-spring/core": "npm:^10.0.3"
@@ -265,8 +265,9 @@ __metadata:
     zod: "npm:^4.2.0"
   peerDependencies:
     react: ^19.2.1
+  checksum: 10c0/2d9f78d9722271a53bb9ed2125385964e426af12761e3f420949f0ee18573963ec9cf972208cc8d559b0344e82b3cf67fa95dd6db623a0fb51e038b3679bea4e
   languageName: node
-  linkType: soft
+  linkType: hard
 
 "@npmcli/agent@npm:^2.0.0":
   version: 2.2.2
