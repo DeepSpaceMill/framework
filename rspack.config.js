@@ -1,5 +1,5 @@
 const rspack = require('@rspack/core');
-// const refreshPlugin = require("@rspack/plugin-react-refresh");
+const refreshPlugin = require('@rspack/plugin-react-refresh');
 const isDev = process.env.NODE_ENV === 'development';
 /**
  * @type {import('@rspack/cli').Configuration}
@@ -33,7 +33,7 @@ module.exports = {
                   react: {
                     runtime: 'automatic',
                     development: isDev,
-                    refresh: false,
+                    refresh: isDev,
                   },
                 },
               },
@@ -47,10 +47,13 @@ module.exports = {
     ],
   },
   devServer: {
+    client: {
+      overlay: false,
+    },
     port: 6020,
-    hot: false,
+    hot: true,
     liveReload: false,
-    webSocketServer: false,
+    webSocketServer: 'ws',
     static: {
       publicPath: '/',
       directory: './',
@@ -67,10 +70,7 @@ module.exports = {
     new rspack.DefinePlugin({
       'process.env.NODE_ENV': JSON.stringify(process.env.NODE_ENV),
     }),
-    // new rspack.ProgressPlugin({}),
-    // new rspack.HtmlRspackPlugin({
-    //   template: './index.html',
-    // }),
-    // isDev ? new refreshPlugin() : null
+    isDev && new refreshPlugin(),
+    isDev && new rspack.HotModuleReplacementPlugin(),
   ].filter(Boolean),
 };

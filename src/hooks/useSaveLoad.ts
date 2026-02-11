@@ -65,7 +65,7 @@ export function useSaveLoad() {
       await executePluginCommand('scenario', {
         subCommand: 'setVariables',
         variables: {
-          gameState: currentGameState,
+          gameState: currentGameState as any,
         },
       });
 
@@ -102,7 +102,13 @@ export function useSaveLoad() {
 
       // Update local state with loaded state - much simpler with valtio!
       if (loadedGameState) {
-        Object.assign(gameState, loadedGameState);
+        for (const key in loadedGameState) {
+          if (Object.hasOwn(loadedGameState, key)) {
+            Object.assign(gameState[key as keyof GameState], loadedGameState[key as keyof GameState]);
+          }
+        }
+        // Alternatively, we could do:
+        // Object.assign(gameState, loadedGameState);
       }
 
       console.log(`Load from slot ${slotId} completed`);

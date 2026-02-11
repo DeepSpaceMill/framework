@@ -29,7 +29,7 @@
 
 - **渲染引擎**: `@momoyu-ink/kit` 自定义渲染器（非 react-dom）
 - **UI 框架**: React 18 + TypeScript
-- **状态管理**: Jotai
+- **状态管理**: Valtio
 - **动画系统**: react-spring（来自 `@momoyu-ink/kit`）
 - **构建工具**: Rspack
 - **包管理**: Yarn 4
@@ -183,7 +183,7 @@ useEffect(() => {
 ### 最佳实践
 
 1. **组件设计**: 始终分离逻辑层和渲染层
-2. **状态管理**: 使用 Jotai 进行状态管理，避免 prop drilling
+2. **状态管理**: 使用 Valtio 进行状态管理，避免 prop drilling
 3. **资源管理**: 所有资源放在 `assets/` 目录下
 4. **类型安全**: 充分利用 TypeScript 的类型检查
 5. **性能优化**: 合理使用 React.memo 和 useCallback

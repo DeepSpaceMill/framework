@@ -1,34 +1,41 @@
-import React, { createContext } from 'react';
-import { uiActions } from './state/ui';
+import { createStackNavigator, createStaticNavigation, RegisterNavigator } from '@momoyu-ink/kit';
 import { SaveLoad } from './pages/saveload';
 import { Settings } from './pages/settings';
 import { Stage } from './pages/stage';
-import { Title } from './pages/title';
 import { Dialog } from './components/dialog';
 import { Menu } from './pages/menu';
-import { type GamePage, type OverlayType } from './state/ui';
+import { Title } from './pages/title';
 
-export const pages: Record<GamePage, React.FC> = {
-  title: Title,
-  stage: Stage,
-  cg: () => null,
-  bgm: () => null,
-  credits: () => null,
-};
+// Initialize the navigator singleton
+export const navigator = createStackNavigator({
+  initialPage: 'title',
+  pages: {
+    title: Title,
+    stage: {
+      component: Stage,
+    },
+    cg: () => null,
+    bgm: () => null,
+    credits: () => null,
+  },
+  overlays: {
+    saveload: {
+      component: SaveLoad,
+      requiredParams: ['type'],
+    },
+    settings: Settings,
+    menu: Menu,
+    history: () => null,
+    confirm: {
+      component: Dialog,
+      requiredParams: ['message'],
+    },
+  },
+});
 
-export const overlayComponents: Record<OverlayType, React.FC<any>> = {
-  save: () => React.createElement(SaveLoad, { type: 'save' }),
-  load: () => React.createElement(SaveLoad, { type: 'load' }),
-  settings: Settings,
-  menu: Menu,
-  history: () => null,
-  confirm: (props: any) =>
-    React.createElement(Dialog, {
-      mode: 'confirm',
-      show: true,
-      content: props.message || '',
-      onConfirm: props.onConfirm,
-    }),
-};
+export const Navigation = createStaticNavigation(navigator);
 
-export const EntryContext = createContext(uiActions);
+// Register types for global navigator
+declare module '@momoyu-ink/kit' {
+  interface RootNavigatorList extends RegisterNavigator<typeof navigator> {}
+}

@@ -8,33 +8,31 @@
     "build": "rspack build",
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "vite-dev": "vite",
-    "vite-build": "tsc -b && vite build",
-    "preview": "vite preview"
+    "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Icemic <bingfeng.web@gmail.com>",
   "license": "MIT",
   "dependencies": {
     "@momoyu-ink/kit": "portal:../moyu/packages/kit",
     "lodash.debounce": "^4.0.8",
-    "react": "18.2.0",
-    "react-error-boundary": "^4.0.12",
-    "valtio": "^2.1.7"
+    "react": "19.2.1",
+    "react-error-boundary": "^6.0.0",
+    "valtio": "^2.1.7",
+    "zod": "^4.2.0"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.4",
     "@rspack/cli": "^1.0.14",
     "@rspack/core": "^1.0.14",
     "@rspack/plugin-react-refresh": "1.0.1",
-    "@types/lodash.debounce": "^4",
-    "@types/node": ">=20",
-    "@types/react": "^18.3.18",
-    "@types/react-dom": "^18.3.5",
-    "@types/react-refresh": "^0.14.6",
-    "react-dom": "^18.3.1",
-    "react-refresh": "^0.16.0",
-    "typescript": "^5.6.3"
+    "@types/lodash.debounce": "^4.0.9",
+    "@types/node": ">=24.10.1",
+    "@types/react": "^19.2.7",
+    "@types/react-dom": "^19.2.3",
+    "@types/react-refresh": "^0.14.7",
+    "react-dom": "^19.2.1",
+    "react-refresh": "^0.18.0",
+    "typescript": "^5.9.3"
   },
   "packageManager": "yarn@4.5.1"
 }

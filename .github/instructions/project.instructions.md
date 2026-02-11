@@ -11,7 +11,7 @@ This is a TypeScript + React framework for building Visual Novel games in the **
 - **Engine**: Moyu (Rust-based with QuickJS JavaScript runtime)
 - **Renderer**: Custom renderer from `@momoyu-ink/kit` (NOT react-dom)
 - **Elements**: Custom JSX elements (`container`, `sprite`, `text`) - NO HTML elements
-- **State**: Jotai for state management
+- **State**: Valtio for state management
 - **Animation**: react-spring (from `@momoyu-ink/kit`)
 
 ## Key Constraints
@@ -47,7 +47,7 @@ You can find all available elements and their properties in the [@momoyu-ink/kit
 **Coding Note**
 
 - Do minimized changes to existing code when implementing new features or fixing bugs.
-- Stop and ask for confirmation when a large refactoring is needed.
+- Stop and ask for confirmation when a large refactoring is needed or there's something unclear or ambiguous.
 - Be wise about performance implications when making changes.
 - Decline changes and provide detailed explanations when requirements are contradictory.
 - Read the codebase before making changes to avoid creating duplicate content.
@@ -70,11 +70,24 @@ Visual Novel games consist of multiple screens implemented as pages in `pages/`:
 - **Save&Load** - Save/load functionality
 - **Gallery** - Character/scene gallery, or music player
 
+## Stage Command Dispatch Architecture
+
+The game stage uses a **command dispatch system** to process scenario engine events:
+
+- **`src/hooks/useStage.tsx`** — `createStage()` creates a module-level singleton with registries for command handlers, text line handlers, skip callbacks, and interrupt callbacks. `StageContextProvider` binds engine events within React lifecycle.
+- **`src/commands/handlers.ts`** — Individual handler functions for each command type (e.g., `handleChangeBg`, `handleAddChar`, `handleSound`). Each handler receives a `GameControl` object to declare flow control intent (`setWaiting`, `hold`, or auto-advance by default).
+- **`src/hooks/useScenario.ts`** — `nextLine()` and `setWaiting()` are plain exported functions (not hook return values). `useScenario()` only manages scenario lifecycle (load, start, terminate).
+
+**Key patterns**:
+
+- **Adding a new command**: Add Zod schema in `commands/commands.ts` → add handler in `commands/handlers.ts` → register in `stage.tsx`
+- **Skip/Interrupt callbacks**: Actors register capabilities via `useSkipCallback(cb)` (for `scenariowaitingcancelled`) and `useInterruptCallback(cb)` (for user click interruption) — no `forwardRef` needed, stage doesn't need to know about specific actors.
+
 # Development Standards
 
 - **Language**: TypeScript + React functional components
 - **Rendering**: `@momoyu-ink/kit` elements only (no HTML elements)
-- **State**: Jotai for state management
+- **State**: Valtio for state management
 - **Hooks**: React built-in hooks (`useState`, `useEffect`, etc.) and custom hooks
 - **Comments**: Clear English documentation
 
@@ -83,12 +96,12 @@ Visual Novel games consist of multiple screens implemented as pages in `pages/`:
 - `assets/`: Contains all the static assets (images, sounds, etc.).
 - `src/`: The source code of the project.
   - `actors/`: Contains all the actors (backgrounds, characters, dialogues, effects, and so on).
+  - `commands/`: Command schema definitions (Zod) and handler functions for scenario commands.
   - `components/`: Reusable components.
-  - `hooks/`: Custom hooks.
+  - `hooks/`: Custom hooks (scenario lifecycle, stage dispatch, save/load, etc.).
   - `utils/`: Utility functions.
   - `state/`: State management including game state and ui state.
   - `pages/`: Page components.
-  - `constants.ts`: Storage for constants used across the application.
   - `error.tsx`: A component to display error messages.
-  - `router.tsx`: The router that renders the page components and overlays based on the state.
-  - `index.tsx`: The main point of the application.
+  - `router.ts`: The router that renders the page components and overlays based on the state.
+  - `index.tsx`: The main entry point of the application.

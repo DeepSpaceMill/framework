@@ -1,44 +1,36 @@
-import type { MouseEvent } from '@momoyu-ink/kit';
-import { animated } from '@momoyu-ink/kit';
-import { executePluginCommand } from '@momoyu-ink/kit/dist/moyu';
-import { useContext, useEffect } from 'react';
+import { useEffect } from 'react';
+import { MouseEvent, useFadeIn, useSoundEffect, useNavigation, animated, executePluginCommand } from '@momoyu-ink/kit';
 import { Button } from '../components/button';
-import { TEXT_COLOR } from '../constants';
-import { EntryContext } from '../router';
-import { useFadeIn } from '../hooks/useFadeInOut';
-import { useSoundEffect } from '../hooks/useSoundEffect';
-import { resetGameState } from '../state/game';
+import { uiActions } from '../state/ui';
 
 export function Title() {
   const [contentStyle, contentApi, contentSkip] = useFadeIn(500, true);
-
-  const context = useContext(EntryContext);
+  const navigation = useNavigation();
 
   const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
-  const startButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.opus');
+  const clickButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.opus');
 
   const handleStart = (e: MouseEvent) => {
-    startButtonSound();
-    resetGameState();
+    clickButtonSound();
     contentApi.start({
       to: { opacity: 0 },
       delay: 0,
+      pause: false,
       onRest: () => {
-        context?.setIsNewGame(true);
-        context?.setPage('stage');
+        navigation.navigate('stage', { story: 'start', entry: 'entry', isNewGame: true });
       },
     });
     e.stopPropagation();
   };
 
-  const handleExit = () => {
-    context.confirm('确定要退出游戏吗？', () => {
-      setTimeout(() => {
-        executePluginCommand('system', {
-          subCommand: 'quit',
-        });
-      }, 300);
+  const handleExit = (e: MouseEvent) => {
+    clickButtonSound();
+    uiActions.confirm('确定要退出游戏吗？', () => {
+      executePluginCommand('system', {
+        subCommand: 'quit',
+      });
     });
+    e.stopPropagation();
   };
 
   useEffect(() => {
@@ -62,7 +54,7 @@ export function Title() {
           fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
           text={'开始游戏'}
           fontSize={36}
-          color={[TEXT_COLOR.DEFAULT_IDLE, TEXT_COLOR.DEFAULT_HOVER, TEXT_COLOR.DEFAULT_PRESS]}
+          color="#ffffff"
           x={960}
           y={670}
           pivot={[0.5, 0.5]}
@@ -74,24 +66,24 @@ export function Title() {
           fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
           text={'读取存档'}
           fontSize={36}
-          color={[TEXT_COLOR.DEFAULT_IDLE, TEXT_COLOR.DEFAULT_HOVER, TEXT_COLOR.DEFAULT_PRESS]}
+          color="#ffffff"
           x={960}
           y={760}
           pivot={[0.5, 0.5]}
           anchor={[0.5, 0.5]}
-          onClick={() => context.setOverlayPage('load')}
+          onClick={() => navigation.pushOverlay('saveload', { type: 'load' })}
           onMouseEnter={hoverButtonSound}
         />
         <Button
           fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
           text={'设置'}
           fontSize={36}
-          color={[TEXT_COLOR.DEFAULT_IDLE, TEXT_COLOR.DEFAULT_HOVER, TEXT_COLOR.DEFAULT_PRESS]}
+          color="#ffffff"
           x={960}
           y={850}
           pivot={[0.5, 0.5]}
           anchor={[0.5, 0.5]}
-          onClick={() => context.setOverlayPage('settings')}
+          onClick={() => navigation.pushOverlay('settings')}
           onMouseEnter={hoverButtonSound}
         />
 
@@ -99,7 +91,7 @@ export function Title() {
           fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
           text={'退出'}
           fontSize={36}
-          color={[TEXT_COLOR.DEFAULT_IDLE, TEXT_COLOR.DEFAULT_HOVER, TEXT_COLOR.DEFAULT_PRESS]}
+          color="#ffffff"
           x={960}
           y={940}
           pivot={[0.5, 0.5]}

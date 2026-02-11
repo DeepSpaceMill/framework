@@ -1,7 +1,8 @@
 {
   "compilerOptions": {
     "target": "ESNext",
-    "lib": ["ESNext", "DOM"],
+    "lib": ["ESNext"],
+    "types": [],
     "allowJs": false,
     "skipLibCheck": false,
     "esModuleInterop": true,
@@ -9,7 +10,7 @@
     "strict": true,
     "forceConsistentCasingInFileNames": true,
     "module": "ESNext",
-    "moduleResolution": "Node",
+    "moduleResolution": "bundler",
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": false,
@@ -17,7 +18,8 @@
     "jsxImportSource": "@momoyu-ink/kit",
     "outDir": "dist",
     "declaration": true,
-    "sourceMap": true
+    "sourceMap": true,
+    "preserveSymlinks": true
   },
   "include": ["src"],
   "exclude": ["dist"]

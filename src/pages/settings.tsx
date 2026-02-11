@@ -1,19 +1,16 @@
-import type { Node } from '@momoyu-ink/kit';
-import { useContext, useRef } from 'react';
+import { useNavigation, getStageSize, type Node, useSoundEffect } from '@momoyu-ink/kit';
+import { useRef } from 'react';
 import { Button } from '../components/button';
 import { Checkbox } from '../components/checkbox';
 import { Select } from '../components/select';
 import { Slider } from '../components/slider';
-import { TEXT_COLOR } from '../constants';
-import { EntryContext } from '../router';
-import { useSoundEffect } from '../hooks/useSoundEffect';
 import { useSnapshot } from 'valtio';
 import { SettingsData, settingsState } from '../state/settings';
 
 const PREVIEW_TEXT = '点击这里预览文本框的效果设置';
 
 export function Settings() {
-  const context = useContext(EntryContext);
+  const navigation = useNavigation();
   const textWindowRef = useRef<Node>(null);
 
   const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
@@ -32,7 +29,7 @@ export function Settings() {
   const handleExit = () => {
     backButtonSound();
     setTimeout(() => {
-      context.setOverlayPage(null);
+      navigation.popOverlay();
     }, 100);
   };
 
@@ -40,8 +37,11 @@ export function Settings() {
     (settingsState[key] as any) = value;
   };
 
+  const stageSize = getStageSize();
+  const scale = stageSize.width / 1920;
+
   return (
-    <container>
+    <container scale={scale}>
       <sprite label="透明遮罩" src="ui/mask-transparent.png" onClick={handleExit} />
       <sprite label="背景图" src="ui/sl_bg.png" pivot={[0.5, 0.5]} x={960} y={540}>
         <text label="标题" text="SETTINGS" fontSize={48} fillColor="white" x={64} y={54} />
@@ -53,7 +53,7 @@ export function Settings() {
         />
 
         <container x={180} y={390}>
-          <text text="背景音量" fontSize={36} fillColor={TEXT_COLOR.DEFAULT_IDLE} />
+          <text text="背景音量" fontSize={36} fillColor="#ffffff" />
           <Slider
             x={180}
             y={7}
@@ -66,7 +66,7 @@ export function Settings() {
         </container>
 
         <container x={180} y={480}>
-          <text text="音效音量" fontSize={36} fillColor={TEXT_COLOR.DEFAULT_IDLE} />
+          <text text="音效音量" fontSize={36} fillColor="#ffffff" />
           <Slider
             x={180}
             y={7}
@@ -79,7 +79,7 @@ export function Settings() {
         </container>
 
         <container x={180} y={570}>
-          <text text="语音音量" fontSize={36} fillColor={TEXT_COLOR.DEFAULT_IDLE} />
+          <text text="语音音量" fontSize={36} fillColor="#ffffff" />
           <Slider
             x={180}
             y={7}
@@ -92,12 +92,12 @@ export function Settings() {
         </container>
 
         <container x={180} y={300}>
-          <text text="窗口尺寸" fontSize={36} fillColor={TEXT_COLOR.DEFAULT_IDLE} />
+          <text text="窗口尺寸" fontSize={36} fillColor="#ffffff" />
           <Select
             x={180}
             fileName={['ui/dialog_confirm.png', 'ui/dialog_confirm_hover.png', 'ui/dialog_confirm_press.png']}
             fontSize={32}
-            color={[TEXT_COLOR.DEFAULT_IDLE, TEXT_COLOR.DEFAULT_HOVER, TEXT_COLOR.DEFAULT_PRESS]}
+            color="#ffffff"
             mode="nineslice"
             bounds={[0.25, 0.25, 0.25, 0.25]}
             targetWidth={401}
@@ -114,7 +114,7 @@ export function Settings() {
         </container>
 
         <container x={900} y={300}>
-          <text text="文字速度" fontSize={36} fillColor={TEXT_COLOR.DEFAULT_IDLE} />
+          <text text="文字速度" fontSize={36} fillColor="#ffffff" />
           <Slider
             x={180}
             y={7}
@@ -127,7 +127,7 @@ export function Settings() {
         </container>
 
         <container x={900} y={390}>
-          <text text="自动间隔" fontSize={36} fillColor={TEXT_COLOR.DEFAULT_IDLE} />
+          <text text="自动间隔" fontSize={36} fillColor="#ffffff" />
           <Slider
             x={180}
             y={7}
@@ -140,7 +140,7 @@ export function Settings() {
         </container>
 
         <container x={900} y={480}>
-          <text text="跳过语音" fontSize={36} fillColor={TEXT_COLOR.DEFAULT_IDLE} />
+          <text text="跳过语音" fontSize={36} fillColor="#ffffff" />
           <Checkbox
             x={180}
             y={3}
@@ -161,7 +161,7 @@ export function Settings() {
               ref={textWindowRef}
               text={PREVIEW_TEXT}
               fontSize={36}
-              fillColor={TEXT_COLOR.DEFAULT_IDLE}
+              fillColor="#ffffff"
               anchor={[0.5, 0.5]}
               pivot={[0.5, 0.5]}
               printMode="typewriter"

@@ -4,7 +4,7 @@ import { useEffect } from 'react';
 import { gameState, Character } from '../state/game';
 
 export function CharacterActor() {
-  const characterState = useSnapshot(gameState.character);
+  const characterState = useSnapshot(gameState.character) as typeof gameState.character;
   const textboxState = useSnapshot(gameState.textbox);
 
   const transitions = useTransition(

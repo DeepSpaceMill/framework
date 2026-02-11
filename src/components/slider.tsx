@@ -48,16 +48,17 @@ export function Slider(props: SliderProps) {
 
   const handleStart = (e: MouseEvent | TouchEvent) => {
     e.stopPropagation();
-    startPosition.current = e.clientX ?? 0;
+    startPosition.current = e.offsetX ?? 0;
     startValue.current = value;
   };
 
-  const handleMove = (e: MouseEvent) => {
+  const handleMove = (e: MouseEvent | TouchEvent) => {
     e.stopPropagation();
     if (startPosition.current === null) {
       return;
     }
-    const delta = (e.clientX ?? 0) - startPosition.current;
+
+    const delta = (e.offsetX ?? 0) - startPosition.current;
     const value = startValue.current;
     const newValue = Math.max(0, Math.min(1, value + delta / (targetWidth - SLIDER_WIDTH)));
     setValue(newValue);
@@ -72,7 +73,7 @@ export function Slider(props: SliderProps) {
 
   const handleTrackClick = (e: MouseEvent) => {
     e.stopPropagation();
-    const clickX = e.layerX;
+    const clickX = e.offsetX;
     const newValue = Math.max(0, Math.min(1, (clickX - SLIDER_WIDTH / 2) / (targetWidth - SLIDER_WIDTH)));
     setValue(newValue);
     props.onChange?.(newValue);
@@ -81,22 +82,17 @@ export function Slider(props: SliderProps) {
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: global event handlers don't need dependencies
   useEffect(() => {
-    return addEventListener('mousemove', handleMove);
-  }, []);
-
-  // biome-ignore lint/correctness/useExhaustiveDependencies: global event handlers don't need dependencies
-  useEffect(() => {
     return addEventListener('mouseup', handleEnd);
   }, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: global event handlers don't need dependencies
   useEffect(() => {
-    return addEventListener('touchmove', handleEnd);
+    return addEventListener('touchend', handleEnd);
   }, []);
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: global event handlers don't need dependencies
   useEffect(() => {
-    return addEventListener('touchend', handleEnd);
+    return addEventListener('touchcancel', handleEnd);
   }, []);
 
   return (
@@ -110,6 +106,10 @@ export function Slider(props: SliderProps) {
         pivot={[0, 0.5]}
         y={(targetHeight / 2) << 0}
         onClick={handleTrackClick}
+        onMouseMove={handleMove}
+        onMouseDown={handleStart}
+        onTouchStart={handleStart}
+        onTouchMove={handleMove}
         cursor="pointer"
       >
         <Button
@@ -122,8 +122,7 @@ export function Slider(props: SliderProps) {
           anchor={[0, 0.5]}
           pivot={[0, 0.5]}
           x={(value * (targetWidth - SLIDER_WIDTH)) << 0}
-          onMouseDown={handleStart}
-          onTouchStart={handleStart}
+          interactive={false}
         />
       </sprite>
     </container>

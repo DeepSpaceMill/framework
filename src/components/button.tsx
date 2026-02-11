@@ -19,12 +19,23 @@ export interface ButtonProps extends MoyuNodeAttributes, Omit<UseButtonOptions, 
    * Font size for the button text
    */
   fontSize?: number;
+  textOffsetX?: number;
+  textOffsetY?: number;
   /**
    * Color for the button text. Can be one of:
    * - A single string: Same color for all states
    * - An array of three strings: [idle, hover, pressed]
    */
   color?: string | string[];
+  stroke?: boolean;
+  shadow?: boolean | boolean[];
+  strokeColor?: string | string[];
+  strokeWidth?: number | number[];
+  shadowColor?: string | string[];
+  shadowOffsetX?: number | number[];
+  shadowOffsetY?: number | number[];
+  shadowBlur?: number | number[];
+  shadowWidth?: number | number[];
   /**
    * Button rendering mode
    */
@@ -67,7 +78,18 @@ export function Button(props: ButtonProps) {
     label,
     text,
     fontSize,
+    textOffsetX,
+    textOffsetY,
     color,
+    stroke,
+    shadow,
+    strokeColor,
+    strokeWidth,
+    shadowColor,
+    shadowOffsetX,
+    shadowOffsetY,
+    shadowBlur,
+    shadowWidth,
     onClick,
     anchor,
     tint,
@@ -102,6 +124,15 @@ export function Button(props: ButtonProps) {
   });
 
   const colors = Array.isArray(color) ? color : [color, color, color];
+  const strokes = Array.isArray(stroke) ? stroke : [stroke, stroke, stroke];
+  const strokeColors = Array.isArray(strokeColor) ? strokeColor : [strokeColor, strokeColor, strokeColor];
+  const strokeWidths = Array.isArray(strokeWidth) ? strokeWidth : [strokeWidth, strokeWidth, strokeWidth];
+  const shadows = Array.isArray(shadow) ? shadow : [shadow, shadow, shadow];
+  const shadowColors = Array.isArray(shadowColor) ? shadowColor : [shadowColor, shadowColor, shadowColor];
+  const shadowOffsetXs = Array.isArray(shadowOffsetX) ? shadowOffsetX : [shadowOffsetX, shadowOffsetX, shadowOffsetX];
+  const shadowOffsetYs = Array.isArray(shadowOffsetY) ? shadowOffsetY : [shadowOffsetY, shadowOffsetY, shadowOffsetY];
+  const shadowBlurs = Array.isArray(shadowBlur) ? shadowBlur : [shadowBlur, shadowBlur, shadowBlur];
+  const shadowWidths = Array.isArray(shadowWidth) ? shadowWidth : [shadowWidth, shadowWidth, shadowWidth];
 
   const index = getStateIndex();
   let textAnchor = [0.5, 0.5] as [number, number];
@@ -132,7 +163,18 @@ export function Button(props: ButtonProps) {
             text={text}
             glyphGridSize={fontSize}
             fontSize={fontSize}
+            x={textOffsetX}
+            y={textOffsetY}
             fillColor={colors[index]}
+            stroke={strokes[index]}
+            strokeColor={strokeColors[index]}
+            strokeWidth={strokeWidths[index]}
+            shadow={shadows[index]}
+            shadowColor={shadowColors[index]}
+            shadowOffsetX={shadowOffsetXs[index]}
+            shadowOffsetY={shadowOffsetYs[index]}
+            shadowBlur={shadowBlurs[index]}
+            shadowWidth={shadowWidths[index]}
             interactive={false}
             pivot={textPivot}
             anchor={textAnchor}

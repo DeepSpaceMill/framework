@@ -15,7 +15,8 @@ export interface SettingsData {
 
 // load settings from permanent variables
 const data = executePluginCommand('scenario', {
-  subCommand: 'getPermanentVariables',
+  subCommand: 'getPermanentVariable',
+  key: 'settings',
 }) as SettingsData;
 
 // global settings object
@@ -25,7 +26,7 @@ let _settings: SettingsData;
 if (data instanceof Map) {
   _settings = Object.fromEntries(data);
 } else {
-  _settings = data;
+  _settings = data ?? {};
 }
 
 // set default values
@@ -50,8 +51,9 @@ export const settingsState = proxy<SettingsData>(_settings);
 // subscribe to changes and save to permanent variables
 const saveSettings = debounce(() => {
   executePluginCommand('scenario', {
-    subCommand: 'setPermanentVariables',
-    variables: _settings,
+    subCommand: 'setPermanentVariable',
+    key: 'settings',
+    value: _settings,
   });
 }, 300);
 subscribe(settingsState, () => {

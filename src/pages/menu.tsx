@@ -1,12 +1,10 @@
-import { useContext } from 'react';
-import { animated, useTransition } from '@momoyu-ink/kit';
-import { EntryContext } from '../router';
-import { useSoundEffect } from '../hooks/useSoundEffect';
+import { useNavigation, animated, useTransition, useSoundEffect } from '@momoyu-ink/kit';
+import { uiActions } from '../state/ui';
 import { Button } from '../components/button';
 import { executePluginCommand } from '@momoyu-ink/kit';
 
 export function Menu() {
-  const context = useContext(EntryContext);
+  const navigation = useNavigation();
 
   const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
   const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
@@ -36,36 +34,32 @@ export function Menu() {
   const handleExit = () => {
     backButtonSound();
     setTimeout(() => {
-      context.setOverlayPage(null);
+      navigation.popOverlay();
     }, 100);
   };
 
   const handleToSettings = () => {
     startButtonSound();
     setTimeout(() => {
-      context.setOverlayPage(null);
-      context.setOverlayPage('settings');
+      navigation.popOverlay();
+      navigation.pushOverlay('settings');
     }, 100);
   };
 
   const handleToMainMenu = () => {
     startButtonSound();
-    context.confirm('确定要返回主菜单吗？', () => {
-      setTimeout(() => {
-        context.setOverlayPage(null);
-        context.setPage('title');
-      }, 100);
+    uiActions.confirm('确定要返回主菜单吗？', () => {
+      navigation.clearOverlays();
+      navigation.navigate('title');
     });
   };
 
   const handleToQuit = () => {
     startButtonSound();
-    context.confirm('确定要退出游戏吗？', () => {
-      setTimeout(() => {
-        executePluginCommand('system', {
-          subCommand: 'quit',
-        });
-      }, 300);
+    uiActions.confirm('确定要退出游戏吗？', () => {
+      executePluginCommand('system', {
+        subCommand: 'quit',
+      });
     });
   };
 

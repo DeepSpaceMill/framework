@@ -1,3 +1,4 @@
+import { getNavigator, executePluginCommand } from '@momoyu-ink/kit';
 import { proxy } from 'valtio';
 
 // 页面类型定义
@@ -22,103 +23,42 @@ export interface NotificationInfo {
   fadeOutDuration: number;
 }
 
-// UI 路由状态接口
+// UI 状态接口
 export interface UIState {
-  currentPage: GamePage;
-  isNewGame: boolean;
-  overlayStack: OverlayInfo[];
   notifications: NotificationInfo[];
 }
 
 // 创建 UI 状态
 export const uiState = proxy<UIState>({
-  currentPage: 'title',
-  isNewGame: true,
-  overlayStack: [],
   notifications: [],
 });
 
 // 生成唯一ID的辅助函数
-let overlayIdCounter = 0;
-const generateOverlayId = (): string => {
-  return `overlay-${++overlayIdCounter}-${Date.now()}`;
-};
-
 let notificationIdCounter = 0;
 const generateNotificationId = (): string => {
   return `notification-${++notificationIdCounter}-${Date.now()}`;
 };
 
-// 路由操作函数
+// UI 操作函数（精简后的通知系统与截图）
 export const uiActions = {
-  // 页面导航
-  navigateToPage: (page: GamePage) => {
-    uiState.currentPage = page;
-  },
-
-  // 浮层栈操作
-  pushOverlay: (type: OverlayType, props?: Record<string, any>) => {
-    const overlayInfo: OverlayInfo = {
-      type,
-      props,
-      id: generateOverlayId(),
-    };
-    uiState.overlayStack.push(overlayInfo);
-  },
-
-  popOverlay: () => {
-    if (uiState.overlayStack.length > 0) {
-      uiState.overlayStack.pop();
+  takeSnapshot: async (width: number, height: number): Promise<void> => {
+    try {
+      await executePluginCommand('system', {
+        subCommand: 'takeSnapshot',
+        width,
+        height,
+      });
+    } catch (error) {
+      console.error('截图失败（已忽略）:', error);
     }
-  },
-
-  clearOverlays: () => {
-    uiState.overlayStack.length = 0;
-  },
-
-  // 状态查询
-  getCurrentPage: (): GamePage => {
-    return uiState.currentPage;
-  },
-
-  getOverlayStack: (): OverlayInfo[] => {
-    return uiState.overlayStack;
-  },
-
-  isOverlayActive: (type: OverlayType): boolean => {
-    return uiState.overlayStack.some((overlay) => overlay.type === type);
-  },
-
-  // 向后兼容的方法
-  setPage: (page: GamePage) => {
-    uiActions.navigateToPage(page);
-  },
-
-  setOverlayPage: (overlayType: OverlayType | null) => {
-    if (overlayType === null) {
-      uiActions.popOverlay();
-    } else {
-      uiActions.pushOverlay(overlayType);
-    }
-  },
-
-  // 设置新游戏状态
-  setIsNewGame: (isNew: boolean) => {
-    uiState.isNewGame = isNew;
   },
 
   // 便捷方法：显示确认对话框
   confirm: (message: string, onConfirm?: () => void, onCancel?: () => void) => {
-    uiActions.pushOverlay('confirm', {
+    getNavigator().pushOverlay('confirm', {
       message,
-      onConfirm: (confirmed: boolean) => {
-        uiActions.popOverlay(); // 关闭确认对话框
-        if (confirmed && onConfirm) {
-          onConfirm();
-        } else if (!confirmed && onCancel) {
-          onCancel();
-        }
-      },
+      onConfirm,
+      onCancel,
     });
   },
 
@@ -137,14 +77,24 @@ export const uiActions = {
       fadeOutDuration?: number;
     } = {},
   ) => {
+    const fadeInDuration = options.fadeInDuration ?? 300;
+    const duration = options.duration ?? 2000;
+    const fadeOutDuration = options.fadeOutDuration ?? 300;
+
     const notification: NotificationInfo = {
       id: generateNotificationId(),
       message,
-      duration: options.duration ?? 2000,
-      fadeInDuration: options.fadeInDuration ?? 300,
-      fadeOutDuration: options.fadeOutDuration ?? 300,
+      duration,
+      fadeInDuration,
+      fadeOutDuration,
     };
     uiState.notifications.push(notification);
+
+    // Auto-remove from state after the set duration plus fade-in time
+    // The component's useTransition will handle the leave animation
+    setTimeout(() => {
+      uiActions.removeNotification(notification.id);
+    }, fadeInDuration + duration);
   },
 
   /**

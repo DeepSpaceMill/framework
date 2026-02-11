@@ -1,32 +1,32 @@
-import { useContext, useState } from 'react';
+import { useState } from 'react';
+import { useNavigation, useNavigationParams, getStageSize, useSoundEffect } from '@momoyu-ink/kit';
 import { Button } from '../components/button';
-import { TEXT_COLOR } from '../constants';
-import { EntryContext } from '../router';
+import { uiActions } from '../state/ui';
 import { useSaveLoad } from '../hooks/useSaveLoad';
-import { useSoundEffect } from '../hooks/useSoundEffect';
 
-export interface SaveLoadProps {
+interface SaveLoadParams {
   type: 'save' | 'load';
 }
 
 const SLOTS_PER_PAGE = 10;
 
-export function SaveLoad(props: SaveLoadProps) {
-  const context = useContext(EntryContext);
+export function SaveLoad() {
+  const navigation = useNavigation();
+  const params = useNavigationParams<SaveLoadParams>();
 
   const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
   const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
 
   const [currentPage, setCurrentPage] = useState(0);
 
-  const { type } = props;
+  const type = params?.type ?? 'save';
   const { slots, saveToSlot, loadFromSlot, deleteSaveSlot } = useSaveLoad();
 
   const handleSlotAction = async (slotId: string) => {
     const slotName = slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId}`;
     const actionText = type === 'save' ? '保存到' : '读取';
 
-    context.confirm(`确定要${actionText}${slotName}吗？`, () => performSlotAction(slotId));
+    uiActions.confirm(`确定要${actionText}${slotName}吗？`, () => performSlotAction(slotId));
   };
 
   const performSlotAction = async (slotId: string) => {
@@ -35,54 +35,56 @@ export function SaveLoad(props: SaveLoadProps) {
         await saveToSlot(slotId);
 
         if (slotId === 'auto-save') {
-          context.notify('快速存档保存成功');
+          uiActions.notify('快速存档保存成功');
         } else {
-          context.notify(`保存到存档槽 ${slotId} 成功`);
+          uiActions.notify(`保存到存档槽 ${slotId} 成功`);
         }
       } else if (type === 'load') {
-        context?.setIsNewGame(false);
         const success = await loadFromSlot(slotId);
 
         const slotName = slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId}`;
 
         if (success) {
-          context.notify(`读取${slotName}成功`);
+          uiActions.notify(`读取${slotName}成功`);
 
           // Check the current page, if loading from the title screen, then navigate to the game stage
-          if (context.getCurrentPage() === 'title') {
-            context.navigateToPage('stage');
+          if (navigation.getCurrentPage() === 'title') {
+            navigation.navigate('stage');
           }
 
-          handleExit();
+          navigation.clearOverlays();
         } else {
-          context.notify(`读取${slotName}失败`);
+          uiActions.notify(`读取${slotName}失败`);
         }
       }
     } catch (error) {
       console.error(`${type} operation failed:`, error);
-      context.notify(`${type === 'save' ? '保存' : '读取'}失败`);
+      uiActions.notify(`${type === 'save' ? '保存' : '读取'}失败`);
     }
   };
 
   const handleDeleteSlot = async (slotId: string) => {
     try {
       await deleteSaveSlot(slotId);
-      context.notify(`删除存档槽 ${slotId} 成功`);
+      uiActions.notify(`删除存档槽 ${slotId} 成功`);
     } catch (error) {
       console.error('Delete slot failed:', error);
-      context.notify(`删除存档槽 ${slotId} 失败`);
+      uiActions.notify(`删除存档槽 ${slotId} 失败`);
     }
   };
 
   const handleExit = () => {
     backButtonSound();
     setTimeout(() => {
-      context.setOverlayPage(null);
+      navigation.popOverlay();
     }, 100);
   };
 
+  const stageSize = getStageSize();
+  const scale = stageSize.width / 1920;
+
   return (
-    <container>
+    <container scale={scale}>
       <sprite label="透明遮罩" src="ui/mask-transparent.png" onClick={handleExit} />
       <sprite label="背景图" src="ui/sl_bg.png" pivot={[0.5, 0.5]} x={960} y={540}>
         <text label="标题" text={type?.toUpperCase()} fontSize={48} fillColor="white" x={64} y={54} />
@@ -142,7 +144,7 @@ export function SaveLoad(props: SaveLoadProps) {
                       text="NO DATA"
                       fontSize={32}
                       lineHeight={1.5}
-                      fillColor={TEXT_COLOR.DEFAULT_IDLE}
+                      fillColor="#ffffff"
                       opacity={0.6}
                       pivot={[0.5, 0.5]}
                       x={712 / 2}
@@ -158,7 +160,7 @@ export function SaveLoad(props: SaveLoadProps) {
                         text={`${slotData.name === 'auto-save' ? '（快速存档）' : slotData.name.replace('save-', '存档 ')}`}
                         fontSize={28}
                         lineHeight={1.2}
-                        fillColor={TEXT_COLOR.DEFAULT_IDLE}
+                        fillColor="#ffffff"
                         x={250}
                         y={7}
                       />
@@ -168,7 +170,7 @@ export function SaveLoad(props: SaveLoadProps) {
                         lineHeight={1.3}
                         boxWidth={442}
                         boxHeight={52}
-                        fillColor={TEXT_COLOR.DEFAULT_IDLE}
+                        fillColor="#ffffff"
                         x={250}
                         y={50}
                       />
@@ -176,7 +178,7 @@ export function SaveLoad(props: SaveLoadProps) {
                         text={formatTimestamp(slotData.metadata.timestamp)}
                         fontSize={16}
                         lineHeight={1.2}
-                        fillColor={TEXT_COLOR.DEFAULT_IDLE}
+                        fillColor="#ffffff"
                         pivot={[1, 0]}
                         x={689}
                         y={104}
@@ -213,5 +215,5 @@ function formatTimestamp(timestamp: number): string {
   const hours = String(date.getHours()).padStart(2, '0');
   const minutes = String(date.getMinutes()).padStart(2, '0');
   const seconds = String(date.getSeconds()).padStart(2, '0');
-  return `${year}\\/${month}\\/${day} ${hours}:${minutes}:${seconds}`;
+  return `${year}/${month}/${day} ${hours}:${minutes}:${seconds}`;
 }

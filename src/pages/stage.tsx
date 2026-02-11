@@ -1,42 +1,107 @@
-import { addEventListener, executePluginCommand, KeyboardEvent } from '@momoyu-ink/kit';
+import {
+  useScenario,
+  nextLine,
+  useNavigation,
+  useNavigationParams,
+  addEventListener,
+  KeyboardEvent,
+  MouseEvent,
+  createStage,
+  StageContextProvider,
+  executePluginCommand,
+} from '@momoyu-ink/kit';
 import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
-import { BackgroundActor, CharacterActor, TextBoxActor, TextBoxButton, type TextBoxHandle } from '../actors';
+import {
+  handleChangeBg,
+  handleSetBgTint,
+  handleAddChar,
+  handleSetTextBoxPos,
+  handleSound,
+  handleSoundStop,
+  handleWait,
+  handleWaitClick,
+  handleLeaveStage,
+  handleSetTitle,
+  handleTextLine,
+} from '../commands/handlers';
+import { uiActions } from '../state/ui';
+import { gameState } from '../state/game';
+import { BackgroundActor } from '../actors/background';
+import { CharacterActor } from '../actors/character';
+import { TextBoxActor, TextBoxButton } from '../actors/textbox';
+import { BGMActor } from '../actors/bgm';
+import { ScenarioCommandSchema } from '../commands/commands';
 import { useSaveLoad } from '../hooks/useSaveLoad';
-import { useScenario } from '../hooks/useScenario';
-import { EntryContext } from '../router';
-import { gameState, useScenarioCommands } from '../state/game';
-import { uiState } from '../state/ui';
-import { BackgroundHandle } from '../actors/background';
+
+// Create the stage instance (module-level singleton)
+const stage = createStage();
+
+// Define the params interface for Stage page
+interface StageParams {
+  story: string;
+  entry: string;
+  isNewGame: boolean;
+}
 
 export function Stage() {
-  const context = useContext(EntryContext);
-  const textBoxRef = useRef<TextBoxHandle>(null);
-  const backgroundRef = useRef<BackgroundHandle>(null);
+  const params = useNavigationParams<StageParams>();
+  const navigation = useNavigation();
 
-  const stories = useMemo(() => ['start', 'transform/nar2_1'], []);
-  const nextLine = useScenario(stories, 'start');
+  const story = params?.story ?? '';
+  const entry = params?.entry ?? '';
+  const isNewGame = params?.isNewGame ?? true;
+
+  const stories = useMemo(() => [story], [story]);
+  useScenario(stories, story, entry, isNewGame);
+
+  // Register all command and text line handlers
+  useEffect(() => {
+    const unregFns = [
+      stage.registerCommandSchema(ScenarioCommandSchema),
+      stage.registerCommand('changebg', handleChangeBg),
+      stage.registerCommand('setBgTint', handleSetBgTint),
+      stage.registerCommand('addchar', handleAddChar),
+      stage.registerCommand('setTextBoxPos', handleSetTextBoxPos),
+      stage.registerCommand('sound', handleSound),
+      stage.registerCommand('soundStop', handleSoundStop),
+      stage.registerCommand('wait', handleWait),
+      stage.registerCommand('waitclick', handleWaitClick),
+      stage.registerCommand('leaveStage', handleLeaveStage),
+      stage.registerCommand('setTitle', handleSetTitle),
+      stage.registerTextLine(handleTextLine),
+    ];
+    return () => unregFns.forEach((fn) => fn());
+  }, []);
 
   // Initialize save/load functionality
   const { saveToSlot, loadFromSlot, checkAutoSaveExists } = useSaveLoad();
 
-  useScenarioCommands(nextLine);
-
   const handleClick = useCallback(() => {
     if (!gameState.textbox.visible) {
       gameState.textbox.visible = true;
+      return;
     }
-
-    let shouldCallNextLine = true;
-
-    // Try to finish printing first, if not printing or already finished, go to next line
-    shouldCallNextLine = shouldCallNextLine && !textBoxRef.current?.tryFinishPrinting();
-    // Try to finish background transition next
-    shouldCallNextLine = shouldCallNextLine && !backgroundRef.current?.tryFinish();
-
-    if (shouldCallNextLine) {
-      nextLine();
+    // Try interrupt callbacks first; if none consumed, advance
+    if (!stage.tryInterrupt()) {
+      void nextLine();
     }
-  }, [nextLine]);
+  }, []);
+
+  useEffect(() => {
+    return addEventListener('mousedown', (_: MouseEvent) => {
+      if (stage.isSkipping()) {
+        stage.stopSkip();
+      }
+    });
+  }, []);
+
+  useEffect(() => {
+    return addEventListener('touchstart', (_: TouchEvent) => {
+      if (stage.isSkipping()) {
+        stage.stopSkip();
+      }
+    });
+  }, []);
 
   const handleButtonClick = async (button: TextBoxButton) => {
     try {
@@ -48,7 +113,7 @@ export function Stage() {
             height: 127,
           });
           await saveToSlot('auto-save');
-          context.notify('快速保存成功');
+          uiActions.notify('快速保存成功');
           break;
         case TextBoxButton.QLOAD: {
           // Check if auto-save exists in engine
@@ -56,12 +121,12 @@ export function Stage() {
           if (autoSaveExists) {
             const success = await loadFromSlot('auto-save');
             if (success) {
-              context.notify('快速读档成功');
+              uiActions.notify('快速读档成功');
             } else {
-              context.notify('快速读档失败');
+              uiActions.notify('快速读档失败');
             }
           } else {
-            context.notify('没有可读取的存档');
+            uiActions.notify('没有可读取的存档');
           }
           break;
         }
@@ -71,36 +136,40 @@ export function Stage() {
             width: 226,
             height: 127,
           });
-          context.setOverlayPage('save');
+          navigation.pushOverlay('saveload', { type: 'save' });
           break;
         case TextBoxButton.LOAD: {
-          context.setOverlayPage('load');
+          navigation.pushOverlay('saveload', { type: 'load' });
           break;
         }
         case TextBoxButton.AUTO:
-          context.notify('自动模式待实现');
+          uiActions.notify('自动模式待实现');
           break;
         // case TextBoxButton.SKIP:
-        //   context.notify('跳过模式切换');
+        //   uiActions.notify('跳过模式切换');
         //   break;
         case TextBoxButton.HIST:
-          context.notify('历史记录功能待实现');
+          uiActions.notify('历史记录功能待实现');
           break;
         case TextBoxButton.MENU:
-          context.setOverlayPage('menu');
+          navigation.pushOverlay('menu');
           break;
         default:
           console.warn(`Unknown button: ${button}`);
       }
     } catch (error) {
       console.error('操作失败:', error);
-      context.notify('遇到问题，这是一个 BUG');
+      uiActions.notify('遇到问题，这是一个 BUG');
     }
   };
 
   useEffect(() => {
     return addEventListener('keydown', (e: KeyboardEvent) => {
-      if (e.key === 'Enter' || e.key === ' ') {
+      if (stage.isSkipping() && !e.repeat && e.key !== 'Control') {
+        stage.stopSkip();
+      } else if (e.key === 'Control' && !e.repeat) {
+        stage.startSkip();
+      } else if (e.key === 'Enter' || e.key === ' ') {
         handleClick();
       } else if (e.key === 'Escape') {
         const newVisible = !gameState.textbox.visible;
@@ -113,17 +182,48 @@ export function Stage() {
     });
   }, [handleClick]);
 
+  // Stop skip on Ctrl release
   useEffect(() => {
-    if (uiState.isNewGame) {
+    return addEventListener('keyup', (e: KeyboardEvent) => {
+      if (e.key === 'Control') {
+        stage.stopSkip();
+      }
+    });
+  }, []);
+
+  // Stop skip on window blur (e.g. Alt+Tab)
+  useEffect(() => {
+    return addEventListener('blur', () => {
+      stage.stopSkip();
+    });
+  }, []);
+
+  // Clean up skip state on Stage unmount (singleton persists across navigations)
+  useEffect(() => {
+    return () => {
+      stage.stopSkip();
+    };
+  }, []);
+
+  // 监听左键点击
+  useEffect(() => {
+    return addEventListener('click', () => {
       handleClick();
-    }
+    });
+  }, [handleClick]);
+
+  useEffect(() => {
+    return addEventListener('touchend', () => {
+      handleClick();
+    });
   }, [handleClick]);
 
   return (
-    <container onClick={handleClick}>
-      <BackgroundActor ref={backgroundRef} />
+    <StageContextProvider stage={stage}>
+      <BackgroundActor />
       <CharacterActor />
-      <TextBoxActor ref={textBoxRef} onButtonClick={handleButtonClick} />
-    </container>
+      <TextBoxActor onButtonClick={handleButtonClick} />
+      <BGMActor />
+    </StageContextProvider>
   );
 }

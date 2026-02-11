@@ -28,7 +28,7 @@ This framework is the official Visual Novel template for Moyu Engine, providing 
 
 - **Rendering Engine**: `@momoyu-ink/kit` custom renderer (not react-dom)
 - **UI Framework**: React 18 + TypeScript
-- **State Management**: Jotai
+- **State Management**: Valtio
 - **Animation System**: react-spring (from `@momoyu-ink/kit`)
 - **Build Tool**: Rspack
 - **Package Manager**: Yarn 4
@@ -182,7 +182,7 @@ useEffect(() => {
 ### Best Practices
 
 1. **Component Design**: Always separate logic layer from rendering layer
-2. **State Management**: Use Jotai for state management to avoid prop drilling
+2. **State Management**: Use valtio for state management to avoid prop drilling
 3. **Resource Management**: Place all resources in `assets/` directory
 4. **Type Safety**: Fully utilize TypeScript's type checking
 5. **Performance Optimization**: Proper use of React.memo and useCallback

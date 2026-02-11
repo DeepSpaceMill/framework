@@ -1,12 +1,9 @@
-import { type Node } from '@momoyu-ink/kit';
+import { useBeforeHandleCommandCallback, useInterruptCallback, useIsSkipping, type Node } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
-import { forwardRef, useImperativeHandle, useRef, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
 import { gameState } from '../state/game';
 import { Button } from '../components/button';
-
-export interface TextBoxHandle {
-  tryFinishPrinting: () => void;
-}
+import { FrameAnimation } from '../components/frame';
 
 export enum TextBoxButton {
   QSAVE = 'QSAV',
@@ -23,9 +20,10 @@ interface TextBoxActorProps {
   onButtonClick: (button: TextBoxButton) => void;
 }
 
-export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(({ onButtonClick }, ref) => {
+export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   const textWindowRef = useRef<Node>(null);
   const progress = useRef(1);
+  const skipping = useIsSkipping();
   const [isHovered, setIsHovered] = useState(false);
 
   const textBoxState = useSnapshot(gameState.textbox);
@@ -38,9 +36,24 @@ export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(({ onBu
     setIsHovered(false);
   };
 
+  const [curPos, setCurPos] = useState<[number, number] | null>(null);
+
+  const showCurPos = useCallback(() => {
+    try {
+      const pos = textWindowRef.current?.executeCommand({
+        subCommand: 'getCursorPosition',
+      });
+      if (gameState.textbox.text.length > 0) {
+        setCurPos(pos as [number, number]);
+      }
+    } catch (error) {
+      console.error('Error getting cursor position:', error);
+    }
+  }, []);
+
   // try to finish printing the text
   // return true if finished, false if already finished
-  const tryFinishPrinting = () => {
+  const tryFinishPrinting = useCallback(() => {
     if (progress.current < 1) {
       textWindowRef.current?.executeCommand({
         subCommand: 'finishPrinting',
@@ -49,11 +62,22 @@ export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(({ onBu
       return true;
     }
     return false;
-  };
+  }, []);
 
-  useImperativeHandle(ref, () => ({
-    tryFinishPrinting,
-  }));
+  // Register interrupt callback so user clicks finish printing before advancing
+  useInterruptCallback(tryFinishPrinting);
+
+  // clear text before next command is executed
+  useBeforeHandleCommandCallback(() => {
+    if (gameState.textbox.shouldClear) {
+      gameState.textbox.text = '';
+    }
+  });
+
+  // biome-ignore lint/correctness/useExhaustiveDependencies: we must reset curPos when text changes
+  useEffect(() => {
+    setCurPos(null);
+  }, [textBoxState.text]);
 
   return (
     <container label="文本框容器" visible={textBoxState.visible} interactive={textBoxState.visible}>
@@ -120,10 +144,23 @@ export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(({ onBu
           }}
           onFinish={() => {
             progress.current = 1;
+            showCurPos();
           }}
           interactive={false}
         />
       </sprite>
+      {curPos ? (
+        <FrameAnimation
+          src="extra/cursor0.png"
+          direction="horizontal"
+          frameCount={4}
+          interval={160}
+          loop={true}
+          loopMode="always"
+          x={curPos[0] + 180}
+          y={curPos[1] + 358 + 8}
+        />
+      ) : null}
       <sprite
         label="姓名框"
         src="ui/namebox.png"
@@ -146,4 +183,4 @@ export const TextBoxActor = forwardRef<TextBoxHandle, TextBoxActorProps>(({ onBu
       </sprite>
     </container>
   );
-});
+}
