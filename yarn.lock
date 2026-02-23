@@ -232,7 +232,7 @@ __metadata:
   resolution: "@momoyu-ink/framework@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^2.1.4"
-    "@momoyu-ink/kit": "npm:^0.1.0"
+    "@momoyu-ink/kit": "npm:^0.2.0"
     "@rspack/cli": "npm:^1.0.14"
     "@rspack/core": "npm:^1.0.14"
     "@rspack/plugin-react-refresh": "npm:1.0.1"
@@ -252,9 +252,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@momoyu-ink/kit@npm:^0.1.0":
-  version: 0.1.0
-  resolution: "@momoyu-ink/kit@npm:0.1.0"
+"@momoyu-ink/kit@npm:^0.2.0":
+  version: 0.2.0
+  resolution: "@momoyu-ink/kit@npm:0.2.0"
   dependencies:
     "@react-spring/animated": "npm:^10.0.3"
     "@react-spring/core": "npm:^10.0.3"
@@ -265,7 +265,7 @@ __metadata:
     zod: "npm:^4.2.0"
   peerDependencies:
     react: ^19.2.1
-  checksum: 10c0/2d9f78d9722271a53bb9ed2125385964e426af12761e3f420949f0ee18573963ec9cf972208cc8d559b0344e82b3cf67fa95dd6db623a0fb51e038b3679bea4e
+  checksum: 10c0/7b486b5db710fb9d0650a070a1044199bbaa509e125cb052c24e2fc96811489940eadf5eed9c4a70a75b9615013c562ec8ccc2c42dfa6f27d007e9b354484963
   languageName: node
   linkType: hard
 
