@@ -1,0 +1,713 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "oneOf": [
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "text"
+        },
+        "content": {
+          "type": "string"
+        },
+        "name": {
+          "type": "string"
+        },
+        "newline": {
+          "default": true,
+          "description": "Start a new line before printing the text",
+          "type": "boolean"
+        },
+        "clear": {
+          "default": true,
+          "description": "Clear existing text before printing the text",
+          "type": "boolean"
+        },
+        "skippable": {
+          "default": true,
+          "description": "Whether the text can be skipped.",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "command",
+        "content",
+        "newline",
+        "clear",
+        "skippable"
+      ],
+      "additionalProperties": false,
+      "description": "Display text"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "textClear"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false,
+      "description": "Clear text box"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "textBox"
+        },
+        "position": {
+          "description": "x, y coordinates of the text box",
+          "minItems": 2,
+          "maxItems": 2,
+          "type": "array",
+          "items": {
+            "type": "number"
+          }
+        },
+        "printMode": {
+          "description": "Text printing mode",
+          "type": "string",
+          "enum": [
+            "instant",
+            "typewriter",
+            "printer"
+          ]
+        },
+        "printSpeed": {
+          "description": "Speed of text printing, characters per second for typewriter, lines per second for printer",
+          "type": "number"
+        },
+        "fillColor": {
+          "description": "Text color",
+          "type": "string"
+        },
+        "lineHeight": {
+          "description": "Line height multiplier",
+          "type": "number"
+        },
+        "indent": {
+          "description": "Indentation in pixels for the first line of each paragraph",
+          "type": "number"
+        },
+        "stroke": {
+          "description": "Whether to apply stroke to text",
+          "type": "boolean"
+        },
+        "shadow": {
+          "description": "Whether to apply shadow to text",
+          "type": "boolean"
+        },
+        "strokeColor": {
+          "description": "Stroke color",
+          "type": "string"
+        },
+        "strokeWidth": {
+          "description": "Stroke width in pixels",
+          "type": "number"
+        },
+        "shadowColor": {
+          "description": "Shadow color",
+          "type": "string"
+        },
+        "shadowOffsetX": {
+          "description": "Shadow offset X in pixels",
+          "type": "number"
+        },
+        "shadowOffsetY": {
+          "description": "Shadow offset Y in pixels",
+          "type": "number"
+        },
+        "shadowBlur": {
+          "description": "Shadow blur radius in pixels",
+          "type": "number"
+        },
+        "shadowWidth": {
+          "description": "Shadow width in pixels, only effective when shadow is true",
+          "type": "number"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false,
+      "description": "Configure text box"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "textBoxShow"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false,
+      "description": "Show text box"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "textBoxHide"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false,
+      "description": "Hide text box"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "bgm"
+        },
+        "src": {
+          "type": "string",
+          "description": "Asset path"
+        },
+        "loop": {
+          "default": true,
+          "description": "Whether to loop the music, default is true",
+          "type": "boolean"
+        },
+        "volume": {
+          "default": 1,
+          "description": "Volume of the music, ranges from 0 to 1, default is 1",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "fadeTime": {
+          "default": 600,
+          "description": "Fade time in milliseconds when starting the music",
+          "type": "number"
+        }
+      },
+      "required": [
+        "command",
+        "src",
+        "loop",
+        "volume",
+        "fadeTime"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "bgmStop"
+        },
+        "fadeTime": {
+          "default": 600,
+          "description": "Fade time in milliseconds when stopping the music",
+          "type": "number"
+        }
+      },
+      "required": [
+        "command",
+        "fadeTime"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "sfx"
+        },
+        "src": {
+          "type": "string",
+          "description": "Asset path"
+        },
+        "loop": {
+          "default": false,
+          "description": "Whether to loop the sound, default is false",
+          "type": "boolean"
+        },
+        "volume": {
+          "default": 1,
+          "description": "Volume of the sound, ranges from 0 to 1, default is 1",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "fadeTime": {
+          "default": 600,
+          "description": "Fade time in milliseconds when playing the sound",
+          "type": "number"
+        }
+      },
+      "required": [
+        "command",
+        "src",
+        "loop",
+        "volume",
+        "fadeTime"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "sfxStop"
+        },
+        "fadeTime": {
+          "default": 600,
+          "description": "Fade time in milliseconds when stopping the sound",
+          "type": "number"
+        }
+      },
+      "required": [
+        "command",
+        "fadeTime"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "voice"
+        },
+        "src": {
+          "type": "string",
+          "description": "Asset path"
+        },
+        "name": {
+          "type": "string"
+        },
+        "volume": {
+          "default": 1,
+          "description": "Volume of the voice, ranges from 0 to 1, default is 1",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        }
+      },
+      "required": [
+        "command",
+        "src",
+        "volume"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "voiceStop"
+        },
+        "name": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "sound"
+        },
+        "channel": {
+          "type": "string"
+        },
+        "src": {
+          "type": "string",
+          "description": "Asset path"
+        },
+        "loop": {
+          "default": false,
+          "description": "Whether to loop the sound, default is false",
+          "type": "boolean"
+        },
+        "volume": {
+          "default": 1,
+          "description": "Volume of the sound, ranges from 0 to 1, default is 1",
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
+        },
+        "fadeTime": {
+          "default": 600,
+          "description": "Fade time in milliseconds when playing the sound",
+          "type": "number"
+        }
+      },
+      "required": [
+        "command",
+        "channel",
+        "src",
+        "loop",
+        "volume",
+        "fadeTime"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "soundStop"
+        },
+        "channel": {
+          "type": "string"
+        },
+        "fadeTime": {
+          "default": 600,
+          "description": "Fade time in milliseconds when stopping the sound",
+          "type": "number"
+        }
+      },
+      "required": [
+        "command",
+        "channel",
+        "fadeTime"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "changebg"
+        },
+        "src": {
+          "type": "string",
+          "description": "image source"
+        },
+        "fadeTime": {
+          "default": 1000,
+          "description": "Fade time in milliseconds, default is 1000",
+          "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether the background change can be skipped, default is false",
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "command",
+        "src",
+        "fadeTime",
+        "skippable"
+      ],
+      "additionalProperties": false,
+      "description": "Change background command"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "setBgTint"
+        },
+        "tint": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "command",
+        "tint"
+      ],
+      "additionalProperties": false,
+      "description": "Set background tint"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "addchar"
+        },
+        "name": {
+          "type": "string"
+        },
+        "src": {
+          "type": "string",
+          "description": "Asset path"
+        },
+        "preset": {
+          "description": "Position preset for the character, can be left, center, or right",
+          "type": "string",
+          "enum": [
+            "left",
+            "center",
+            "right"
+          ]
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "visible": {
+          "type": "boolean"
+        },
+        "scale": {
+          "type": "number"
+        },
+        "tint": {
+          "type": "string"
+        },
+        "pivot": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "fadeTime": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "command",
+        "src"
+      ],
+      "additionalProperties": false,
+      "description": "Add a character to the stage"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "charchange"
+        },
+        "name": {
+          "type": "string"
+        },
+        "src": {
+          "type": "string",
+          "description": "Asset path"
+        },
+        "preset": {
+          "description": "Position preset for the character, can be left, center, or right",
+          "type": "string",
+          "enum": [
+            "left",
+            "center",
+            "right"
+          ]
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        },
+        "visible": {
+          "type": "boolean"
+        },
+        "scale": {
+          "type": "number"
+        },
+        "tint": {
+          "type": "string"
+        },
+        "pivot": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ]
+        },
+        "fadeTime": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false,
+      "description": "Change a character on the stage"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "charremove"
+        },
+        "name": {
+          "type": "string"
+        },
+        "fadeTime": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false,
+      "description": "Remove a character from the stage"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "charclear"
+        },
+        "fadeTime": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false,
+      "description": "Clear all characters from the stage"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "charname"
+        },
+        "name": {
+          "type": "string"
+        },
+        "to": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "command",
+        "to"
+      ],
+      "additionalProperties": false,
+      "description": "Change a character's name"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "charpreset"
+        },
+        "preset": {
+          "type": "string"
+        },
+        "x": {
+          "type": "number"
+        },
+        "y": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "command",
+        "preset",
+        "x",
+        "y"
+      ],
+      "additionalProperties": false,
+      "description": "Define or modify a character position preset"
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "wait"
+        },
+        "skippable": {
+          "type": "boolean"
+        },
+        "time": {
+          "type": "number"
+        }
+      },
+      "required": [
+        "command",
+        "time"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "waitclick"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "leaveStage"
+        },
+        "gotoPage": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "command",
+        "gotoPage"
+      ],
+      "additionalProperties": false
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "setTitle"
+        },
+        "text": {
+          "type": "string"
+        }
+      },
+      "required": [
+        "command",
+        "text"
+      ],
+      "additionalProperties": false
+    }
+  ]
+}

@@ -286,7 +286,3 @@ export const ScenarioCommandSchema = z.discriminatedUnion('command', [
 ]);
 
 export type ScenarioCommandSchemaType = z.infer<typeof ScenarioCommandSchema>;
-
-// export json schema via console log
-// const schema = ScenarioCommandSchema.toJSONSchema();
-// console.log(JSON.stringify(schema, null, 2));
