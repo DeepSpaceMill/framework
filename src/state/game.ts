@@ -1,5 +1,5 @@
-import { addEventListener, Tuple2 } from '@momoyu-ink/kit';
-import { proxy, ref } from 'valtio';
+import { Tuple2 } from '@momoyu-ink/kit';
+import { proxy } from 'valtio';
 
 export interface Animation {
   fadeTime: number;
@@ -16,7 +16,7 @@ export interface BackgroundState extends Animation {
 }
 
 export interface Character extends Animation {
-  name: string;
+  name?: string;
   src: string;
   scale: number;
   tint: string;
@@ -27,6 +27,7 @@ export interface Character extends Animation {
 }
 
 export interface CharacterState {
+  presets: Record<string, { x: number; y: number }>;
   characters: Character[];
   currentSpeaker?: string;
 }
@@ -40,6 +41,21 @@ export interface TextBoxState {
   visible: boolean;
   shouldClear?: boolean;
   shouldAddNewline?: boolean;
+  // Text rendering config (set by textBox command)
+  printMode: 'instant' | 'typewriter' | 'printer';
+  printSpeed: number;
+  fillColor: string;
+  lineHeight: number;
+  indent: number;
+  stroke: boolean;
+  shadow: boolean;
+  strokeColor: string;
+  strokeWidth: number;
+  shadowColor: string;
+  shadowOffsetX: number;
+  shadowOffsetY: number;
+  shadowBlur: number;
+  shadowWidth: number;
 }
 
 export interface BGMState {
@@ -58,6 +74,27 @@ export interface GameState {
   bgm: BGMState;
 }
 
+// Default textbox state values
+const defaultTextBoxState: TextBoxState = {
+  name: '',
+  text: '',
+  visible: true,
+  printMode: 'typewriter',
+  printSpeed: 20,
+  fillColor: '#f0f0f0',
+  lineHeight: 1.5,
+  indent: 0,
+  stroke: false,
+  shadow: false,
+  strokeColor: '#000000',
+  strokeWidth: 2,
+  shadowColor: '#000000',
+  shadowOffsetX: 0,
+  shadowOffsetY: 0,
+  shadowBlur: 0,
+  shadowWidth: 0,
+};
+
 // Create the main game state store using valtio
 export const gameState = proxy<GameState>({
   story: {
@@ -69,14 +106,15 @@ export const gameState = proxy<GameState>({
     skippable: false,
   },
   character: {
+    presets: {
+      left: { x: 400, y: 800 },
+      center: { x: 960, y: 800 },
+      right: { x: 1520, y: 800 },
+    },
     characters: [],
     currentSpeaker: undefined,
   },
-  textbox: {
-    name: '',
-    text: '',
-    visible: true,
-  },
+  textbox: { ...defaultTextBoxState },
   bgm: {
     src: '',
     loop: true,
@@ -90,12 +128,13 @@ export function resetGameState() {
     skippable: false,
   };
   gameState.character = {
+    presets: {
+      left: { x: 400, y: 800 },
+      center: { x: 960, y: 800 },
+      right: { x: 1520, y: 800 },
+    },
     characters: [],
     currentSpeaker: undefined,
   };
-  gameState.textbox = {
-    name: '',
-    text: '',
-    visible: true,
-  };
+  gameState.textbox = { ...defaultTextBoxState };
 }

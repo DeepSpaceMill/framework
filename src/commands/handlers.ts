@@ -7,11 +7,216 @@ import {
 } from '@momoyu-ink/kit';
 import { gameState, resetGameState } from '../state/game';
 import { settingsState } from '../state/settings';
-import { uiActions, GamePage } from '../state/ui';
+import { GamePage } from '../state/ui';
 import { ScenarioCommandSchemaType } from './commands';
 
 // ---------------------------------------------------------------------------
-// Command handlers
+// Text command handlers
+// ---------------------------------------------------------------------------
+
+/** Display text via the text command. */
+export const handleText: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
+  if (cmd.command !== 'text') return;
+
+  if (cmd.clear) {
+    gameState.textbox.text = '';
+  } else if (cmd.newline) {
+    gameState.textbox.text += '\n';
+  }
+
+  if (cmd.name !== undefined) {
+    gameState.textbox.name = cmd.name;
+  }
+
+  gameState.textbox.text += cmd.content;
+
+  // Hold for user click (skippable controls whether it can be fast-forwarded)
+  control.hold();
+};
+
+/** Clear text box content. */
+export const handleTextClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'textClear') return;
+  gameState.textbox.text = '';
+  gameState.textbox.name = '';
+  // auto-advance
+};
+
+/** Configure text box rendering properties. Only updates explicitly provided fields. */
+export const handleTextBox: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'textBox') return;
+  const tb = gameState.textbox;
+  if (cmd.position !== undefined) {
+    tb.x = cmd.position[0];
+    tb.y = cmd.position[1];
+  }
+  if (cmd.printMode !== undefined) tb.printMode = cmd.printMode;
+  if (cmd.printSpeed !== undefined) tb.printSpeed = cmd.printSpeed;
+  if (cmd.fillColor !== undefined) tb.fillColor = cmd.fillColor;
+  if (cmd.lineHeight !== undefined) tb.lineHeight = cmd.lineHeight;
+  if (cmd.indent !== undefined) tb.indent = cmd.indent;
+  if (cmd.stroke !== undefined) tb.stroke = cmd.stroke;
+  if (cmd.shadow !== undefined) tb.shadow = cmd.shadow;
+  if (cmd.strokeColor !== undefined) tb.strokeColor = cmd.strokeColor;
+  if (cmd.strokeWidth !== undefined) tb.strokeWidth = cmd.strokeWidth;
+  if (cmd.shadowColor !== undefined) tb.shadowColor = cmd.shadowColor;
+  if (cmd.shadowOffsetX !== undefined) tb.shadowOffsetX = cmd.shadowOffsetX;
+  if (cmd.shadowOffsetY !== undefined) tb.shadowOffsetY = cmd.shadowOffsetY;
+  if (cmd.shadowBlur !== undefined) tb.shadowBlur = cmd.shadowBlur;
+  if (cmd.shadowWidth !== undefined) tb.shadowWidth = cmd.shadowWidth;
+  // auto-advance
+};
+
+/** Show text box. */
+export const handleTextBoxShow: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'textBoxShow') return;
+  gameState.textbox.visible = true;
+  // auto-advance
+};
+
+/** Hide text box. */
+export const handleTextBoxHide: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'textBoxHide') return;
+  gameState.textbox.visible = false;
+  // auto-advance
+};
+
+// ---------------------------------------------------------------------------
+// Sound command handlers
+// ---------------------------------------------------------------------------
+
+/** Play background music. */
+export const handleBgm: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'bgm') return;
+  gameState.bgm.loop = cmd.loop;
+  gameState.bgm.volume = cmd.volume ?? settingsState.volume_bgm;
+  gameState.bgm.fadeTime = cmd.fadeTime;
+  gameState.bgm.src = cmd.src;
+  // auto-advance
+};
+
+/** Stop background music. */
+export const handleBgmStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'bgmStop') return;
+  gameState.bgm.fadeTime = cmd.fadeTime;
+  gameState.bgm.src = '';
+  // auto-advance
+};
+
+/** Play a sound effect. */
+export const handleSfx: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'sfx') return;
+  // Skip SFX during fast-forward to avoid audio overlap
+  if (skipState.active) return;
+  try {
+    executePluginCommand('audio', {
+      subCommand: 'load',
+      name: `sfx_${Date.now()}`,
+      src: cmd.src,
+      settings: {
+        autoPlay: true,
+        loopRegion: cmd.loop ? [0, -1] : undefined,
+        volume: cmd.volume ?? settingsState.volume_se,
+        fadeTime: cmd.fadeTime,
+      },
+    });
+  } catch (err) {
+    console.error('Failed to play SFX:', err);
+  }
+  // auto-advance
+};
+
+/** Stop all sound effects. */
+export const handleSfxStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'sfxStop') return;
+  try {
+    executePluginCommand('audio', {
+      subCommand: 'release',
+      name: 'sfx',
+      fadeTime: cmd.fadeTime,
+    });
+  } catch (err) {
+    console.error('Failed to stop SFX:', err);
+  }
+  // auto-advance
+};
+
+/** Play a voice clip. */
+export const handleVoice: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'voice') return;
+  const channelName = cmd.name ? `voice_${cmd.name}` : 'voice';
+  try {
+    executePluginCommand('audio', {
+      subCommand: 'load',
+      name: channelName,
+      src: cmd.src,
+      settings: {
+        autoPlay: true,
+        volume: cmd.volume ?? settingsState.volume_voice,
+        fadeTime: 0,
+      },
+    });
+  } catch (err) {
+    console.error('Failed to play voice:', err);
+  }
+  // auto-advance
+};
+
+/** Stop voice playback. */
+export const handleVoiceStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'voiceStop') return;
+  const channelName = cmd.name ? `voice_${cmd.name}` : 'voice';
+  try {
+    executePluginCommand('audio', {
+      subCommand: 'release',
+      name: channelName,
+    });
+  } catch (err) {
+    console.error('Failed to stop voice:', err);
+  }
+  // auto-advance
+};
+
+/** Play sound on a named channel. */
+export const handleSound: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'sound') return;
+  // Skip SE during fast-forward to avoid audio overlap
+  if (skipState.active) return;
+  try {
+    executePluginCommand('audio', {
+      subCommand: 'load',
+      name: cmd.channel,
+      src: cmd.src,
+      settings: {
+        autoPlay: true,
+        loopRegion: cmd.loop ? [0, -1] : undefined,
+        volume: cmd.volume ?? settingsState.volume_se,
+        fadeTime: cmd.fadeTime,
+      },
+    });
+  } catch (err) {
+    console.error(`Failed to play sound on channel ${cmd.channel}:`, err);
+  }
+  // auto-advance
+};
+
+/** Stop sound on a named channel. */
+export const handleSoundStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'soundStop') return;
+  try {
+    executePluginCommand('audio', {
+      subCommand: 'release',
+      name: cmd.channel,
+      fadeTime: cmd.fadeTime,
+    });
+  } catch (err) {
+    console.error(`Failed to stop sound on channel ${cmd.channel}:`, err);
+  }
+  // auto-advance
+};
+
+// ---------------------------------------------------------------------------
+// Background command handlers
 // ---------------------------------------------------------------------------
 
 /** Change background image with optional fade. */
@@ -31,32 +236,61 @@ export const handleSetBgTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
   } else {
     gameState.background.tint = cmd.tint;
   }
-  // auto-advance (no control call)
+  // auto-advance
 };
 
-/** Add or update a character on stage. */
+// ---------------------------------------------------------------------------
+// Character command handlers
+// ---------------------------------------------------------------------------
+
+/** Add a character on stage. */
 export const handleAddChar: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'addchar') return;
   const existingIndex = gameState.character.characters.findIndex((c) => c.name === cmd.name);
   if (existingIndex !== -1) {
     const char = gameState.character.characters[existingIndex];
+
+    let posX = char.x;
+    let posY = char.y;
+    if (cmd.preset) {
+      const presetPos = gameState.character.presets[cmd.preset];
+      if (presetPos) {
+        posX = presetPos.x;
+        posY = presetPos.y;
+      } else {
+        console.warn(`Unknown character position preset: ${cmd.preset}`);
+      }
+    }
+
     char.src = cmd.src;
-    char.x = cmd.x ?? char.x;
-    char.y = cmd.y ?? char.y;
+    char.x = cmd.x ?? posX;
+    char.y = cmd.y ?? posY;
     char.scale = cmd.scale ?? char.scale;
     char.tint = cmd.tint ?? char.tint;
     char.pivot = cmd.pivot ?? char.pivot;
     char.fadeTime = cmd.fadeTime ?? 500;
     char.visible = cmd.visible ?? true;
   } else {
+    let posX = 0;
+    let posY = 0;
+    if (cmd.preset) {
+      const presetPos = gameState.character.presets[cmd.preset];
+      if (presetPos) {
+        posX = presetPos.x;
+        posY = presetPos.y;
+      } else {
+        console.warn(`Unknown character position preset: ${cmd.preset}`);
+      }
+    }
+
     gameState.character.characters.push({
       name: cmd.name,
       src: cmd.src,
-      x: cmd.x ?? 0,
-      y: cmd.y ?? 0,
+      x: cmd.x ?? posX,
+      y: cmd.y ?? posY,
       scale: cmd.scale ?? 1,
       tint: cmd.tint ?? '#fff',
-      pivot: cmd.pivot ?? [0.5, 0.5],
+      pivot: cmd.pivot ?? [0.5, 1],
       fadeTime: cmd.fadeTime ?? 500,
       visible: cmd.visible ?? true,
     });
@@ -64,66 +298,59 @@ export const handleAddChar: CommandHandler<ScenarioCommandSchemaType> = (cmd, _c
   // auto-advance
 };
 
-/** Set text box position. */
-export const handleSetTextBoxPos: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'setTextBoxPos') return;
-  gameState.textbox.x = cmd.x;
-  gameState.textbox.y = cmd.y;
+/** Change an existing character's properties. */
+export const handleCharChange: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'charchange') return;
+  const char = gameState.character.characters.find((c) => c.name === cmd.name);
+  if (!char) {
+    console.warn(`charchange: character "${cmd.name}" not found`);
+    return;
+  }
+  if (cmd.src !== undefined) char.src = cmd.src;
+  if (cmd.x !== undefined) char.x = cmd.x;
+  if (cmd.y !== undefined) char.y = cmd.y;
+  if (cmd.visible !== undefined) char.visible = cmd.visible;
+  if (cmd.scale !== undefined) char.scale = cmd.scale;
+  if (cmd.tint !== undefined) char.tint = cmd.tint;
+  if (cmd.pivot !== undefined) char.pivot = cmd.pivot;
+  if (cmd.fadeTime !== undefined) char.fadeTime = cmd.fadeTime;
   // auto-advance
 };
 
-/** Play audio on a channel. */
-export const handleSound: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'sound') return;
-
-  // Skip SE during fast-forward to avoid audio overlap
-  if (skipState.active && cmd.channel !== 'bgm') return;
-
-  const defaultVolume = settingsState.volume_se;
-
-  // BGM playback is handled via valtio subscribe on gameState.bgm
-  if (cmd.channel !== 'bgm') {
-    try {
-      executePluginCommand('audio', {
-        subCommand: 'load',
-        name: cmd.channel,
-        src: cmd.src,
-        settings: {
-          autoPlay: true,
-          loopRegion: cmd.loop ? [0, -1] : undefined,
-          volume: cmd.volume ?? defaultVolume,
-          fadeTime: cmd.fadeTime ?? 0,
-        },
-      });
-    } catch (err) {
-      console.error(`Failed to play sound on channel ${cmd.channel}:`, err);
-    }
-  } else {
-    gameState.bgm.loop = cmd.loop ?? true;
-    gameState.bgm.volume = cmd.volume ?? settingsState.volume_bgm;
-    gameState.bgm.fadeTime = cmd.fadeTime ?? 0;
-    gameState.bgm.src = cmd.src;
+/** Remove a character from stage. */
+export const handleCharRemove: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'charremove') return;
+  const index = gameState.character.characters.findIndex((c) => c.name === cmd.name);
+  if (index !== -1) {
+    gameState.character.characters.splice(index, 1);
   }
   // auto-advance
 };
 
-/** Stop audio on a channel. */
-export const handleSoundStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'soundStop') return;
-  if (cmd.channel !== 'bgm') {
-    try {
-      executePluginCommand('audio', {
-        subCommand: 'release',
-        name: cmd.channel,
-      });
-    } catch (err) {
-      console.error(`Failed to stop sound on channel ${cmd.channel}:`, err);
-    }
-  } else {
-    gameState.bgm.src = '';
-  }
+/** Remove all characters from stage. */
+export const handleCharClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'charclear') return;
+  gameState.character.characters.length = 0;
   // auto-advance
 };
+
+/** Map a character internal name to a display name (stub — full refactor deferred). */
+export const handleCharName: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'charname') return;
+  // TODO: implement character display name mapping after char system refactor
+  console.warn(`charname: "${cmd.name}" -> "${cmd.to}" (not yet implemented)`);
+  // auto-advance
+};
+
+export const handleCharPreset: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'charpreset') return;
+  gameState.character.presets[cmd.preset] = { x: cmd.x, y: cmd.y };
+  // auto-advance
+};
+
+// ---------------------------------------------------------------------------
+// Flow control command handlers
+// ---------------------------------------------------------------------------
 
 /** Timed wait. */
 export const handleWait: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
@@ -136,14 +363,14 @@ export const handleWaitClick: CommandHandler<ScenarioCommandSchemaType> = (_cmd,
   control.hold();
 };
 
+// ---------------------------------------------------------------------------
+// Misc command handlers
+// ---------------------------------------------------------------------------
+
 /** Leave the stage — navigate away. */
 export const handleLeaveStage: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'leaveStage') return;
-  if (cmd.gotoPage === 'title_nar1_limited') {
-    uiActions.notify('narcissu 1 限定界面尚未实现');
-  } else {
-    getNavigator().navigate(cmd.gotoPage as GamePage);
-  }
+  getNavigator().navigate(cmd.gotoPage as GamePage);
   resetGameState();
   control.unskippable(); // Must be before hold() — prevents skip from advancing after navigation
   control.hold(); // Navigation away — do not advance

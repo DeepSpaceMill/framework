@@ -10,14 +10,28 @@ import {
   StageContextProvider,
   executePluginCommand,
 } from '@momoyu-ink/kit';
-import { useCallback, useContext, useEffect, useMemo, useRef } from 'react';
+import { useCallback, useEffect, useMemo } from 'react';
 import {
+  handleText,
+  handleTextClear,
+  handleTextBox,
+  handleTextBoxShow,
+  handleTextBoxHide,
+  handleBgm,
+  handleBgmStop,
+  handleSfx,
+  handleSfxStop,
+  handleVoice,
+  handleVoiceStop,
+  handleSound,
+  handleSoundStop,
   handleChangeBg,
   handleSetBgTint,
   handleAddChar,
-  handleSetTextBoxPos,
-  handleSound,
-  handleSoundStop,
+  handleCharChange,
+  handleCharRemove,
+  handleCharClear,
+  handleCharName,
   handleWait,
   handleWaitClick,
   handleLeaveStage,
@@ -58,16 +72,37 @@ export function Stage() {
   useEffect(() => {
     const unregFns = [
       stage.registerCommandSchema(ScenarioCommandSchema),
-      stage.registerCommand('changebg', handleChangeBg),
-      stage.registerCommand('setBgTint', handleSetBgTint),
-      stage.registerCommand('addchar', handleAddChar),
-      stage.registerCommand('setTextBoxPos', handleSetTextBoxPos),
+      // Text commands
+      stage.registerCommand('text', handleText),
+      stage.registerCommand('textClear', handleTextClear),
+      stage.registerCommand('textBox', handleTextBox),
+      stage.registerCommand('textBoxShow', handleTextBoxShow),
+      stage.registerCommand('textBoxHide', handleTextBoxHide),
+      // Sound commands
+      stage.registerCommand('bgm', handleBgm),
+      stage.registerCommand('bgmStop', handleBgmStop),
+      stage.registerCommand('sfx', handleSfx),
+      stage.registerCommand('sfxStop', handleSfxStop),
+      stage.registerCommand('voice', handleVoice),
+      stage.registerCommand('voiceStop', handleVoiceStop),
       stage.registerCommand('sound', handleSound),
       stage.registerCommand('soundStop', handleSoundStop),
+      // Background commands
+      stage.registerCommand('changebg', handleChangeBg),
+      stage.registerCommand('setBgTint', handleSetBgTint),
+      // Character commands
+      stage.registerCommand('addchar', handleAddChar),
+      stage.registerCommand('charchange', handleCharChange),
+      stage.registerCommand('charremove', handleCharRemove),
+      stage.registerCommand('charclear', handleCharClear),
+      stage.registerCommand('charname', handleCharName),
+      // Flow control
       stage.registerCommand('wait', handleWait),
       stage.registerCommand('waitclick', handleWaitClick),
+      // Misc
       stage.registerCommand('leaveStage', handleLeaveStage),
       stage.registerCommand('setTitle', handleSetTitle),
+      // Text line handler
       stage.registerTextLine(handleTextLine),
     ];
     return () => unregFns.forEach((fn) => fn());

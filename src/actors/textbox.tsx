@@ -1,6 +1,6 @@
-import { useBeforeHandleCommandCallback, useInterruptCallback, useIsSkipping, type Node } from '@momoyu-ink/kit';
+import { useBeforeHandleCommandCallback, useInterruptCallback, type Node } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
-import { forwardRef, useCallback, useEffect, useImperativeHandle, useRef, useState } from 'react';
+import { useCallback, useEffect, useRef, useState } from 'react';
 import { gameState } from '../state/game';
 import { Button } from '../components/button';
 import { FrameAnimation } from '../components/frame';
@@ -23,7 +23,6 @@ interface TextBoxActorProps {
 export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   const textWindowRef = useRef<Node>(null);
   const progress = useRef(1);
-  const skipping = useIsSkipping();
   const [isHovered, setIsHovered] = useState(false);
 
   const textBoxState = useSnapshot(gameState.textbox);
@@ -128,14 +127,24 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
           ref={textWindowRef}
           text={textBoxState.text}
           fontSize={32}
-          lineHeight={1.5}
+          lineHeight={textBoxState.lineHeight}
           boxWidth={1384}
           boxHeight={110}
-          fillColor="#f0f0f0"
+          fillColor={textBoxState.fillColor}
           x={72}
           y={54}
-          printMode="typewriter"
-          printSpeed={20}
+          printMode={textBoxState.printMode}
+          printSpeed={textBoxState.printSpeed}
+          indent={textBoxState.indent}
+          stroke={textBoxState.stroke}
+          shadow={textBoxState.shadow}
+          strokeColor={textBoxState.strokeColor}
+          strokeWidth={textBoxState.strokeWidth}
+          shadowColor={textBoxState.shadowColor}
+          shadowOffsetX={textBoxState.shadowOffsetX}
+          shadowOffsetY={textBoxState.shadowOffsetY}
+          shadowBlur={textBoxState.shadowBlur}
+          shadowWidth={textBoxState.shadowWidth}
           onStart={() => {
             progress.current = 0;
           }}
