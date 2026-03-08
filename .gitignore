@@ -16,3 +16,6 @@
 
 /dist
 /assets/non-free/**/*
+
+# Engine downloads
+.moyu/
