@@ -1,31 +1,492 @@
 <!DOCTYPE html>
-<html lang="zh-Hans">
+<html lang="zh-CN">
   <head>
     <meta charset="UTF-8" />
-    <link rel="icon" type="image/x-icon" href="src/favicon.ico" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Doufu</title>
+
+    <!-- 基本信息 -->
+    <title>My New Game</title>
+    <meta name="description" content="填写游戏描述" />
+    <meta name="keywords" content="填写关键词" />
+    <meta name="author" content="填写作者" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content="My New Game" />
+    <meta property="og:description" content="填写游戏描述" />
+    <!-- <meta property="og:image" content="/cover.jpg" /> -->
+    <meta property="og:locale" content="zh_CN" />
+
+    <!-- Twitter -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="My New Game" />
+    <meta name="twitter:description" content="填写游戏描述" />
+    <!-- <meta name="twitter:image" content="/cover.jpg" /> -->
+
+    <!-- 主题色 -->
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#282C34" media="(prefers-color-scheme: dark)" />
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" href="/favicon.png" />
+
     <style>
-      body {
+      * {
         margin: 0;
         padding: 0;
-        border: none;
+        box-sizing: border-box;
       }
-      #root {
+
+      html,
+      body {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
+        background-color: #ffffff;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        html,
+        body {
+          background-color: #282c34;
+        }
+
+        .copyright {
+          color: rgba(255, 255, 255, 0.6) !important;
+        }
+      }
+
+      #wrapper {
         width: 100vw;
         height: 100vh;
         display: flex;
         justify-content: center;
         align-items: center;
+        position: relative;
       }
-      #root canvas {
-        outline: none;
+
+      #root {
+        z-index: 10;
+      }
+
+      .copyright {
+        position: fixed;
+        bottom: 10px;
+        left: 0;
+        right: 0;
+        text-align: center;
+        font-size: 12px;
+        color: rgba(0, 0, 0, 0.6);
+        line-height: 1.5;
+        pointer-events: none;
+        z-index: 1000;
+      }
+
+      .copyright a {
+        color: inherit;
+        text-decoration: none;
+        pointer-events: auto;
+      }
+
+      .copyright a:hover {
+        text-decoration: underline;
+      }
+
+      a.link-color-moyu {
+        color: #0b8a7b;
+        text-decoration: none;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        a.link-color-moyu {
+          color: #77eee1;
+        }
+      }
+
+      /* 启动界面 */
+      #start-screen {
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 240, 240, 0.98) 100%);
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        z-index: 9999;
+        transition: opacity 0.8s ease, visibility 0.8s ease;
+      }
+
+      #start-screen.hidden {
+        opacity: 0;
+        visibility: hidden;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        #start-screen {
+          background: linear-gradient(135deg, rgba(40, 44, 52, 0.95) 0%, rgba(30, 33, 39, 0.98) 100%);
+        }
+      }
+
+      .game-title {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: 48px;
+        font-weight: 300;
+        color: #333;
+        margin-bottom: 20px;
+        text-align: center;
+        letter-spacing: 2px;
+        opacity: 0;
+        animation: fadeInDown 1s ease forwards;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .game-title {
+          color: #e0e0e0;
+        }
+      }
+
+      .game-subtitle {
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        font-size: 18px;
+        font-weight: 300;
+        color: #666;
+        margin-bottom: 60px;
+        opacity: 0;
+        animation: fadeInDown 1s ease 0.2s forwards;
+      }
+
+      @media (prefers-color-scheme: dark) {
+        .game-subtitle {
+          color: #999;
+        }
+      }
+
+      .start-button {
+        padding: 16px 48px;
+        font-size: 18px;
+        font-weight: 400;
+        color: #fff;
+        background: linear-gradient(135deg, #77eee1 0%, #07534a 100%);
+        border: none;
+        border-radius: 50px;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px hsla(173, 76%, 66%, 0.4);
+        opacity: 0;
+        animation: fadeInUp 1s ease 0.4s forwards;
+        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      }
+
+      .start-button:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px hsla(173, 76%, 66%, 0.6);
+      }
+
+      .start-button:active {
+        transform: translateY(0);
+      }
+
+      .copyright {
+        z-index: 0;
+      }
+
+      @keyframes fadeInDown {
+        from {
+          opacity: 0;
+          transform: translateY(-20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @keyframes fadeInUp {
+        from {
+          opacity: 0;
+          transform: translateY(20px);
+        }
+        to {
+          opacity: 1;
+          transform: translateY(0);
+        }
+      }
+
+      @media (max-width: 768px) {
+        .game-title {
+          font-size: 32px;
+        }
+        .game-subtitle {
+          font-size: 16px;
+        }
+        .start-button {
+          padding: 14px 40px;
+          font-size: 16px;
+        }
       }
     </style>
   </head>
 
   <body>
-    <div id="root"></div>
-    <script type="module" src="./src/index.tsx"></script>
-  </body>
+    <noscript>
+      <div
+        style="
+          display: flex;
+          justify-content: center;
+          align-items: center;
+          height: 100vh;
+          color: #666;
+          text-align: center;
+          padding: 20px;
+          font-family: sans-serif;
+        "
+      >
+        <p>此游戏需要启用 JavaScript 才能运行。<br />Please enable JavaScript to play this game.</p>
+      </div>
+    </noscript>
+
+    <!-- 启动界面 -->
+    <div id="start-screen">
+      <h1 class="game-title">My New Game</h1>
+      <button class="start-button" id="start-button">开始游戏</button>
+    </div>
+
+    <div id="wrapper">
+      <div id="root"></div>
+    </div>
+    <div class="copyright">
+      使用 <a href="https://momoyu.ink" target="_blank" rel="noopener noreferrer">末语引擎</a> 呈现
+    </div>
+    
+    <script type="module">
+      const urlParams = new URLSearchParams(window.location.search);
+      window.__moyu_entry = urlParams.get('entry') || "http://localhost:6020/index.json";
+
+      let loading = true;
+      let startAfterLoad = false;
+
+      // 判断设备类型
+      function checkBrowserType() {
+        const ua = navigator.userAgent.toLowerCase();
+        const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
+        return isMobile ? 'mobile' : 'desktop';
+      }
+
+      // 获取 canvas 实际渲染尺寸
+      function getCanvasActualSize(canvas) {
+        console.info('Canvas size:', { width: canvas.width, height: canvas.height, dpr: window.devicePixelRatio });
+        return {
+          width: canvas.width / window.devicePixelRatio,
+          height: canvas.height / window.devicePixelRatio,
+        };
+      }
+
+      // 桌面端适配
+      function adaptForDesktop(canvas) {
+        const rootEl = document.getElementById('root');
+        const actualSize = getCanvasActualSize(canvas);
+
+        console.info('[Desktop] Canvas actual size:', actualSize);
+
+        rootEl.style.width = `${actualSize.width}px`;
+        rootEl.style.height = `${actualSize.height}px`;
+        rootEl.style.overflow = 'hidden';
+      }
+
+      // 移动端适配
+      function adaptForMobile(canvas) {
+        const rootEl = document.getElementById('root');
+        const actualSize = getCanvasActualSize(canvas);
+
+        // 游戏内容尺寸
+        const gameWidth = actualSize.width;
+        const gameHeight = actualSize.height;
+        const gameIsLandscape = gameWidth > gameHeight;
+
+        // 视口尺寸
+        const viewportWidth = window.innerWidth;
+        const viewportHeight = window.innerHeight;
+        const viewportIsLandscape = viewportWidth > viewportHeight;
+
+        console.info('[Mobile] Game size:', { width: gameWidth, height: gameHeight, isLandscape: gameIsLandscape });
+        console.info('[Mobile] Viewport size:', {
+          width: viewportWidth,
+          height: viewportHeight,
+          isLandscape: viewportIsLandscape,
+        });
+
+        // 判断是否需要旋转：游戏横屏但设备竖屏，或游戏竖屏但设备横屏
+        const needRotate = gameIsLandscape !== viewportIsLandscape;
+
+        let scale, translateX, translateY;
+
+        if (needRotate) {
+          // 需要旋转 90 度
+          // 旋转后，游戏的宽度会占据视口的高度，游戏的高度会占据视口的宽度
+          const scaleX = viewportHeight / gameWidth;
+          const scaleY = viewportWidth / gameHeight;
+          scale = Math.min(scaleX, scaleY);
+
+          // 旋转后需要平移，让内容居中
+          translateX = viewportWidth;
+          translateY = viewportHeight / 2 - (gameWidth * scale) / 2;
+
+          console.info('[Mobile] Rotate 90deg, scale:', scale);
+        } else {
+          // 不需要旋转
+          const scaleX = viewportWidth / gameWidth;
+          const scaleY = viewportHeight / gameHeight;
+          scale = Math.min(scaleX, scaleY);
+
+          translateX = viewportWidth / 2 - (gameWidth * scale) / 2;
+          translateY = 0;
+
+          console.info('[Mobile] No rotation, scale:', scale);
+        }
+
+        // 应用样式
+        rootEl.style.width = `${gameWidth}px`;
+        rootEl.style.height = `${gameHeight}px`;
+        rootEl.style.transformOrigin = 'top left';
+        rootEl.style.overflow = 'hidden';
+        rootEl.style.position = 'absolute';
+        rootEl.style.left = '0';
+        rootEl.style.top = '0';
+
+        if (needRotate) {
+          rootEl.style.transform = `translate(${translateX}px, ${translateY}px) rotate(90deg) scale(${scale})`;
+        } else {
+          rootEl.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
+        }
+      }
+
+      // 设置 canvas 监听
+      function setupCanvasObserver() {
+        const rootEl = document.getElementById('root');
+        const browserType = checkBrowserType();
+
+        console.info('[Adapt] Browser type:', browserType);
+
+        // 使用 MutationObserver 监听 canvas 的出现
+        const mutationObserver = new MutationObserver((mutations) => {
+          for (const mutation of mutations) {
+            for (const node of mutation.addedNodes) {
+              if (node.tagName === 'CANVAS') {
+                console.info('[Adapt] Canvas detected');
+
+                // 找到 canvas 后，开始监听尺寸变化
+                const canvas = node;
+
+                // 立即执行一次适配
+                if (browserType === 'desktop') {
+                  adaptForDesktop(canvas);
+                } else {
+                  adaptForMobile(canvas);
+                }
+
+                // 使用 ResizeObserver 监听 canvas 尺寸变化
+                const resizeObserver = new ResizeObserver(() => {
+                  console.info('[Adapt] Canvas size changed');
+                  if (browserType === 'desktop') {
+                    adaptForDesktop(canvas);
+                  } else {
+                    adaptForMobile(canvas);
+                  }
+                });
+
+                resizeObserver.observe(canvas);
+
+                // 移动端监听屏幕旋转
+                if (browserType === 'mobile') {
+                  window.addEventListener('orientationchange', () => {
+                    console.info('[Adapt] Orientation changed');
+                    setTimeout(() => {
+                      adaptForMobile(canvas);
+                    }, 100);
+                  });
+
+                  window.addEventListener('resize', () => {
+                    console.info('[Adapt] Window resized');
+                    adaptForMobile(canvas);
+                  });
+                }
+
+                // 停止监听 DOM 变化
+                mutationObserver.disconnect();
+                break;
+              }
+            }
+          }
+        });
+
+        // 开始监听
+        mutationObserver.observe(rootEl, {
+          childList: true,
+          subtree: true,
+        });
+      }
+
+      // 点击开始按钮后初始化游戏
+      const startButton = document.getElementById('start-button');
+      const startScreen = document.getElementById('start-screen');
+
+      function startGame() {
+        // 淡出启动界面
+        startScreen.classList.add('hidden');
+
+        // 等待动画完成后初始化游戏
+        setTimeout(() => {
+          moyu.moyu_init('root');
+          setupCanvasObserver();
+        }, 600);
+        setTimeout(() => {
+          // 初始化完成后，设置 canvas 监听
+        }, 1000);
+
+        window.onbeforeunload = function (e) {
+          return '';
+        };
+      }
+
+      startButton.addEventListener('click', () => {
+        if (loading) {
+          startAfterLoad = true;
+          startButton.disabled = true;
+          startButton.textContent = '正在加载，请稍候...';
+          return;
+        }
+
+        startGame();
+      });
+
+      import * as moyu from './moyu.js';
+
+      // 初始化引擎（但不立即启动）
+      window.addEventListener('load', async () => {
+        await moyu.default();
+        window.moyu = {
+          pushCommand(name, args) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            return moyu[name](...args);
+          },
+          executeNodeCommand(...args) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            return moyu.execute_node_command(...args);
+          },
+          executePluginCommand(...args) {
+            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
+            return moyu.execute_plugin_command(...args);
+          },
+        };
+
+        loading = false;
+        if (startAfterLoad) {
+          startGame();
+        }
+      });
+    </script>
+</body>
 </html>
