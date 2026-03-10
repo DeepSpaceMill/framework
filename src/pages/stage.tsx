@@ -37,6 +37,7 @@ import {
   handleLeaveStage,
   handleSetTitle,
   handleTextLine,
+  handleCharPreset,
 } from '../commands/handlers';
 import { uiActions } from '../state/ui';
 import { gameState } from '../state/game';
@@ -96,6 +97,7 @@ export function Stage() {
       stage.registerCommand('charremove', handleCharRemove),
       stage.registerCommand('charclear', handleCharClear),
       stage.registerCommand('charname', handleCharName),
+      stage.registerCommand('charpreset', handleCharPreset),
       // Flow control
       stage.registerCommand('wait', handleWait),
       stage.registerCommand('waitclick', handleWaitClick),
