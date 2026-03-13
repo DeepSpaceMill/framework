@@ -1,4 +1,7 @@
 {
+  "json.schemaDownload.trustedDomains": {
+    "https://gist.githubusercontent.com": true
+  },
   "editor.defaultFormatter": "biomejs.biome",
   "[json]": {
     "editor.defaultFormatter": "biomejs.biome"
@@ -14,5 +17,8 @@
   },
   "[html]": {
     "editor.defaultFormatter": "biomejs.biome"
+  },
+  "[sixu]": {
+    "editor.defaultFormatter": "icemic.sixu-vscode-extension"
   }
 }
