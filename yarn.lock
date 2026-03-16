@@ -250,6 +250,7 @@ __metadata:
     "@types/react": "npm:^19.2.7"
     "@types/react-dom": "npm:^19.2.3"
     "@types/react-refresh": "npm:^0.14.7"
+    "@zip.js/zip.js": "npm:^2.8.23"
     lodash.debounce: "npm:^4.0.8"
     picocolors: "npm:^1.1.1"
     react: "npm:19.2.1"
@@ -822,6 +823,13 @@ __metadata:
   dependencies:
     "@types/node": "npm:*"
   checksum: 10c0/3fd77c9e4e05c24ce42bfc7647f7506b08c40a40fe2aea236ef6d4e96fc7cb4006a81ed1b28ec9c457e177a74a72924f4768b7b4652680b42dfd52bc380e15f9
+  languageName: node
+  linkType: hard
+
+"@zip.js/zip.js@npm:^2.8.23":
+  version: 2.8.23
+  resolution: "@zip.js/zip.js@npm:2.8.23"
+  checksum: 10c0/ed7902089da87aad301b24904a40b4ca6d6d55397d24533d9fc0db122cff69fd60ec62e47c32c62c5e1c78cbe3002748d59e604c4c477991c4d0ff3d1ef8a63f
   languageName: node
   linkType: hard
 

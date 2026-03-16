@@ -12,6 +12,7 @@
     "engine:update": "node --experimental-default-type=module scripts/engine-update.ts",
     "engine:native": "node --experimental-default-type=module scripts/engine-run.ts --native",
     "engine:web": "node --experimental-default-type=module scripts/engine-run.ts --web",
+    "engine:pack": "node --experimental-default-type=module scripts/engine-pack.ts",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Icemic <bingfeng.web@gmail.com>",
@@ -37,6 +38,7 @@
     "@types/react": "^19.2.7",
     "@types/react-dom": "^19.2.3",
     "@types/react-refresh": "^0.14.7",
+    "@zip.js/zip.js": "^2.8.23",
     "picocolors": "^1.1.1",
     "react-dom": "^19.2.1",
     "react-refresh": "^0.18.0",
