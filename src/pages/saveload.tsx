@@ -49,7 +49,7 @@ export function SaveLoad() {
 
           // Check the current page, if loading from the title screen, then navigate to the game stage
           if (navigation.getCurrentPage() === 'title') {
-            navigation.navigate('stage');
+            navigation.navigate('stage', { isNewGame: false });
           }
 
           navigation.clearOverlays();
