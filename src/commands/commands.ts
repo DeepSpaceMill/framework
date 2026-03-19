@@ -257,6 +257,29 @@ const SetTitleCommandSchema = z.object({
   text: z.string(),
 });
 
+/* Selection Commands */
+
+const SelectAddCommandSchema = z
+  .object({
+    command: z.literal('selectAdd'),
+    text: z.string().describe('Display text for the selection option'),
+    value: z.union([z.string(), z.number()]).describe('Value associated with the selection option'),
+  })
+  .describe('Add a selection option to the pending list');
+
+const SelectShowCommandSchema = z
+  .object({
+    command: z.literal('selectShow'),
+    saveTo: z.string().optional().describe('Variable name to save the selected value to (not yet implemented)'),
+  })
+  .describe('Show all pending selection options and wait for the player to choose');
+
+const SelectClearCommandSchema = z
+  .object({
+    command: z.literal('selectClear'),
+  })
+  .describe('Clear all pending selection options without showing them');
+
 export const ScenarioCommandSchema = z.discriminatedUnion('command', [
   TextCommandSchema,
   TextClearCommandSchema,
@@ -283,6 +306,9 @@ export const ScenarioCommandSchema = z.discriminatedUnion('command', [
   WaitClickCommandSchema,
   LeaveStageCommandSchema,
   SetTitleCommandSchema,
+  SelectAddCommandSchema,
+  SelectShowCommandSchema,
+  SelectClearCommandSchema,
 ]);
 
 export type ScenarioCommandSchemaType = z.infer<typeof ScenarioCommandSchema>;

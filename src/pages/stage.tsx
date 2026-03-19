@@ -38,11 +38,15 @@ import {
   handleSetTitle,
   handleTextLine,
   handleCharPreset,
+  handleSelectAdd,
+  handleSelectShow,
+  handleSelectClear,
 } from '../commands/handlers';
 import { uiActions } from '../state/ui';
 import { gameState } from '../state/game';
 import { BackgroundActor } from '../actors/background';
 import { CharacterActor } from '../actors/character';
+import { SelectionActor } from '../actors/selection';
 import { TextBoxActor, TextBoxButton } from '../actors/textbox';
 import { BGMActor } from '../actors/bgm';
 import { ScenarioCommandSchema } from '../commands/commands';
@@ -104,6 +108,10 @@ export function Stage() {
       // Misc
       stage.registerCommand('leaveStage', handleLeaveStage),
       stage.registerCommand('setTitle', handleSetTitle),
+      // Selection commands
+      stage.registerCommand('selectAdd', handleSelectAdd),
+      stage.registerCommand('selectShow', handleSelectShow),
+      stage.registerCommand('selectClear', handleSelectClear),
       // Text line handler
       stage.registerTextLine(handleTextLine),
     ];
@@ -114,6 +122,8 @@ export function Stage() {
   const { saveToSlot, loadFromSlot, checkAutoSaveExists } = useSaveLoad();
 
   const handleClick = useCallback(() => {
+    // Don't advance story while waiting for player to select a choice
+    if (gameState.selection.visible) return;
     if (!gameState.textbox.visible) {
       gameState.textbox.visible = true;
       return;
@@ -261,6 +271,7 @@ export function Stage() {
       <CharacterActor />
       <TextBoxActor onButtonClick={handleButtonClick} />
       <BGMActor />
+      <SelectionActor />
     </StageContextProvider>
   );
 }

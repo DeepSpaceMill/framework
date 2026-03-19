@@ -29,7 +29,6 @@ export const handleText: CommandHandler<ScenarioCommandSchemaType> = (cmd, contr
   }
 
   gameState.textbox.text += cmd.content;
-
   // Hold for user click (skippable controls whether it can be fast-forwarded)
   control.hold();
 };
@@ -380,6 +379,36 @@ export const handleLeaveStage: CommandHandler<ScenarioCommandSchemaType> = (cmd,
 export const handleSetTitle: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'setTitle') return;
   gameState.story.title = cmd.text;
+  // auto-advance
+};
+
+// ---------------------------------------------------------------------------
+// Selection command handlers
+// ---------------------------------------------------------------------------
+
+/** Add a selection option to the pending list. */
+export const handleSelectAdd: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'selectAdd') return;
+  gameState.selection.options.push({ text: cmd.text, value: cmd.value });
+  // auto-advance
+};
+
+/** Show all pending selection options and wait for the player to choose. */
+export const handleSelectShow: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
+  if (cmd.command !== 'selectShow') return;
+  gameState.selection.saveTo = cmd.saveTo;
+  // uncomment this if you want the textbox to hide during selection
+  // gameState.textbox.visible = false;
+  gameState.selection.visible = true;
+  control.unskippable(); // Must be before hold() — prevents skip from bypassing the selection
+  control.hold();
+};
+
+/** Clear all pending selection options without showing them. */
+export const handleSelectClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'selectClear') return;
+  gameState.selection.options.length = 0;
+  gameState.selection.saveTo = undefined;
   // auto-advance
 };
 

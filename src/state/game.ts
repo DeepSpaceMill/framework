@@ -65,6 +65,17 @@ export interface BGMState {
   fadeTime?: number;
 }
 
+export interface SelectionOption {
+  text: string;
+  value: string | number;
+}
+
+export interface SelectionState {
+  visible: boolean;
+  options: SelectionOption[];
+  saveTo?: string;
+}
+
 // Main game state interface
 export interface GameState {
   story: StoryState;
@@ -72,6 +83,7 @@ export interface GameState {
   character: CharacterState;
   textbox: TextBoxState;
   bgm: BGMState;
+  selection: SelectionState;
 }
 
 // Default textbox state values
@@ -119,6 +131,11 @@ export const gameState = proxy<GameState>({
     src: '',
     loop: true,
   },
+  selection: {
+    visible: false,
+    options: [],
+    saveTo: undefined,
+  },
 });
 
 export function resetGameState() {
@@ -137,4 +154,5 @@ export function resetGameState() {
     currentSpeaker: undefined,
   };
   gameState.textbox = { ...defaultTextBoxState };
+  gameState.selection = { visible: false, options: [], saveTo: undefined };
 }
