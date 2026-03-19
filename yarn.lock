@@ -236,11 +236,28 @@ __metadata:
   languageName: node
   linkType: hard
 
+"@momoyu-ink/cli@npm:^0.1.0":
+  version: 0.1.0
+  resolution: "@momoyu-ink/cli@npm:0.1.0"
+  dependencies:
+    "@zip.js/zip.js": "npm:^2.8.23"
+    citty: "npm:^0.2.1"
+    consola: "npm:^3.4.2"
+    jiti: "npm:^2.4.2"
+    picocolors: "npm:^1.1.1"
+    tar: "npm:^7.4.3"
+  bin:
+    moyu: dist/index.js
+  checksum: 10c0/d2e6d8bc4888593ac257cfe5159d8c6cd27e4b6851b7a54ffd42364ea0a3e39d5889129899237be15cf361ab590bb3f616d23dd9c3968a28cecfca2b19d65484
+  languageName: node
+  linkType: hard
+
 "@momoyu-ink/framework@workspace:.":
   version: 0.0.0-use.local
   resolution: "@momoyu-ink/framework@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^2.1.4"
+    "@momoyu-ink/cli": "npm:^0.1.0"
     "@momoyu-ink/kit": "npm:^0.3.0"
     "@rspack/cli": "npm:^1.0.14"
     "@rspack/core": "npm:^1.0.14"
@@ -250,14 +267,11 @@ __metadata:
     "@types/react": "npm:^19.2.7"
     "@types/react-dom": "npm:^19.2.3"
     "@types/react-refresh": "npm:^0.14.7"
-    "@zip.js/zip.js": "npm:^2.8.23"
     lodash.debounce: "npm:^4.0.8"
-    picocolors: "npm:^1.1.1"
     react: "npm:19.2.1"
     react-dom: "npm:^19.2.1"
     react-error-boundary: "npm:^6.0.0"
     react-refresh: "npm:^0.18.0"
-    tar: "npm:^7.4.3"
     typescript: "npm:^5.9.3"
     valtio: "npm:^2.1.7"
     zod: "npm:^4.2.0"
@@ -1153,6 +1167,13 @@ __metadata:
   languageName: node
   linkType: hard
 
+"citty@npm:^0.2.1":
+  version: 0.2.1
+  resolution: "citty@npm:0.2.1"
+  checksum: 10c0/504ac5aeb076f750bf5f25d40c730083e8ed6112eac2f00dbe341a223c46ad16893ce73dfdb55b2d0da505100b9678968ee0443637c45b21917db48daa5a6977
+  languageName: node
+  linkType: hard
+
 "clean-stack@npm:^2.0.0":
   version: 2.2.0
   resolution: "clean-stack@npm:2.2.0"
@@ -1236,6 +1257,13 @@ __metadata:
   version: 2.0.0
   resolution: "connect-history-api-fallback@npm:2.0.0"
   checksum: 10c0/90fa8b16ab76e9531646cc70b010b1dbd078153730c510d3142f6cf07479ae8a812c5a3c0e40a28528dd1681a62395d0cfdef67da9e914c4772ac85d69a3ed87
+  languageName: node
+  linkType: hard
+
+"consola@npm:^3.4.2":
+  version: 3.4.2
+  resolution: "consola@npm:3.4.2"
+  checksum: 10c0/7cebe57ecf646ba74b300bcce23bff43034ed6fbec9f7e39c27cee1dc00df8a21cd336b466ad32e304ea70fba04ec9e890c200270de9a526ce021ba8a7e4c11a
   languageName: node
   linkType: hard
 
@@ -2173,6 +2201,15 @@ __metadata:
     "@pkgjs/parseargs":
       optional: true
   checksum: 10c0/6acc10d139eaefdbe04d2f679e6191b3abf073f111edf10b1de5302c97ec93fffeb2fdd8681ed17f16268aa9dd4f8c588ed9d1d3bffbbfa6e8bf897cbb3149b9
+  languageName: node
+  linkType: hard
+
+"jiti@npm:^2.4.2":
+  version: 2.6.1
+  resolution: "jiti@npm:2.6.1"
+  bin:
+    jiti: lib/jiti-cli.mjs
+  checksum: 10c0/79b2e96a8e623f66c1b703b98ec1b8be4500e1d217e09b09e343471bbb9c105381b83edbb979d01cef18318cc45ce6e153571b6c83122170eefa531c64b6789b
   languageName: node
   linkType: hard
 
