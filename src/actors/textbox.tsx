@@ -66,9 +66,11 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   // Register interrupt callback so user clicks finish printing before advancing
   useInterruptCallback(tryFinishPrinting);
 
-  // clear text before next command is executed
-  useBeforeHandleCommandCallback(() => {
-    if (gameState.textbox.shouldClear) {
+  // Clear text before the next command is executed, unless the next command is
+  // a selectAdd/selectShow — in that case keep the text so it remains visible
+  // during the selection phase.
+  useBeforeHandleCommandCallback(({ command }) => {
+    if (gameState.textbox.shouldClear && command !== 'selectAdd' && command !== 'selectShow') {
       gameState.textbox.text = '';
     }
   });
