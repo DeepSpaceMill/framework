@@ -2,6 +2,7 @@ import { useNavigation, animated, useTransition, useSoundEffect } from '@momoyu-
 import { uiActions } from '../state/ui';
 import { Button } from '../components/button';
 import { executePluginCommand } from '@momoyu-ink/kit';
+import { resetGameState } from '../state/game';
 
 export function Menu() {
   const navigation = useNavigation();
@@ -49,6 +50,7 @@ export function Menu() {
   const handleToMainMenu = () => {
     startButtonSound();
     uiActions.confirm('确定要返回主菜单吗？', () => {
+      resetGameState();
       navigation.clearOverlays();
       navigation.navigate('title');
     });

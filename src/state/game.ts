@@ -86,29 +86,7 @@ export interface GameState {
   selection: SelectionState;
 }
 
-// Default textbox state values
-const defaultTextBoxState: TextBoxState = {
-  name: '',
-  text: '',
-  visible: true,
-  printMode: 'typewriter',
-  printSpeed: 20,
-  fillColor: '#f0f0f0',
-  lineHeight: 1.5,
-  indent: 0,
-  stroke: false,
-  shadow: false,
-  strokeColor: '#000000',
-  strokeWidth: 2,
-  shadowColor: '#000000',
-  shadowOffsetX: 0,
-  shadowOffsetY: 0,
-  shadowBlur: 0,
-  shadowWidth: 0,
-};
-
-// Create the main game state store using valtio
-export const gameState = proxy<GameState>({
+const gameStateDefaults: GameState = {
   story: {
     title: '',
   },
@@ -126,7 +104,25 @@ export const gameState = proxy<GameState>({
     characters: [],
     currentSpeaker: undefined,
   },
-  textbox: { ...defaultTextBoxState },
+  textbox: {
+    name: '',
+    text: '',
+    visible: true,
+    printMode: 'typewriter',
+    printSpeed: 20,
+    fillColor: '#f0f0f0',
+    lineHeight: 1.5,
+    indent: 0,
+    stroke: false,
+    shadow: false,
+    strokeColor: '#000000',
+    strokeWidth: 2,
+    shadowColor: '#000000',
+    shadowOffsetX: 0,
+    shadowOffsetY: 0,
+    shadowBlur: 0,
+    shadowWidth: 0,
+  },
   bgm: {
     src: '',
     loop: true,
@@ -136,23 +132,11 @@ export const gameState = proxy<GameState>({
     options: [],
     saveTo: undefined,
   },
-});
+};
+
+// Create the main game state store using valtio
+export const gameState = proxy<GameState>(JSON.parse(JSON.stringify(gameStateDefaults)));
 
 export function resetGameState() {
-  gameState.background = {
-    src: '',
-    fadeTime: 1000,
-    skippable: false,
-  };
-  gameState.character = {
-    presets: {
-      left: { x: 400, y: 800 },
-      center: { x: 960, y: 800 },
-      right: { x: 1520, y: 800 },
-    },
-    characters: [],
-    currentSpeaker: undefined,
-  };
-  gameState.textbox = { ...defaultTextBoxState };
-  gameState.selection = { visible: false, options: [], saveTo: undefined };
+  Object.assign(gameState, JSON.parse(JSON.stringify(gameStateDefaults)));
 }
