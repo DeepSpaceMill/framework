@@ -7,7 +7,7 @@ import { uiActions } from './state/ui';
 import { Notification } from './components/notification';
 
 function Main() {
-  const logError = (error: Error, info: React.ErrorInfo) => {
+  const logError = (error: unknown, info: React.ErrorInfo) => {
     console.error('react error:', error);
     console.error(info.componentStack);
   };
