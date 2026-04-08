@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>FishFlow Preview</title>
+    <style>
+      * {
+        box-sizing: border-box;
+        margin: 0;
+        padding: 0;
+      }
+
+      html,
+      body,
+      #root {
+        width: 100%;
+        height: 100%;
+      }
+
+      html,
+      body {
+        overflow: hidden;
+        background: #000;
+      }
+
+      #root {
+        position: fixed;
+        inset: 0;
+      }
+
+      canvas {
+        display: block;
+      }
+    </style>
+  </head>
+
+  <body>
+    <noscript>
+      <div
+        style="display:flex;align-items:center;justify-content:center;height:100vh;padding:24px;color:#666;font-family:sans-serif;text-align:center"
+      >
+        <p>此页面需要启用 JavaScript 才能运行预览。</p>
+      </div>
+    </noscript>
+
+    <div id="root"></div>
+
+    <script type="module">
+      const urlParams = new URLSearchParams(window.location.search);
+      window.__moyu_entry = urlParams.get('entry') || '/index.json';
+
+      import * as moyu from './moyu.js';
+
+      window.addEventListener('load', async () => {
+        await moyu.default();
+        window.moyu = {
+          pushCommand(name, args) {
+            return moyu[name](...args);
+          },
+          executeNodeCommand(...args) {
+            return moyu.execute_node_command(...args);
+          },
+          executePluginCommand(...args) {
+            return moyu.execute_plugin_command(...args);
+          },
+        };
+
+        moyu.moyu_init('root');
+      });
+    </script>
+  </body>
+</html>
