@@ -5,6 +5,7 @@ import { Stage } from './pages/stage';
 import { Dialog } from './components/dialog';
 import { Menu } from './pages/menu';
 import { Title } from './pages/title';
+import { Backlog } from './pages/backlog';
 
 // Initialize the navigator singleton
 export const navigator = createStackNavigator({
@@ -25,7 +26,7 @@ export const navigator = createStackNavigator({
     },
     settings: Settings,
     menu: Menu,
-    history: () => null,
+    backlog: Backlog,
     confirm: {
       component: Dialog,
       requiredParams: ['message'],

@@ -1,4 +1,4 @@
-import { nextLine, useSkipBlocker } from '@momoyu-ink/kit';
+import { executePluginCommand, nextLine, useSkipBlocker } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { useCallback } from 'react';
 import { gameState } from '../state/game';
@@ -23,8 +23,14 @@ export function SelectionActor() {
   useSkipBlocker(blockSkipDuringSelection);
 
   const handleSelect = (value: string | number) => {
-    // Log selected value (saveTo is not yet implemented)
-    console.log(`[selectShow] saveTo = ${gameState.selection.saveTo ?? '(none)'}, selected value = ${value} (not yet implemented)`);
+    if (selectionState.saveTo) {
+      executePluginCommand('scenario', {
+        subCommand: 'setVariable',
+        name: selectionState.saveTo,
+        value,
+      });
+    }
+
     gameState.selection.visible = false;
     gameState.selection.options.length = 0;
     gameState.selection.saveTo = undefined;

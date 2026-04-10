@@ -12,7 +12,7 @@ export enum TextBoxButton {
   LOAD = 'LOAD',
   AUTO = 'AUTO',
   // SKIP = 'SKIP',
-  HIST = 'HIST',
+  LOG = 'LOG',
   MENU = 'MENU',
 }
 
@@ -107,7 +107,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
             TextBoxButton.LOAD,
             TextBoxButton.AUTO,
             // TextBoxButton.SKIP,
-            TextBoxButton.HIST,
+            TextBoxButton.LOG,
             TextBoxButton.MENU,
           ].map((button, index) => (
             <Button

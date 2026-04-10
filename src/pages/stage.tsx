@@ -9,6 +9,7 @@ import {
   createStage,
   StageContextProvider,
   executePluginCommand,
+  WheelEvent,
 } from '@momoyu-ink/kit';
 import { useCallback, useEffect, useMemo } from 'react';
 import {
@@ -122,6 +123,7 @@ export function Stage() {
   const { saveToSlot, loadFromSlot, checkAutoSaveExists } = useSaveLoad();
 
   const handleClick = useCallback(() => {
+    if (navigation.getOverlayStack().length > 0) return;
     // Don't advance story while waiting for player to select a choice
     if (gameState.selection.visible) return;
     if (!gameState.textbox.visible) {
@@ -132,7 +134,7 @@ export function Stage() {
     if (!stage.tryInterrupt()) {
       void nextLine();
     }
-  }, []);
+  }, [navigation]);
 
   useEffect(() => {
     return addEventListener('mousedown', (_: MouseEvent) => {
@@ -195,8 +197,8 @@ export function Stage() {
         // case TextBoxButton.SKIP:
         //   uiActions.notify('跳过模式切换');
         //   break;
-        case TextBoxButton.HIST:
-          uiActions.notify('历史记录功能待实现');
+        case TextBoxButton.LOG:
+          navigation.pushOverlay('backlog');
           break;
         case TextBoxButton.MENU:
           navigation.pushOverlay('menu');
@@ -264,6 +266,15 @@ export function Stage() {
       handleClick();
     });
   }, [handleClick]);
+
+  useEffect(() => {
+    return addEventListener('wheel', (event: WheelEvent) => {
+      if (event.deltaY <= 0) return;
+      if (navigation.getCurrentPage() !== 'stage') return;
+      if (navigation.getOverlayStack().length > 0) return;
+      navigation.pushOverlay('backlog');
+    });
+  }, [navigation]);
 
   return (
     <StageContextProvider stage={stage}>

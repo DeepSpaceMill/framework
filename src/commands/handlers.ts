@@ -8,7 +8,13 @@ import {
 import { gameState, resetGameState } from '../state/game';
 import { settingsState } from '../state/settings';
 import { GamePage } from '../state/ui';
+import { writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
 import { ScenarioCommandSchemaType } from './commands';
+
+function recordBacklog(control: { record(meta: Record<string, any>): string }, meta: Record<string, any>) {
+  writeCurrentGameStateToScenario();
+  control.record(meta);
+}
 
 // ---------------------------------------------------------------------------
 // Text command handlers
@@ -400,6 +406,10 @@ export const handleSelectShow: CommandHandler<ScenarioCommandSchemaType> = (cmd,
   // uncomment this if you want the textbox to hide during selection
   // gameState.textbox.visible = false;
   gameState.selection.visible = true;
+  recordBacklog(control, {
+    kind: 'selection',
+    options: gameState.selection.options.map((option) => option.text),
+  });
   control.unskippable(); // Must be before hold() — prevents skip from bypassing the selection
   control.hold();
 };
@@ -432,6 +442,12 @@ export const handleTextLine: TextLineHandler = (e, control) => {
 
   gameState.textbox.shouldClear = !e.tailing?.includes('+');
   gameState.textbox.shouldAddNewline = !e.tailing?.includes('&');
+
+  recordBacklog(control, {
+    kind: 'text',
+    speaker: e.leading || '',
+    text: e.text || '',
+  });
 
   if (e.tailing?.includes('!')) {
     // Tailing `!` means auto-advance immediately

@@ -1,7 +1,6 @@
 import { executePluginCommand } from '@momoyu-ink/kit';
 import { useCallback, useEffect, useState } from 'react';
-import { snapshot } from 'valtio';
-import { gameState, type GameState } from '../state/game';
+import { restoreGameStateFromScenario, writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
 
 // Engine save game interface
 interface GameSave {
@@ -59,15 +58,7 @@ export function useSaveLoad() {
 
   const saveToSlot = useCallback(
     async (slotId: string) => {
-      const currentGameState = snapshot(gameState);
-
-      // Save game state to engine variables before saving
-      await executePluginCommand('scenario', {
-        subCommand: 'setVariables',
-        variables: {
-          gameState: currentGameState as any,
-        },
-      });
+      const currentGameState = writeCurrentGameStateToScenario();
 
       // Use engine save functionality
       await executePluginCommand('scenario', {
@@ -94,22 +85,7 @@ export function useSaveLoad() {
         overwrite: true,
       });
 
-      // Get the loaded game state from engine variables
-      const loadedGameState = (await executePluginCommand('scenario', {
-        subCommand: 'getVariable',
-        name: 'gameState',
-      })) as GameState;
-
-      // Update local state with loaded state - much simpler with valtio!
-      if (loadedGameState) {
-        for (const key in loadedGameState) {
-          if (Object.hasOwn(loadedGameState, key)) {
-            Object.assign(gameState[key as keyof GameState], loadedGameState[key as keyof GameState]);
-          }
-        }
-        // Alternatively, we could do:
-        // Object.assign(gameState, loadedGameState);
-      }
+      await restoreGameStateFromScenario();
 
       console.log(`Load from slot ${slotId} completed`);
       return true;

@@ -5,7 +5,7 @@ import { proxy } from 'valtio';
 export type GamePage = 'title' | 'stage' | 'cg' | 'bgm' | 'credits';
 
 // 浮层类型定义
-export type OverlayType = 'settings' | 'save' | 'load' | 'menu' | 'history' | 'confirm';
+export type OverlayType = 'settings' | 'save' | 'load' | 'menu' | 'backlog' | 'confirm';
 
 // 浮层信息接口
 export interface OverlayInfo {
