@@ -194,9 +194,9 @@ export function Stage() {
         case TextBoxButton.AUTO:
           uiActions.notify('自动模式待实现');
           break;
-        // case TextBoxButton.SKIP:
-        //   uiActions.notify('跳过模式切换');
-        //   break;
+        case TextBoxButton.SKIP:
+          stage.startSkip();
+          break;
         case TextBoxButton.LOG:
           navigation.pushOverlay('backlog');
           break;

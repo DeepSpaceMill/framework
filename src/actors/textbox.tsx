@@ -1,4 +1,4 @@
-import { useBeforeHandleCommandCallback, useInterruptCallback, type Node } from '@momoyu-ink/kit';
+import { useBeforeHandleCommandCallback, useInterruptCallback, useIsSkipping, type Node } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { gameState } from '../state/game';
@@ -11,7 +11,7 @@ export enum TextBoxButton {
   SAVE = 'SAVE',
   LOAD = 'LOAD',
   AUTO = 'AUTO',
-  // SKIP = 'SKIP',
+  SKIP = 'SKIP',
   LOG = 'LOG',
   MENU = 'MENU',
 }
@@ -21,6 +21,7 @@ interface TextBoxActorProps {
 }
 
 export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
+  const skipping = useIsSkipping();
   const textWindowRef = useRef<Node>(null);
   const progress = useRef(1);
   const [isHovered, setIsHovered] = useState(false);
@@ -99,14 +100,14 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
           }}
           visible={isHovered}
         />
-        <container x={740} y={158} visible={isHovered}>
+        <container x={650} y={158} visible={isHovered}>
           {[
             TextBoxButton.QSAVE,
             TextBoxButton.QLOAD,
             TextBoxButton.SAVE,
             TextBoxButton.LOAD,
             TextBoxButton.AUTO,
-            // TextBoxButton.SKIP,
+            TextBoxButton.SKIP,
             TextBoxButton.LOG,
             TextBoxButton.MENU,
           ].map((button, index) => (
@@ -135,7 +136,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
           fillColor={textBoxState.fillColor}
           x={72}
           y={54}
-          printMode={textBoxState.printMode}
+          printMode={skipping ? 'instant' : textBoxState.printMode}
           printSpeed={textBoxState.printSpeed}
           indent={textBoxState.indent}
           stroke={textBoxState.stroke}
