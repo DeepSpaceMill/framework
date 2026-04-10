@@ -5,6 +5,7 @@ import {
   type MouseEvent,
   useSoundEffect,
   type TouchEvent,
+  useTransition,
 } from '@momoyu-ink/kit';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../components/button';
@@ -26,12 +27,44 @@ const SCROLLBAR_WIDTH = 20;
 const SCROLLBAR_X = VIEWPORT_X + VIEWPORT_WIDTH - SCROLLBAR_WIDTH - 8;
 const SCROLLBAR_Y = VIEWPORT_Y + VIEWPORT_PADDING_Y;
 const SCROLLBAR_BOUNDS: [number, number, number, number] = [0.34, 0.2, 0.34, 0.2];
+const PANEL_TRANSITION = {
+  from: {
+    opacity: 0,
+    scale: 0.985,
+    offsetY: 16,
+  },
+  enter: {
+    opacity: 1,
+    scale: 1,
+    offsetY: 0,
+  },
+  leave: {
+    opacity: 0,
+    scale: 0.985,
+    offsetY: 16,
+  },
+  config: {
+    tension: 280,
+    friction: 24,
+  },
+};
 
 export function Backlog() {
   const stageSize = getStageSize();
   const scale = stageSize.width / 1920;
-  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
   const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
+  const pendingCloseActionRef = useRef<(() => void) | null>(null);
+  const [show, setShow] = useState(true);
+  const transitions = useTransition(show ? [0] : [], {
+    keys: (item) => item,
+    ...PANEL_TRANSITION,
+    onRest: () => {
+      if (!show) {
+        pendingCloseActionRef.current?.();
+        pendingCloseActionRef.current = null;
+      }
+    },
+  });
 
   const { records, scrollOffset, maxScroll, showScrollbar, scrollbarHeight, scrollbarOffset, handleWheel, scrollToRatio, jumpToRecord, close } =
     useBacklog({
@@ -87,28 +120,47 @@ export function Backlog() {
     };
   }, [handleScrollbarDragEnd, handleScrollbarDragMove, handleWheel]);
 
+  const requestClose = useCallback(
+    (afterClose?: () => void) => {
+      pendingCloseActionRef.current = afterClose ?? close;
+      setShow(false);
+    },
+    [close],
+  );
+
   const handleClose = () => {
     backButtonSound();
-    close();
+    requestClose();
   };
 
   const handleJumpRequest = (record: BacklogRecord) => {
-    uiActions.confirm('确定要跳转到这条历史记录吗？', () => {
-      void jumpToRecord(record.id);
+    uiActions.confirm('确定要跳转到这个位置吗？', () => {
+      requestClose(() => {
+        void jumpToRecord(record.id);
+      });
     });
   };
 
-  return (
-    <container scale={scale}>
-      <sprite
+  return transitions((style, _) => (
+    <container scale={scale} interactive={show}>
+      <animated.sprite
         label="透明遮罩"
         src="ui/mask-transparent.png"
+        opacity={style.opacity}
         onClick={(event) => {
           event.stopPropagation();
           handleClose();
         }}
       />
-      <sprite label="历史背景" src="ui/backlog_bg.png" pivot={[0.5, 0.5]} x={960} y={540}>
+      <animated.sprite
+        label="历史背景"
+        src="ui/backlog_bg.png"
+        pivot={[0.5, 0.5]}
+        x={960}
+        y={style.offsetY.to((value) => 540 + value)}
+        opacity={style.opacity}
+        scale={style.scale}
+      >
         <text text="BACKLOG" fontSize={44} fillColor="#ffffff" x={104} y={72} />
         <Button
           fileNames={['ui/sl_close.png', 'ui/sl_close_hover.png', 'ui/sl_close_press.png']}
@@ -139,7 +191,6 @@ export function Backlog() {
                     key={record.id}
                     record={record}
                     y={index * ROW_HEIGHT}
-                    onMouseEnter={hoverButtonSound}
                     onJump={() => {
                       handleJumpRequest(record);
                     }}
@@ -164,19 +215,18 @@ export function Backlog() {
             opacity={0.92}
           />
         )}
-      </sprite>
+      </animated.sprite>
     </container>
-  );
+  ));
 }
 
 interface BacklogRowProps {
   record: BacklogRecord;
   y: number;
   onJump: () => void;
-  onMouseEnter: () => void;
 }
 
-function BacklogRow({ record, y, onJump, onMouseEnter }: BacklogRowProps) {
+function BacklogRow({ record, y, onJump }: BacklogRowProps) {
   const title = record.meta.kind === 'text' ? record.meta.speaker || '旁白' : '选择';
   const content = record.meta.kind === 'text' ? record.meta.text : record.meta.options.join(' / ');
 
@@ -186,7 +236,6 @@ function BacklogRow({ record, y, onJump, onMouseEnter }: BacklogRowProps) {
     <container y={y}>
       <container
         onMouseEnter={() => {
-          onMouseEnter();
           setHovered(true);
         }}
         onMouseLeave={() => setHovered(false)}
