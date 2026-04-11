@@ -5,7 +5,6 @@ import {
   useNavigationParams,
   addEventListener,
   KeyboardEvent,
-  MouseEvent,
   createStage,
   StageContextProvider,
   executePluginCommand,
@@ -123,6 +122,10 @@ export function Stage() {
   const { saveToSlot, loadFromSlot, checkAutoSaveExists } = useSaveLoad();
 
   const handleClick = useCallback(() => {
+    if (stage.isAutoing()) {
+      stage.stopAuto();
+    }
+
     if (navigation.getOverlayStack().length > 0) return;
     // Don't advance story while waiting for player to select a choice
     if (gameState.selection.visible) return;
@@ -137,23 +140,20 @@ export function Stage() {
   }, [navigation]);
 
   useEffect(() => {
-    return addEventListener('mousedown', (_: MouseEvent) => {
-      if (stage.isSkipping()) {
-        stage.stopSkip();
-      }
-    });
-  }, []);
-
-  useEffect(() => {
-    return addEventListener('touchstart', (_: TouchEvent) => {
-      if (stage.isSkipping()) {
-        stage.stopSkip();
-      }
-    });
+    const stopSkipOnInput = () => {
+      if (stage.isSkipping()) stage.stopSkip();
+    };
+    const c1 = addEventListener('mousedown', stopSkipOnInput);
+    const c2 = addEventListener('touchstart', stopSkipOnInput);
+    return () => { c1(); c2(); };
   }, []);
 
   const handleButtonClick = async (button: TextBoxButton) => {
     try {
+      if (button !== TextBoxButton.AUTO && stage.isAutoing()) {
+        stage.stopAuto();
+      }
+
       switch (button) {
         case TextBoxButton.QSAVE:
           await executePluginCommand('system', {
@@ -192,7 +192,15 @@ export function Stage() {
           break;
         }
         case TextBoxButton.AUTO:
-          uiActions.notify('自动模式待实现');
+          if (stage.isSkipping()) {
+            stage.stopSkip();
+          }
+
+          if (stage.isAutoing()) {
+            stage.stopAuto();
+          } else {
+            stage.startAuto();
+          }
           break;
         case TextBoxButton.SKIP:
           stage.startSkip();
@@ -217,16 +225,15 @@ export function Stage() {
       if (stage.isSkipping() && !e.repeat && e.key !== 'Control') {
         stage.stopSkip();
       } else if (e.key === 'Control' && !e.repeat) {
+        if (stage.isAutoing()) {
+          stage.stopAuto();
+        }
+
         stage.startSkip();
       } else if (e.key === 'Enter' || e.key === ' ') {
         handleClick();
       } else if (e.key === 'Escape') {
-        const newVisible = !gameState.textbox.visible;
-        if (newVisible) {
-          gameState.textbox.visible = true;
-        } else {
-          gameState.textbox.visible = false;
-        }
+        gameState.textbox.visible = !gameState.textbox.visible;
       }
     });
   }, [handleClick]);
@@ -243,6 +250,7 @@ export function Stage() {
   // Stop skip on window blur (e.g. Alt+Tab)
   useEffect(() => {
     return addEventListener('blur', () => {
+      stage.stopAuto();
       stage.stopSkip();
     });
   }, []);
@@ -250,21 +258,15 @@ export function Stage() {
   // Clean up skip state on Stage unmount (singleton persists across navigations)
   useEffect(() => {
     return () => {
+      stage.stopAuto();
       stage.stopSkip();
     };
   }, []);
 
-  // 监听左键点击
   useEffect(() => {
-    return addEventListener('click', () => {
-      handleClick();
-    });
-  }, [handleClick]);
-
-  useEffect(() => {
-    return addEventListener('touchend', () => {
-      handleClick();
-    });
+    const c1 = addEventListener('click', handleClick);
+    const c2 = addEventListener('touchend', handleClick);
+    return () => { c1(); c2(); };
   }, [handleClick]);
 
   useEffect(() => {
@@ -272,6 +274,9 @@ export function Stage() {
       if (event.deltaY <= 0) return;
       if (navigation.getCurrentPage() !== 'stage') return;
       if (navigation.getOverlayStack().length > 0) return;
+      if (stage.isAutoing()) {
+        stage.stopAuto();
+      }
       navigation.pushOverlay('backlog');
     });
   }, [navigation]);

@@ -1,4 +1,4 @@
-import { executePluginCommand, nextLine, useSkipBlocker } from '@momoyu-ink/kit';
+import { executePluginCommand, nextLine, useAutoBlocker, useSkipBlocker } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { useCallback } from 'react';
 import { gameState } from '../state/game';
@@ -17,10 +17,11 @@ const NINESLICE_BOUNDS: [number, number, number, number] = [0.3, 0.3, 0.3, 0.3];
 export function SelectionActor() {
   const selectionState = useSnapshot(gameState.selection);
 
-  // Block skip (Ctrl fast-forward) entirely while selection is visible.
-  // This covers the case where the user presses Ctrl after the selection appears.
-  const blockSkipDuringSelection = useCallback(() => gameState.selection.visible, []);
-  useSkipBlocker(blockSkipDuringSelection);
+  // Block skip and auto entirely while selection is visible.
+  // hold() checks blockers synchronously and stops auto/skip if active.
+  const blockDuringSelection = useCallback(() => gameState.selection.visible, []);
+  useSkipBlocker(blockDuringSelection);
+  useAutoBlocker(blockDuringSelection);
 
   const handleSelect = (value: string | number) => {
     if (selectionState.saveTo) {

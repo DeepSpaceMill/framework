@@ -1,4 +1,4 @@
-import { executePluginCommand } from '@momoyu-ink/kit';
+import { executePluginCommand, setDefaultAutoTailMs } from '@momoyu-ink/kit';
 import debounce from 'lodash.debounce';
 import { proxy, subscribe } from 'valtio';
 import { subscribeKey } from 'valtio/utils';
@@ -48,6 +48,8 @@ setDisplay(_settings.display);
 // create proxy state
 export const settingsState = proxy<SettingsData>(_settings);
 
+setDefaultAutoTailMs(Number.isFinite(settingsState.auto_interval) ? settingsState.auto_interval * 1000 : 0);
+
 // subscribe to changes and save to permanent variables
 const saveSettings = debounce(() => {
   executePluginCommand('scenario', {
@@ -63,6 +65,10 @@ subscribe(settingsState, () => {
 // subscribe to display changes and apply
 subscribeKey(settingsState, 'display', (display) => {
   setDisplay(display);
+});
+
+subscribeKey(settingsState, 'auto_interval', (autoInterval) => {
+  setDefaultAutoTailMs(Number.isFinite(autoInterval) ? autoInterval * 1000 : 0);
 });
 
 function setDisplay(display: string) {

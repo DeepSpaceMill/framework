@@ -1,6 +1,14 @@
-import { useBeforeHandleCommandCallback, useInterruptCallback, useIsSkipping, type Node } from '@momoyu-ink/kit';
+import {
+  useAutoTicket,
+  useBeforeHandleCommandCallback,
+  useInterruptCallback,
+  useIsAutoing,
+  useIsSkipping,
+  type AutoTicketHandle,
+  type Node,
+} from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gameState } from '../state/game';
 import { Button } from '../components/button';
 import { FrameAnimation } from '../components/frame';
@@ -21,8 +29,11 @@ interface TextBoxActorProps {
 }
 
 export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
+  const autoing = useIsAutoing();
   const skipping = useIsSkipping();
+  const issueAutoTicket = useAutoTicket();
   const textWindowRef = useRef<Node>(null);
+  const autoTicketRef = useRef<AutoTicketHandle | null>(null);
   const progress = useRef(1);
   const [isHovered, setIsHovered] = useState(false);
 
@@ -81,6 +92,33 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
     setCurPos(null);
   }, [textBoxState.text]);
 
+  // Cancel ticket when auto stops; also clean up on unmount via the returned cleanup.
+  useEffect(() => {
+    if (autoing) {
+      return () => {
+        autoTicketRef.current?.cancel();
+        autoTicketRef.current = null;
+      };
+    }
+    autoTicketRef.current?.cancel();
+    autoTicketRef.current = null;
+  }, [autoing]);
+
+  const effectivePrintMode = skipping ? 'instant' : textBoxState.printMode;
+
+  useLayoutEffect(() => {
+    if (!autoing) {
+      return;
+    }
+
+    if (effectivePrintMode === 'instant' || textBoxState.text.length === 0) {
+      return;
+    }
+
+    autoTicketRef.current?.cancel();
+    autoTicketRef.current = issueAutoTicket({ label: 'textbox-printing' });
+  }, [autoing, effectivePrintMode, issueAutoTicket, textBoxState.text]);
+
   return (
     <container label="文本框容器" visible={textBoxState.visible} interactive={textBoxState.visible}>
       <sprite
@@ -136,7 +174,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
           fillColor={textBoxState.fillColor}
           x={72}
           y={54}
-          printMode={skipping ? 'instant' : textBoxState.printMode}
+          printMode={effectivePrintMode}
           printSpeed={textBoxState.printSpeed}
           indent={textBoxState.indent}
           stroke={textBoxState.stroke}
@@ -156,6 +194,8 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
           }}
           onFinish={() => {
             progress.current = 1;
+            autoTicketRef.current?.done();
+            autoTicketRef.current = null;
             showCurPos();
           }}
           interactive={false}
