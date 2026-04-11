@@ -7,6 +7,7 @@ import { gameState, resetGameState } from '../state/game';
 import { GamePage } from '../state/ui';
 import { writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
 import { ScenarioCommandSchemaType } from './commands';
+import { settingsState } from '../state/settings';
 
 function recordBacklog(control: { record(meta: Record<string, any>): string }, meta: Record<string, any>) {
   writeCurrentGameStateToScenario();
@@ -91,7 +92,7 @@ export const handleTextBoxHide: CommandHandler<ScenarioCommandSchemaType> = (cmd
 export const handleBgm: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'bgm') return;
   gameState.bgm.loop = cmd.loop;
-  gameState.bgm.volume = cmd.volume ?? settingsState.volume_bgm;
+  gameState.bgm.volume = (cmd.volume ?? 1.0) * settingsState.volume_bgm;
   gameState.bgm.fadeTime = cmd.fadeTime;
   gameState.bgm.src = cmd.src;
   // auto-advance
@@ -110,7 +111,7 @@ export const handleSfx: CommandHandler<ScenarioCommandSchemaType> = (cmd, _contr
   if (cmd.command !== 'sfx') return;
   gameState.sfx.src = cmd.src;
   gameState.sfx.loop = cmd.loop;
-  gameState.sfx.volume = cmd.volume;
+  gameState.sfx.volume = (cmd.volume ?? 1.0) * settingsState.volume_se;
   gameState.sfx.fadeTime = cmd.fadeTime;
   gameState.sfx.seq++;
   // auto-advance — SfxActor handles audio lifecycle and skip check
@@ -129,7 +130,7 @@ export const handleVoice: CommandHandler<ScenarioCommandSchemaType> = (cmd, _con
   if (cmd.command !== 'voice') return;
   gameState.voice.src = cmd.src;
   gameState.voice.channelName = cmd.name ? `voice_${cmd.name}` : 'voice';
-  gameState.voice.volume = cmd.volume;
+  gameState.voice.volume = (cmd.volume ?? 1.0) * settingsState.volume_voice;
   // auto-advance — VoiceActor handles audio lifecycle and auto ticket
 };
 
@@ -147,7 +148,7 @@ export const handleSound: CommandHandler<ScenarioCommandSchemaType> = (cmd, _con
   gameState.sound.channel = cmd.channel;
   gameState.sound.src = cmd.src;
   gameState.sound.loop = cmd.loop;
-  gameState.sound.volume = cmd.volume;
+  gameState.sound.volume = (cmd.volume ?? 1.0) * settingsState.volume_se;
   gameState.sound.fadeTime = cmd.fadeTime;
   gameState.sound.seq++;
   // auto-advance — SoundActor handles audio lifecycle and skip check
