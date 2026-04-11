@@ -65,6 +65,12 @@ export interface BGMState {
   fadeTime?: number;
 }
 
+export interface VoiceState {
+  src: string;
+  channelName: string;
+  volume?: number;
+}
+
 export interface SelectionOption {
   text: string;
   value: string | number;
@@ -83,6 +89,7 @@ export interface GameState {
   character: CharacterState;
   textbox: TextBoxState;
   bgm: BGMState;
+  voice: VoiceState;
   selection: SelectionState;
 }
 
@@ -126,6 +133,11 @@ const gameStateDefaults: GameState = {
   bgm: {
     src: '',
     loop: true,
+  },
+  voice: {
+    src: '',
+    channelName: 'voice',
+    volume: undefined,
   },
   selection: {
     visible: false,

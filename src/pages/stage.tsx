@@ -49,6 +49,7 @@ import { CharacterActor } from '../actors/character';
 import { SelectionActor } from '../actors/selection';
 import { TextBoxActor, TextBoxButton } from '../actors/textbox';
 import { BGMActor } from '../actors/bgm';
+import { VoiceActor } from '../actors/voice';
 import { ScenarioCommandSchema } from '../commands/commands';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 
@@ -287,6 +288,7 @@ export function Stage() {
       <CharacterActor />
       <TextBoxActor onButtonClick={handleButtonClick} />
       <BGMActor />
+      <VoiceActor />
       <SelectionActor />
     </StageContextProvider>
   );

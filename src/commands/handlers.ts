@@ -149,36 +149,17 @@ export const handleSfxStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _c
 /** Play a voice clip. */
 export const handleVoice: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'voice') return;
-  const channelName = cmd.name ? `voice_${cmd.name}` : 'voice';
-  try {
-    executePluginCommand('audio', {
-      subCommand: 'load',
-      name: channelName,
-      src: cmd.src,
-      settings: {
-        autoPlay: true,
-        volume: cmd.volume ?? settingsState.volume_voice,
-        fadeTime: 0,
-      },
-    });
-  } catch (err) {
-    console.error('Failed to play voice:', err);
-  }
-  // auto-advance
+  gameState.voice.src = cmd.src;
+  gameState.voice.channelName = cmd.name ? `voice_${cmd.name}` : 'voice';
+  gameState.voice.volume = cmd.volume;
+  // auto-advance — VoiceActor handles audio lifecycle and auto ticket
 };
 
 /** Stop voice playback. */
 export const handleVoiceStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'voiceStop') return;
-  const channelName = cmd.name ? `voice_${cmd.name}` : 'voice';
-  try {
-    executePluginCommand('audio', {
-      subCommand: 'release',
-      name: channelName,
-    });
-  } catch (err) {
-    console.error('Failed to stop voice:', err);
-  }
+  // Clearing src signals VoiceActor to cancel any pending ticket and release audio
+  gameState.voice.src = '';
   // auto-advance
 };
 
