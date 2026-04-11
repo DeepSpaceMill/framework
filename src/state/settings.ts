@@ -3,7 +3,7 @@ import debounce from 'lodash.debounce';
 import { proxy, subscribe } from 'valtio';
 import { subscribeKey } from 'valtio/utils';
 
-export interface SettingsData {
+export interface SettingsData extends Record<string, any> {
   display: string;
   volume_bgm: number;
   volume_se: number;
