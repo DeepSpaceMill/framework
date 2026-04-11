@@ -71,6 +71,28 @@ export interface VoiceState {
   volume?: number;
 }
 
+export interface SfxState {
+  seq: number;
+  src: string;
+  loop: boolean;
+  volume?: number;
+  fadeTime?: number;
+  stopSeq: number;
+  stopFadeTime?: number;
+}
+
+export interface SoundState {
+  seq: number;
+  channel: string;
+  src: string;
+  loop: boolean;
+  volume?: number;
+  fadeTime?: number;
+  stopSeq: number;
+  stopChannel: string;
+  stopFadeTime?: number;
+}
+
 export interface SelectionOption {
   text: string;
   value: string | number;
@@ -90,6 +112,8 @@ export interface GameState {
   textbox: TextBoxState;
   bgm: BGMState;
   voice: VoiceState;
+  sfx: SfxState;
+  sound: SoundState;
   selection: SelectionState;
 }
 
@@ -138,6 +162,26 @@ const gameStateDefaults: GameState = {
     src: '',
     channelName: 'voice',
     volume: undefined,
+  },
+  sfx: {
+    seq: 0,
+    src: '',
+    loop: false,
+    volume: undefined,
+    fadeTime: undefined,
+    stopSeq: 0,
+    stopFadeTime: undefined,
+  },
+  sound: {
+    seq: 0,
+    channel: '',
+    src: '',
+    loop: false,
+    volume: undefined,
+    fadeTime: undefined,
+    stopSeq: 0,
+    stopChannel: '',
+    stopFadeTime: undefined,
   },
   selection: {
     visible: false,

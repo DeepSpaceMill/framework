@@ -1,12 +1,9 @@
 import {
   getNavigator,
-  executePluginCommand,
-  skipState,
   type CommandHandler,
   type TextLineHandler,
 } from '@momoyu-ink/kit';
 import { gameState, resetGameState } from '../state/game';
-import { settingsState } from '../state/settings';
 import { GamePage } from '../state/ui';
 import { writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
 import { ScenarioCommandSchemaType } from './commands';
@@ -111,39 +108,20 @@ export const handleBgmStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _c
 /** Play a sound effect. */
 export const handleSfx: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'sfx') return;
-  // Skip SFX during fast-forward to avoid audio overlap
-  if (skipState.active) return;
-  try {
-    executePluginCommand('audio', {
-      subCommand: 'load',
-      name: `sfx_${Date.now()}`,
-      src: cmd.src,
-      settings: {
-        autoPlay: true,
-        loopRegion: cmd.loop ? [0, -1] : undefined,
-        volume: cmd.volume ?? settingsState.volume_se,
-        fadeTime: cmd.fadeTime,
-      },
-    });
-  } catch (err) {
-    console.error('Failed to play SFX:', err);
-  }
-  // auto-advance
+  gameState.sfx.src = cmd.src;
+  gameState.sfx.loop = cmd.loop;
+  gameState.sfx.volume = cmd.volume;
+  gameState.sfx.fadeTime = cmd.fadeTime;
+  gameState.sfx.seq++;
+  // auto-advance — SfxActor handles audio lifecycle and skip check
 };
 
 /** Stop all sound effects. */
 export const handleSfxStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'sfxStop') return;
-  try {
-    executePluginCommand('audio', {
-      subCommand: 'release',
-      name: 'sfx',
-      fadeTime: cmd.fadeTime,
-    });
-  } catch (err) {
-    console.error('Failed to stop SFX:', err);
-  }
-  // auto-advance
+  gameState.sfx.stopFadeTime = cmd.fadeTime;
+  gameState.sfx.stopSeq++;
+  // auto-advance — SfxActor handles audio release
 };
 
 /** Play a voice clip. */
@@ -166,39 +144,22 @@ export const handleVoiceStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
 /** Play sound on a named channel. */
 export const handleSound: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'sound') return;
-  // Skip SE during fast-forward to avoid audio overlap
-  if (skipState.active) return;
-  try {
-    executePluginCommand('audio', {
-      subCommand: 'load',
-      name: cmd.channel,
-      src: cmd.src,
-      settings: {
-        autoPlay: true,
-        loopRegion: cmd.loop ? [0, -1] : undefined,
-        volume: cmd.volume ?? settingsState.volume_se,
-        fadeTime: cmd.fadeTime,
-      },
-    });
-  } catch (err) {
-    console.error(`Failed to play sound on channel ${cmd.channel}:`, err);
-  }
-  // auto-advance
+  gameState.sound.channel = cmd.channel;
+  gameState.sound.src = cmd.src;
+  gameState.sound.loop = cmd.loop;
+  gameState.sound.volume = cmd.volume;
+  gameState.sound.fadeTime = cmd.fadeTime;
+  gameState.sound.seq++;
+  // auto-advance — SoundActor handles audio lifecycle and skip check
 };
 
 /** Stop sound on a named channel. */
 export const handleSoundStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'soundStop') return;
-  try {
-    executePluginCommand('audio', {
-      subCommand: 'release',
-      name: cmd.channel,
-      fadeTime: cmd.fadeTime,
-    });
-  } catch (err) {
-    console.error(`Failed to stop sound on channel ${cmd.channel}:`, err);
-  }
-  // auto-advance
+  gameState.sound.stopChannel = cmd.channel;
+  gameState.sound.stopFadeTime = cmd.fadeTime;
+  gameState.sound.stopSeq++;
+  // auto-advance — SoundActor handles audio release
 };
 
 // ---------------------------------------------------------------------------
