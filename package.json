@@ -21,7 +21,7 @@
     "node": ">=22.20"
   },
   "dependencies": {
-    "@momoyu-ink/kit": "^0.3.0",
+    "@momoyu-ink/kit": "^0.4.0",
     "lodash.debounce": "^4.0.8",
     "react": "19.2.1",
     "react-error-boundary": "^6.0.0",
@@ -30,10 +30,10 @@
   },
   "devDependencies": {
     "@biomejs/biome": "^2.1.4",
-    "@momoyu-ink/cli": "^0.1.0",
-    "@rspack/cli": "^1.0.14",
-    "@rspack/core": "^1.0.14",
-    "@rspack/plugin-react-refresh": "1.0.1",
+    "@momoyu-ink/cli": "^0.2.0",
+    "@rspack/cli": "^1.7.11",
+    "@rspack/core": "^1.7.11",
+    "@rspack/plugin-react-refresh": "^1.6.2",
     "@types/lodash.debounce": "^4.0.9",
     "@types/node": ">=24.10.1",
     "@types/react": "^19.2.7",
