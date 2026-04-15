@@ -9,24 +9,61 @@
           "const": "text"
         },
         "content": {
-          "type": "string"
+          "type": "string",
+          "description": "Text content to display",
+          "title": "Content",
+          "x-i18n": {
+            "zh-CN": "内容"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "要显示的文本内容"
+          }
         },
         "name": {
+          "description": "Speaker name",
+          "title": "Speaker",
+          "x-i18n": {
+            "zh-CN": "说话人"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "说话人名称"
+          },
           "type": "string"
         },
         "newline": {
           "default": true,
           "description": "Start a new line before printing the text",
+          "title": "New Line",
+          "x-i18n": {
+            "zh-CN": "换行"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "在显示文本前换行"
+          },
           "type": "boolean"
         },
         "clear": {
           "default": true,
-          "description": "Clear existing text before printing the text",
+          "description": "Clear existing text before printing",
+          "title": "Clear",
+          "x-i18n": {
+            "zh-CN": "清除"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "在显示文本前清除已有文本"
+          },
           "type": "boolean"
         },
         "skippable": {
           "default": true,
-          "description": "Whether the text can be skipped.",
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
           "type": "boolean"
         }
       },
@@ -38,7 +75,14 @@
         "skippable"
       ],
       "additionalProperties": false,
-      "description": "Display text"
+      "description": "Display text in the text box",
+      "title": "Display Text",
+      "x-i18n": {
+        "zh-CN": "显示文本"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "在文本框中显示文本"
+      }
     },
     {
       "type": "object",
@@ -52,7 +96,14 @@
         "command"
       ],
       "additionalProperties": false,
-      "description": "Clear text box"
+      "description": "Clear the text box",
+      "title": "Clear Text",
+      "x-i18n": {
+        "zh-CN": "清除文本"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "清除文本框内容"
+      }
     },
     {
       "type": "object",
@@ -62,7 +113,14 @@
           "const": "textBox"
         },
         "position": {
-          "description": "x, y coordinates of the text box",
+          "description": "Text box position (x, y)",
+          "title": "Position",
+          "x-i18n": {
+            "zh-CN": "位置"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "文本框位置坐标 (x, y)"
+          },
           "minItems": 2,
           "maxItems": 2,
           "type": "array",
@@ -72,6 +130,13 @@
         },
         "printMode": {
           "description": "Text printing mode",
+          "title": "Print Mode",
+          "x-i18n": {
+            "zh-CN": "打字模式"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "文本打字模式"
+          },
           "type": "string",
           "enum": [
             "instant",
@@ -80,55 +145,146 @@
           ]
         },
         "printSpeed": {
-          "description": "Speed of text printing, characters per second for typewriter, lines per second for printer",
+          "description": "Print speed: chars/sec (typewriter) or lines/sec (printer)",
+          "title": "Print Speed",
+          "x-i18n": {
+            "zh-CN": "打字速度"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "逐字模式为字/秒，打印机模式为行/秒"
+          },
           "type": "number"
         },
         "fillColor": {
           "description": "Text color",
+          "title": "Text Color",
+          "x-i18n": {
+            "zh-CN": "文字颜色"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "文字颜色"
+          },
           "type": "string"
         },
         "lineHeight": {
           "description": "Line height multiplier",
+          "title": "Line Height",
+          "x-i18n": {
+            "zh-CN": "行高"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "行高倍数"
+          },
           "type": "number"
         },
         "indent": {
-          "description": "Indentation in pixels for the first line of each paragraph",
+          "description": "First-line indentation in pixels",
+          "title": "Indent",
+          "x-i18n": {
+            "zh-CN": "缩进"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "段落首行缩进（像素）"
+          },
           "type": "number"
         },
         "stroke": {
-          "description": "Whether to apply stroke to text",
+          "description": "Whether to apply text stroke",
+          "title": "Stroke",
+          "x-i18n": {
+            "zh-CN": "描边"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否启用文字描边"
+          },
           "type": "boolean"
         },
         "shadow": {
-          "description": "Whether to apply shadow to text",
+          "description": "Whether to apply text shadow",
+          "title": "Shadow",
+          "x-i18n": {
+            "zh-CN": "阴影"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否启用文字阴影"
+          },
           "type": "boolean"
         },
         "strokeColor": {
           "description": "Stroke color",
+          "title": "Stroke Color",
+          "x-i18n": {
+            "zh-CN": "描边颜色"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "描边颜色"
+          },
           "type": "string"
         },
         "strokeWidth": {
           "description": "Stroke width in pixels",
+          "title": "Stroke Width",
+          "x-i18n": {
+            "zh-CN": "描边宽度"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "描边宽度（像素）"
+          },
           "type": "number"
         },
         "shadowColor": {
           "description": "Shadow color",
+          "title": "Shadow Color",
+          "x-i18n": {
+            "zh-CN": "阴影颜色"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "阴影颜色"
+          },
           "type": "string"
         },
         "shadowOffsetX": {
-          "description": "Shadow offset X in pixels",
+          "description": "Shadow X offset in pixels",
+          "title": "Shadow Offset X",
+          "x-i18n": {
+            "zh-CN": "阴影偏移 X"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "阴影 X 轴偏移（像素）"
+          },
           "type": "number"
         },
         "shadowOffsetY": {
-          "description": "Shadow offset Y in pixels",
+          "description": "Shadow Y offset in pixels",
+          "title": "Shadow Offset Y",
+          "x-i18n": {
+            "zh-CN": "阴影偏移 Y"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "阴影 Y 轴偏移（像素）"
+          },
           "type": "number"
         },
         "shadowBlur": {
           "description": "Shadow blur radius in pixels",
+          "title": "Shadow Blur",
+          "x-i18n": {
+            "zh-CN": "阴影模糊"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "阴影模糊半径（像素）"
+          },
           "type": "number"
         },
         "shadowWidth": {
-          "description": "Shadow width in pixels, only effective when shadow is true",
+          "description": "Shadow width in pixels, only effective when shadow is enabled",
+          "title": "Shadow Width",
+          "x-i18n": {
+            "zh-CN": "阴影宽度"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "阴影宽度（像素），仅在启用阴影时生效"
+          },
           "type": "number"
         }
       },
@@ -136,7 +292,14 @@
         "command"
       ],
       "additionalProperties": false,
-      "description": "Configure text box"
+      "description": "Configure text box appearance and behavior",
+      "title": "Text Box Settings",
+      "x-i18n": {
+        "zh-CN": "文本框设置"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "配置文本框外观与行为"
+      }
     },
     {
       "type": "object",
@@ -150,7 +313,14 @@
         "command"
       ],
       "additionalProperties": false,
-      "description": "Show text box"
+      "description": "Show the text box",
+      "title": "Show Text Box",
+      "x-i18n": {
+        "zh-CN": "显示文本框"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "显示文本框"
+      }
     },
     {
       "type": "object",
@@ -164,7 +334,14 @@
         "command"
       ],
       "additionalProperties": false,
-      "description": "Hide text box"
+      "description": "Hide the text box",
+      "title": "Hide Text Box",
+      "x-i18n": {
+        "zh-CN": "隐藏文本框"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "隐藏文本框"
+      }
     },
     {
       "type": "object",
@@ -175,23 +352,53 @@
         },
         "src": {
           "type": "string",
-          "description": "Asset path"
+          "description": "Audio asset path",
+          "title": "Audio",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "音频"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "音频资源路径"
+          }
         },
         "loop": {
           "default": true,
-          "description": "Whether to loop the music, default is true",
+          "description": "Whether to loop",
+          "title": "Loop",
+          "x-i18n": {
+            "zh-CN": "循环播放"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否循环播放"
+          },
           "type": "boolean"
         },
         "volume": {
           "default": 1,
-          "description": "Volume of the music, ranges from 0 to 1, default is 1",
+          "description": "Volume, ranges from 0 to 1",
+          "title": "Volume",
+          "x-i18n": {
+            "zh-CN": "音量"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "音量，范围 0 到 1"
+          },
           "type": "number",
           "minimum": 0,
           "maximum": 1
         },
         "fadeTime": {
           "default": 600,
-          "description": "Fade time in milliseconds when starting the music",
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
           "type": "number"
         }
       },
@@ -202,7 +409,15 @@
         "volume",
         "fadeTime"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Play background music",
+      "title": "Play BGM",
+      "x-i18n": {
+        "zh-CN": "播放背景音乐"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "播放背景音乐"
+      }
     },
     {
       "type": "object",
@@ -213,7 +428,14 @@
         },
         "fadeTime": {
           "default": 600,
-          "description": "Fade time in milliseconds when stopping the music",
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
           "type": "number"
         }
       },
@@ -221,7 +443,15 @@
         "command",
         "fadeTime"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Stop background music",
+      "title": "Stop BGM",
+      "x-i18n": {
+        "zh-CN": "停止背景音乐"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "停止播放背景音乐"
+      }
     },
     {
       "type": "object",
@@ -232,23 +462,53 @@
         },
         "src": {
           "type": "string",
-          "description": "Asset path"
+          "description": "Audio asset path",
+          "title": "Audio",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "音频"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "音频资源路径"
+          }
         },
         "loop": {
           "default": false,
-          "description": "Whether to loop the sound, default is false",
+          "description": "Whether to loop",
+          "title": "Loop",
+          "x-i18n": {
+            "zh-CN": "循环播放"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否循环播放"
+          },
           "type": "boolean"
         },
         "volume": {
           "default": 1,
-          "description": "Volume of the sound, ranges from 0 to 1, default is 1",
+          "description": "Volume, ranges from 0 to 1",
+          "title": "Volume",
+          "x-i18n": {
+            "zh-CN": "音量"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "音量，范围 0 到 1"
+          },
           "type": "number",
           "minimum": 0,
           "maximum": 1
         },
         "fadeTime": {
           "default": 600,
-          "description": "Fade time in milliseconds when playing the sound",
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
           "type": "number"
         }
       },
@@ -259,7 +519,15 @@
         "volume",
         "fadeTime"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Play a sound effect",
+      "title": "Play SFX",
+      "x-i18n": {
+        "zh-CN": "播放音效"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "播放一个音效"
+      }
     },
     {
       "type": "object",
@@ -270,7 +538,14 @@
         },
         "fadeTime": {
           "default": 600,
-          "description": "Fade time in milliseconds when stopping the sound",
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
           "type": "number"
         }
       },
@@ -278,7 +553,15 @@
         "command",
         "fadeTime"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Stop sound effects",
+      "title": "Stop SFX",
+      "x-i18n": {
+        "zh-CN": "停止音效"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "停止播放音效"
+      }
     },
     {
       "type": "object",
@@ -289,14 +572,38 @@
         },
         "src": {
           "type": "string",
-          "description": "Asset path"
+          "description": "Audio asset path",
+          "title": "Audio",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "音频"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "音频资源路径"
+          }
         },
         "name": {
+          "description": "Voice channel name",
+          "title": "Channel",
+          "x-i18n": {
+            "zh-CN": "通道"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "语音通道名称"
+          },
           "type": "string"
         },
         "volume": {
           "default": 1,
-          "description": "Volume of the voice, ranges from 0 to 1, default is 1",
+          "description": "Volume, ranges from 0 to 1",
+          "title": "Volume",
+          "x-i18n": {
+            "zh-CN": "音量"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "音量，范围 0 到 1"
+          },
           "type": "number",
           "minimum": 0,
           "maximum": 1
@@ -307,7 +614,15 @@
         "src",
         "volume"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Play voice audio",
+      "title": "Play Voice",
+      "x-i18n": {
+        "zh-CN": "播放语音"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "播放语音音频"
+      }
     },
     {
       "type": "object",
@@ -317,13 +632,29 @@
           "const": "voiceStop"
         },
         "name": {
+          "description": "Voice channel name to stop",
+          "title": "Channel",
+          "x-i18n": {
+            "zh-CN": "通道"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "要停止的语音通道名称"
+          },
           "type": "string"
         }
       },
       "required": [
         "command"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Stop voice playback",
+      "title": "Stop Voice",
+      "x-i18n": {
+        "zh-CN": "停止语音"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "停止语音播放"
+      }
     },
     {
       "type": "object",
@@ -333,27 +664,65 @@
           "const": "sound"
         },
         "channel": {
-          "type": "string"
+          "type": "string",
+          "description": "Audio channel name",
+          "title": "Channel",
+          "x-i18n": {
+            "zh-CN": "通道"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "音频通道名称"
+          }
         },
         "src": {
           "type": "string",
-          "description": "Asset path"
+          "description": "Audio asset path",
+          "title": "Audio",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "音频"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "音频资源路径"
+          }
         },
         "loop": {
           "default": false,
-          "description": "Whether to loop the sound, default is false",
+          "description": "Whether to loop",
+          "title": "Loop",
+          "x-i18n": {
+            "zh-CN": "循环播放"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否循环播放"
+          },
           "type": "boolean"
         },
         "volume": {
           "default": 1,
-          "description": "Volume of the sound, ranges from 0 to 1, default is 1",
+          "description": "Volume, ranges from 0 to 1",
+          "title": "Volume",
+          "x-i18n": {
+            "zh-CN": "音量"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "音量，范围 0 到 1"
+          },
           "type": "number",
           "minimum": 0,
           "maximum": 1
         },
         "fadeTime": {
           "default": 600,
-          "description": "Fade time in milliseconds when playing the sound",
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
           "type": "number"
         }
       },
@@ -365,7 +734,15 @@
         "volume",
         "fadeTime"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Play audio on a named channel",
+      "title": "Play Sound",
+      "x-i18n": {
+        "zh-CN": "播放音频"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "在指定通道播放音频"
+      }
     },
     {
       "type": "object",
@@ -375,11 +752,26 @@
           "const": "soundStop"
         },
         "channel": {
-          "type": "string"
+          "type": "string",
+          "description": "Audio channel name",
+          "title": "Channel",
+          "x-i18n": {
+            "zh-CN": "通道"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "音频通道名称"
+          }
         },
         "fadeTime": {
           "default": 600,
-          "description": "Fade time in milliseconds when stopping the sound",
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
           "type": "number"
         }
       },
@@ -388,7 +780,15 @@
         "channel",
         "fadeTime"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Stop audio on a named channel",
+      "title": "Stop Sound",
+      "x-i18n": {
+        "zh-CN": "停止音频"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "停止指定通道的音频"
+      }
     },
     {
       "type": "object",
@@ -399,16 +799,39 @@
         },
         "src": {
           "type": "string",
-          "description": "image source"
+          "description": "Image asset path",
+          "title": "Image",
+          "format": "asset",
+          "x-asset-kind": "image",
+          "x-i18n": {
+            "zh-CN": "图片"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "图片资源路径"
+          }
         },
         "fadeTime": {
           "default": 1000,
-          "description": "Fade time in milliseconds, default is 1000",
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
           "type": "number"
         },
         "skippable": {
           "default": false,
-          "description": "Whether the background change can be skipped, default is false",
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
           "type": "boolean"
         }
       },
@@ -419,7 +842,14 @@
         "skippable"
       ],
       "additionalProperties": false,
-      "description": "Change background command"
+      "description": "Change background image",
+      "title": "Change Background",
+      "x-i18n": {
+        "zh-CN": "切换背景"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "切换背景图片"
+      }
     },
     {
       "type": "object",
@@ -429,7 +859,15 @@
           "const": "setBgTint"
         },
         "tint": {
-          "type": "string"
+          "type": "string",
+          "description": "Color tint",
+          "title": "Tint",
+          "x-i18n": {
+            "zh-CN": "色调"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "颜色色调"
+          }
         }
       },
       "required": [
@@ -437,7 +875,14 @@
         "tint"
       ],
       "additionalProperties": false,
-      "description": "Set background tint"
+      "description": "Set background tint color",
+      "title": "Set Background Tint",
+      "x-i18n": {
+        "zh-CN": "设置背景色调"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "设置背景的色调颜色"
+      }
     },
     {
       "type": "object",
@@ -446,36 +891,94 @@
           "type": "string",
           "const": "addchar"
         },
-        "name": {
-          "type": "string"
-        },
         "src": {
           "type": "string",
-          "description": "Asset path"
+          "description": "Image asset path",
+          "title": "Image",
+          "format": "asset",
+          "x-asset-kind": "image",
+          "x-i18n": {
+            "zh-CN": "图片"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "图片资源路径"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "Character identifier",
+          "title": "Name",
+          "x-i18n": {
+            "zh-CN": "角色名"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "角色标识符"
+          }
         },
         "preset": {
-          "description": "Position preset for the character, can be left, center, or right",
           "type": "string",
           "enum": [
             "left",
             "center",
             "right"
-          ]
+          ],
+          "description": "Position preset: left, center, or right",
+          "title": "Preset",
+          "x-i18n": {
+            "zh-CN": "位置预设"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "位置预设，可选 left / center / right"
+          }
         },
         "x": {
-          "type": "number"
+          "type": "number",
+          "description": "X coordinate",
+          "title": "X",
+          "x-i18n-desc": {
+            "zh-CN": "X 坐标"
+          }
         },
         "y": {
-          "type": "number"
+          "type": "number",
+          "description": "Y coordinate",
+          "title": "Y",
+          "x-i18n-desc": {
+            "zh-CN": "Y 坐标"
+          }
         },
         "visible": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether visible",
+          "title": "Visible",
+          "x-i18n": {
+            "zh-CN": "可见"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可见"
+          }
         },
         "scale": {
-          "type": "number"
+          "type": "number",
+          "description": "Scale factor",
+          "title": "Scale",
+          "x-i18n": {
+            "zh-CN": "缩放"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "缩放系数"
+          }
         },
         "tint": {
-          "type": "string"
+          "type": "string",
+          "description": "Color tint",
+          "title": "Tint",
+          "x-i18n": {
+            "zh-CN": "色调"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "颜色色调"
+          }
         },
         "pivot": {
           "type": "array",
@@ -486,9 +989,25 @@
             {
               "type": "number"
             }
-          ]
+          ],
+          "description": "Pivot point (x, y) in pixels",
+          "title": "Pivot",
+          "x-i18n": {
+            "zh-CN": "旋转中心"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "旋转中心点 (x, y)，单位像素"
+          }
         },
         "fadeTime": {
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
           "type": "number"
         }
       },
@@ -497,7 +1016,14 @@
         "src"
       ],
       "additionalProperties": false,
-      "description": "Add a character to the stage"
+      "description": "Add a character to the stage",
+      "title": "Add Character",
+      "x-i18n": {
+        "zh-CN": "添加角色"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "将角色添加到舞台"
+      }
     },
     {
       "type": "object",
@@ -506,36 +1032,94 @@
           "type": "string",
           "const": "charchange"
         },
-        "name": {
-          "type": "string"
-        },
         "src": {
           "type": "string",
-          "description": "Asset path"
+          "description": "Image asset path",
+          "title": "Image",
+          "format": "asset",
+          "x-asset-kind": "image",
+          "x-i18n": {
+            "zh-CN": "图片"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "图片资源路径"
+          }
+        },
+        "name": {
+          "type": "string",
+          "description": "Character identifier",
+          "title": "Name",
+          "x-i18n": {
+            "zh-CN": "角色名"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "角色标识符"
+          }
         },
         "preset": {
-          "description": "Position preset for the character, can be left, center, or right",
           "type": "string",
           "enum": [
             "left",
             "center",
             "right"
-          ]
+          ],
+          "description": "Position preset: left, center, or right",
+          "title": "Preset",
+          "x-i18n": {
+            "zh-CN": "位置预设"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "位置预设，可选 left / center / right"
+          }
         },
         "x": {
-          "type": "number"
+          "type": "number",
+          "description": "X coordinate",
+          "title": "X",
+          "x-i18n-desc": {
+            "zh-CN": "X 坐标"
+          }
         },
         "y": {
-          "type": "number"
+          "type": "number",
+          "description": "Y coordinate",
+          "title": "Y",
+          "x-i18n-desc": {
+            "zh-CN": "Y 坐标"
+          }
         },
         "visible": {
-          "type": "boolean"
+          "type": "boolean",
+          "description": "Whether visible",
+          "title": "Visible",
+          "x-i18n": {
+            "zh-CN": "可见"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可见"
+          }
         },
         "scale": {
-          "type": "number"
+          "type": "number",
+          "description": "Scale factor",
+          "title": "Scale",
+          "x-i18n": {
+            "zh-CN": "缩放"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "缩放系数"
+          }
         },
         "tint": {
-          "type": "string"
+          "type": "string",
+          "description": "Color tint",
+          "title": "Tint",
+          "x-i18n": {
+            "zh-CN": "色调"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "颜色色调"
+          }
         },
         "pivot": {
           "type": "array",
@@ -546,9 +1130,25 @@
             {
               "type": "number"
             }
-          ]
+          ],
+          "description": "Pivot point (x, y) in pixels",
+          "title": "Pivot",
+          "x-i18n": {
+            "zh-CN": "旋转中心"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "旋转中心点 (x, y)，单位像素"
+          }
         },
         "fadeTime": {
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
           "type": "number"
         }
       },
@@ -556,7 +1156,14 @@
         "command"
       ],
       "additionalProperties": false,
-      "description": "Change a character on the stage"
+      "description": "Change a character on the stage",
+      "title": "Change Character",
+      "x-i18n": {
+        "zh-CN": "更改角色"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "更改舞台上的角色"
+      }
     },
     {
       "type": "object",
@@ -566,9 +1173,25 @@
           "const": "charremove"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Character identifier",
+          "title": "Name",
+          "x-i18n": {
+            "zh-CN": "角色名"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "角色标识符"
+          }
         },
         "fadeTime": {
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
           "type": "number"
         }
       },
@@ -576,7 +1199,14 @@
         "command"
       ],
       "additionalProperties": false,
-      "description": "Remove a character from the stage"
+      "description": "Remove a character from the stage",
+      "title": "Remove Character",
+      "x-i18n": {
+        "zh-CN": "移除角色"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "从舞台移除角色"
+      }
     },
     {
       "type": "object",
@@ -586,6 +1216,14 @@
           "const": "charclear"
         },
         "fadeTime": {
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
           "type": "number"
         }
       },
@@ -593,7 +1231,14 @@
         "command"
       ],
       "additionalProperties": false,
-      "description": "Clear all characters from the stage"
+      "description": "Remove all characters from the stage",
+      "title": "Clear Characters",
+      "x-i18n": {
+        "zh-CN": "清除角色"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "移除舞台上所有角色"
+      }
     },
     {
       "type": "object",
@@ -603,10 +1248,26 @@
           "const": "charname"
         },
         "name": {
-          "type": "string"
+          "type": "string",
+          "description": "Character identifier",
+          "title": "Name",
+          "x-i18n": {
+            "zh-CN": "角色名"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "角色标识符"
+          }
         },
         "to": {
-          "type": "string"
+          "type": "string",
+          "description": "New display name for the character",
+          "title": "New Name",
+          "x-i18n": {
+            "zh-CN": "新名称"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "角色的新显示名称"
+          }
         }
       },
       "required": [
@@ -614,7 +1275,14 @@
         "to"
       ],
       "additionalProperties": false,
-      "description": "Change a character's name"
+      "description": "Change a character's display name",
+      "title": "Rename Character",
+      "x-i18n": {
+        "zh-CN": "设置角色名"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "更改角色的显示名称"
+      }
     },
     {
       "type": "object",
@@ -624,13 +1292,31 @@
           "const": "charpreset"
         },
         "preset": {
-          "type": "string"
+          "type": "string",
+          "description": "Preset name to define or modify",
+          "title": "Preset Name",
+          "x-i18n": {
+            "zh-CN": "预设名"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "要定义或修改的预设名称"
+          }
         },
         "x": {
-          "type": "number"
+          "type": "number",
+          "description": "X coordinate",
+          "title": "X",
+          "x-i18n-desc": {
+            "zh-CN": "X 坐标"
+          }
         },
         "y": {
-          "type": "number"
+          "type": "number",
+          "description": "Y coordinate",
+          "title": "Y",
+          "x-i18n-desc": {
+            "zh-CN": "Y 坐标"
+          }
         }
       },
       "required": [
@@ -640,7 +1326,14 @@
         "y"
       ],
       "additionalProperties": false,
-      "description": "Define or modify a character position preset"
+      "description": "Define or modify a character position preset",
+      "title": "Character Preset",
+      "x-i18n": {
+        "zh-CN": "角色位置预设"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "定义或修改角色位置预设"
+      }
     },
     {
       "type": "object",
@@ -649,18 +1342,42 @@
           "type": "string",
           "const": "wait"
         },
-        "skippable": {
-          "type": "boolean"
-        },
         "time": {
-          "type": "number"
+          "type": "number",
+          "description": "Wait duration in milliseconds",
+          "title": "Duration",
+          "x-i18n": {
+            "zh-CN": "时长"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "等待时长（毫秒）"
+          }
+        },
+        "skippable": {
+          "description": "Whether the wait can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过等待"
+          },
+          "type": "boolean"
         }
       },
       "required": [
         "command",
         "time"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Wait for a specified duration",
+      "title": "Wait",
+      "x-i18n": {
+        "zh-CN": "等待"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "等待指定时长"
+      }
     },
     {
       "type": "object",
@@ -673,7 +1390,15 @@
       "required": [
         "command"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Wait for a player click",
+      "title": "Wait for Click",
+      "x-i18n": {
+        "zh-CN": "等待点击"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "等待玩家点击"
+      }
     },
     {
       "type": "object",
@@ -683,14 +1408,30 @@
           "const": "leaveStage"
         },
         "gotoPage": {
-          "type": "string"
+          "type": "string",
+          "description": "Target page to navigate to",
+          "title": "Target Page",
+          "x-i18n": {
+            "zh-CN": "目标页面"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "离开舞台后跳转的目标页面"
+          }
         }
       },
       "required": [
         "command",
         "gotoPage"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Leave the stage and navigate to another page",
+      "title": "Leave Stage",
+      "x-i18n": {
+        "zh-CN": "离开舞台"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "离开舞台并跳转到其他页面"
+      }
     },
     {
       "type": "object",
@@ -700,14 +1441,135 @@
           "const": "setTitle"
         },
         "text": {
-          "type": "string"
+          "type": "string",
+          "description": "Title text to display",
+          "title": "Text",
+          "x-i18n": {
+            "zh-CN": "文本"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "要显示的标题文本"
+          }
         }
       },
       "required": [
         "command",
         "text"
       ],
-      "additionalProperties": false
+      "additionalProperties": false,
+      "description": "Set the window or scene title",
+      "title": "Set Title",
+      "x-i18n": {
+        "zh-CN": "设置标题"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "设置窗口或场景标题"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "selectAdd"
+        },
+        "text": {
+          "type": "string",
+          "description": "Display text for the selection option",
+          "title": "Text",
+          "x-i18n": {
+            "zh-CN": "文本"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "选项的显示文本"
+          }
+        },
+        "value": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "description": "Value associated with the selection option",
+          "title": "Value",
+          "x-i18n": {
+            "zh-CN": "值"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "选项关联的值"
+          }
+        }
+      },
+      "required": [
+        "command",
+        "text",
+        "value"
+      ],
+      "additionalProperties": false,
+      "description": "Add a selection option to the pending list",
+      "title": "Add Selection",
+      "x-i18n": {
+        "zh-CN": "添加选项"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "添加一个选项到待选列表"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "selectShow"
+        },
+        "saveTo": {
+          "description": "Variable name to save the selected value to",
+          "title": "Save To",
+          "x-i18n": {
+            "zh-CN": "存储变量"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "保存选择结果的变量名"
+          },
+          "type": "string"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false,
+      "description": "Show all pending selection options and wait for the player to choose",
+      "title": "Show Selections",
+      "x-i18n": {
+        "zh-CN": "显示选项"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "显示所有待选选项并等待玩家选择"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "selectClear"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "additionalProperties": false,
+      "description": "Clear all pending selection options without showing them",
+      "title": "Clear Selections",
+      "x-i18n": {
+        "zh-CN": "清除选项"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "清除所有待选选项（不显示）"
+      }
     }
   ]
 }
