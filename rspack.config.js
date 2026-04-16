@@ -11,6 +11,9 @@ module.exports = {
     symlinks: false,
     extensions: ['...', '.ts', '.tsx', '.jsx'],
   },
+  watchOptions: {
+    ignored: /[\\/](?:\.git[\\/]|node_modules[\\/](?!@momoyu-ink[\\/]))/,
+  },
   module: {
     rules: [
       {
