@@ -868,6 +868,28 @@
           "x-i18n-desc": {
             "zh-CN": "颜色色调"
           }
+        },
+        "fadeTime": {
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
+          "type": "number"
+        },
+        "skippable": {
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
         }
       },
       "required": [
