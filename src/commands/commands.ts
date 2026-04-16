@@ -651,14 +651,19 @@ const CharPresetCommandSchema = z
         'x-i18n': { 'zh-CN': '预设名' },
         'x-i18n-desc': { 'zh-CN': '要定义或修改的预设名称' },
       }),
-    x: posX,
-    y: posY,
+    x: posX.optional(),
+    y: posY.optional(),
+    scale: nodeScale.optional(),
+    tint: tint.optional(),
+    visible: nodeVisible.optional(),
+    pivot: nodePivot.optional(),
+    fadeTime: fadeTimeOpt,
   })
-  .describe('Define or modify a character position preset')
+  .describe('Define or modify a character preset')
   .meta({
     title: 'Character Preset',
-    'x-i18n': { 'zh-CN': '角色位置预设' },
-    'x-i18n-desc': { 'zh-CN': '定义或修改角色位置预设' },
+    'x-i18n': { 'zh-CN': '角色预设' },
+    'x-i18n-desc': { 'zh-CN': '定义或修改角色预设' },
   });
 
 /* ------------------------------------------------------------------ */

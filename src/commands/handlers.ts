@@ -197,52 +197,34 @@ export const handleBgTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, con
 export const handleCharEnter: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'charEnter') return;
   const existingIndex = gameState.character.characters.findIndex((c) => c.name === cmd.name);
+  // Look up preset values
+  const presetData = cmd.preset ? gameState.character.presets[cmd.preset] : undefined;
+  if (cmd.preset && !presetData) {
+    console.warn(`Unknown character preset: ${cmd.preset}`);
+  }
+
   if (existingIndex !== -1) {
     const char = gameState.character.characters[existingIndex];
 
-    let posX = char.x;
-    let posY = char.y;
-    if (cmd.preset) {
-      const presetPos = gameState.character.presets[cmd.preset];
-      if (presetPos) {
-        posX = presetPos.x;
-        posY = presetPos.y;
-      } else {
-        console.warn(`Unknown character position preset: ${cmd.preset}`);
-      }
-    }
-
     char.src = cmd.src;
-    char.x = cmd.x ?? posX;
-    char.y = cmd.y ?? posY;
-    char.scale = cmd.scale ?? char.scale;
-    char.tint = cmd.tint ?? char.tint;
-    char.pivot = cmd.pivot ?? char.pivot;
-    char.fadeTime = cmd.fadeTime ?? 500;
-    char.visible = cmd.visible ?? true;
+    char.x = cmd.x ?? presetData?.x ?? char.x;
+    char.y = cmd.y ?? presetData?.y ?? char.y;
+    char.scale = cmd.scale ?? presetData?.scale ?? char.scale;
+    char.tint = cmd.tint ?? presetData?.tint ?? char.tint;
+    char.pivot = cmd.pivot ?? presetData?.pivot ?? char.pivot;
+    char.fadeTime = cmd.fadeTime ?? presetData?.fadeTime ?? 500;
+    char.visible = cmd.visible ?? presetData?.visible ?? true;
   } else {
-    let posX = 0;
-    let posY = 0;
-    if (cmd.preset) {
-      const presetPos = gameState.character.presets[cmd.preset];
-      if (presetPos) {
-        posX = presetPos.x;
-        posY = presetPos.y;
-      } else {
-        console.warn(`Unknown character position preset: ${cmd.preset}`);
-      }
-    }
-
     gameState.character.characters.push({
       name: cmd.name,
       src: cmd.src,
-      x: cmd.x ?? posX,
-      y: cmd.y ?? posY,
-      scale: cmd.scale ?? 1,
-      tint: cmd.tint ?? '#fff',
-      pivot: cmd.pivot ?? [0.5, 1],
-      fadeTime: cmd.fadeTime ?? 500,
-      visible: cmd.visible ?? true,
+      x: cmd.x ?? presetData?.x ?? 0,
+      y: cmd.y ?? presetData?.y ?? 0,
+      scale: cmd.scale ?? presetData?.scale ?? 1,
+      tint: cmd.tint ?? presetData?.tint ?? '#fff',
+      pivot: cmd.pivot ?? presetData?.pivot ?? [0.5, 1],
+      fadeTime: cmd.fadeTime ?? presetData?.fadeTime ?? 500,
+      visible: cmd.visible ?? presetData?.visible ?? true,
     });
   }
   // auto-advance
@@ -294,7 +276,15 @@ export const handleCharName: CommandHandler<ScenarioCommandSchemaType> = (cmd, _
 
 export const handleCharPreset: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'charPreset') return;
-  gameState.character.presets[cmd.preset] = { x: cmd.x, y: cmd.y };
+  const preset = gameState.character.presets[cmd.preset] ?? {};
+  if (cmd.x !== undefined) preset.x = cmd.x;
+  if (cmd.y !== undefined) preset.y = cmd.y;
+  if (cmd.scale !== undefined) preset.scale = cmd.scale;
+  if (cmd.tint !== undefined) preset.tint = cmd.tint;
+  if (cmd.visible !== undefined) preset.visible = cmd.visible;
+  if (cmd.pivot !== undefined) preset.pivot = cmd.pivot;
+  if (cmd.fadeTime !== undefined) preset.fadeTime = cmd.fadeTime;
+  gameState.character.presets[cmd.preset] = preset;
   // auto-advance
 };
 

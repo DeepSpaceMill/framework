@@ -1,4 +1,4 @@
-import { animated, useTransition, useSpring, useIsSkipping } from '@momoyu-ink/kit';
+import { animated, useTransition, useSpring, useIsSkipping, getStageSize } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { useEffect } from 'react';
 import { gameState, Character } from '../state/game';
@@ -21,8 +21,10 @@ export function CharacterActor() {
     },
   );
 
+  const stageSize = getStageSize();
+
   return (
-    <container label="立绘容器">
+    <container label="立绘容器" x={stageSize.width / 2} y={stageSize.height}>
       {transitions((style, character) => (
         <CharacterSprite
           key={character.name}

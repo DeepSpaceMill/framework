@@ -26,8 +26,18 @@ export interface Character extends Animation {
   pivot: Tuple2;
 }
 
+export interface CharacterPreset {
+  x?: number;
+  y?: number;
+  scale?: number;
+  tint?: string;
+  visible?: boolean;
+  pivot?: Tuple2;
+  fadeTime?: number;
+}
+
 export interface CharacterState {
-  presets: Record<string, { x: number; y: number }>;
+  presets: Record<string, CharacterPreset>;
   characters: Character[];
   currentSpeaker?: string;
 }
@@ -128,9 +138,9 @@ const gameStateDefaults: GameState = {
   },
   character: {
     presets: {
-      left: { x: 400, y: 800 },
-      center: { x: 960, y: 800 },
-      right: { x: 1520, y: 800 },
+      left: { x: -560, y: 0 },
+      center: { x: 0, y: 0 },
+      right: { x: 560, y: 0 },
     },
     characters: [],
     currentSpeaker: undefined,
