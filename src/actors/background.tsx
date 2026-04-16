@@ -38,9 +38,13 @@ export function BackgroundActor() {
   }, [transRef, backgroundState.src]);
 
   // Update tint animation when tint changes
+  // biome-ignore lint/correctness/useExhaustiveDependencies: fadeTime and skipping are read at trigger time, only tint change should re-trigger
   useEffect(() => {
     tintSpringRef.start({
       tint: backgroundState.tint || '#FFFFFF',
+      config: {
+        duration: skipping ? 0 : backgroundState.fadeTime,
+      },
     });
   }, [tintSpringRef, backgroundState.tint]);
 

@@ -171,20 +171,22 @@ export const handleSoundStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
 export const handleBg: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'bg') return;
   gameState.background.src = cmd.src;
-  gameState.background.fadeTime = cmd.fadeTime || 1000;
-  gameState.background.skippable = cmd.skippable || false;
+  gameState.background.fadeTime = cmd.fadeTime ?? 1000;
+  gameState.background.skippable = cmd.skippable ?? false;
   control.setWaiting(gameState.background.fadeTime, gameState.background.skippable);
 };
 
 /** Set background tint color. */
-export const handleBgTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleBgTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'bgTint') return;
+  gameState.background.fadeTime = cmd.fadeTime ?? 1000;
+  gameState.background.skippable = cmd.skippable ?? false;
   if (cmd.tint === 'off' || cmd.tint === 'none') {
     gameState.background.tint = undefined;
   } else {
     gameState.background.tint = cmd.tint;
   }
-  // auto-advance
+  control.setWaiting(gameState.background.fadeTime, gameState.background.skippable);
 };
 
 // ---------------------------------------------------------------------------

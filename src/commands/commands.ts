@@ -555,6 +555,8 @@ const BgTintCommandSchema = z
   .object({
     command: z.literal('bgTint'),
     tint,
+    fadeTime: fadeTime(1000),
+    skippable: skippable(false),
   })
   .describe('Set background tint color')
   .meta({
