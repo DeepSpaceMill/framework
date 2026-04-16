@@ -1,8 +1,4 @@
-import {
-  getNavigator,
-  type CommandHandler,
-  type TextLineHandler,
-} from '@momoyu-ink/kit';
+import { getNavigator, type CommandHandler, type TextLineHandler } from '@momoyu-ink/kit';
 import { gameState, resetGameState } from '../state/game';
 import { GamePage } from '../state/ui';
 import { writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
@@ -238,14 +234,22 @@ export const handleCharAction: CommandHandler<ScenarioCommandSchemaType> = (cmd,
     console.warn(`charAction: character "${cmd.name}" not found`);
     return;
   }
-  if (cmd.src !== undefined) char.src = cmd.src;
-  if (cmd.x !== undefined) char.x = cmd.x;
-  if (cmd.y !== undefined) char.y = cmd.y;
-  if (cmd.visible !== undefined) char.visible = cmd.visible;
-  if (cmd.scale !== undefined) char.scale = cmd.scale;
-  if (cmd.tint !== undefined) char.tint = cmd.tint;
-  if (cmd.pivot !== undefined) char.pivot = cmd.pivot;
-  if (cmd.fadeTime !== undefined) char.fadeTime = cmd.fadeTime;
+
+  // Look up preset values
+  const presetData = cmd.preset ? gameState.character.presets[cmd.preset] : undefined;
+  if (cmd.preset && !presetData) {
+    console.warn(`Unknown character preset: ${cmd.preset}`);
+  }
+
+  char.src = cmd.src ?? char.src;
+  char.x = cmd.x ?? presetData?.x ?? char.x;
+  char.y = cmd.y ?? presetData?.y ?? char.y;
+  char.scale = cmd.scale ?? presetData?.scale ?? char.scale;
+  char.tint = cmd.tint ?? presetData?.tint ?? char.tint;
+  char.pivot = cmd.pivot ?? presetData?.pivot ?? char.pivot;
+  char.fadeTime = cmd.fadeTime ?? presetData?.fadeTime ?? char.fadeTime;
+  char.visible = cmd.visible ?? presetData?.visible ?? char.visible;
+
   // auto-advance
 };
 

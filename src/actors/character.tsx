@@ -1,6 +1,5 @@
-import { animated, useTransition, useSpring, useIsSkipping, getStageSize } from '@momoyu-ink/kit';
+import { animated, useTransition, useSpring, useIsSkipping, getStageSize, easings } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
-import { useEffect } from 'react';
 import { gameState, Character } from '../state/game';
 
 export function CharacterActor() {
@@ -11,7 +10,7 @@ export function CharacterActor() {
   const transitions = useTransition(
     Object.values(characterState.characters).filter((char) => char.visible),
     {
-      keys: (char) => char.src,
+      keys: (char) => char.name ?? char.src,
       from: { opacity: 0 },
       enter: { opacity: 1 },
       leave: { opacity: 0 },
@@ -45,40 +44,26 @@ interface CharacterSpriteProps {
   opacity: any; // react-spring's SpringValue
 }
 
-function CharacterSprite({ character, isCurrentSpeaker, autoTint, opacity }: CharacterSpriteProps) {
+function CharacterSprite({ character: propCharacter, isCurrentSpeaker, autoTint, opacity }: CharacterSpriteProps) {
   const skipping = useIsSkipping();
+  const characterState = useSnapshot(gameState.character) as typeof gameState.character;
+  // Read fresh data from valtio; fall back to the transition prop during leave animation
+  const character =
+    (characterState.characters as Character[]).find(
+      (c) => (c.name ?? c.src) === (propCharacter.name ?? propCharacter.src),
+    ) ?? propCharacter;
 
-  const [springs, api] = useSpring(() => ({
+  // Reactive spring: re-animates automatically whenever character state changes
+  const springs = useSpring({
     x: character.x,
     y: character.y,
     scale: character.scale,
     tint: isCurrentSpeaker ? character.tint : autoTint,
-    config: {
-      duration: skipping ? 0 : character.fadeTime,
+    config: (key: string) => {
+      if (key === 'tint') return { duration: skipping ? 0 : 200, easing: easings.easeInOutCubic };
+      return { duration: skipping ? 0 : character.fadeTime, easing: easings.easeInOutCubic };
     },
-  }));
-
-  // transition for x, y, scale with character.fadeTime
-  useEffect(() => {
-    api.start({
-      x: character.x,
-      y: character.y,
-      scale: character.scale,
-      config: {
-        duration: skipping ? 0 : character.fadeTime,
-      },
-    });
-  }, [character.x, character.y, character.scale, character.fadeTime, api, skipping]);
-
-  // transition for tint when isCurrentSpeaker changes
-  useEffect(() => {
-    api.start({
-      tint: isCurrentSpeaker ? character.tint : autoTint,
-      config: {
-        duration: 200,
-      },
-    });
-  }, [isCurrentSpeaker, character.tint, autoTint, api]);
+  });
 
   return (
     <animated.sprite
