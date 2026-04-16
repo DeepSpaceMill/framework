@@ -288,6 +288,12 @@ export const handleCharPreset: CommandHandler<ScenarioCommandSchemaType> = (cmd,
   // auto-advance
 };
 
+export const handleCharAutoTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'charAutoTint') return;
+  gameState.character.autoTint = cmd.tint;
+  // auto-advance
+};
+
 // ---------------------------------------------------------------------------
 // Flow control command handlers
 // ---------------------------------------------------------------------------

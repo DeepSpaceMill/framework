@@ -30,6 +30,7 @@ export function CharacterActor() {
           key={character.name}
           character={character}
           isCurrentSpeaker={character.name === textboxState.name}
+          autoTint={characterState.autoTint}
           opacity={style.opacity}
         />
       ))}
@@ -40,17 +41,18 @@ export function CharacterActor() {
 interface CharacterSpriteProps {
   character: Character;
   isCurrentSpeaker: boolean;
+  autoTint: string;
   opacity: any; // react-spring's SpringValue
 }
 
-function CharacterSprite({ character, isCurrentSpeaker, opacity }: CharacterSpriteProps) {
+function CharacterSprite({ character, isCurrentSpeaker, autoTint, opacity }: CharacterSpriteProps) {
   const skipping = useIsSkipping();
 
   const [springs, api] = useSpring(() => ({
     x: character.x,
     y: character.y,
     scale: character.scale,
-    tint: isCurrentSpeaker ? character.tint : '#333',
+    tint: isCurrentSpeaker ? character.tint : autoTint,
     config: {
       duration: skipping ? 0 : character.fadeTime,
     },
@@ -71,12 +73,12 @@ function CharacterSprite({ character, isCurrentSpeaker, opacity }: CharacterSpri
   // transition for tint when isCurrentSpeaker changes
   useEffect(() => {
     api.start({
-      tint: isCurrentSpeaker ? character.tint : '#333',
+      tint: isCurrentSpeaker ? character.tint : autoTint,
       config: {
         duration: 200,
       },
     });
-  }, [isCurrentSpeaker, character.tint, api]);
+  }, [isCurrentSpeaker, character.tint, autoTint, api]);
 
   return (
     <animated.sprite

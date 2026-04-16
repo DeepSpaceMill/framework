@@ -38,6 +38,7 @@ import {
   handleTitle,
   handleTextLine,
   handleCharPreset,
+  handleCharAutoTint,
   handleOptionAdd,
   handleOptionShow,
   handleOptionClear,
@@ -105,6 +106,7 @@ export function Stage() {
       stage.registerCommand('charClear', handleCharClear),
       stage.registerCommand('charName', handleCharName),
       stage.registerCommand('charPreset', handleCharPreset),
+      stage.registerCommand('charAutoTint', handleCharAutoTint),
       // Flow control
       stage.registerCommand('wait', handleWait),
       stage.registerCommand('waitClick', handleWaitClick),

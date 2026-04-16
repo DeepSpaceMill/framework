@@ -870,6 +870,7 @@
           }
         },
         "fadeTime": {
+          "default": 1000,
           "description": "Fade time in milliseconds",
           "title": "Fade Time",
           "x-i18n": {
@@ -881,6 +882,7 @@
           "type": "number"
         },
         "skippable": {
+          "default": false,
           "description": "Whether it can be skipped",
           "title": "Skippable",
           "x-i18n": {
@@ -894,7 +896,9 @@
       },
       "required": [
         "command",
-        "tint"
+        "tint",
+        "fadeTime",
+        "skippable"
       ],
       "additionalProperties": false,
       "description": "Set background tint color",
@@ -1339,22 +1343,116 @@
           "x-i18n-desc": {
             "zh-CN": "Y 坐标"
           }
+        },
+        "scale": {
+          "type": "number",
+          "description": "Scale factor",
+          "title": "Scale",
+          "x-i18n": {
+            "zh-CN": "缩放"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "缩放系数"
+          }
+        },
+        "tint": {
+          "type": "string",
+          "description": "Color tint",
+          "title": "Tint",
+          "x-i18n": {
+            "zh-CN": "色调"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "颜色色调"
+          }
+        },
+        "visible": {
+          "type": "boolean",
+          "description": "Whether visible",
+          "title": "Visible",
+          "x-i18n": {
+            "zh-CN": "可见"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可见"
+          }
+        },
+        "pivot": {
+          "type": "array",
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "description": "Pivot point (x, y) in pixels",
+          "title": "Pivot",
+          "x-i18n": {
+            "zh-CN": "旋转中心"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "旋转中心点 (x, y)，单位像素"
+          }
+        },
+        "fadeTime": {
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
+          "type": "number"
         }
       },
       "required": [
         "command",
-        "preset",
-        "x",
-        "y"
+        "preset"
       ],
       "additionalProperties": false,
-      "description": "Define or modify a character position preset",
+      "description": "Define or modify a character preset",
       "title": "Character Preset",
       "x-i18n": {
-        "zh-CN": "角色位置预设"
+        "zh-CN": "角色预设"
       },
       "x-i18n-desc": {
-        "zh-CN": "定义或修改角色位置预设"
+        "zh-CN": "定义或修改角色预设"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "charAutoTint"
+        },
+        "tint": {
+          "type": "string",
+          "description": "Color tint",
+          "title": "Tint",
+          "x-i18n": {
+            "zh-CN": "色调"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "颜色色调"
+          }
+        }
+      },
+      "required": [
+        "command",
+        "tint"
+      ],
+      "additionalProperties": false,
+      "description": "Set the tint color applied to non-speaking characters",
+      "title": "Character Auto Tint",
+      "x-i18n": {
+        "zh-CN": "角色自动色调"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "设置非当前发言角色的色调颜色"
       }
     },
     {

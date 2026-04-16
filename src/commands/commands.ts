@@ -666,6 +666,18 @@ const CharPresetCommandSchema = z
     'x-i18n-desc': { 'zh-CN': '定义或修改角色预设' },
   });
 
+const CharAutoTintCommandSchema = z
+  .object({
+    command: z.literal('charAutoTint'),
+    tint,
+  })
+  .describe('Set the tint color applied to non-speaking characters')
+  .meta({
+    title: 'Character Auto Tint',
+    'x-i18n': { 'zh-CN': '角色自动色调' },
+    'x-i18n-desc': { 'zh-CN': '设置非当前发言角色的色调颜色' },
+  });
+
 /* ------------------------------------------------------------------ */
 /*  Flow Control Commands                                              */
 /* ------------------------------------------------------------------ */
@@ -839,6 +851,7 @@ export const ScenarioCommandSchema = z.discriminatedUnion('command', [
   CharClearCommandSchema,
   CharNameCommandSchema,
   CharPresetCommandSchema,
+  CharAutoTintCommandSchema,
   WaitCommandSchema,
   WaitClickCommandSchema,
   LeaveStageCommandSchema,

@@ -40,6 +40,7 @@ export interface CharacterState {
   presets: Record<string, CharacterPreset>;
   characters: Character[];
   currentSpeaker?: string;
+  autoTint: string;
 }
 
 // TextBox state interface
@@ -144,6 +145,7 @@ const gameStateDefaults: GameState = {
     },
     characters: [],
     currentSpeaker: undefined,
+    autoTint: '#666',
   },
   textbox: {
     name: '',
