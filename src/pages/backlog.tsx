@@ -142,11 +142,10 @@ export function Backlog() {
   };
 
   return transitions((style, _) => (
-    <container scale={scale} interactive={show}>
+    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} scale={scale} interactive={show}>
       <animated.sprite
         label="透明遮罩"
         src="ui/mask-transparent.png"
-        opacity={style.opacity}
         onClick={(event) => {
           event.stopPropagation();
           handleClose();
@@ -216,7 +215,7 @@ export function Backlog() {
           />
         )}
       </animated.sprite>
-    </container>
+    </animated.backdrop>
   ));
 }
 

@@ -121,8 +121,8 @@ export function SaveLoad() {
   const scale = stageSize.width / 1920;
 
   return transitions((style, _) => (
-    <container scale={scale} interactive={show}>
-      <animated.sprite label="透明遮罩" src="ui/mask-transparent.png" opacity={style.opacity} onClick={handleExit} />
+    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} scale={scale} interactive={show}>
+      <animated.sprite label="透明遮罩" src="ui/mask-transparent.png" onClick={handleExit} />
       <animated.sprite
         label="背景图"
         src="ui/sl_bg.png"
@@ -247,7 +247,7 @@ export function SaveLoad() {
           })}
         </container>
       </animated.sprite>
-    </container>
+    </animated.backdrop>
   ));
 }
 

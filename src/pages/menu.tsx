@@ -66,8 +66,8 @@ export function Menu() {
   };
 
   return transitions((style, _) => (
-    <container>
-      <animated.sprite label="半透明遮罩" src="ui/mask.png" onClick={handleExit} opacity={style.opacity} />
+    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity}>
+      <animated.sprite label="半透明遮罩" src="ui/mask.png" onClick={handleExit} />
       <animated.sprite label="背景图" src="ui/menu_bg.png" pivot={[0.5, 0.5]} x={960} y={540} {...style}>
         <Button
           fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
@@ -110,6 +110,6 @@ export function Menu() {
           onClick={handleToQuit}
         />
       </animated.sprite>
-    </container>
+    </animated.backdrop>
   ));
 }
