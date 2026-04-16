@@ -103,7 +103,7 @@ export function Stage() {
     const unregs = [
       stage.registerCommandSchema(ScenarioCommandSchema),
       stage.registerCommand('text', handleText),
-      stage.registerCommand('changebg', handleChangeBg),
+      stage.registerCommand('bg', handleBg),
       // ... more commands
       stage.registerTextLine(handleTextLine),
     ];

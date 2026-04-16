@@ -158,7 +158,7 @@ const soundChannel = z
     'x-i18n-desc': { 'zh-CN': '音频通道名称' },
   });
 
-/** Common character transform properties shared by addchar / charchange */
+/** Common character transform properties shared by charEnter / charAction */
 const charTransformProps = {
   name: charName.optional(),
   preset: charPreset.optional(),
@@ -537,9 +537,9 @@ const SoundStopCommandSchema = z
 /*  Background Commands                                                */
 /* ------------------------------------------------------------------ */
 
-const ChangeBgCommandSchema = z
+const BgCommandSchema = z
   .object({
-    command: z.literal('changebg'),
+    command: z.literal('bg'),
     src: imageSrc,
     fadeTime: fadeTime(1000),
     skippable: skippable(false),
@@ -551,9 +551,9 @@ const ChangeBgCommandSchema = z
     'x-i18n-desc': { 'zh-CN': '切换背景图片' },
   });
 
-const SetBgTintCommandSchema = z
+const BgTintCommandSchema = z
   .object({
-    command: z.literal('setBgTint'),
+    command: z.literal('bgTint'),
     tint,
   })
   .describe('Set background tint color')
@@ -567,9 +567,9 @@ const SetBgTintCommandSchema = z
 /*  Character Commands                                                 */
 /* ------------------------------------------------------------------ */
 
-const CharAddCommandSchema = z
+const CharEnterCommandSchema = z
   .object({
-    command: z.literal('addchar'),
+    command: z.literal('charEnter'),
     src: imageSrc,
     ...charTransformProps,
   })
@@ -580,9 +580,9 @@ const CharAddCommandSchema = z
     'x-i18n-desc': { 'zh-CN': '将角色添加到舞台' },
   });
 
-const CharChangeCommandSchema = z
+const CharActionCommandSchema = z
   .object({
-    command: z.literal('charchange'),
+    command: z.literal('charAction'),
     src: imageSrc.optional(),
     ...charTransformProps,
   })
@@ -593,9 +593,9 @@ const CharChangeCommandSchema = z
     'x-i18n-desc': { 'zh-CN': '更改舞台上的角色' },
   });
 
-const CharRemoveCommandSchema = z
+const CharLeaveCommandSchema = z
   .object({
-    command: z.literal('charremove'),
+    command: z.literal('charLeave'),
     name: charName.optional(),
     fadeTime: fadeTimeOpt,
   })
@@ -608,7 +608,7 @@ const CharRemoveCommandSchema = z
 
 const CharClearCommandSchema = z
   .object({
-    command: z.literal('charclear'),
+    command: z.literal('charClear'),
     fadeTime: fadeTimeOpt,
   })
   .describe('Remove all characters from the stage')
@@ -620,7 +620,7 @@ const CharClearCommandSchema = z
 
 const CharNameCommandSchema = z
   .object({
-    command: z.literal('charname'),
+    command: z.literal('charName'),
     name: charName.optional(),
     to: z
       .string()
@@ -640,7 +640,7 @@ const CharNameCommandSchema = z
 
 const CharPresetCommandSchema = z
   .object({
-    command: z.literal('charpreset'),
+    command: z.literal('charPreset'),
     preset: z
       .string()
       .describe('Preset name to define or modify')
@@ -693,7 +693,7 @@ const WaitCommandSchema = z
 
 const WaitClickCommandSchema = z
   .object({
-    command: z.literal('waitclick'),
+    command: z.literal('waitClick'),
   })
   .describe('Wait for a player click')
   .meta({
@@ -725,9 +725,9 @@ const LeaveStageCommandSchema = z
     'x-i18n-desc': { 'zh-CN': '离开舞台并跳转到其他页面' },
   });
 
-const SetTitleCommandSchema = z
+const TitleCommandSchema = z
   .object({
-    command: z.literal('setTitle'),
+    command: z.literal('title'),
     text: z
       .string()
       .describe('Title text to display')
@@ -745,12 +745,12 @@ const SetTitleCommandSchema = z
   });
 
 /* ------------------------------------------------------------------ */
-/*  Selection Commands                                                 */
+/*  Option Commands                                                   */
 /* ------------------------------------------------------------------ */
 
-const SelectAddCommandSchema = z
+const OptionAddCommandSchema = z
   .object({
-    command: z.literal('selectAdd'),
+    command: z.literal('optionAdd'),
     text: z
       .string()
       .describe('Display text for the selection option')
@@ -775,9 +775,9 @@ const SelectAddCommandSchema = z
     'x-i18n-desc': { 'zh-CN': '添加一个选项到待选列表' },
   });
 
-const SelectShowCommandSchema = z
+const OptionShowCommandSchema = z
   .object({
-    command: z.literal('selectShow'),
+    command: z.literal('optionShow'),
     saveTo: z
       .string()
       .optional()
@@ -795,9 +795,9 @@ const SelectShowCommandSchema = z
     'x-i18n-desc': { 'zh-CN': '显示所有待选选项并等待玩家选择' },
   });
 
-const SelectClearCommandSchema = z
+const OptionClearCommandSchema = z
   .object({
-    command: z.literal('selectClear'),
+    command: z.literal('optionClear'),
   })
   .describe('Clear all pending selection options without showing them')
   .meta({
@@ -824,21 +824,21 @@ export const ScenarioCommandSchema = z.discriminatedUnion('command', [
   VoiceStopCommandSchema,
   SoundCommandSchema,
   SoundStopCommandSchema,
-  ChangeBgCommandSchema,
-  SetBgTintCommandSchema,
-  CharAddCommandSchema,
-  CharChangeCommandSchema,
-  CharRemoveCommandSchema,
+  BgCommandSchema,
+  BgTintCommandSchema,
+  CharEnterCommandSchema,
+  CharActionCommandSchema,
+  CharLeaveCommandSchema,
   CharClearCommandSchema,
   CharNameCommandSchema,
   CharPresetCommandSchema,
   WaitCommandSchema,
   WaitClickCommandSchema,
   LeaveStageCommandSchema,
-  SetTitleCommandSchema,
-  SelectAddCommandSchema,
-  SelectShowCommandSchema,
-  SelectClearCommandSchema,
+  TitleCommandSchema,
+  OptionAddCommandSchema,
+  OptionShowCommandSchema,
+  OptionClearCommandSchema,
 ]);
 
 export type ScenarioCommandSchemaType = z.infer<typeof ScenarioCommandSchema>;

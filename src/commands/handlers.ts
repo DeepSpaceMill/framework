@@ -168,8 +168,8 @@ export const handleSoundStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
 // ---------------------------------------------------------------------------
 
 /** Change background image with optional fade. */
-export const handleChangeBg: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
-  if (cmd.command !== 'changebg') return;
+export const handleBg: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
+  if (cmd.command !== 'bg') return;
   gameState.background.src = cmd.src;
   gameState.background.fadeTime = cmd.fadeTime || 1000;
   gameState.background.skippable = cmd.skippable || false;
@@ -177,8 +177,8 @@ export const handleChangeBg: CommandHandler<ScenarioCommandSchemaType> = (cmd, c
 };
 
 /** Set background tint color. */
-export const handleSetBgTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'setBgTint') return;
+export const handleBgTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'bgTint') return;
   if (cmd.tint === 'off' || cmd.tint === 'none') {
     gameState.background.tint = undefined;
   } else {
@@ -192,8 +192,8 @@ export const handleSetBgTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
 // ---------------------------------------------------------------------------
 
 /** Add a character on stage. */
-export const handleAddChar: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'addchar') return;
+export const handleCharEnter: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'charEnter') return;
   const existingIndex = gameState.character.characters.findIndex((c) => c.name === cmd.name);
   if (existingIndex !== -1) {
     const char = gameState.character.characters[existingIndex];
@@ -247,11 +247,11 @@ export const handleAddChar: CommandHandler<ScenarioCommandSchemaType> = (cmd, _c
 };
 
 /** Change an existing character's properties. */
-export const handleCharChange: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'charchange') return;
+export const handleCharAction: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'charAction') return;
   const char = gameState.character.characters.find((c) => c.name === cmd.name);
   if (!char) {
-    console.warn(`charchange: character "${cmd.name}" not found`);
+    console.warn(`charAction: character "${cmd.name}" not found`);
     return;
   }
   if (cmd.src !== undefined) char.src = cmd.src;
@@ -266,8 +266,8 @@ export const handleCharChange: CommandHandler<ScenarioCommandSchemaType> = (cmd,
 };
 
 /** Remove a character from stage. */
-export const handleCharRemove: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'charremove') return;
+export const handleCharLeave: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'charLeave') return;
   const index = gameState.character.characters.findIndex((c) => c.name === cmd.name);
   if (index !== -1) {
     gameState.character.characters.splice(index, 1);
@@ -277,21 +277,21 @@ export const handleCharRemove: CommandHandler<ScenarioCommandSchemaType> = (cmd,
 
 /** Remove all characters from stage. */
 export const handleCharClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'charclear') return;
+  if (cmd.command !== 'charClear') return;
   gameState.character.characters.length = 0;
   // auto-advance
 };
 
 /** Map a character internal name to a display name (stub — full refactor deferred). */
 export const handleCharName: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'charname') return;
+  if (cmd.command !== 'charName') return;
   // TODO: implement character display name mapping after char system refactor
-  console.warn(`charname: "${cmd.name}" -> "${cmd.to}" (not yet implemented)`);
+  console.warn(`charName: "${cmd.name}" -> "${cmd.to}" (not yet implemented)`);
   // auto-advance
 };
 
 export const handleCharPreset: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'charpreset') return;
+  if (cmd.command !== 'charPreset') return;
   gameState.character.presets[cmd.preset] = { x: cmd.x, y: cmd.y };
   // auto-advance
 };
@@ -325,8 +325,8 @@ export const handleLeaveStage: CommandHandler<ScenarioCommandSchemaType> = (cmd,
 };
 
 /** Set story title metadata. */
-export const handleSetTitle: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'setTitle') return;
+export const handleTitle: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'title') return;
   gameState.story.title = cmd.text;
   // auto-advance
 };
@@ -336,15 +336,15 @@ export const handleSetTitle: CommandHandler<ScenarioCommandSchemaType> = (cmd, _
 // ---------------------------------------------------------------------------
 
 /** Add a selection option to the pending list. */
-export const handleSelectAdd: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'selectAdd') return;
+export const handleOptionAdd: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'optionAdd') return;
   gameState.selection.options.push({ text: cmd.text, value: cmd.value });
   // auto-advance
 };
 
 /** Show all pending selection options and wait for the player to choose. */
-export const handleSelectShow: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
-  if (cmd.command !== 'selectShow') return;
+export const handleOptionShow: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
+  if (cmd.command !== 'optionShow') return;
   gameState.selection.saveTo = cmd.saveTo;
   // uncomment this if you want the textbox to hide during selection
   // gameState.textbox.visible = false;
@@ -358,8 +358,8 @@ export const handleSelectShow: CommandHandler<ScenarioCommandSchemaType> = (cmd,
 };
 
 /** Clear all pending selection options without showing them. */
-export const handleSelectClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
-  if (cmd.command !== 'selectClear') return;
+export const handleOptionClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'optionClear') return;
   gameState.selection.options.length = 0;
   gameState.selection.saveTo = undefined;
   // auto-advance

@@ -795,7 +795,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "changebg"
+          "const": "bg"
         },
         "src": {
           "type": "string",
@@ -856,7 +856,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "setBgTint"
+          "const": "bgTint"
         },
         "tint": {
           "type": "string",
@@ -889,7 +889,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "addchar"
+          "const": "charEnter"
         },
         "src": {
           "type": "string",
@@ -1030,7 +1030,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "charchange"
+          "const": "charAction"
         },
         "src": {
           "type": "string",
@@ -1170,7 +1170,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "charremove"
+          "const": "charLeave"
         },
         "name": {
           "type": "string",
@@ -1213,7 +1213,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "charclear"
+          "const": "charClear"
         },
         "fadeTime": {
           "description": "Fade time in milliseconds",
@@ -1245,7 +1245,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "charname"
+          "const": "charName"
         },
         "name": {
           "type": "string",
@@ -1289,7 +1289,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "charpreset"
+          "const": "charPreset"
         },
         "preset": {
           "type": "string",
@@ -1384,7 +1384,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "waitclick"
+          "const": "waitClick"
         }
       },
       "required": [
@@ -1438,7 +1438,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "setTitle"
+          "const": "title"
         },
         "text": {
           "type": "string",
@@ -1471,7 +1471,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "selectAdd"
+          "const": "optionAdd"
         },
         "text": {
           "type": "string",
@@ -1523,7 +1523,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "selectShow"
+          "const": "optionShow"
         },
         "saveTo": {
           "description": "Variable name to save the selected value to",
@@ -1555,7 +1555,7 @@
       "properties": {
         "command": {
           "type": "string",
-          "const": "selectClear"
+          "const": "optionClear"
         }
       },
       "required": [

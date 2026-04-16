@@ -79,10 +79,10 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   useInterruptCallback(tryFinishPrinting);
 
   // Clear text before the next command is executed, unless the next command is
-  // a selectAdd/selectShow — in that case keep the text so it remains visible
+  // a optionAdd/optionShow — in that case keep the text so it remains visible
   // during the selection phase.
   useBeforeHandleCommandCallback(({ command }) => {
-    if (gameState.textbox.shouldClear && command !== 'selectAdd' && command !== 'selectShow') {
+    if (gameState.textbox.shouldClear && command !== 'optionAdd' && command !== 'optionShow') {
       gameState.textbox.text = '';
     }
   });
