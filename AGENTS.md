@@ -315,6 +315,39 @@ Common attributes on all elements: `x`, `y`, `anchor`, `pivot`, `scale`, `rotati
 
 ### Animation (react-spring re-exports)
 
+**IMPORTANT: Use reactive mode for state-driven animations.**
+
+When animation targets come from valtio state (or any external reactive source), always use the **reactive** (declarative) form of `useSpring`:
+
+```typescript
+// ✅ CORRECT — reactive mode: re-animates automatically on state change
+const springs = useSpring({
+  x: character.x,
+  y: character.y,
+  config: { duration: 500 },
+});
+```
+
+Do NOT use the factory (imperative) form `useSpring(() => ({...}))` with `useEffect` + `api.start()` for state-driven animations:
+
+```typescript
+// ❌ WRONG — factory mode creates a SpringRef that queues updates instead of applying them directly.
+// Combined with valtio's rapid re-renders, this causes animations to fight each other or not apply at all.
+const [springs, api] = useSpring(() => ({
+  x: character.x,
+  config: { duration: 500 },
+}));
+useEffect(() => {
+  api.start({ x: character.x });
+}, [character.x]);
+```
+
+**Why**: Factory mode creates an internal `SpringRef`. With a ref present, react-spring pushes updates into a queue (`ctrl.queue.push()`) instead of calling `ctrl.start()` directly. The queued updates depend on manual `api.start()` flushing via `useEffect`, which can race with valtio-triggered re-renders — causing animations to briefly apply then revert. Reactive mode has no ref, runs `declareUpdates` every render, and applies updates synchronously in the layout effect phase.
+
+Reserve factory/imperative mode only for manually triggered animations (e.g., click-to-animate, chained sequences) where you explicitly control when the animation starts.
+
+**`useTransition` does not update item properties.** react-spring's `useTransition` only tracks enter/leave/update of items by key. It does NOT propagate property changes on existing items. If you need to react to property changes on items inside a transition, read fresh state directly via `useSnapshot()` inside the child component instead of relying on the item object from the transition callback.
+
 | API | Usage |
 |-----|-------|
 | `animated.sprite`, `animated.container`, etc. | Animated element primitives |
