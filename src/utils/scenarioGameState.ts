@@ -31,5 +31,15 @@ export async function restoreGameStateFromScenario(): Promise<GameState | undefi
     }
   }
 
+  // Reset audio trigger counters and voice src after restoring saved state.
+  // Without this, SfxActor/SoundActor would treat the restored seq values as
+  // fresh play requests and replay stale audio from before the save was taken.
+  // Similarly, VoiceActor would replay the voice that was playing at save time.
+  gameState.sfx.seq = 0;
+  gameState.sfx.stopSeq = 0;
+  gameState.sound.seq = 0;
+  gameState.sound.stopSeq = 0;
+  gameState.voice.src = '';
+
   return loadedGameState;
 }

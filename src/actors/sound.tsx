@@ -1,5 +1,5 @@
 import { executePluginCommand, useIsSkipping } from '@momoyu-ink/kit';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { gameState } from '../state/game';
 import { settingsState } from '../state/settings';
@@ -13,13 +13,17 @@ import { settingsState } from '../state/settings';
 export function SoundActor() {
   const soundState = useSnapshot(gameState.sound);
   const isSkipping = useIsSkipping();
+  // Capture isSkipping in a ref so the play effect only re-runs on seq changes.
+  // Same rationale as SfxActor: prevents stale replays when skip ends.
+  const isSkippingRef = useRef(false);
+  isSkippingRef.current = isSkipping;
 
   // Handle play requests
   useEffect(() => {
     if (soundState.seq === 0) return;
 
     // Skip sound during fast-forward to avoid audio overlap
-    if (isSkipping) return;
+    if (isSkippingRef.current) return;
 
     const { channel, src, loop, volume, fadeTime } = gameState.sound;
     if (!src || !channel) return;
@@ -39,7 +43,7 @@ export function SoundActor() {
     } catch (err) {
       console.error(`Failed to play sound on channel ${channel}:`, err);
     }
-  }, [soundState.seq, isSkipping]);
+  }, [soundState.seq]);
 
   // Handle stop requests
   useEffect(() => {

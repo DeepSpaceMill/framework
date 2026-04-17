@@ -1,5 +1,5 @@
 import { executePluginCommand, useIsSkipping } from '@momoyu-ink/kit';
-import { useEffect } from 'react';
+import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { gameState } from '../state/game';
 import { settingsState } from '../state/settings';
@@ -13,13 +13,19 @@ import { settingsState } from '../state/settings';
 export function SfxActor() {
   const sfxState = useSnapshot(gameState.sfx);
   const isSkipping = useIsSkipping();
+  // Capture isSkipping in a ref so the play effect only re-runs on seq changes.
+  // Reading isSkipping directly from the ref avoids stale replays when skip ends:
+  // if isSkipping were in the dep array, the effect would re-fire after skip ends
+  // and replay the last seq that was suppressed during skipping.
+  const isSkippingRef = useRef(false);
+  isSkippingRef.current = isSkipping;
 
   // Handle play requests
   useEffect(() => {
     if (sfxState.seq === 0) return;
 
     // Skip SFX during fast-forward to avoid audio overlap
-    if (isSkipping) return;
+    if (isSkippingRef.current) return;
 
     const { src, loop, volume, fadeTime } = gameState.sfx;
     if (!src) return;
@@ -39,7 +45,7 @@ export function SfxActor() {
     } catch (err) {
       console.error('Failed to play SFX:', err);
     }
-  }, [sfxState.seq, isSkipping]);
+  }, [sfxState.seq]);
 
   // Handle stop requests
   useEffect(() => {
