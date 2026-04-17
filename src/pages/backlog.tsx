@@ -66,11 +66,21 @@ export function Backlog() {
     },
   });
 
-  const { records, scrollOffset, maxScroll, showScrollbar, scrollbarHeight, scrollbarOffset, handleWheel, scrollToRatio, jumpToRecord, close } =
-    useBacklog({
-      itemHeight: ROW_HEIGHT,
-      viewportHeight: VIEWPORT_HEIGHT - VIEWPORT_PADDING_Y * 2,
-    });
+  const {
+    records,
+    scrollOffset,
+    maxScroll,
+    showScrollbar,
+    scrollbarHeight,
+    scrollbarOffset,
+    handleWheel,
+    scrollToRatio,
+    jumpToRecord,
+    close,
+  } = useBacklog({
+    itemHeight: ROW_HEIGHT,
+    viewportHeight: VIEWPORT_HEIGHT - VIEWPORT_PADDING_Y * 2,
+  });
 
   const draggingScrollbarRef = useRef(false);
   const dragStartClientYRef = useRef(0);
@@ -207,7 +217,11 @@ export function Backlog() {
             targetWidth={SCROLLBAR_WIDTH}
             targetHeight={scrollbarHeight}
             x={SCROLLBAR_X}
-            y={typeof scrollbarOffset === 'number' ? SCROLLBAR_Y + scrollbarOffset : scrollbarOffset.to((value) => SCROLLBAR_Y + value)}
+            y={
+              typeof scrollbarOffset === 'number'
+                ? SCROLLBAR_Y + scrollbarOffset
+                : scrollbarOffset.to((value) => SCROLLBAR_Y + value)
+            }
             cursor="pointer"
             onMouseDown={handleScrollbarDragStart}
             onTouchStart={handleScrollbarDragStart}
@@ -226,8 +240,27 @@ interface BacklogRowProps {
 }
 
 function BacklogRow({ record, y, onJump }: BacklogRowProps) {
-  const title = record.meta.kind === 'text' ? record.meta.speaker || '旁白' : '选择';
-  const content = record.meta.kind === 'text' ? record.meta.text : record.meta.options.join(' / ');
+  let title = '';
+  let content = '';
+
+  switch (record.meta.kind) {
+    case 'text': {
+      title = record.meta.speaker || '';
+
+      if (title.length > 0) {
+        content = `「${record.meta.text}」`;
+      } else {
+        content = record.meta.text;
+      }
+
+      break;
+    }
+    case 'selection': {
+      title = '选择';
+      content = record.meta.options.join(' / ');
+      break;
+    }
+  }
 
   const [hovered, setHovered] = useState(false);
 
@@ -252,6 +285,7 @@ function BacklogRow({ record, y, onJump }: BacklogRowProps) {
           boxWidth={CONTENT_WIDTH}
           boxHeight={62}
           fillColor="#f0f0f0"
+          tint={hovered ? '#D18F52' : '#fff'}
           x={140}
           y={14}
           cursor="pointer"
