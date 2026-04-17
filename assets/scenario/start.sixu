@@ -1,45 +1,116 @@
 ::entry {
-    // @aaa flag foo="bar" abc=123 xx=false
+    @charAutoTint enabled=false
+    @bg src="non-free/纯黑.webp" fadeTime=0
+    @wait time=1000
+    // // 敲门声（小声）
+    @sfx src="non-free/sfx/door_chime2.mp3" volume=0.6 noWait=false
+    "好像有什么声音……"
+    @textBoxHide
+    // // 睁眼
+    @bgTint tint="#000" fadeTime=0
+    @bg src="non-free/公寓_白天OK.webp" fadeTime=0
+    // // 色调渐变
+    @bgTint tint="#666" fadeTime=1500
+    @sfx src="non-free/sfx/door_chimes.mp3" volume=1 noWait=false
+    @bgTint tint="#fff" fadeTime=600
+    // // 敲门声
+    @textClear
+    @textBoxShow
+    "！！！"
+    "急促的门铃声吓得我一激灵，不得不迅速清醒过来"
+    [我] "谁啊？一大早的……"
+    [？？] "我，开门"
+    // // 起床声
+    @sfx src="non-free/sfx/swish.mp3" volume=0.6
+    @wait time=1200
+    @sfxStop
+    "也没可能是别人。我瞄了一眼床头的闹钟，起身去开门"
+    // 开门声
+    @sfx src="non-free/sfx/room_door_O.mp3" volume=0.8 noWait=false
+    @charEnter src="non-free/fg/josei_20_a.png" name="墨语" preset="right" y=450
+    [墨语] "早，老哥"
+    @bgm src="non-free/bgm/抒情钢琴曲II.opus" volume=0.5 fadeTime=2000
+    "果然是<fillColor=\"#e0324b\">墨语</fillColor>，从小就认识的邻居家的女儿"
+    // 半叹气地说
+    [我] "我还没醒呢，周末一大早的"
+    @charAction src="non-free/fg/josei_20_g.png" name="墨语" preset="center" y=450
+    [墨语] "嘻嘻"
+    "她侧身越过我，倚靠着茶几坐在地毯上"
 
-    @changebg src="non-free/L0-白天.png" fadeTime=500
+    @optionAdd text="让她进来" value=1
+    @optionAdd text="赶她出去" value=2
+    @optionShow saveTo="selected_option"
 
-    @addchar name="角色A" src="non-free/josei_20_a.png" scale=0.6 x=1400 y=1180 pivot=[0.5,1] fadeTime=500
-
-    @fooo xx=abc
-
-    // @addchar name="角色A" src="non-free/角色A-微笑.png" preset="left" fadeTime=500
-    // @addchar name="角色B" src="non-free/角色B-微笑.png" preset="right" fadeTime=500
-    // @addchar name="角色C" src="non-free/角色C-微笑.png" preset="center" fadeTime=500
-
-    // @addchar name="角色A" src="non-free/角色A-微笑.png" x=100 y=100 scale=1 tint="#999" fadeTime=500
-
-    // @movechar name="角色A" x=200 y=100 scale=1.2 tint="#fff" fadeTime=500
-    // @movechar name="角色B" preset="left" fadeTime=500
-
-    // @removechar name="角色C" fadeTime=500
-
-    // @setname name="角色A" displayName="小明"
-
-    [角色A] "这是一行示例文字，你能通过它看到文字的基础样式、字距、行距、换行，以及各种富文本功能，如<fillColor=#E7931C>颜色变化</fillColor>或<underline>添加装饰</underline>。"
-    @changebg src="non-free/L3-夜晚开灯.png"
-    [角色A] "这是一行<fillColor=#ff6600>文字</fillColor>这是一行文字这是<bold>一行文字</bold>这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字1"
-    这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字2
-    
-    这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字3
-    [角色A] 这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字这是一行文字4
-
-    // @bbb flag foo="bar" abc=123 xx=false
-
-    #[cond("false")]
+    #[cond("ARCHIVE.selected_option === 2")]
     {
-        [角色B] 这是一行文字5
+        [我] "我今天很累，等会还要继续睡，你还是改天再来吧……"
+
+        @charLeave name="墨语" fadeTime=600 noWait=false
+        @bgmStop fadeTime=2000
+
+        说着，我把她赶出了门外，顺便把门锁了起来，之后继续睡觉
+        又是无事发生的一天过去了……
+
+        @wait time=600
+        @textBoxHide
+        @bg src="non-free/纯黑.webp" fadeTime=2000 skippable=true
+        @leaveStage gotoPage="title"
     }
 
-    #[loop]
-    {
-        [角色B] 这是一行文字6
-        [角色B] 这是一行文字7
-    }
-
-    #replace(paragraph="entry")
+    "我看了看门外，竟然没有堆着大包小包"
+    @sfx src="non-free/sfx/door2_C.mp3" volume=0.8 noWait=false
+    [我] "哇，很少见啊，今天不是把我家当仓库，带着你暂时不用的衣服鞋子和书过来的吗？"
+    // 配音语气：（急促）说什么呢，（正常）我是那样的人吗
+    [墨语] "说什么呢，我是那样的人吗"
+    [我] "确实不是，看来我可以把角落里的垃圾丢掉了"
+    "我指着房间角落里东西说，那是她过去半年逐渐带过来的「保管物」"
+    // 女主立绘：流汗
+    @charAction src="non-free/fg/josei_20_f.png" name="墨语" skippable=true
+    [墨语] "emm……emmm……您看我这穷苦大学生，宿舍实在没地方了……"
+    [墨语] "您作为已经工作快一年的大人，行行好，我还一年半就毕业了"
+    "听起来还要放蛮久的……"
+    [我] "……我困了，你想接着看上次的漫画就继续吧，我去再睡一觉，有事别叫我"
+    [墨语] "好"
+    @charAction src="non-free/fg/josei_20_d.png" name="墨语" skippable=true
+    @bgmStop fadeTime=2000
+    [墨语] "……"
+    "说完我走向我可爱的床，假装没有看到她的欲言又止"
+    @textBoxHide
+    @charLeave name="墨语"
+    // @bgTint tint="#666" fadeTime=2000 skippable=true
+    @bg src="non-free/纯黑.webp" fadeTime=2000 skippable=true
+    @bg src="non-free/公寓_傍晚OK.webp" fadeTime=1000
+    // @bgTint tint="#fff"
+    @wait time=800 skippable=true
+    @textBoxShow
+    "一觉醒来，已经是黄昏时分"
+    "感觉身体有些沉重，是被打断睡眠的原因吗"
+    "……那家伙怎么样了？"
+    "努力转过头看向床旁，正好遇上她的目光"
+    @charEnter src="non-free/fg/josei_20_e.png" name="墨语" preset="right" y=450 skippable=true
+    [墨语] "……"
+    @bgm src="non-free/bgm/抒情钢琴曲II.opus" volume=0.5 fadeTime=2000
+    @charAction src="non-free/fg/josei_20_f.png" name="墨语" preset="center" x=200 y=450 skippable=true
+    [墨语] "醒啦，午饭我在楼下便利店解决了，还给你带了一份"
+    @charAction name="墨语" tint="#e9cab7" fadeTime=3000 skippable=true
+    "她放下手上的漫画书，指了指小桌上没拆封的便当"
+    "夕阳斜照进来，让她的脸颊变得比平时更加柔和"
+    [墨语] "？"
+    // 慵懒地
+    [墨语] "怎么了？"
+    @charAction src="non-free/fg/josei_20_b.png" name="墨语"
+    "见到我的迟疑，她一手撑着脸，好奇地看向我"
+    @text content="！！！" name="我" autoAdvance=true
+    @wait time=500 skippable=true
+    [我] "啊、那个，我还是起来活动一下，等下我们出去吃吧"
+    [墨语] "……你请客？"
+    [我] "当然，谢谢你的便当，就作为明天的午饭了"
+    // 冰箱开关声
+    "我站起身，清空了脑中多余的想法，随手把便当放进冰箱"
+    @sfx src="non-free/sfx/refrigerater3_C.mp3" volume=0.8 noWait=false
+    @charLeave name="墨语" fadeTime=600 noWait=false
+    @wait time=600
+    @textBoxHide
+    @bg src="non-free/纯黑.webp" fadeTime=2000 skippable=true
+    @leaveStage gotoPage="title"
 }
