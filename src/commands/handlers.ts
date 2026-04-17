@@ -235,7 +235,7 @@ export const handleCharEnter: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
 };
 
 /** Change an existing character's properties. */
-export const handleCharAction: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleCharAction: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'charAction') return;
   const char = gameState.character.characters.find((c) => c.name === cmd.name);
   if (!char) {
@@ -258,23 +258,33 @@ export const handleCharAction: CommandHandler<ScenarioCommandSchemaType> = (cmd,
   char.fadeTime = cmd.fadeTime ?? presetData?.fadeTime ?? char.fadeTime;
   char.visible = cmd.visible ?? presetData?.visible ?? char.visible;
 
+  control.setWaiting(char.fadeTime, false);
   // auto-advance
 };
 
 /** Remove a character from stage. */
-export const handleCharLeave: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleCharLeave: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'charLeave') return;
   const index = gameState.character.characters.findIndex((c) => c.name === cmd.name);
+  const character = gameState.character.characters[index];
+
+  character.fadeTime = cmd.fadeTime ?? character.fadeTime;
+
   if (index !== -1) {
     gameState.character.characters.splice(index, 1);
+    control.setWaiting(character.fadeTime, false);
   }
   // auto-advance
 };
 
 /** Remove all characters from stage. */
-export const handleCharClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleCharClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'charClear') return;
+  gameState.character.characters.forEach((char) => {
+    char.fadeTime = cmd.fadeTime ?? char.fadeTime;
+  });
   gameState.character.characters.length = 0;
+  control.setWaiting(cmd.fadeTime ?? 0, false);
   // auto-advance
 };
 
