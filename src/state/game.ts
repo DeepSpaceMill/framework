@@ -40,6 +40,7 @@ export interface CharacterState {
   presets: Record<string, CharacterPreset>;
   characters: Character[];
   currentSpeaker?: string;
+  autoTintEnabled: boolean;
   autoTint: string;
 }
 
@@ -145,6 +146,7 @@ const gameStateDefaults: GameState = {
     },
     characters: [],
     currentSpeaker: undefined,
+    autoTintEnabled: true,
     autoTint: '#666',
   },
   textbox: {

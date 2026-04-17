@@ -54,6 +54,18 @@
           },
           "type": "boolean"
         },
+        "autoAdvance": {
+          "default": false,
+          "description": "Whether to automatically advance after printing",
+          "title": "Auto Advance",
+          "x-i18n": {
+            "zh-CN": "自动前进"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "文本显示完成后是否自动前进"
+          },
+          "type": "boolean"
+        },
         "skippable": {
           "default": true,
           "description": "Whether it can be skipped",
@@ -72,6 +84,7 @@
         "content",
         "newline",
         "clear",
+        "autoAdvance",
         "skippable"
       ],
       "additionalProperties": false,
@@ -1429,6 +1442,17 @@
           "type": "string",
           "const": "charAutoTint"
         },
+        "enabled": {
+          "description": "Whether to enable auto tinting",
+          "title": "Enabled",
+          "x-i18n": {
+            "zh-CN": "启用"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否启用自动色调"
+          },
+          "type": "boolean"
+        },
         "tint": {
           "type": "string",
           "description": "Color tint",
@@ -1442,8 +1466,7 @@
         }
       },
       "required": [
-        "command",
-        "tint"
+        "command"
       ],
       "additionalProperties": false,
       "description": "Set the tint color applied to non-speaking characters",

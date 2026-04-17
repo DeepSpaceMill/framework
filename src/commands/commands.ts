@@ -215,6 +215,16 @@ const TextCommandSchema = z
         'x-i18n': { 'zh-CN': '清除' },
         'x-i18n-desc': { 'zh-CN': '在显示文本前清除已有文本' },
       }),
+    autoAdvance: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe('Whether to automatically advance after printing')
+      .meta({
+        title: 'Auto Advance',
+        'x-i18n': { 'zh-CN': '自动前进' },
+        'x-i18n-desc': { 'zh-CN': '文本显示完成后是否自动前进' },
+      }),
     skippable: skippable(true),
   })
   .describe('Display text in the text box')
@@ -669,7 +679,16 @@ const CharPresetCommandSchema = z
 const CharAutoTintCommandSchema = z
   .object({
     command: z.literal('charAutoTint'),
-    tint,
+    enabled: z
+      .boolean()
+      .optional()
+      .describe('Whether to enable auto tinting')
+      .meta({
+        title: 'Enabled',
+        'x-i18n': { 'zh-CN': '启用' },
+        'x-i18n-desc': { 'zh-CN': '是否启用自动色调' },
+      }),
+    tint: tint.optional(),
   })
   .describe('Set the tint color applied to non-speaking characters')
   .meta({

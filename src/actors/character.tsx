@@ -29,7 +29,6 @@ export function CharacterActor() {
           key={character.name}
           character={character}
           isCurrentSpeaker={character.name === textboxState.name}
-          autoTint={characterState.autoTint}
           opacity={style.opacity}
         />
       ))}
@@ -40,11 +39,10 @@ export function CharacterActor() {
 interface CharacterSpriteProps {
   character: Character;
   isCurrentSpeaker: boolean;
-  autoTint: string;
   opacity: any; // react-spring's SpringValue
 }
 
-function CharacterSprite({ character: propCharacter, isCurrentSpeaker, autoTint, opacity }: CharacterSpriteProps) {
+function CharacterSprite({ character: propCharacter, isCurrentSpeaker, opacity }: CharacterSpriteProps) {
   const skipping = useIsSkipping();
   const characterState = useSnapshot(gameState.character) as typeof gameState.character;
   // Read fresh data from valtio; fall back to the transition prop during leave animation
@@ -53,14 +51,19 @@ function CharacterSprite({ character: propCharacter, isCurrentSpeaker, autoTint,
       (c) => (c.name ?? c.src) === (propCharacter.name ?? propCharacter.src),
     ) ?? propCharacter;
 
+  const autoTintEnabled = characterState.autoTintEnabled;
+  const autoTint = autoTintEnabled ? characterState.autoTint : '#fff';
+  const currentTint = autoTintEnabled && !isCurrentSpeaker ? autoTint : character.tint;
+  const tintFadeTime = autoTintEnabled && !isCurrentSpeaker ? 200 : character.fadeTime;
+
   // Reactive spring: re-animates automatically whenever character state changes
   const springs = useSpring({
     x: character.x,
     y: character.y,
     scale: character.scale,
-    tint: isCurrentSpeaker ? character.tint : autoTint,
+    tint: currentTint,
     config: (key: string) => {
-      if (key === 'tint') return { duration: skipping ? 0 : 200, easing: easings.easeInOutCubic };
+      if (key === 'tint') return { duration: skipping ? 0 : tintFadeTime, easing: easings.easeInOutCubic };
       return { duration: skipping ? 0 : character.fadeTime, easing: easings.easeInOutCubic };
     },
   });

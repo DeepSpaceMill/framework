@@ -1,4 +1,4 @@
-import { getNavigator, type CommandHandler, type TextLineHandler } from '@momoyu-ink/kit';
+import { getNavigator, TextLine, type CommandHandler, type TextLineHandler } from '@momoyu-ink/kit';
 import { gameState, resetGameState } from '../state/game';
 import { GamePage } from '../state/ui';
 import { writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
@@ -18,19 +18,27 @@ function recordBacklog(control: { record(meta: Record<string, any>): string }, m
 export const handleText: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'text') return;
 
-  if (cmd.clear) {
-    gameState.textbox.text = '';
-  } else if (cmd.newline) {
-    gameState.textbox.text += '\n';
+  let tailing = '';
+
+  if (!cmd.clear) {
+    tailing += '+';
   }
 
-  if (cmd.name !== undefined) {
-    gameState.textbox.name = cmd.name;
+  if (!cmd.newline) {
+    tailing += '&';
   }
 
-  gameState.textbox.text += cmd.content;
-  // Hold for user click (skippable controls whether it can be fast-forwarded)
-  control.hold();
+  if (cmd.autoAdvance) {
+    tailing += '!';
+  }
+
+  const textLine: TextLine = {
+    leading: cmd.name ?? null,
+    text: cmd.content ?? null,
+    tailing: tailing,
+  };
+
+  handleTextLine(textLine, control);
 };
 
 /** Clear text box content. */
@@ -294,7 +302,9 @@ export const handleCharPreset: CommandHandler<ScenarioCommandSchemaType> = (cmd,
 
 export const handleCharAutoTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'charAutoTint') return;
-  gameState.character.autoTint = cmd.tint;
+
+  gameState.character.autoTintEnabled = cmd.enabled ?? gameState.character.autoTintEnabled;
+  gameState.character.autoTint = cmd.tint ?? gameState.character.autoTint;
   // auto-advance
 };
 
