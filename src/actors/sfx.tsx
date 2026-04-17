@@ -33,7 +33,7 @@ export function SfxActor() {
     try {
       executePluginCommand('audio', {
         subCommand: 'load',
-        name: `sfx_${sfxState.seq}`,
+        name: `sfx`,
         src,
         settings: {
           autoPlay: true,
