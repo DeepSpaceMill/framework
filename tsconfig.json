@@ -16,6 +16,7 @@
     "noEmit": false,
     "jsx": "react-jsx",
     "jsxImportSource": "@momoyu-ink/kit",
+    "rootDir": ".",
     "outDir": "dist",
     "declaration": true,
     "sourceMap": true,
