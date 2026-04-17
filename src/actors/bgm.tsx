@@ -18,6 +18,7 @@ export function BGMActor() {
         executePluginCommand('audio', {
           subCommand: 'release',
           name: 'bgm',
+          fadeTime: bgmState.fadeTime ?? 0,
         });
       } catch (err) {
         console.error('Failed to stop sound on channel bgm:', err);
