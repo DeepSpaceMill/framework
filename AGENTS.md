@@ -382,6 +382,16 @@ Reserve factory/imperative mode only for manually triggered animations (e.g., cl
 7. **English comments in code.** All code comments must be in English.
 8. **No unit tests available.** Use `yarn build` to verify TypeScript compilation.
 
+### Timed Command Design Principles
+
+Commands that involve a time-based transition (e.g. `fadeTime`) must follow these rules:
+
+1. **Uniform parameters.** Every timed command must support three parameters: `fadeTime`, `skippable`, and `noWait`. All three must have Zod defaults so the handler always receives concrete values.
+2. **Reset on every call.** `fadeTime`, `skippable`, and `noWait` must be written to state (if the actor needs them) on every invocation — never fall back to a previous command's leftover value. This prevents state leakage between consecutive commands.
+3. **`noWait` controls flow.** When `noWait` is `false`, the handler must call `control.setWaiting(fadeTime, skippable)` to block scenario advancement until the transition completes. When `noWait` is `true`, the handler must NOT call `setWaiting`, allowing the next command to execute immediately (parallel execution).
+4. **Save to state as needed.** `fadeTime` should always be saved to state because actors read it for animation duration. `skippable` and `noWait` are typically consumed only by the handler (via `setWaiting`) and do not need to be in state unless an actor explicitly requires them (e.g. `BackgroundState.skippable`).
+5. **Default conventions.** Visual commands (bg, bgTint) default to `noWait: false` (wait for transition). Audio commands (bgm, sfx, sound, and their stop variants) default to `noWait: true` (fire and forget). Character commands (charEnter, charAction, charLeave, charClear) default to `noWait: true`.
+
 ## Build & Run
 
 ```bash

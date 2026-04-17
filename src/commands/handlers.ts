@@ -93,40 +93,48 @@ export const handleTextBoxHide: CommandHandler<ScenarioCommandSchemaType> = (cmd
 // ---------------------------------------------------------------------------
 
 /** Play background music. */
-export const handleBgm: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleBgm: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'bgm') return;
   gameState.bgm.loop = cmd.loop;
   gameState.bgm.volume = (cmd.volume ?? 1.0) * settingsState.volume_bgm;
   gameState.bgm.fadeTime = cmd.fadeTime;
   gameState.bgm.src = cmd.src;
-  // auto-advance
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
 };
 
 /** Stop background music. */
-export const handleBgmStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleBgmStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'bgmStop') return;
   gameState.bgm.fadeTime = cmd.fadeTime;
   gameState.bgm.src = '';
-  // auto-advance
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
 };
 
 /** Play a sound effect. */
-export const handleSfx: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleSfx: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'sfx') return;
   gameState.sfx.src = cmd.src;
   gameState.sfx.loop = cmd.loop;
   gameState.sfx.volume = (cmd.volume ?? 1.0) * settingsState.volume_se;
   gameState.sfx.fadeTime = cmd.fadeTime;
   gameState.sfx.seq++;
-  // auto-advance — SfxActor handles audio lifecycle and skip check
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
 };
 
 /** Stop all sound effects. */
-export const handleSfxStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleSfxStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'sfxStop') return;
   gameState.sfx.stopFadeTime = cmd.fadeTime;
   gameState.sfx.stopSeq++;
-  // auto-advance — SfxActor handles audio release
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
 };
 
 /** Play a voice clip. */
@@ -147,7 +155,7 @@ export const handleVoiceStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
 };
 
 /** Play sound on a named channel. */
-export const handleSound: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleSound: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'sound') return;
   gameState.sound.channel = cmd.channel;
   gameState.sound.src = cmd.src;
@@ -155,16 +163,20 @@ export const handleSound: CommandHandler<ScenarioCommandSchemaType> = (cmd, _con
   gameState.sound.volume = (cmd.volume ?? 1.0) * settingsState.volume_se;
   gameState.sound.fadeTime = cmd.fadeTime;
   gameState.sound.seq++;
-  // auto-advance — SoundActor handles audio lifecycle and skip check
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
 };
 
 /** Stop sound on a named channel. */
-export const handleSoundStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleSoundStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'soundStop') return;
   gameState.sound.stopChannel = cmd.channel;
   gameState.sound.stopFadeTime = cmd.fadeTime;
   gameState.sound.stopSeq++;
-  // auto-advance — SoundActor handles audio release
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
 };
 
 // ---------------------------------------------------------------------------
@@ -175,22 +187,26 @@ export const handleSoundStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
 export const handleBg: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'bg') return;
   gameState.background.src = cmd.src;
-  gameState.background.fadeTime = cmd.fadeTime ?? 1000;
-  gameState.background.skippable = cmd.skippable ?? false;
-  control.setWaiting(gameState.background.fadeTime, gameState.background.skippable);
+  gameState.background.fadeTime = cmd.fadeTime;
+  gameState.background.skippable = cmd.skippable;
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
 };
 
 /** Set background tint color. */
 export const handleBgTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'bgTint') return;
-  gameState.background.fadeTime = cmd.fadeTime ?? 1000;
-  gameState.background.skippable = cmd.skippable ?? false;
+  gameState.background.fadeTime = cmd.fadeTime;
+  gameState.background.skippable = cmd.skippable;
   if (cmd.tint === 'off' || cmd.tint === 'none') {
     gameState.background.tint = undefined;
   } else {
     gameState.background.tint = cmd.tint;
   }
-  control.setWaiting(gameState.background.fadeTime, gameState.background.skippable);
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
 };
 
 // ---------------------------------------------------------------------------
@@ -198,7 +214,7 @@ export const handleBgTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, con
 // ---------------------------------------------------------------------------
 
 /** Add a character on stage. */
-export const handleCharEnter: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleCharEnter: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'charEnter') return;
   const existingIndex = gameState.character.characters.findIndex((c) => c.name === cmd.name);
   // Look up preset values
@@ -216,7 +232,7 @@ export const handleCharEnter: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
     char.scale = cmd.scale ?? presetData?.scale ?? char.scale;
     char.tint = cmd.tint ?? presetData?.tint ?? char.tint;
     char.pivot = cmd.pivot ?? presetData?.pivot ?? char.pivot;
-    char.fadeTime = cmd.fadeTime ?? presetData?.fadeTime ?? 500;
+    char.fadeTime = cmd.fadeTime;
     char.visible = cmd.visible ?? presetData?.visible ?? true;
   } else {
     gameState.character.characters.push({
@@ -227,11 +243,13 @@ export const handleCharEnter: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
       scale: cmd.scale ?? presetData?.scale ?? 1,
       tint: cmd.tint ?? presetData?.tint ?? '#fff',
       pivot: cmd.pivot ?? presetData?.pivot ?? [0.5, 1],
-      fadeTime: cmd.fadeTime ?? presetData?.fadeTime ?? 500,
+      fadeTime: cmd.fadeTime,
       visible: cmd.visible ?? presetData?.visible ?? true,
     });
   }
-  // auto-advance
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
 };
 
 /** Change an existing character's properties. */
@@ -255,37 +273,38 @@ export const handleCharAction: CommandHandler<ScenarioCommandSchemaType> = (cmd,
   char.scale = cmd.scale ?? presetData?.scale ?? char.scale;
   char.tint = cmd.tint ?? presetData?.tint ?? char.tint;
   char.pivot = cmd.pivot ?? presetData?.pivot ?? char.pivot;
-  char.fadeTime = cmd.fadeTime ?? presetData?.fadeTime ?? char.fadeTime;
+  char.fadeTime = cmd.fadeTime;
   char.visible = cmd.visible ?? presetData?.visible ?? char.visible;
 
-  control.setWaiting(char.fadeTime, false);
-  // auto-advance
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
 };
 
 /** Remove a character from stage. */
 export const handleCharLeave: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'charLeave') return;
   const index = gameState.character.characters.findIndex((c) => c.name === cmd.name);
+  if (index === -1) return;
   const character = gameState.character.characters[index];
 
-  character.fadeTime = cmd.fadeTime ?? character.fadeTime;
-
-  if (index !== -1) {
-    gameState.character.characters.splice(index, 1);
-    control.setWaiting(character.fadeTime, false);
+  character.fadeTime = cmd.fadeTime;
+  gameState.character.characters.splice(index, 1);
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
   }
-  // auto-advance
 };
 
 /** Remove all characters from stage. */
 export const handleCharClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'charClear') return;
   gameState.character.characters.forEach((char) => {
-    char.fadeTime = cmd.fadeTime ?? char.fadeTime;
+    char.fadeTime = cmd.fadeTime;
   });
   gameState.character.characters.length = 0;
-  control.setWaiting(cmd.fadeTime ?? 0, false);
-  // auto-advance
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
 };
 
 /** Map a character internal name to a display name (stub — full refactor deferred). */

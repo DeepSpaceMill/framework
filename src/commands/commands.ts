@@ -85,6 +85,18 @@ const skippable = (defaultValue: boolean) =>
       'x-i18n-desc': { 'zh-CN': '是否可跳过' },
     });
 
+const noWait = (defaultValue: boolean) =>
+  z
+    .boolean()
+    .optional()
+    .default(defaultValue)
+    .describe('Whether to skip waiting for the transition to complete')
+    .meta({
+      title: 'No Wait',
+      'x-i18n': { 'zh-CN': '不等待' },
+      'x-i18n-desc': { 'zh-CN': '是否跳过等待过渡完成' },
+    });
+
 const posX = z
   .number()
   .describe('X coordinate')
@@ -168,7 +180,9 @@ const charTransformProps = {
   scale: nodeScale.optional(),
   tint: tint.optional(),
   pivot: nodePivot.optional(),
-  fadeTime: fadeTimeOpt,
+  fadeTime: fadeTime(500),
+  skippable: skippable(false),
+  noWait: noWait(true),
 };
 
 /* ------------------------------------------------------------------ */
@@ -425,6 +439,8 @@ const BGMCommandSchema = z
     loop: loop(true),
     volume,
     fadeTime: fadeTime(600),
+    skippable: skippable(false),
+    noWait: noWait(true),
   })
   .describe('Play background music')
   .meta({
@@ -437,6 +453,8 @@ const BGMStopCommandSchema = z
   .object({
     command: z.literal('bgmStop'),
     fadeTime: fadeTime(600),
+    skippable: skippable(false),
+    noWait: noWait(true),
   })
   .describe('Stop background music')
   .meta({
@@ -452,6 +470,8 @@ const SFXCommandSchema = z
     loop: loop(false),
     volume,
     fadeTime: fadeTime(600),
+    skippable: skippable(false),
+    noWait: noWait(true),
   })
   .describe('Play a sound effect')
   .meta({
@@ -464,6 +484,8 @@ const SFXStopCommandSchema = z
   .object({
     command: z.literal('sfxStop'),
     fadeTime: fadeTime(600),
+    skippable: skippable(false),
+    noWait: noWait(true),
   })
   .describe('Stop sound effects')
   .meta({
@@ -522,6 +544,8 @@ const SoundCommandSchema = z
     loop: loop(false),
     volume,
     fadeTime: fadeTime(600),
+    skippable: skippable(false),
+    noWait: noWait(true),
   })
   .describe('Play audio on a named channel')
   .meta({
@@ -535,6 +559,8 @@ const SoundStopCommandSchema = z
     command: z.literal('soundStop'),
     channel: soundChannel,
     fadeTime: fadeTime(600),
+    skippable: skippable(false),
+    noWait: noWait(true),
   })
   .describe('Stop audio on a named channel')
   .meta({
@@ -553,6 +579,7 @@ const BgCommandSchema = z
     src: imageSrc,
     fadeTime: fadeTime(1000),
     skippable: skippable(false),
+    noWait: noWait(false),
   })
   .describe('Change background image')
   .meta({
@@ -567,6 +594,7 @@ const BgTintCommandSchema = z
     tint,
     fadeTime: fadeTime(1000),
     skippable: skippable(false),
+    noWait: noWait(false),
   })
   .describe('Set background tint color')
   .meta({
@@ -609,7 +637,9 @@ const CharLeaveCommandSchema = z
   .object({
     command: z.literal('charLeave'),
     name: charName.optional(),
-    fadeTime: fadeTimeOpt,
+    fadeTime: fadeTime(500),
+    skippable: skippable(false),
+    noWait: noWait(true),
   })
   .describe('Remove a character from the stage')
   .meta({
@@ -621,7 +651,9 @@ const CharLeaveCommandSchema = z
 const CharClearCommandSchema = z
   .object({
     command: z.literal('charClear'),
-    fadeTime: fadeTimeOpt,
+    fadeTime: fadeTime(500),
+    skippable: skippable(false),
+    noWait: noWait(true),
   })
   .describe('Remove all characters from the stage')
   .meta({

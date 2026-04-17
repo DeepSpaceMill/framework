@@ -413,6 +413,30 @@
             "zh-CN": "渐变时间（毫秒）"
           },
           "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        },
+        "noWait": {
+          "default": true,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
@@ -420,7 +444,9 @@
         "src",
         "loop",
         "volume",
-        "fadeTime"
+        "fadeTime",
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Play background music",
@@ -450,11 +476,37 @@
             "zh-CN": "渐变时间（毫秒）"
           },
           "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        },
+        "noWait": {
+          "default": true,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
         "command",
-        "fadeTime"
+        "fadeTime",
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Stop background music",
@@ -523,6 +575,30 @@
             "zh-CN": "渐变时间（毫秒）"
           },
           "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        },
+        "noWait": {
+          "default": true,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
@@ -530,7 +606,9 @@
         "src",
         "loop",
         "volume",
-        "fadeTime"
+        "fadeTime",
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Play a sound effect",
@@ -560,11 +638,37 @@
             "zh-CN": "渐变时间（毫秒）"
           },
           "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        },
+        "noWait": {
+          "default": true,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
         "command",
-        "fadeTime"
+        "fadeTime",
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Stop sound effects",
@@ -737,6 +841,30 @@
             "zh-CN": "渐变时间（毫秒）"
           },
           "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        },
+        "noWait": {
+          "default": true,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
@@ -745,7 +873,9 @@
         "src",
         "loop",
         "volume",
-        "fadeTime"
+        "fadeTime",
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Play audio on a named channel",
@@ -786,12 +916,38 @@
             "zh-CN": "渐变时间（毫秒）"
           },
           "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        },
+        "noWait": {
+          "default": true,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
         "command",
         "channel",
-        "fadeTime"
+        "fadeTime",
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Stop audio on a named channel",
@@ -846,13 +1002,26 @@
             "zh-CN": "是否可跳过"
           },
           "type": "boolean"
+        },
+        "noWait": {
+          "default": false,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
         "command",
         "src",
         "fadeTime",
-        "skippable"
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Change background image",
@@ -905,13 +1074,26 @@
             "zh-CN": "是否可跳过"
           },
           "type": "boolean"
+        },
+        "noWait": {
+          "default": false,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
         "command",
         "tint",
         "fadeTime",
-        "skippable"
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Set background tint color",
@@ -1039,6 +1221,7 @@
           }
         },
         "fadeTime": {
+          "default": 500,
           "description": "Fade time in milliseconds",
           "title": "Fade Time",
           "x-i18n": {
@@ -1048,11 +1231,38 @@
             "zh-CN": "渐变时间（毫秒）"
           },
           "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        },
+        "noWait": {
+          "default": true,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
         "command",
-        "src"
+        "src",
+        "fadeTime",
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Add a character to the stage",
@@ -1180,6 +1390,7 @@
           }
         },
         "fadeTime": {
+          "default": 500,
           "description": "Fade time in milliseconds",
           "title": "Fade Time",
           "x-i18n": {
@@ -1189,10 +1400,37 @@
             "zh-CN": "渐变时间（毫秒）"
           },
           "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        },
+        "noWait": {
+          "default": true,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
-        "command"
+        "command",
+        "fadeTime",
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Change a character on the stage",
@@ -1223,6 +1461,7 @@
           }
         },
         "fadeTime": {
+          "default": 500,
           "description": "Fade time in milliseconds",
           "title": "Fade Time",
           "x-i18n": {
@@ -1232,10 +1471,37 @@
             "zh-CN": "渐变时间（毫秒）"
           },
           "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        },
+        "noWait": {
+          "default": true,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
-        "command"
+        "command",
+        "fadeTime",
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Remove a character from the stage",
@@ -1255,6 +1521,7 @@
           "const": "charClear"
         },
         "fadeTime": {
+          "default": 500,
           "description": "Fade time in milliseconds",
           "title": "Fade Time",
           "x-i18n": {
@@ -1264,10 +1531,37 @@
             "zh-CN": "渐变时间（毫秒）"
           },
           "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        },
+        "noWait": {
+          "default": true,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
         }
       },
       "required": [
-        "command"
+        "command",
+        "fadeTime",
+        "skippable",
+        "noWait"
       ],
       "additionalProperties": false,
       "description": "Remove all characters from the stage",
