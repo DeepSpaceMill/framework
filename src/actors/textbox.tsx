@@ -6,6 +6,7 @@ import {
   useIsSkipping,
   type AutoTicketHandle,
   type Node,
+  useNavigationState,
 } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
@@ -38,6 +39,8 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   const textBoxState = useSnapshot(gameState.textbox);
+  const navState = useNavigationState();
+  const hasOverlay = navState.overlayStack.length > 0;
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -120,7 +123,11 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   }, [autoing, effectivePrintMode, issueAutoTicket, textBoxState.text]);
 
   return (
-    <container label="文本框容器" visible={textBoxState.visible} interactive={textBoxState.visible}>
+    <container
+      label="文本框容器"
+      visible={textBoxState.visible && !hasOverlay}
+      interactive={textBoxState.visible && !hasOverlay}
+    >
       <sprite
         label="文本框"
         src="ui/textbox.png"
