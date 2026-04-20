@@ -112,6 +112,7 @@ const tint = z
   .describe('Color tint')
   .meta({
     title: 'Tint',
+    format: 'color',
     'x-i18n': { 'zh-CN': '色调' },
     'x-i18n-desc': { 'zh-CN': '颜色色调' },
   });
@@ -148,6 +149,7 @@ const charName = z
   .describe('Character identifier')
   .meta({
     title: 'Name',
+    format: 'character',
     'x-i18n': { 'zh-CN': '角色名' },
     'x-i18n-desc': { 'zh-CN': '角色标识符' },
   });
@@ -206,6 +208,7 @@ const TextCommandSchema = z
       .describe('Speaker name')
       .meta({
         title: 'Speaker',
+        format: 'character',
         'x-i18n': { 'zh-CN': '说话人' },
         'x-i18n-desc': { 'zh-CN': '说话人名称' },
       }),
@@ -296,6 +299,7 @@ const TextBoxCommandSchema = z
       .describe('Text color')
       .meta({
         title: 'Text Color',
+        format: 'color',
         'x-i18n': { 'zh-CN': '文字颜色' },
         'x-i18n-desc': { 'zh-CN': '文字颜色' },
       }),
@@ -341,6 +345,7 @@ const TextBoxCommandSchema = z
       .describe('Stroke color')
       .meta({
         title: 'Stroke Color',
+        format: 'color',
         'x-i18n': { 'zh-CN': '描边颜色' },
         'x-i18n-desc': { 'zh-CN': '描边颜色' },
       }),
@@ -359,6 +364,7 @@ const TextBoxCommandSchema = z
       .describe('Shadow color')
       .meta({
         title: 'Shadow Color',
+        format: 'color',
         'x-i18n': { 'zh-CN': '阴影颜色' },
         'x-i18n-desc': { 'zh-CN': '阴影颜色' },
       }),

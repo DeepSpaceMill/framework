@@ -22,6 +22,7 @@
         "name": {
           "description": "Speaker name",
           "title": "Speaker",
+          "format": "character",
           "x-i18n": {
             "zh-CN": "说话人"
           },
@@ -171,6 +172,7 @@
         "fillColor": {
           "description": "Text color",
           "title": "Text Color",
+          "format": "color",
           "x-i18n": {
             "zh-CN": "文字颜色"
           },
@@ -226,6 +228,7 @@
         "strokeColor": {
           "description": "Stroke color",
           "title": "Stroke Color",
+          "format": "color",
           "x-i18n": {
             "zh-CN": "描边颜色"
           },
@@ -248,6 +251,7 @@
         "shadowColor": {
           "description": "Shadow color",
           "title": "Shadow Color",
+          "format": "color",
           "x-i18n": {
             "zh-CN": "阴影颜色"
           },
@@ -1044,6 +1048,7 @@
           "type": "string",
           "description": "Color tint",
           "title": "Tint",
+          "format": "color",
           "x-i18n": {
             "zh-CN": "色调"
           },
@@ -1129,6 +1134,7 @@
           "type": "string",
           "description": "Character identifier",
           "title": "Name",
+          "format": "character",
           "x-i18n": {
             "zh-CN": "角色名"
           },
@@ -1194,6 +1200,7 @@
           "type": "string",
           "description": "Color tint",
           "title": "Tint",
+          "format": "color",
           "x-i18n": {
             "zh-CN": "色调"
           },
@@ -1298,6 +1305,7 @@
           "type": "string",
           "description": "Character identifier",
           "title": "Name",
+          "format": "character",
           "x-i18n": {
             "zh-CN": "角色名"
           },
@@ -1363,6 +1371,7 @@
           "type": "string",
           "description": "Color tint",
           "title": "Tint",
+          "format": "color",
           "x-i18n": {
             "zh-CN": "色调"
           },
@@ -1453,6 +1462,7 @@
           "type": "string",
           "description": "Character identifier",
           "title": "Name",
+          "format": "character",
           "x-i18n": {
             "zh-CN": "角色名"
           },
@@ -1584,6 +1594,7 @@
           "type": "string",
           "description": "Character identifier",
           "title": "Name",
+          "format": "character",
           "x-i18n": {
             "zh-CN": "角色名"
           },
@@ -1666,6 +1677,7 @@
           "type": "string",
           "description": "Color tint",
           "title": "Tint",
+          "format": "color",
           "x-i18n": {
             "zh-CN": "色调"
           },
@@ -1751,6 +1763,7 @@
           "type": "string",
           "description": "Color tint",
           "title": "Tint",
+          "format": "color",
           "x-i18n": {
             "zh-CN": "色调"
           },
