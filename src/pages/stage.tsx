@@ -56,8 +56,58 @@ import { SoundActor } from '../actors/sound';
 import { ScenarioCommandSchema } from '../commands/commands';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 
-// Create the stage instance (module-level singleton)
-const stage = createStage();
+type StageInstance = ReturnType<typeof createStage>;
+
+type StageGlobal = typeof globalThis & {
+  __MOYU_FRAMEWORK_STAGE__?: StageInstance;
+};
+
+function getStageSingleton(): StageInstance {
+  const stageGlobal = globalThis as StageGlobal;
+  if (stageGlobal.__MOYU_FRAMEWORK_STAGE__ === undefined) {
+    // Keep the stage instance stable across Fast Refresh so runtime state can survive code updates.
+    stageGlobal.__MOYU_FRAMEWORK_STAGE__ = createStage();
+  }
+  return stageGlobal.__MOYU_FRAMEWORK_STAGE__;
+}
+
+function registerStageHandlers(stage: StageInstance): Array<() => void> {
+  return [
+    stage.registerCommandSchema(ScenarioCommandSchema),
+    stage.registerCommand('text', handleText),
+    stage.registerCommand('textClear', handleTextClear),
+    stage.registerCommand('textBox', handleTextBox),
+    stage.registerCommand('textBoxShow', handleTextBoxShow),
+    stage.registerCommand('textBoxHide', handleTextBoxHide),
+    stage.registerCommand('bgm', handleBgm),
+    stage.registerCommand('bgmStop', handleBgmStop),
+    stage.registerCommand('sfx', handleSfx),
+    stage.registerCommand('sfxStop', handleSfxStop),
+    stage.registerCommand('voice', handleVoice),
+    stage.registerCommand('voiceStop', handleVoiceStop),
+    stage.registerCommand('sound', handleSound),
+    stage.registerCommand('soundStop', handleSoundStop),
+    stage.registerCommand('bg', handleBg),
+    stage.registerCommand('bgTint', handleBgTint),
+    stage.registerCommand('charEnter', handleCharEnter),
+    stage.registerCommand('charAction', handleCharAction),
+    stage.registerCommand('charLeave', handleCharLeave),
+    stage.registerCommand('charClear', handleCharClear),
+    stage.registerCommand('charName', handleCharName),
+    stage.registerCommand('charPreset', handleCharPreset),
+    stage.registerCommand('charAutoTint', handleCharAutoTint),
+    stage.registerCommand('wait', handleWait),
+    stage.registerCommand('waitClick', handleWaitClick),
+    stage.registerCommand('leaveStage', handleLeaveStage),
+    stage.registerCommand('title', handleTitle),
+    stage.registerCommand('optionAdd', handleOptionAdd),
+    stage.registerCommand('optionShow', handleOptionShow),
+    stage.registerCommand('optionClear', handleOptionClear),
+    stage.registerTextLine(handleTextLine),
+  ];
+}
+
+const stage = getStageSingleton();
 
 // Define the params interface for Stage page
 interface StageParams {
@@ -74,54 +124,18 @@ export function Stage() {
   const entry = params?.entry ?? '';
   const isNewGame = params?.isNewGame ?? true;
 
+  useEffect(() => {
+    const unregisters = registerStageHandlers(stage);
+
+    return () => {
+      for (const unregister of unregisters) {
+        unregister();
+      }
+    };
+  }, []);
+
   const stories = useMemo(() => [story], [story]);
   useScenario(stories, story, entry, isNewGame);
-
-  // Register all command and text line handlers
-  useEffect(() => {
-    const unregFns = [
-      stage.registerCommandSchema(ScenarioCommandSchema),
-      // Text commands
-      stage.registerCommand('text', handleText),
-      stage.registerCommand('textClear', handleTextClear),
-      stage.registerCommand('textBox', handleTextBox),
-      stage.registerCommand('textBoxShow', handleTextBoxShow),
-      stage.registerCommand('textBoxHide', handleTextBoxHide),
-      // Sound commands
-      stage.registerCommand('bgm', handleBgm),
-      stage.registerCommand('bgmStop', handleBgmStop),
-      stage.registerCommand('sfx', handleSfx),
-      stage.registerCommand('sfxStop', handleSfxStop),
-      stage.registerCommand('voice', handleVoice),
-      stage.registerCommand('voiceStop', handleVoiceStop),
-      stage.registerCommand('sound', handleSound),
-      stage.registerCommand('soundStop', handleSoundStop),
-      // Background commands
-      stage.registerCommand('bg', handleBg),
-      stage.registerCommand('bgTint', handleBgTint),
-      // Character commands
-      stage.registerCommand('charEnter', handleCharEnter),
-      stage.registerCommand('charAction', handleCharAction),
-      stage.registerCommand('charLeave', handleCharLeave),
-      stage.registerCommand('charClear', handleCharClear),
-      stage.registerCommand('charName', handleCharName),
-      stage.registerCommand('charPreset', handleCharPreset),
-      stage.registerCommand('charAutoTint', handleCharAutoTint),
-      // Flow control
-      stage.registerCommand('wait', handleWait),
-      stage.registerCommand('waitClick', handleWaitClick),
-      // Misc
-      stage.registerCommand('leaveStage', handleLeaveStage),
-      stage.registerCommand('title', handleTitle),
-      // Option commands
-      stage.registerCommand('optionAdd', handleOptionAdd),
-      stage.registerCommand('optionShow', handleOptionShow),
-      stage.registerCommand('optionClear', handleOptionClear),
-      // Text line handler
-      stage.registerTextLine(handleTextLine),
-    ];
-    return () => unregFns.forEach((fn) => fn());
-  }, []);
 
   // Initialize save/load functionality
   const { saveToSlot, loadFromSlot, checkAutoSaveExists } = useSaveLoad();
@@ -150,7 +164,10 @@ export function Stage() {
     };
     const c1 = addEventListener('mousedown', stopSkipOnInput);
     const c2 = addEventListener('touchstart', stopSkipOnInput);
-    return () => { c1(); c2(); };
+    return () => {
+      c1();
+      c2();
+    };
   }, []);
 
   const handleButtonClick = async (button: TextBoxButton) => {
@@ -271,7 +288,10 @@ export function Stage() {
   useEffect(() => {
     const c1 = addEventListener('click', handleClick);
     const c2 = addEventListener('touchend', handleClick);
-    return () => { c1(); c2(); };
+    return () => {
+      c1();
+      c2();
+    };
   }, [handleClick]);
 
   useEffect(() => {

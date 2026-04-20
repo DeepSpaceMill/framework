@@ -21,7 +21,7 @@
     "node": ">=22.20"
   },
   "dependencies": {
-    "@momoyu-ink/kit": "^0.5.0",
+    "@momoyu-ink/kit": "^0.5.1",
     "lodash.debounce": "^4.0.8",
     "react": "19.2.1",
     "react-error-boundary": "^6.0.0",
