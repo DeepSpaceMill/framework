@@ -41,6 +41,19 @@ export function BGMActor() {
         console.error('Failed to load bgm:', err);
       }
     }
+
+    return () => {
+      // Cleanup: stop and release BGM when actor unmounts
+      try {
+        executePluginCommand('audio', {
+          subCommand: 'release',
+          name: 'bgm',
+          fadeTime: 0,
+        });
+      } catch (err) {
+        console.error('Failed to stop sound on channel bgm during cleanup:', err);
+      }
+    };
   }, [bgmState.src, bgmState.loop, bgmState.volume, bgmState.fadeTime]);
 
   // Headless actor - no visual rendering
