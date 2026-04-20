@@ -12,7 +12,6 @@ import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gameState } from '../state/game';
 import { Button } from '../components/button';
-import { FrameAnimation } from '../components/frame';
 
 export enum TextBoxButton {
   QSAVE = 'QSAV',
@@ -170,56 +169,47 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
           ))}
         </container>
 
-        <text
-          label="对话内容"
-          ref={textWindowRef}
-          text={textBoxState.text}
-          fontSize={32}
-          lineHeight={textBoxState.lineHeight}
-          boxWidth={1384}
-          boxHeight={110}
-          fillColor={textBoxState.fillColor}
-          x={72}
-          y={54}
-          printMode={effectivePrintMode}
-          printSpeed={textBoxState.printSpeed}
-          indent={textBoxState.indent}
-          stroke={textBoxState.stroke}
-          shadow={textBoxState.shadow}
-          strokeColor={textBoxState.strokeColor}
-          strokeWidth={textBoxState.strokeWidth}
-          shadowColor={textBoxState.shadowColor}
-          shadowOffsetX={textBoxState.shadowOffsetX}
-          shadowOffsetY={textBoxState.shadowOffsetY}
-          shadowBlur={textBoxState.shadowBlur}
-          shadowWidth={textBoxState.shadowWidth}
-          onStart={() => {
-            progress.current = 0;
-          }}
-          onProgress={(v) => {
-            progress.current = v;
-          }}
-          onFinish={() => {
-            progress.current = 1;
-            autoTicketRef.current?.done();
-            autoTicketRef.current = null;
-            showCurPos();
-          }}
-          interactive={false}
-        />
+        <container x={72} y={54}>
+          <text
+            label="对话内容"
+            ref={textWindowRef}
+            text={textBoxState.text}
+            fontSize={32}
+            lineHeight={textBoxState.lineHeight}
+            boxWidth={1384}
+            boxHeight={110}
+            fillColor={textBoxState.fillColor}
+            printMode={effectivePrintMode}
+            printSpeed={textBoxState.printSpeed}
+            indent={textBoxState.indent}
+            stroke={textBoxState.stroke}
+            shadow={textBoxState.shadow}
+            strokeColor={textBoxState.strokeColor}
+            strokeWidth={textBoxState.strokeWidth}
+            shadowColor={textBoxState.shadowColor}
+            shadowOffsetX={textBoxState.shadowOffsetX}
+            shadowOffsetY={textBoxState.shadowOffsetY}
+            shadowBlur={textBoxState.shadowBlur}
+            shadowWidth={textBoxState.shadowWidth}
+            onStart={() => {
+              progress.current = 0;
+            }}
+            onProgress={(v) => {
+              progress.current = v;
+            }}
+            onFinish={() => {
+              progress.current = 1;
+              autoTicketRef.current?.done();
+              autoTicketRef.current = null;
+              showCurPos();
+            }}
+            interactive={false}
+          />
+          {curPos ? (
+            <animation src="cursor.apng" format="apng" tint="#999" x={curPos[0] + 8} y={curPos[1] + 10} />
+          ) : null}
+        </container>
       </sprite>
-      {curPos ? (
-        <FrameAnimation
-          src="extra/cursor0.png"
-          direction="horizontal"
-          frameCount={4}
-          interval={160}
-          loop={true}
-          loopMode="always"
-          x={curPos[0] + 180}
-          y={curPos[1] + 358 + 8}
-        />
-      ) : null}
       <sprite
         label="姓名框"
         src="ui/namebox.png"
