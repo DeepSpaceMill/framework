@@ -1,34 +1,34 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
   <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <!-- 基本信息 -->
     <title>My New Game</title>
-    <meta name="description" content="填写游戏描述" />
-    <meta name="keywords" content="填写关键词" />
-    <meta name="author" content="填写作者" />
+    <meta name="description" content="填写游戏描述">
+    <meta name="keywords" content="填写关键词">
+    <meta name="author" content="填写作者">
 
     <!-- Open Graph / Facebook -->
-    <meta property="og:type" content="website" />
-    <meta property="og:title" content="My New Game" />
-    <meta property="og:description" content="填写游戏描述" />
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="My New Game">
+    <meta property="og:description" content="填写游戏描述">
     <!-- <meta property="og:image" content="/cover.jpg" /> -->
-    <meta property="og:locale" content="zh_CN" />
+    <meta property="og:locale" content="zh_CN">
 
     <!-- Twitter -->
-    <meta name="twitter:card" content="summary_large_image" />
-    <meta name="twitter:title" content="My New Game" />
-    <meta name="twitter:description" content="填写游戏描述" />
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="My New Game">
+    <meta name="twitter:description" content="填写游戏描述">
     <!-- <meta name="twitter:image" content="/cover.jpg" /> -->
 
     <!-- 主题色 -->
-    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)" />
-    <meta name="theme-color" content="#282C34" media="(prefers-color-scheme: dark)" />
+    <meta name="theme-color" content="#ffffff" media="(prefers-color-scheme: light)">
+    <meta name="theme-color" content="#282C34" media="(prefers-color-scheme: dark)">
 
     <!-- Favicon -->
-    <link rel="icon" type="image/png" href="/favicon.png" />
+    <link rel="icon" type="image/png" href="/favicon.png">
 
     <style>
       * {
@@ -244,7 +244,11 @@
           font-family: sans-serif;
         "
       >
-        <p>此游戏需要启用 JavaScript 才能运行。<br />Please enable JavaScript to play this game.</p>
+        <p>
+          此游戏需要启用 JavaScript 才能运行。
+          <br>
+          Please enable JavaScript to play this game.
+        </p>
       </div>
     </noscript>
 
@@ -258,9 +262,9 @@
       <div id="root"></div>
     </div>
     <div class="copyright">
-      使用 <a href="https://momoyu.ink" target="_blank" rel="noopener noreferrer">末语引擎</a> 呈现
+      使用 <a href="https://momoyu.ink" target="_blank" rel="noopener noreferrer">末语引擎</a>呈现
     </div>
-    
+
     <script type="module">
       const urlParams = new URLSearchParams(window.location.search);
       window.__moyu_entry = urlParams.get('entry') || "http://localhost:6020/index.json";
@@ -469,15 +473,12 @@
         await moyu.default();
         window.moyu = {
           pushCommand(name, args) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             return moyu[name](...args);
           },
           executeNodeCommand(...args) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             return moyu.execute_node_command(...args);
           },
           executePluginCommand(...args) {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
             return moyu.execute_plugin_command(...args);
           },
         };
@@ -488,5 +489,5 @@
         }
       });
     </script>
-</body>
+  </body>
 </html>

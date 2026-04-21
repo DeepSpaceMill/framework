@@ -6,8 +6,6 @@
   "scripts": {
     "dev": "rspack dev",
     "build": "rspack build",
-    "lint": "eslint .",
-    "lint:fix": "eslint . --fix",
     "generate:schema": "moyu schema",
     "engine:update": "moyu update",
     "engine:native": "moyu run --native",
