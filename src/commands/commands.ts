@@ -1,4 +1,5 @@
 import z from 'zod';
+import { CAMERA_PRESET_NAMES } from '../lib/camera';
 
 /* ------------------------------------------------------------------ */
 /*  Shared Fields                                                      */
@@ -170,6 +171,48 @@ const soundChannel = z
     title: 'Channel',
     'x-i18n': { 'zh-CN': '通道' },
     'x-i18n-desc': { 'zh-CN': '音频通道名称' },
+  });
+
+const cameraPreset = z
+  .enum(CAMERA_PRESET_NAMES)
+  .describe('Camera preset name')
+  .meta({
+    title: 'Preset',
+    'x-i18n': { 'zh-CN': '镜头预设' },
+    'x-i18n-desc': { 'zh-CN': '镜头预设名称' },
+  });
+
+const cameraZoom = z
+  .number()
+  .min(1)
+  .max(2)
+  .describe('Camera zoom ratio')
+  .meta({
+    title: 'Zoom',
+    'x-i18n': { 'zh-CN': '镜头缩放' },
+    'x-i18n-desc': { 'zh-CN': '镜头缩放倍率' },
+  });
+
+const cameraDepth = z
+  .number()
+  .min(0)
+  .max(1)
+  .describe('Depth intensity from 0 to 1')
+  .meta({
+    title: 'Depth',
+    'x-i18n': { 'zh-CN': '景深强度' },
+    'x-i18n-desc': { 'zh-CN': '景深强度，范围 0 到 1' },
+  });
+
+const cameraBlur = z
+  .number()
+  .min(0)
+  .max(8)
+  .describe('Background blur radius')
+  .meta({
+    title: 'Blur',
+    'x-i18n': { 'zh-CN': '背景模糊' },
+    'x-i18n-desc': { 'zh-CN': '背景模糊半径' },
   });
 
 /** Common character transform properties shared by charEnter / charAction */
@@ -609,6 +652,26 @@ const BgTintCommandSchema = z
     'x-i18n-desc': { 'zh-CN': '设置背景的色调颜色' },
   });
 
+const CameraCommandSchema = z
+  .object({
+    command: z.literal('camera'),
+    preset: cameraPreset.optional(),
+    x: posX.optional(),
+    y: posY.optional(),
+    zoom: cameraZoom.optional(),
+    depth: cameraDepth.optional(),
+    blur: cameraBlur.optional(),
+    fadeTime: fadeTime(600),
+    skippable: skippable(false),
+    noWait: noWait(false),
+  })
+  .describe('Move the stage camera with parallax and background blur')
+  .meta({
+    title: 'Camera',
+    'x-i18n': { 'zh-CN': '景深镜头' },
+    'x-i18n-desc': { 'zh-CN': '设置镜头焦点、推近、景深和背景模糊' },
+  });
+
 /* ------------------------------------------------------------------ */
 /*  Character Commands                                                 */
 /* ------------------------------------------------------------------ */
@@ -902,6 +965,7 @@ export const ScenarioCommandSchema = z.discriminatedUnion('command', [
   SoundStopCommandSchema,
   BgCommandSchema,
   BgTintCommandSchema,
+  CameraCommandSchema,
   CharEnterCommandSchema,
   CharActionCommandSchema,
   CharLeaveCommandSchema,

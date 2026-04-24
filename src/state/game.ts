@@ -1,5 +1,6 @@
 import { Tuple2 } from '@momoyu-ink/kit';
 import { proxy } from 'valtio';
+import { CAMERA_DEFAULT_STATE } from '../lib/camera';
 
 export interface Animation {
   fadeTime: number;
@@ -13,6 +14,14 @@ export interface BackgroundState extends Animation {
   src: string;
   tint?: string;
   skippable: boolean;
+}
+
+export interface CameraState extends Animation {
+  x: number;
+  y: number;
+  zoom: number;
+  depth: number;
+  blur: number;
 }
 
 export interface Character extends Animation {
@@ -120,6 +129,7 @@ export interface SelectionState {
 export interface GameState {
   story: StoryState;
   background: BackgroundState;
+  camera: CameraState;
   character: CharacterState;
   textbox: TextBoxState;
   bgm: BGMState;
@@ -137,6 +147,14 @@ const gameStateDefaults: GameState = {
     src: '',
     fadeTime: 1000,
     skippable: false,
+  },
+  camera: {
+    x: CAMERA_DEFAULT_STATE.x,
+    y: CAMERA_DEFAULT_STATE.y,
+    zoom: CAMERA_DEFAULT_STATE.zoom,
+    depth: CAMERA_DEFAULT_STATE.depth,
+    blur: CAMERA_DEFAULT_STATE.blur,
+    fadeTime: CAMERA_DEFAULT_STATE.fadeTime,
   },
   character: {
     presets: {

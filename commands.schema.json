@@ -1115,6 +1115,139 @@
       "properties": {
         "command": {
           "type": "string",
+          "const": "camera"
+        },
+        "preset": {
+          "type": "string",
+          "enum": [
+            "reset",
+            "close-center",
+            "close-left",
+            "close-right",
+            "dramatic-center"
+          ],
+          "description": "Camera preset name",
+          "title": "Preset",
+          "x-i18n": {
+            "zh-CN": "镜头预设"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "镜头预设名称"
+          }
+        },
+        "x": {
+          "type": "number",
+          "description": "X coordinate",
+          "title": "X",
+          "x-i18n-desc": {
+            "zh-CN": "X 坐标"
+          }
+        },
+        "y": {
+          "type": "number",
+          "description": "Y coordinate",
+          "title": "Y",
+          "x-i18n-desc": {
+            "zh-CN": "Y 坐标"
+          }
+        },
+        "zoom": {
+          "type": "number",
+          "minimum": 1,
+          "maximum": 2,
+          "description": "Camera zoom ratio",
+          "title": "Zoom",
+          "x-i18n": {
+            "zh-CN": "镜头缩放"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "镜头缩放倍率"
+          }
+        },
+        "depth": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1,
+          "description": "Depth intensity from 0 to 1",
+          "title": "Depth",
+          "x-i18n": {
+            "zh-CN": "景深强度"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "景深强度，范围 0 到 1"
+          }
+        },
+        "blur": {
+          "type": "number",
+          "minimum": 0,
+          "maximum": 8,
+          "description": "Background blur radius",
+          "title": "Blur",
+          "x-i18n": {
+            "zh-CN": "背景模糊"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "背景模糊半径"
+          }
+        },
+        "fadeTime": {
+          "default": 600,
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
+          "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        },
+        "noWait": {
+          "default": false,
+          "description": "Whether to skip waiting for the transition to complete",
+          "title": "No Wait",
+          "x-i18n": {
+            "zh-CN": "不等待"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否跳过等待过渡完成"
+          },
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "command",
+        "fadeTime",
+        "skippable",
+        "noWait"
+      ],
+      "additionalProperties": false,
+      "description": "Move the stage camera with parallax and background blur",
+      "title": "Camera",
+      "x-i18n": {
+        "zh-CN": "景深镜头"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "设置镜头焦点、推近、景深和背景模糊"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
           "const": "charEnter"
         },
         "src": {

@@ -4,6 +4,7 @@ import { GamePage } from '../state/ui';
 import { writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
 import { ScenarioCommandSchemaType } from './commands';
 import { settingsState } from '../state/settings';
+import { resolveCameraTarget } from '../lib/camera';
 
 function recordBacklog(control: { record(meta: Record<string, any>): string }, meta: Record<string, any>) {
   writeCurrentGameStateToScenario();
@@ -204,6 +205,32 @@ export const handleBgTint: CommandHandler<ScenarioCommandSchemaType> = (cmd, con
   } else {
     gameState.background.tint = cmd.tint;
   }
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
+};
+
+/** Move the stage camera with parallax and background blur. */
+export const handleCamera: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
+  if (cmd.command !== 'camera') return;
+
+  const target = resolveCameraTarget({
+    preset: cmd.preset,
+    x: cmd.x,
+    y: cmd.y,
+    zoom: cmd.zoom,
+    depth: cmd.depth,
+    blur: cmd.blur,
+    fadeTime: cmd.fadeTime,
+  });
+
+  gameState.camera.x = target.x;
+  gameState.camera.y = target.y;
+  gameState.camera.zoom = target.zoom;
+  gameState.camera.depth = target.depth;
+  gameState.camera.blur = target.blur;
+  gameState.camera.fadeTime = target.fadeTime;
+
   if (!cmd.noWait) {
     control.setWaiting(cmd.fadeTime, cmd.skippable);
   }

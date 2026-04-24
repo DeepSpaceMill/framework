@@ -27,6 +27,7 @@ import {
   handleSoundStop,
   handleBg,
   handleBgTint,
+  handleCamera,
   handleCharEnter,
   handleCharAction,
   handleCharLeave,
@@ -46,6 +47,7 @@ import {
 import { uiActions } from '../state/ui';
 import { gameState } from '../state/game';
 import { BackgroundActor } from '../actors/background';
+import { CameraActor, BackgroundPlane, CharacterPlane } from '../actors/camera';
 import { CharacterActor } from '../actors/character';
 import { SelectionActor } from '../actors/selection';
 import { TextBoxActor, TextBoxButton } from '../actors/textbox';
@@ -89,6 +91,7 @@ function registerStageHandlers(stage: StageInstance): Array<() => void> {
     stage.registerCommand('soundStop', handleSoundStop),
     stage.registerCommand('bg', handleBg),
     stage.registerCommand('bgTint', handleBgTint),
+    stage.registerCommand('camera', handleCamera),
     stage.registerCommand('charEnter', handleCharEnter),
     stage.registerCommand('charAction', handleCharAction),
     stage.registerCommand('charLeave', handleCharLeave),
@@ -308,8 +311,14 @@ export function Stage() {
 
   return (
     <StageContextProvider stage={stage}>
-      <BackgroundActor />
-      <CharacterActor />
+      <CameraActor>
+        <BackgroundPlane>
+          <BackgroundActor />
+        </BackgroundPlane>
+        <CharacterPlane>
+          <CharacterActor />
+        </CharacterPlane>
+      </CameraActor>
       <TextBoxActor onButtonClick={handleButtonClick} />
       <BGMActor />
       <VoiceActor />
