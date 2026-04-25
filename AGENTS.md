@@ -442,3 +442,9 @@ yarn engine:update    # 更新引擎二进制
 # Schema
 yarn generate:schema  # 从 Zod 生成 commands.schema.json（含 meta 元数据）
 ```
+
+## 更多资料
+
+如果你需要更详细的文档资料，或者想了解引擎层的设计与 API，查阅如下地址：
+
+- [末语引擎文档](https://momoyu.ink/customize/overview/)
