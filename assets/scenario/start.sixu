@@ -1,6 +1,6 @@
 ::entry {
     @charAutoTint enabled=false
-    @bg src="non-free/纯黑.webp" fadeTime=0
+    @bg src="纯黑.webp" fadeTime=0
     @wait time=1000
     // // 敲门声（小声）
     @sfx src="non-free/sfx/door_chime2.mp3" volume=0.6 noWait=false
@@ -59,7 +59,7 @@
         @camera preset="reset" fadeTime=400 noWait=true skippable=true
         @wait time=600
         @textBoxHide
-        @bg src="non-free/纯黑.webp" fadeTime=2000 skippable=true
+        @bg src="纯黑.webp" fadeTime=2000 skippable=true
         @leaveStage gotoPage="title"
     }
 
@@ -84,7 +84,7 @@
     @textBoxHide
     @charLeave name="墨语"
     // @bgTint tint="#666" fadeTime=2000 skippable=true
-    @bg src="non-free/纯黑.webp" fadeTime=2000 skippable=true
+    @bg src="纯黑.webp" fadeTime=2000 skippable=true
     @bg src="non-free/公寓_傍晚OK.webp" fadeTime=1000
     // @bgTint tint="#fff"
     @wait time=800 skippable=true
@@ -121,6 +121,6 @@
     @charLeave name="墨语" fadeTime=600 noWait=false
     @wait time=600
     @textBoxHide
-    @bg src="non-free/纯黑.webp" fadeTime=2000 skippable=true
+    @bg src="纯黑.webp" fadeTime=2000 skippable=true
     @leaveStage gotoPage="title"
 }
