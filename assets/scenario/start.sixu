@@ -28,14 +28,18 @@
     // 开门声
     @sfx src="non-free/sfx/room_door_O.mp3" volume=0.8 noWait=false
     @charEnter src="non-free/fg/josei_20_a.png" name="墨语" preset="right" y=450
+    // Camera demo: push to the visitor first, then follow her move to center.
+    @camera preset="close-right" fadeTime=700
     [墨语] "早，老哥"
     @bgm src="non-free/bgm/抒情钢琴曲II.opus" volume=0.5 fadeTime=2000
     "果然是<fillColor=\"#e0324b\">墨语</fillColor>，从小就认识的邻居家的女儿"
     // 半叹气地说
     [我] "我还没醒呢，周末一大早的"
     @charAction src="non-free/fg/josei_20_g.png" name="墨语" preset="center" y=450
+    @camera preset="close-center" fadeTime=700
     [墨语] "嘻嘻"
     "她侧身越过我，倚靠着茶几坐在地毯上"
+    @camera preset="reset" fadeTime=600
 
     @optionAdd text="让她进来" value=1
     @optionAdd text="赶她出去" value=2
@@ -44,6 +48,7 @@
     #[cond("ARCHIVE.selected_option === 2")]
     {
         [我] "我今天很累，等会还要继续睡，你还是改天再来吧……"
+        @camera preset="dramatic-center" fadeTime=700
 
         @charLeave name="墨语" fadeTime=600 noWait=false
         @bgmStop fadeTime=2000
@@ -51,6 +56,7 @@
         说着，我把她赶出了门外，顺便把门锁了起来，之后继续睡觉
         又是无事发生的一天过去了……
 
+        @camera preset="reset" fadeTime=400 noWait=true skippable=true
         @wait time=600
         @textBoxHide
         @bg src="non-free/纯黑.webp" fadeTime=2000 skippable=true
@@ -88,13 +94,16 @@
     "……那家伙怎么样了？"
     "努力转过头看向床旁，正好遇上她的目光"
     @charEnter src="non-free/fg/josei_20_e.png" name="墨语" preset="right" y=450 skippable=true
+    @camera preset="close-right" fadeTime=650 skippable=true
     [墨语] "……"
     @bgm src="non-free/bgm/抒情钢琴曲II.opus" volume=0.5 fadeTime=2000
     @charAction src="non-free/fg/josei_20_f.png" name="墨语" preset="center" x=200 y=450 skippable=true
+    @camera preset="close-center" fadeTime=650 skippable=true
     [墨语] "醒啦，午饭我在楼下便利店解决了，还给你带了一份"
     @charAction name="墨语" tint="#e9cab7" fadeTime=3000 skippable=true
     "她放下手上的漫画书，指了指小桌上没拆封的便当"
     "夕阳斜照进来，让她的脸颊变得比平时更加柔和"
+    @camera preset="dramatic-center" fadeTime=800 skippable=true
     [墨语] "？"
     // 慵懒地
     [墨语] "怎么了？"
@@ -103,6 +112,7 @@
     @text content="！！！" name="我" autoAdvance=true
     @wait time=500 skippable=true
     [我] "啊、那个，我还是起来活动一下，等下我们出去吃吧"
+    @camera preset="reset" fadeTime=600 skippable=true
     [墨语] "……你请客？"
     [我] "当然，谢谢你的便当，就作为明天的午饭了"
     // 冰箱开关声
