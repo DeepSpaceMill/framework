@@ -12,6 +12,7 @@ const PREVIEW_TEXT = '点击这里预览文本框的效果设置';
 export function Settings() {
   const navigation = useNavigation();
   const textWindowRef = useRef<Node>(null);
+  const textWindowReplayRef = useRef<number>(0);
 
   const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
   const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
@@ -19,7 +20,6 @@ export function Settings() {
   const settings = useSnapshot(settingsState);
 
   const handlePreviewClick = () => {
-    console.log('setting bg click');
     textWindowRef.current?.executeCommand({
       subCommand: 'setText',
       text: PREVIEW_TEXT,
@@ -35,6 +35,20 @@ export function Settings() {
 
   const setValue = (key: keyof SettingsData, value: any) => {
     (settingsState[key] as any) = value;
+
+    if (key === 'text_speed' && textWindowRef.current) {
+      // Restart the preview text to apply the new text speed immediately
+      if (textWindowReplayRef.current) {
+        clearTimeout(textWindowReplayRef.current);
+      }
+
+      textWindowReplayRef.current = setTimeout(() => {
+        textWindowRef.current?.executeCommand({
+          subCommand: 'setText',
+          text: PREVIEW_TEXT,
+        });
+      }, 100);
+    }
   };
 
   const stageSize = getStageSize();
@@ -165,7 +179,7 @@ export function Settings() {
               anchor={[0.5, 0.5]}
               pivot={[0.5, 0.5]}
               printMode="typewriter"
-              printSpeed={20}
+              printSpeed={Math.max(1, 20 * settings.text_speed)}
               interactive={false}
             />
           </sprite>

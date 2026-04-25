@@ -11,6 +11,7 @@ import {
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gameState } from '../state/game';
+import { settingsState } from '../state/settings';
 import { Button } from '../components/button';
 
 export enum TextBoxButton {
@@ -38,6 +39,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   const [isHovered, setIsHovered] = useState(false);
 
   const textBoxState = useSnapshot(gameState.textbox);
+  const settings = useSnapshot(settingsState);
   const navState = useNavigationState();
   const hasOverlay = navState.overlayStack.length > 0;
 
@@ -107,6 +109,10 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   }, [autoing]);
 
   const effectivePrintMode = skipping ? 'instant' : textBoxState.printMode;
+  const effectivePrintSpeed =
+    effectivePrintMode === 'instant'
+      ? textBoxState.printSpeed
+      : Math.max(1, textBoxState.printSpeed * settings.text_speed);
 
   useLayoutEffect(() => {
     if (!autoing) {
@@ -180,7 +186,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
             boxHeight={110}
             fillColor={textBoxState.fillColor}
             printMode={effectivePrintMode}
-            printSpeed={textBoxState.printSpeed}
+            printSpeed={effectivePrintSpeed}
             indent={textBoxState.indent}
             stroke={textBoxState.stroke}
             shadow={textBoxState.shadow}

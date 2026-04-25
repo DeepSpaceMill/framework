@@ -46,6 +46,7 @@ import {
 } from '../commands/handlers';
 import { uiActions } from '../state/ui';
 import { gameState } from '../state/game';
+import { settingsState } from '../state/settings';
 import { BackgroundActor } from '../actors/background';
 import { CameraActor, BackgroundPlane, CharacterPlane } from '../actors/camera';
 import { CharacterActor } from '../actors/character';
@@ -112,6 +113,18 @@ function registerStageHandlers(stage: StageInstance): Array<() => void> {
 
 const stage = getStageSingleton();
 
+function stopVoiceOnPageAdvance() {
+  if (!settingsState.skip_voice || !gameState.voice.src) {
+    return;
+  }
+
+  void executePluginCommand('audio', {
+    subCommand: 'release',
+    name: gameState.voice.channelName,
+    fadeTime: 0,
+  });
+}
+
 // Define the params interface for Stage page
 interface StageParams {
   story: string;
@@ -157,6 +170,7 @@ export function Stage() {
     }
     // Try interrupt callbacks first; if none consumed, advance
     if (!stage.tryInterrupt()) {
+      stopVoiceOnPageAdvance();
       void nextLine();
     }
   }, [navigation]);
