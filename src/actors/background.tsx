@@ -3,6 +3,14 @@ import { useSnapshot } from 'valtio';
 import { gameState } from '../state/game';
 import { useCallback, useEffect } from 'react';
 
+// File extensions treated as looping background video instead of static image.
+const VIDEO_EXTENSIONS = ['.mp4', '.webm'];
+
+function isVideoSrc(src: string): boolean {
+  const lower = src.toLowerCase();
+  return VIDEO_EXTENSIONS.some((ext) => lower.endsWith(ext));
+}
+
 export function BackgroundActor() {
   const backgroundState = useSnapshot(gameState.background);
   const skipping = useIsSkipping();
@@ -75,9 +83,21 @@ export function BackgroundActor() {
 
   return (
     <container label="背景容器">
-      {transitions((style, src) => (
-        <animated.sprite label="背景图" src={src} opacity={style.opacity} tint={tintSpring.tint as any} />
-      ))}
+      {transitions((style, src) =>
+        isVideoSrc(src) ? (
+          <animated.video
+            label="背景视频"
+            src={src}
+            autoPlay={true}
+            loop={true}
+            muted={true}
+            opacity={style.opacity}
+            tint={tintSpring.tint as any}
+          />
+        ) : (
+          <animated.sprite label="背景图" src={src} opacity={style.opacity} tint={tintSpring.tint as any} />
+        ),
+      )}
     </container>
   );
 }
