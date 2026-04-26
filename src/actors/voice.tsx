@@ -2,7 +2,6 @@ import { executePluginCommand, useAutoTicket, type AutoTicketHandle } from '@mom
 import { useLayoutEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { gameState } from '../state/game';
-import { settingsState } from '../state/settings';
 
 /**
  * VoiceActor - Headless actor that manages voice playback and participates in auto mode.
@@ -20,7 +19,7 @@ export function VoiceActor() {
   // biome-ignore lint/correctness/useExhaustiveDependencies: issueAutoTicket is a stable ref
   useLayoutEffect(() => {
     // Read directly from proxy to avoid snapshot staleness inside async closures.
-    const { src, channelName, volume } = gameState.voice;
+    const { src, channel: channelName, volume } = gameState.voice;
 
     // Cancel any ticket from the previous voice (effect cleanup may have already done
     // this, but guard against the case where src changed before cleanup ran).
@@ -52,7 +51,7 @@ export function VoiceActor() {
           src,
           settings: {
             autoPlay: false,
-            volume: volume ?? settingsState.volume_voice,
+            volume,
           },
         });
 
@@ -78,7 +77,7 @@ export function VoiceActor() {
       autoTicketRef.current?.cancel();
       autoTicketRef.current = null;
     };
-  }, [voiceState.src, voiceState.channelName]);
+  }, [voiceState.src, voiceState.channel]);
 
   // Headless actor — no visual rendering.
   return null;

@@ -123,7 +123,7 @@ function stopVoiceOnPageAdvance() {
 
   void executePluginCommand('audio', {
     subCommand: 'release',
-    name: gameState.voice.channelName,
+    name: gameState.voice.channel,
     fadeTime: 0,
   });
 }

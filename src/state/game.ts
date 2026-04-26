@@ -82,21 +82,21 @@ export interface TextBoxState {
 export interface BGMState {
   src: string;
   loop: boolean;
-  volume?: number;
+  volume: number;
   fadeTime?: number;
 }
 
 export interface VoiceState {
   src: string;
-  channelName: string;
-  volume?: number;
+  channel: string;
+  volume: number;
 }
 
 export interface SfxState {
   seq: number;
   src: string;
   loop: boolean;
-  volume?: number;
+  volume: number;
   fadeTime?: number;
   stopSeq: number;
   stopFadeTime?: number;
@@ -107,7 +107,7 @@ export interface SoundState {
   channel: string;
   src: string;
   loop: boolean;
-  volume?: number;
+  volume: number;
   fadeTime?: number;
   stopSeq: number;
   stopChannel: string;
@@ -200,17 +200,19 @@ const gameStateDefaults: GameState = {
   bgm: {
     src: '',
     loop: true,
+    volume: 1.0,
+    fadeTime: undefined,
   },
   voice: {
     src: '',
-    channelName: 'voice',
-    volume: undefined,
+    channel: '',
+    volume: 1.0,
   },
   sfx: {
     seq: 0,
     src: '',
     loop: false,
-    volume: undefined,
+    volume: 1.0,
     fadeTime: undefined,
     stopSeq: 0,
     stopFadeTime: undefined,
@@ -220,7 +222,7 @@ const gameStateDefaults: GameState = {
     channel: '',
     src: '',
     loop: false,
-    volume: undefined,
+    volume: 1.0,
     fadeTime: undefined,
     stopSeq: 0,
     stopChannel: '',

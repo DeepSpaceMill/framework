@@ -2,7 +2,6 @@ import { executePluginCommand, useIsSkipping } from '@momoyu-ink/kit';
 import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { gameState } from '../state/game';
-import { settingsState } from '../state/settings';
 
 /**
  * SoundActor - Headless actor that manages named channel audio playback.
@@ -36,7 +35,7 @@ export function SoundActor() {
         settings: {
           autoPlay: true,
           loopRegion: loop ? [0, -1] : undefined,
-          volume: volume ?? settingsState.volume_se,
+          volume,
           fadeTime,
         },
       });

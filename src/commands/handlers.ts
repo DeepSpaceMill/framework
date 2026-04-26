@@ -3,8 +3,8 @@ import { gameState, resetGameState } from '../state/game';
 import { GamePage } from '../state/ui';
 import { writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
 import { ScenarioCommandSchemaType } from './commands';
-import { settingsState } from '../state/settings';
 import { resolveCameraTarget } from '../lib/camera';
+import { getSoundAudioChannel, getVoiceAudioChannel } from '../lib/audioChannels';
 
 function recordBacklog(control: { record(meta: Record<string, any>): string }, meta: Record<string, any>) {
   writeCurrentGameStateToScenario();
@@ -97,7 +97,7 @@ export const handleTextBoxHide: CommandHandler<ScenarioCommandSchemaType> = (cmd
 export const handleBgm: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'bgm') return;
   gameState.bgm.loop = cmd.loop;
-  gameState.bgm.volume = (cmd.volume ?? 1.0) * settingsState.volume_bgm;
+  gameState.bgm.volume = cmd.volume;
   gameState.bgm.fadeTime = cmd.fadeTime;
   gameState.bgm.src = cmd.src;
   if (!cmd.noWait) {
@@ -120,7 +120,7 @@ export const handleSfx: CommandHandler<ScenarioCommandSchemaType> = (cmd, contro
   if (cmd.command !== 'sfx') return;
   gameState.sfx.src = cmd.src;
   gameState.sfx.loop = cmd.loop;
-  gameState.sfx.volume = (cmd.volume ?? 1.0) * settingsState.volume_se;
+  gameState.sfx.volume = cmd.volume;
   gameState.sfx.fadeTime = cmd.fadeTime;
   gameState.sfx.seq++;
   if (!cmd.noWait) {
@@ -142,8 +142,8 @@ export const handleSfxStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, co
 export const handleVoice: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'voice') return;
   gameState.voice.src = cmd.src;
-  gameState.voice.channelName = cmd.name ? `voice_${cmd.name}` : 'voice';
-  gameState.voice.volume = (cmd.volume ?? 1.0) * settingsState.volume_voice;
+  gameState.voice.channel = getVoiceAudioChannel(cmd.name);
+  gameState.voice.volume = cmd.volume;
   // auto-advance — VoiceActor handles audio lifecycle and auto ticket
 };
 
@@ -158,10 +158,10 @@ export const handleVoiceStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
 /** Play sound on a named channel. */
 export const handleSound: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'sound') return;
-  gameState.sound.channel = cmd.channel;
+  gameState.sound.channel = getSoundAudioChannel(cmd.channel);
   gameState.sound.src = cmd.src;
   gameState.sound.loop = cmd.loop;
-  gameState.sound.volume = (cmd.volume ?? 1.0) * settingsState.volume_se;
+  gameState.sound.volume = cmd.volume;
   gameState.sound.fadeTime = cmd.fadeTime;
   gameState.sound.seq++;
   if (!cmd.noWait) {
@@ -172,7 +172,7 @@ export const handleSound: CommandHandler<ScenarioCommandSchemaType> = (cmd, cont
 /** Stop sound on a named channel. */
 export const handleSoundStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'soundStop') return;
-  gameState.sound.stopChannel = cmd.channel;
+  gameState.sound.stopChannel = getSoundAudioChannel(cmd.channel);
   gameState.sound.stopFadeTime = cmd.fadeTime;
   gameState.sound.stopSeq++;
   if (!cmd.noWait) {
