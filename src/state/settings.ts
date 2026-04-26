@@ -2,6 +2,12 @@ import { executePluginCommand, setDefaultAutoTailMs } from '@momoyu-ink/kit';
 import debounce from 'lodash.debounce';
 import { proxy, subscribe } from 'valtio';
 import { subscribeKey } from 'valtio/utils';
+import {
+  BGM_AUDIO_CHANNEL,
+  SFX_AUDIO_CHANNEL,
+  SOUND_AUDIO_CHANNEL_WILDCARD,
+  VOICE_AUDIO_CHANNEL_WILDCARD,
+} from '../lib/audioChannels';
 
 export interface SettingsData extends Record<string, any> {
   display: string;
@@ -50,6 +56,29 @@ export const settingsState = proxy<SettingsData>(_settings);
 
 setDefaultAutoTailMs(Number.isFinite(settingsState.auto_interval) ? settingsState.auto_interval * 1000 : 0);
 
+// Keep framework-managed audio channel names aligned with the engine wildcard
+// matcher so settings changes apply to both base channels and derived channels.
+executePluginCommand('audio', {
+  subCommand: 'setGlobalVolume',
+  name: BGM_AUDIO_CHANNEL,
+  volume: settingsState.volume_bgm,
+});
+executePluginCommand('audio', {
+  subCommand: 'setGlobalVolume',
+  name: SFX_AUDIO_CHANNEL,
+  volume: settingsState.volume_se,
+});
+executePluginCommand('audio', {
+  subCommand: 'setGlobalVolume',
+  name: SOUND_AUDIO_CHANNEL_WILDCARD,
+  volume: settingsState.volume_se,
+});
+executePluginCommand('audio', {
+  subCommand: 'setGlobalVolume',
+  name: VOICE_AUDIO_CHANNEL_WILDCARD,
+  volume: settingsState.volume_voice,
+});
+
 // subscribe to changes and save to permanent variables
 const saveSettings = debounce(() => {
   executePluginCommand('scenario', {
@@ -69,6 +98,35 @@ subscribeKey(settingsState, 'display', (display) => {
 
 subscribeKey(settingsState, 'auto_interval', (autoInterval) => {
   setDefaultAutoTailMs(Number.isFinite(autoInterval) ? autoInterval * 1000 : 0);
+});
+
+subscribeKey(settingsState, 'volume_bgm', (volume) => {
+  executePluginCommand('audio', {
+    subCommand: 'setGlobalVolume',
+    name: BGM_AUDIO_CHANNEL,
+    volume,
+  });
+});
+
+subscribeKey(settingsState, 'volume_se', (volume) => {
+  executePluginCommand('audio', {
+    subCommand: 'setGlobalVolume',
+    name: SFX_AUDIO_CHANNEL,
+    volume,
+  });
+  executePluginCommand('audio', {
+    subCommand: 'setGlobalVolume',
+    name: SOUND_AUDIO_CHANNEL_WILDCARD,
+    volume,
+  });
+});
+
+subscribeKey(settingsState, 'volume_voice', (volume) => {
+  executePluginCommand('audio', {
+    subCommand: 'setGlobalVolume',
+    name: VOICE_AUDIO_CHANNEL_WILDCARD,
+    volume,
+  });
 });
 
 function setDisplay(display: string) {

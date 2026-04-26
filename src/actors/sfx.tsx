@@ -2,7 +2,6 @@ import { executePluginCommand, useIsSkipping } from '@momoyu-ink/kit';
 import { useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { gameState } from '../state/game';
-import { settingsState } from '../state/settings';
 
 /**
  * SfxActor - Headless actor that manages sound effect playback.
@@ -38,7 +37,7 @@ export function SfxActor() {
         settings: {
           autoPlay: true,
           loopRegion: loop ? [0, -1] : undefined,
-          volume: volume ?? settingsState.volume_se,
+          volume,
           fadeTime,
         },
       });

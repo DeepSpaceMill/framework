@@ -2,7 +2,6 @@ import { executePluginCommand } from '@momoyu-ink/kit';
 import { useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import { gameState } from '../state/game';
-import { settingsState } from '../state/settings';
 
 /**
  * BGMActor - A headless actor that manages background music playback
@@ -33,7 +32,7 @@ export function BGMActor() {
           settings: {
             autoPlay: true,
             loopRegion: bgmState.loop ? [0, -1] : undefined,
-            volume: bgmState.volume ?? settingsState.volume_bgm,
+            volume: bgmState.volume,
             fadeTime: bgmState.fadeTime ?? 0,
           },
         });
