@@ -968,6 +968,67 @@
       "properties": {
         "command": {
           "type": "string",
+          "const": "video"
+        },
+        "src": {
+          "type": "string",
+          "description": "Video asset path",
+          "title": "Video",
+          "format": "asset",
+          "x-asset-kind": "video",
+          "x-i18n": {
+            "zh-CN": "视频"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "视频资源路径"
+          }
+        },
+        "fadeTime": {
+          "default": 0,
+          "description": "Fade time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "渐变时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "渐变时间（毫秒）"
+          },
+          "type": "number"
+        },
+        "skippable": {
+          "default": false,
+          "description": "Whether it can be skipped",
+          "title": "Skippable",
+          "x-i18n": {
+            "zh-CN": "可跳过"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否可跳过"
+          },
+          "type": "boolean"
+        }
+      },
+      "required": [
+        "command",
+        "src",
+        "fadeTime",
+        "skippable"
+      ],
+      "additionalProperties": false,
+      "description": "Play a fullscreen video that blocks the scenario until completion",
+      "title": "Play Video",
+      "x-i18n": {
+        "zh-CN": "播放视频"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "播放全屏视频，期间阻塞剧情"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
           "const": "bg"
         },
         "src": {

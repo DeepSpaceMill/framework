@@ -181,6 +181,25 @@ export const handleSoundStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
 };
 
 // ---------------------------------------------------------------------------
+// Video command handlers
+// ---------------------------------------------------------------------------
+
+/**
+ * Play a fullscreen video. Holds the scenario; VideoActor advances via
+ * nextLine() once the video ends naturally or is confirmed to be skipped.
+ */
+export const handleVideo: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
+  if (cmd.command !== 'video') return;
+  gameState.video.src = cmd.src;
+  gameState.video.fadeTime = cmd.fadeTime;
+  gameState.video.skippable = cmd.skippable;
+  gameState.video.visible = true;
+  // Block scenario advancement; auto/skip blockers in VideoActor will stop
+  // those modes via this hold(). VideoActor calls nextLine() when done.
+  control.hold();
+};
+
+// ---------------------------------------------------------------------------
 // Background command handlers
 // ---------------------------------------------------------------------------
 

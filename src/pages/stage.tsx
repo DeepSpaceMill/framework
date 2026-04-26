@@ -43,6 +43,7 @@ import {
   handleOptionAdd,
   handleOptionShow,
   handleOptionClear,
+  handleVideo,
 } from '../commands/handlers';
 import { uiActions } from '../state/ui';
 import { gameState } from '../state/game';
@@ -56,6 +57,7 @@ import { BGMActor } from '../actors/bgm';
 import { VoiceActor } from '../actors/voice';
 import { SfxActor } from '../actors/sfx';
 import { SoundActor } from '../actors/sound';
+import { VideoActor } from '../actors/video';
 import { ScenarioCommandSchema } from '../commands/commands';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 
@@ -107,6 +109,7 @@ function registerStageHandlers(stage: StageInstance): Array<() => void> {
     stage.registerCommand('optionAdd', handleOptionAdd),
     stage.registerCommand('optionShow', handleOptionShow),
     stage.registerCommand('optionClear', handleOptionClear),
+    stage.registerCommand('video', handleVideo),
     stage.registerTextLine(handleTextLine),
   ];
 }
@@ -162,6 +165,12 @@ export function Stage() {
     }
 
     if (navigation.getOverlayStack().length > 0) return;
+    // Fullscreen video swallows clicks: VideoActor's interrupt callback
+    // either ignores them (skippable=false) or pops a confirm dialog.
+    if (gameState.video.visible) {
+      stage.tryInterrupt();
+      return;
+    }
     // Don't advance story while waiting for player to select a choice
     if (gameState.selection.visible) return;
     if (!gameState.textbox.visible) {
@@ -188,6 +197,8 @@ export function Stage() {
   }, []);
 
   const handleButtonClick = async (button: TextBoxButton) => {
+    // While a fullscreen video is playing, swallow textbox button input.
+    if (gameState.video.visible) return;
     try {
       if (button !== TextBoxButton.AUTO && stage.isAutoing()) {
         stage.stopAuto();
@@ -261,6 +272,15 @@ export function Stage() {
 
   useEffect(() => {
     return addEventListener('keydown', (e: KeyboardEvent) => {
+      // While a fullscreen video is playing, only Enter/Space go through
+      // (handled via handleClick -> tryInterrupt). Block everything else,
+      // including Escape (textbox toggle) and Ctrl (skip).
+      if (gameState.video.visible) {
+        if (e.key === 'Enter' || e.key === ' ') {
+          handleClick();
+        }
+        return;
+      }
       if (stage.isSkipping() && !e.repeat && e.key !== 'Control') {
         stage.stopSkip();
       } else if (e.key === 'Control' && !e.repeat) {
@@ -316,6 +336,8 @@ export function Stage() {
       if (event.deltaY <= 0) return;
       if (navigation.getCurrentPage() !== 'stage') return;
       if (navigation.getOverlayStack().length > 0) return;
+      // Block backlog opening while a fullscreen video is playing.
+      if (gameState.video.visible) return;
       if (stage.isAutoing()) {
         stage.stopAuto();
       }
@@ -339,6 +361,8 @@ export function Stage() {
       <SfxActor />
       <SoundActor />
       <SelectionActor />
+      {/* Fullscreen video sits on top of everything else. */}
+      <VideoActor />
     </StageContextProvider>
   );
 }

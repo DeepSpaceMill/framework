@@ -27,6 +27,17 @@ const imageSrc = z
     'x-i18n-desc': { 'zh-CN': '图片资源路径' },
   });
 
+const videoSrc = z
+  .string()
+  .describe('Video asset path')
+  .meta({
+    title: 'Video',
+    format: 'asset',
+    'x-asset-kind': 'video',
+    'x-i18n': { 'zh-CN': '视频' },
+    'x-i18n-desc': { 'zh-CN': '视频资源路径' },
+  });
+
 const volume = z
   .number()
   .min(0)
@@ -619,6 +630,24 @@ const SoundStopCommandSchema = z
   });
 
 /* ------------------------------------------------------------------ */
+/*  Video Commands                                                     */
+/* ------------------------------------------------------------------ */
+
+const VideoCommandSchema = z
+  .object({
+    command: z.literal('video'),
+    src: videoSrc,
+    fadeTime: fadeTime(0),
+    skippable: skippable(false),
+  })
+  .describe('Play a fullscreen video that blocks the scenario until completion')
+  .meta({
+    title: 'Play Video',
+    'x-i18n': { 'zh-CN': '播放视频' },
+    'x-i18n-desc': { 'zh-CN': '播放全屏视频，期间阻塞剧情' },
+  });
+
+/* ------------------------------------------------------------------ */
 /*  Background Commands                                                */
 /* ------------------------------------------------------------------ */
 
@@ -963,6 +992,7 @@ export const ScenarioCommandSchema = z.discriminatedUnion('command', [
   VoiceStopCommandSchema,
   SoundCommandSchema,
   SoundStopCommandSchema,
+  VideoCommandSchema,
   BgCommandSchema,
   BgTintCommandSchema,
   CameraCommandSchema,

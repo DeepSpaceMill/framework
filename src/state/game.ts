@@ -125,6 +125,16 @@ export interface SelectionState {
   saveTo?: string;
 }
 
+export interface VideoState {
+  // Whether the fullscreen video is currently active. Stays true throughout
+  // play-in, playback, and play-out; only flips to false after the leave
+  // animation finishes inside VideoActor.
+  visible: boolean;
+  src: string;
+  fadeTime: number;
+  skippable: boolean;
+}
+
 // Main game state interface
 export interface GameState {
   story: StoryState;
@@ -137,6 +147,7 @@ export interface GameState {
   sfx: SfxState;
   sound: SoundState;
   selection: SelectionState;
+  video: VideoState;
 }
 
 const gameStateDefaults: GameState = {
@@ -219,6 +230,12 @@ const gameStateDefaults: GameState = {
     visible: false,
     options: [],
     saveTo: undefined,
+  },
+  video: {
+    visible: false,
+    src: '',
+    fadeTime: 0,
+    skippable: false,
   },
 };
 

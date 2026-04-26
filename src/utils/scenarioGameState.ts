@@ -41,5 +41,11 @@ export async function restoreGameStateFromScenario(): Promise<GameState | undefi
   gameState.sound.stopSeq = 0;
   gameState.voice.src = '';
 
+  // Saving during a fullscreen video is forbidden by Stage gating, but
+  // defensively reset the video state on restore so a stale snapshot
+  // (e.g. from HMR or external tooling) cannot leave the actor stuck.
+  gameState.video.visible = false;
+  gameState.video.src = '';
+
   return loadedGameState;
 }
