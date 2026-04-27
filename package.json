@@ -9,6 +9,8 @@
     "build": "rspack build",
     "generate:schema": "moyu schema",
     "engine:update": "moyu update",
+    "engine:download": "moyu download",
+    "engine:switch": "moyu switch",
     "engine:native": "moyu run --native",
     "engine:web": "moyu run --web",
     "engine:pack": "moyu pack",
