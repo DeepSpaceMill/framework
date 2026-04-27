@@ -121,11 +121,15 @@ function stopVoiceOnPageAdvance() {
     return;
   }
 
-  void executePluginCommand('audio', {
-    subCommand: 'release',
-    name: gameState.voice.channel,
-    fadeTime: 0,
-  });
+  try {
+    void executePluginCommand('audio', {
+      subCommand: 'release',
+      name: gameState.voice.channel,
+      fadeTime: 0,
+    });
+  } catch {
+    // no-op
+  }
 }
 
 // Define the params interface for Stage page
