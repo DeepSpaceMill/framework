@@ -842,9 +842,7 @@ const WaitCommandSchema = z
         'x-i18n': { 'zh-CN': '时长' },
         'x-i18n-desc': { 'zh-CN': '等待时长（毫秒）' },
       }),
-    skippable: z
-      .boolean()
-      .optional()
+    skippable: skippable(false)
       .describe('Whether the wait can be skipped')
       .meta({
         title: 'Skippable',
