@@ -398,7 +398,7 @@
           "maximum": 1
         },
         "fadeTime": {
-          "default": 600,
+          "default": 1000,
           "description": "Fade time in milliseconds",
           "title": "Fade Time",
           "x-i18n": {
@@ -455,7 +455,7 @@
           "const": "bgmStop"
         },
         "fadeTime": {
-          "default": 600,
+          "default": 1000,
           "description": "Fade time in milliseconds",
           "title": "Fade Time",
           "x-i18n": {
@@ -550,7 +550,7 @@
           "maximum": 1
         },
         "fadeTime": {
-          "default": 600,
+          "default": 0,
           "description": "Fade time in milliseconds",
           "title": "Fade Time",
           "x-i18n": {
@@ -607,7 +607,7 @@
           "const": "sfxStop"
         },
         "fadeTime": {
-          "default": 600,
+          "default": 0,
           "description": "Fade time in milliseconds",
           "title": "Fade Time",
           "x-i18n": {
@@ -803,7 +803,7 @@
           "maximum": 1
         },
         "fadeTime": {
-          "default": 600,
+          "default": 0,
           "description": "Fade time in milliseconds",
           "title": "Fade Time",
           "x-i18n": {
@@ -872,7 +872,7 @@
           }
         },
         "fadeTime": {
-          "default": 600,
+          "default": 0,
           "description": "Fade time in milliseconds",
           "title": "Fade Time",
           "x-i18n": {

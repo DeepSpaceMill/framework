@@ -498,7 +498,7 @@ const BGMCommandSchema = z
     src: audioSrc,
     loop: loop(true),
     volume,
-    fadeTime: fadeTime(600),
+    fadeTime: fadeTime(1000),
     skippable: skippable(false),
     noWait: noWait(true),
   })
@@ -512,7 +512,7 @@ const BGMCommandSchema = z
 const BGMStopCommandSchema = z
   .object({
     command: z.literal('bgmStop'),
-    fadeTime: fadeTime(600),
+    fadeTime: fadeTime(1000),
     skippable: skippable(false),
     noWait: noWait(true),
   })
@@ -529,7 +529,7 @@ const SFXCommandSchema = z
     src: audioSrc,
     loop: loop(false),
     volume,
-    fadeTime: fadeTime(600),
+    fadeTime: fadeTime(0),
     skippable: skippable(false),
     noWait: noWait(true),
   })
@@ -543,7 +543,7 @@ const SFXCommandSchema = z
 const SFXStopCommandSchema = z
   .object({
     command: z.literal('sfxStop'),
-    fadeTime: fadeTime(600),
+    fadeTime: fadeTime(0),
     skippable: skippable(false),
     noWait: noWait(true),
   })
@@ -603,7 +603,7 @@ const SoundCommandSchema = z
     src: audioSrc,
     loop: loop(false),
     volume,
-    fadeTime: fadeTime(600),
+    fadeTime: fadeTime(0),
     skippable: skippable(false),
     noWait: noWait(true),
   })
@@ -618,7 +618,7 @@ const SoundStopCommandSchema = z
   .object({
     command: z.literal('soundStop'),
     channel: soundChannel,
-    fadeTime: fadeTime(600),
+    fadeTime: fadeTime(0),
     skippable: skippable(false),
     noWait: noWait(true),
   })
