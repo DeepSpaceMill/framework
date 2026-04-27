@@ -11,6 +11,15 @@ function recordBacklog(control: { record(meta: Record<string, any>): string }, m
   control.record(meta);
 }
 
+function parseTextLeading(leading: string | null | undefined) {
+  const parts = leading?.split('|').map((part) => part.trim()) ?? [];
+
+  return {
+    speaker: parts[0] ?? '',
+    voice: parts[1] ?? '',
+  };
+}
+
 // ---------------------------------------------------------------------------
 // Text command handlers
 // ---------------------------------------------------------------------------
@@ -458,7 +467,21 @@ export const handleOptionClear: CommandHandler<ScenarioCommandSchemaType> = (cmd
 
 /** Process a text line from the scenario engine. */
 export const handleTextLine: TextLineHandler = (e, control) => {
-  gameState.textbox.name = e.leading || '';
+  const { speaker, voice } = parseTextLeading(e.leading);
+
+  if (voice) {
+    handleVoice(
+      {
+        command: 'voice',
+        src: `voice/${voice}.opus`,
+        name: speaker,
+        volume: 1,
+      },
+      control,
+    );
+  }
+
+  gameState.textbox.name = speaker;
 
   if (gameState.textbox.shouldAddNewline) {
     gameState.textbox.text += '\n';
@@ -475,7 +498,8 @@ export const handleTextLine: TextLineHandler = (e, control) => {
 
   recordBacklog(control, {
     kind: 'text',
-    speaker: e.leading || '',
+    speaker,
+    voice,
     text: e.text || '',
   });
 

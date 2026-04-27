@@ -9,6 +9,7 @@ export type BacklogMeta =
   | {
       kind: 'text';
       speaker: string;
+      voice?: string;
       text: string;
     }
   | {
