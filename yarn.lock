@@ -283,9 +283,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@momoyu-ink/cli@npm:^0.3.0":
-  version: 0.3.0
-  resolution: "@momoyu-ink/cli@npm:0.3.0"
+"@momoyu-ink/cli@npm:^0.4.0":
+  version: 0.4.0
+  resolution: "@momoyu-ink/cli@npm:0.4.0"
   dependencies:
     "@zip.js/zip.js": "npm:^2.8.23"
     citty: "npm:^0.2.1"
@@ -295,7 +295,7 @@ __metadata:
     tar: "npm:^7.4.3"
   bin:
     moyu: dist/index.js
-  checksum: 10c0/1afb53d8b08934b190fd2b8566528c1bc28e70fbdc784d2c7f7c9d12b539093ef45a841429676e9d0c808b47bb065c4ddf6fc4a61e8a44c4954155b38993f0b5
+  checksum: 10c0/fdeb5a807eaff9444674e875a6729674f837593acb33b4738fbe8f7f0a9e0ab79a691fe30628abca25cd8a7c8802d4a953ae881c2d0f2ebd089ad6fcdd235d08
   languageName: node
   linkType: hard
 
@@ -304,7 +304,7 @@ __metadata:
   resolution: "@momoyu-ink/framework@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^2.1.4"
-    "@momoyu-ink/cli": "npm:^0.3.0"
+    "@momoyu-ink/cli": "npm:^0.4.0"
     "@momoyu-ink/kit": "npm:^0.5.5"
     "@rspack/cli": "npm:^1.7.11"
     "@rspack/core": "npm:^1.7.11"
