@@ -11,18 +11,7 @@ export function BGMActor() {
   const bgmState = useSnapshot(gameState.bgm);
 
   useEffect(() => {
-    if (!bgmState.src) {
-      // Release BGM when src is empty
-      try {
-        executePluginCommand('audio', {
-          subCommand: 'release',
-          name: 'bgm',
-          fadeTime: bgmState.fadeTime ?? 0,
-        });
-      } catch (err) {
-        console.error('Failed to stop sound on channel bgm:', err);
-      }
-    } else {
+    if (bgmState.src) {
       // Load and play BGM when src is set
       try {
         executePluginCommand('audio', {
@@ -47,7 +36,7 @@ export function BGMActor() {
         executePluginCommand('audio', {
           subCommand: 'release',
           name: 'bgm',
-          fadeTime: 0,
+          fadeTime: bgmState.fadeTime ?? 0,
         });
       } catch (err) {
         console.error('Failed to stop sound on channel bgm during cleanup:', err);
