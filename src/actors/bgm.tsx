@@ -10,8 +10,20 @@ import { gameState } from '../state/game';
 export function BGMActor() {
   const bgmState = useSnapshot(gameState.bgm);
 
+  // biome-ignore lint/correctness/useExhaustiveDependencies: only src should trigger replaying
   useEffect(() => {
-    if (bgmState.src) {
+    if (!bgmState.src) {
+      // Release BGM when src is empty
+      try {
+        executePluginCommand('audio', {
+          subCommand: 'release',
+          name: 'bgm',
+          fadeTime: bgmState.fadeTime ?? 0,
+        });
+      } catch (err) {
+        console.error('Failed to stop sound on channel bgm:', err);
+      }
+    } else {
       // Load and play BGM when src is set
       try {
         executePluginCommand('audio', {
@@ -29,20 +41,23 @@ export function BGMActor() {
         console.error('Failed to load bgm:', err);
       }
     }
+  }, [bgmState.src]);
 
+  // release bgm once the actor unmounts
+  useEffect(() => {
     return () => {
       // Cleanup: stop and release BGM when actor unmounts
       try {
         executePluginCommand('audio', {
           subCommand: 'release',
           name: 'bgm',
-          fadeTime: bgmState.fadeTime ?? 0,
+          fadeTime: 300,
         });
       } catch (err) {
         console.error('Failed to stop sound on channel bgm during cleanup:', err);
       }
     };
-  }, [bgmState.src, bgmState.loop, bgmState.volume, bgmState.fadeTime]);
+  }, []);
 
   // Headless actor - no visual rendering
   return null;
