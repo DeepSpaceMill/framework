@@ -61,6 +61,21 @@ export function SfxActor() {
     }
   }, [sfxState.stopSeq]);
 
+  // Stop all SFX when the actor unmounts
+  useEffect(() => {
+    return () => {
+      try {
+        executePluginCommand('audio', {
+          subCommand: 'release',
+          name: 'sfx',
+          fadeTime: 300,
+        });
+      } catch (err) {
+        console.error('Failed to stop SFX:', err);
+      }
+    };
+  }, []);
+
   // Headless actor — no visual rendering.
   return null;
 }
