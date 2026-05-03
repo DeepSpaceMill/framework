@@ -241,9 +241,93 @@ const gameStateDefaults: GameState = {
   },
 };
 
+function createDefaultGameState(): GameState {
+  return JSON.parse(JSON.stringify(gameStateDefaults)) as GameState;
+}
+
+function cloneStateValue<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function syncStateArray(target: unknown[], source: unknown[]) {
+  target.length = source.length;
+
+  for (let index = 0; index < source.length; index += 1) {
+    const nextValue = source[index];
+    const currentValue = target[index];
+
+    if (Array.isArray(nextValue)) {
+      if (Array.isArray(currentValue)) {
+        syncStateArray(currentValue, nextValue);
+      } else {
+        target[index] = cloneStateValue(nextValue);
+      }
+      continue;
+    }
+
+    if (isPlainObject(nextValue)) {
+      if (isPlainObject(currentValue)) {
+        syncStateRecord(currentValue, nextValue);
+      } else {
+        target[index] = cloneStateValue(nextValue);
+      }
+      continue;
+    }
+
+    target[index] = nextValue;
+  }
+}
+
+function syncStateRecord(target: Record<string, unknown>, source: Record<string, unknown>) {
+  for (const key of Object.keys(target)) {
+    if (!Object.hasOwn(source, key)) {
+      delete target[key];
+    }
+  }
+
+  for (const [key, nextValue] of Object.entries(source)) {
+    const currentValue = target[key];
+
+    if (Array.isArray(nextValue)) {
+      if (Array.isArray(currentValue)) {
+        syncStateArray(currentValue, nextValue);
+      } else {
+        target[key] = cloneStateValue(nextValue);
+      }
+      continue;
+    }
+
+    if (isPlainObject(nextValue)) {
+      if (isPlainObject(currentValue)) {
+        syncStateRecord(currentValue, nextValue);
+      } else {
+        target[key] = cloneStateValue(nextValue);
+      }
+      continue;
+    }
+
+    target[key] = nextValue;
+  }
+}
+
+export function syncGameStateSection<K extends keyof GameState>(key: K, nextState: GameState[K]) {
+  const target = gameState[key] as unknown as Record<string, unknown>;
+  const source = nextState as unknown as Record<string, unknown>;
+
+  syncStateRecord(target, source);
+}
+
 // Create the main game state store using valtio
-export const gameState = proxy<GameState>(JSON.parse(JSON.stringify(gameStateDefaults)));
+export const gameState = proxy<GameState>(createDefaultGameState());
 
 export function resetGameState() {
-  Object.assign(gameState, JSON.parse(JSON.stringify(gameStateDefaults)));
+  const defaults = createDefaultGameState();
+
+  for (const key of Object.keys(defaults) as Array<keyof GameState>) {
+    syncGameStateSection(key, defaults[key]);
+  }
 }
