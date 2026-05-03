@@ -13,4 +13,14 @@ export const gameStateDebugAdapter: AppStateAdapter<GameState> = {
     getNavigator().clearOverlays();
     applyGameStateSnapshot(state);
   },
+  switchPage(page, params) {
+    const navigator = getNavigator();
+    if (!navigator.hasPage(page)) {
+      throw new Error(`Page "${page}" not found`);
+    }
+
+    getStageSingleton().resetRuntimeState();
+    navigator.clearOverlays();
+    navigator.navigate(page as never, params as never);
+  },
 };
