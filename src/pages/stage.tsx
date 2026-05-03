@@ -5,7 +5,6 @@ import {
   useNavigationParams,
   addEventListener,
   KeyboardEvent,
-  createStage,
   StageContextProvider,
   executePluginCommand,
   WheelEvent,
@@ -60,21 +59,7 @@ import { SoundActor } from '../actors/sound';
 import { VideoActor } from '../actors/video';
 import { ScenarioCommandSchema } from '../commands/commands';
 import { useSaveLoad } from '../hooks/useSaveLoad';
-
-type StageInstance = ReturnType<typeof createStage>;
-
-type StageGlobal = typeof globalThis & {
-  __MOYU_FRAMEWORK_STAGE__?: StageInstance;
-};
-
-function getStageSingleton(): StageInstance {
-  const stageGlobal = globalThis as StageGlobal;
-  if (stageGlobal.__MOYU_FRAMEWORK_STAGE__ === undefined) {
-    // Keep the stage instance stable across Fast Refresh so runtime state can survive code updates.
-    stageGlobal.__MOYU_FRAMEWORK_STAGE__ = createStage();
-  }
-  return stageGlobal.__MOYU_FRAMEWORK_STAGE__;
-}
+import { getStageSingleton, type StageInstance } from '../lib/stageSingleton';
 
 function registerStageHandlers(stage: StageInstance): Array<() => void> {
   return [

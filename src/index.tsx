@@ -1,10 +1,20 @@
-import { addEventListener, createRoot, executePluginCommand } from '@momoyu-ink/kit';
+import {
+  addEventListener,
+  createRoot,
+  executePluginCommand,
+  registerAppStateAdapter,
+  startRuntimeDebugSession,
+  stopRuntimeDebugSession,
+} from '@momoyu-ink/kit';
 import React, { useEffect } from 'react';
 import { ErrorBoundary } from 'react-error-boundary';
 import { ErrorFallback } from './error';
 import { Navigation } from './router';
 import { uiActions } from './state/ui';
 import { Notification } from './components/notification';
+import { gameStateDebugAdapter } from './debug/gameStateAdapter';
+
+registerAppStateAdapter(gameStateDebugAdapter);
 
 function Main() {
   const logError = (error: unknown, info: React.ErrorInfo) => {
@@ -20,6 +30,14 @@ function Main() {
         });
       });
     });
+  }, []);
+
+  useEffect(() => {
+    void startRuntimeDebugSession();
+
+    return () => {
+      void stopRuntimeDebugSession();
+    };
   }, []);
 
   return (
