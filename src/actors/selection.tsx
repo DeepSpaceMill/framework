@@ -1,6 +1,6 @@
-import { executePluginCommand, nextLine, useAutoBlocker, useSkipBlocker } from '@momoyu-ink/kit';
+import { executePluginCommand, nextLine, useAutoBlocker, useIsSeeking, useSkipBlocker } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
-import { useCallback } from 'react';
+import { useCallback, useEffect } from 'react';
 import { gameState } from '../state/game';
 import { Button } from '../components/button';
 
@@ -16,6 +16,7 @@ const NINESLICE_BOUNDS: [number, number, number, number] = [0.3, 0.3, 0.3, 0.3];
 
 export function SelectionActor() {
   const selectionState = useSnapshot(gameState.selection);
+  const seeking = useIsSeeking();
 
   // Block skip and auto entirely while selection is visible.
   // hold() checks blockers synchronously and stops auto/skip if active.
@@ -40,11 +41,23 @@ export function SelectionActor() {
     void nextLine();
   };
 
+  useEffect(() => {
+    if (!seeking) {
+      gameState.selection.visible = false;
+      gameState.selection.options.length = 0;
+      gameState.selection.saveTo = undefined;
+    }
+  }, [seeking]);
+
   // Vertically center the option list around the screen center
   const startY = CENTER_Y - ((selectionState.options.length - 1) * ITEM_SPACING) / 2;
 
   return (
-    <container label="选择支容器" visible={selectionState.visible} interactive={selectionState.visible}>
+    <container
+      label="选择支容器"
+      visible={selectionState.visible && !seeking}
+      interactive={selectionState.visible && !seeking}
+    >
       {selectionState.options.map((option, index) => (
         <Button
           // biome-ignore lint/suspicious/noArrayIndexKey: options are static per show cycle

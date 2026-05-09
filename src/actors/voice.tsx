@@ -1,4 +1,4 @@
-import { executePluginCommand, useAutoTicket, type AutoTicketHandle } from '@momoyu-ink/kit';
+import { executePluginCommand, useAutoTicket, useIsSeeking, type AutoTicketHandle } from '@momoyu-ink/kit';
 import { useLayoutEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { gameState } from '../state/game';
@@ -13,8 +13,11 @@ import { gameState } from '../state/game';
 export function VoiceActor() {
   // Subscribe to voice state changes to trigger re-runs of the layout effect.
   const voiceState = useSnapshot(gameState.voice);
+  const isSeeking = useIsSeeking();
   const issueAutoTicket = useAutoTicket();
   const autoTicketRef = useRef<AutoTicketHandle | null>(null);
+  const isSeekingRef = useRef(false);
+  isSeekingRef.current = isSeeking;
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: issueAutoTicket is a stable ref
   useLayoutEffect(() => {
@@ -25,6 +28,17 @@ export function VoiceActor() {
     // this, but guard against the case where src changed before cleanup ran).
     autoTicketRef.current?.cancel();
     autoTicketRef.current = null;
+
+    if (isSeekingRef.current) {
+      if (channelName) {
+        try {
+          executePluginCommand('audio', { subCommand: 'release', name: channelName });
+        } catch (err) {
+          console.error('Failed to release voice channel during fast solve:', err);
+        }
+      }
+      return;
+    }
 
     if (!src) {
       // Voice was cleared (voiceStop command) — release the channel.
@@ -78,6 +92,26 @@ export function VoiceActor() {
       autoTicketRef.current = null;
     };
   }, [voiceState.src, voiceState.channel]);
+
+  useLayoutEffect(() => {
+    if (!isSeeking) {
+      return;
+    }
+
+    const channelName = gameState.voice.channel;
+    if (!channelName) {
+      return;
+    }
+
+    autoTicketRef.current?.cancel();
+    autoTicketRef.current = null;
+
+    try {
+      executePluginCommand('audio', { subCommand: 'release', name: channelName });
+    } catch (err) {
+      console.error('Failed to release voice channel during fast solve:', err);
+    }
+  }, [isSeeking]);
 
   // Headless actor — no visual rendering.
   return null;

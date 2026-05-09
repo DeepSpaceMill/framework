@@ -1,6 +1,7 @@
 import {
   useAutoTicket,
   useBeforeHandleCommandCallback,
+  useIsSeeking,
   useInterruptCallback,
   useIsAutoing,
   useIsSkipping,
@@ -32,6 +33,7 @@ interface TextBoxActorProps {
 export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   const autoing = useIsAutoing();
   const skipping = useIsSkipping();
+  const seeking = useIsSeeking();
   const issueAutoTicket = useAutoTicket();
   const textWindowRef = useRef<Node>(null);
   const autoTicketRef = useRef<AutoTicketHandle | null>(null);
@@ -108,14 +110,14 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
     autoTicketRef.current = null;
   }, [autoing]);
 
-  const effectivePrintMode = skipping ? 'instant' : textBoxState.printMode;
+  const effectivePrintMode = skipping || seeking ? 'instant' : textBoxState.printMode;
   const effectivePrintSpeed =
     effectivePrintMode === 'instant'
       ? textBoxState.printSpeed
       : Math.max(1, textBoxState.printSpeed * settings.text_speed);
 
   useLayoutEffect(() => {
-    if (!autoing) {
+    if (!autoing || seeking) {
       return;
     }
 
@@ -125,13 +127,13 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
 
     autoTicketRef.current?.cancel();
     autoTicketRef.current = issueAutoTicket({ label: 'textbox-printing' });
-  }, [autoing, effectivePrintMode, issueAutoTicket, textBoxState.text]);
+  }, [autoing, effectivePrintMode, seeking, issueAutoTicket, textBoxState.text]);
 
   return (
     <container
       label="文本框容器"
       visible={textBoxState.visible && !hasOverlay}
-      interactive={textBoxState.visible && !hasOverlay}
+      interactive={textBoxState.visible && !hasOverlay && !seeking}
     >
       <sprite
         label="文本框"
