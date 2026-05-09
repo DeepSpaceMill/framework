@@ -1,5 +1,5 @@
 import { useRef } from 'react';
-import { animated, useTransition, useSpring, useIsSkipping, getStageSize, easings } from '@momoyu-ink/kit';
+import { animated, useTransition, useSpring, useIsSeeking, useIsSkipping, getStageSize, easings } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { gameState, Character } from '../state/game';
 
@@ -7,6 +7,8 @@ export function CharacterActor() {
   const characterState = useSnapshot(gameState.character) as typeof gameState.character;
   const textboxState = useSnapshot(gameState.textbox);
   const skipping = useIsSkipping();
+  const seeking = useIsSeeking();
+  const shouldSkipVisuals = skipping || seeking;
 
   const transitions = useTransition(
     Object.values(characterState.characters).filter((char) => char.visible),
@@ -16,7 +18,7 @@ export function CharacterActor() {
       enter: { opacity: 1 },
       leave: { opacity: 0 },
       config: (char) => ({
-        duration: skipping ? 0 : char.fadeTime,
+        duration: shouldSkipVisuals ? 0 : char.fadeTime,
       }),
     },
   );
@@ -45,6 +47,8 @@ interface CharacterSpriteProps {
 
 function CharacterSprite({ character: propCharacter, isCurrentSpeaker }: CharacterSpriteProps) {
   const skipping = useIsSkipping();
+  const seeking = useIsSeeking();
+  const shouldSkipVisuals = skipping || seeking;
   const characterState = useSnapshot(gameState.character) as typeof gameState.character;
 
   const liveCharacter = (characterState.characters as Character[]).find(
@@ -74,8 +78,8 @@ function CharacterSprite({ character: propCharacter, isCurrentSpeaker }: Charact
     scale: character.scale,
     tint: currentTint,
     config: (key: string) => {
-      if (key === 'tint') return { duration: skipping ? 0 : tintFadeTime, easing: easings.easeInOutCubic };
-      return { duration: skipping ? 0 : character.fadeTime, easing: easings.easeInOutCubic };
+      if (key === 'tint') return { duration: shouldSkipVisuals ? 0 : tintFadeTime, easing: easings.easeInOutCubic };
+      return { duration: shouldSkipVisuals ? 0 : character.fadeTime, easing: easings.easeInOutCubic };
     },
   });
 

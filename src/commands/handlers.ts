@@ -1,4 +1,4 @@
-import { getNavigator, TextLine, type CommandHandler, type TextLineHandler } from '@momoyu-ink/kit';
+import { getNavigator, getSeekingType, TextLine, type CommandHandler, type TextLineHandler } from '@momoyu-ink/kit';
 import { gameState, resetGameState } from '../state/game';
 import { GamePage } from '../state/ui';
 import { writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
@@ -7,6 +7,10 @@ import { resolveCameraTarget } from '../lib/camera';
 import { getSoundAudioChannel, getVoiceAudioChannel } from '../lib/audioChannels';
 
 function recordBacklog(control: { record(meta: Record<string, any>): string }, meta: Record<string, any>) {
+  if (getSeekingType() === 'warp') {
+    return;
+  }
+
   writeCurrentGameStateToScenario();
   control.record(meta);
 }
@@ -199,6 +203,13 @@ export const handleSoundStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
  */
 export const handleVideo: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'video') return;
+
+  if (getSeekingType() === 'warp') {
+    gameState.video.visible = false;
+    gameState.video.src = '';
+    return;
+  }
+
   gameState.video.src = cmd.src;
   gameState.video.fadeTime = cmd.fadeTime;
   gameState.video.skippable = cmd.skippable;
@@ -414,6 +425,11 @@ export const handleWaitClick: CommandHandler<ScenarioCommandSchemaType> = (_cmd,
 /** Leave the stage — navigate away. */
 export const handleLeaveStage: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'leaveStage') return;
+
+  if (getSeekingType() === 'warp') {
+    return;
+  }
+
   getNavigator().navigate(cmd.gotoPage as GamePage);
   resetGameState();
   control.unskippable(); // Must be before hold() — prevents skip from advancing after navigation
@@ -441,6 +457,14 @@ export const handleOptionAdd: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
 /** Show all pending selection options and wait for the player to choose. */
 export const handleOptionShow: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'optionShow') return;
+
+  if (getSeekingType() === 'warp') {
+    gameState.selection.visible = false;
+    gameState.selection.options.length = 0;
+    gameState.selection.saveTo = undefined;
+    return;
+  }
+
   gameState.selection.saveTo = cmd.saveTo;
   // uncomment this if you want the textbox to hide during selection
   // gameState.textbox.visible = false;

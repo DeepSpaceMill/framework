@@ -2,6 +2,7 @@ import {
   animated,
   easings,
   getStageSize,
+  useIsSeeking,
   type SpringValues,
   useIsSkipping,
   useSkipCallback,
@@ -94,6 +95,8 @@ export function CharacterPlane({ children, cameraRuntime }: CameraPlaneProps) {
 export function CameraActor({ children }: CameraActorProps) {
   const cameraState = useSnapshot(gameState.camera);
   const skipping = useIsSkipping();
+  const seeking = useIsSeeking();
+  const shouldSkipVisuals = skipping || seeking;
   const stageSize = getStageSize();
   const springRef = useSpringRef();
   const { width, height } = stageSize;
@@ -113,7 +116,7 @@ export function CameraActor({ children }: CameraActorProps) {
       characterScale: initialTargets.characterScale,
       blur: cameraState.blur,
       config: {
-        duration: skipping ? 0 : cameraState.fadeTime,
+        duration: shouldSkipVisuals ? 0 : cameraState.fadeTime,
         easing: easings.easeInOutCubic,
       },
     }),
@@ -131,11 +134,11 @@ export function CameraActor({ children }: CameraActorProps) {
       characterScale: targets.characterScale,
       blur,
       config: {
-        duration: skipping ? 0 : fadeTime,
+        duration: shouldSkipVisuals ? 0 : fadeTime,
         easing: easings.easeInOutCubic,
       },
     });
-  }, [blur, depth, fadeTime, height, skipping, springRef, width, x, y, zoom]);
+  }, [blur, depth, fadeTime, height, shouldSkipVisuals, springRef, width, x, y, zoom]);
 
   // Skip should immediately settle both planes at the final target so visual
   // state and flow-control timing stay consistent.

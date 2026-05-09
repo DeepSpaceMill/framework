@@ -5,6 +5,7 @@ import {
   nextLine,
   Node,
   useAutoBlocker,
+  useIsSeeking,
   useInterruptCallback,
   useSkipBlocker,
   useTransition,
@@ -31,6 +32,7 @@ import { uiActions } from '../state/ui';
  */
 export function VideoActor() {
   const videoSnap = useSnapshot(gameState.video);
+  const seeking = useIsSeeking();
   const stageSize = getStageSize();
 
   const videoRef = useRef<Node>(null);
@@ -47,10 +49,10 @@ export function VideoActor() {
 
   // Sync `showing` from valtio state when a new video is requested.
   useEffect(() => {
-    if (videoSnap.visible && !showing && !finishingRef.current) {
+    if (videoSnap.visible && !showing && !finishingRef.current && !seeking) {
       setShowing(true);
     }
-  }, [videoSnap.visible, showing]);
+  }, [videoSnap.visible, showing, seeking]);
 
   // Block skip and auto modes while the video is active. handler's
   // control.hold() consults these on dispatch and stops the active mode.
@@ -107,7 +109,7 @@ export function VideoActor() {
     };
   }, []);
 
-  const transitions = useTransition(showing ? [videoSnap.src] : [], {
+  const transitions = useTransition(!seeking && showing ? [videoSnap.src] : [], {
     keys: (src) => src,
     from: { opacity: 0 },
     enter: { opacity: 1 },

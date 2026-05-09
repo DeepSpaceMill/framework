@@ -1,4 +1,4 @@
-import { animated, useSpring, useSpringRef, useTransition, useSkipCallback, useIsSkipping } from '@momoyu-ink/kit';
+import { animated, useSpring, useSpringRef, useTransition, useSkipCallback, useIsSeeking, useIsSkipping } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { gameState } from '../state/game';
 import { useCallback, useEffect } from 'react';
@@ -14,6 +14,8 @@ function isVideoSrc(src: string): boolean {
 export function BackgroundActor() {
   const backgroundState = useSnapshot(gameState.background);
   const skipping = useIsSkipping();
+  const seeking = useIsSeeking();
+  const shouldSkipVisuals = skipping || seeking;
   const transRef = useSpringRef();
   const tintSpringRef = useSpringRef();
 
@@ -24,7 +26,7 @@ export function BackgroundActor() {
     enter: { opacity: 1 },
     leave: { opacity: 1 }, // keep opacity until removed to simulate crossfade
     config: {
-      duration: skipping ? 0 : backgroundState.fadeTime,
+      duration: shouldSkipVisuals ? 0 : backgroundState.fadeTime,
     },
   });
 
@@ -34,7 +36,7 @@ export function BackgroundActor() {
       ref: tintSpringRef,
       tint: backgroundState.tint || '#FFFFFF', // White = no tint effect
       config: {
-        duration: skipping ? 0 : backgroundState.fadeTime,
+        duration: shouldSkipVisuals ? 0 : backgroundState.fadeTime,
       },
     }),
     [],
@@ -51,7 +53,7 @@ export function BackgroundActor() {
     tintSpringRef.start({
       tint: backgroundState.tint || '#FFFFFF',
       config: {
-        duration: skipping ? 0 : backgroundState.fadeTime,
+        duration: shouldSkipVisuals ? 0 : backgroundState.fadeTime,
       },
     });
   }, [tintSpringRef, backgroundState.tint]);
