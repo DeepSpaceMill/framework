@@ -91,6 +91,7 @@ export const handleTextBox: CommandHandler<ScenarioCommandSchemaType> = (cmd, _c
 /** Show text box. */
 export const handleTextBoxShow: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'textBoxShow') return;
+  gameState.textbox.hideReason = undefined;
   gameState.textbox.visible = true;
   // auto-advance
 };
@@ -98,6 +99,7 @@ export const handleTextBoxShow: CommandHandler<ScenarioCommandSchemaType> = (cmd
 /** Hide text box. */
 export const handleTextBoxHide: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'textBoxHide') return;
+  gameState.textbox.hideReason = 'command';
   gameState.textbox.visible = false;
   // auto-advance
 };

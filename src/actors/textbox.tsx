@@ -148,6 +148,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
           x={1466}
           y={18}
           onClick={() => {
+            gameState.textbox.hideReason = 'manual';
             gameState.textbox.visible = false;
           }}
           visible={isHovered}

@@ -162,7 +162,8 @@ export function Stage() {
     }
     // Don't advance story while waiting for player to select a choice
     if (gameState.selection.visible) return;
-    if (!gameState.textbox.visible) {
+    if (!gameState.textbox.visible && gameState.textbox.hideReason === 'manual') {
+      gameState.textbox.hideReason = undefined;
       gameState.textbox.visible = true;
       return;
     }

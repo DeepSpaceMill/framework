@@ -60,6 +60,7 @@ export interface TextBoxState {
   x?: number;
   y?: number;
   visible: boolean;
+  hideReason?: 'command' | 'manual';
   shouldClear?: boolean;
   shouldAddNewline?: boolean;
   // Text rendering config (set by textBox command)
@@ -190,6 +191,7 @@ const gameStateDefaults: GameState = {
     name: '',
     text: '',
     visible: true,
+    hideReason: undefined,
     printMode: 'typewriter',
     printSpeed: 20,
     fillColor: '#f0f0f0',
