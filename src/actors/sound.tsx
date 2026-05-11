@@ -1,5 +1,5 @@
-import { executePluginCommand, useIsSeeking, useIsSkipping } from '@momoyu-ink/kit';
-import { useEffect, useRef } from 'react';
+import { executePluginCommand, nextLine, useIsSeeking, useIsSkipping, useSkipCallback } from '@momoyu-ink/kit';
+import { useCallback, useEffect, useRef } from 'react';
 import { useSnapshot } from 'valtio';
 import { gameState } from '../state/game';
 
@@ -7,7 +7,11 @@ import { gameState } from '../state/game';
  * SoundActor - Headless actor that manages named channel audio playback.
  *
  * Skip behavior: Sound is not played during skip mode to avoid audio overlap.
+ *   When waitForEnd=true and skip fires mid-playback, the audio is stopped and
+ *   the pending nextLine call is cancelled (the skip system releases the hold).
  * Auto behavior: Sound plays normally but does not participate in auto waiting.
+ * waitForEnd behavior: Loads without autoPlay, then plays with waitForEnd=true.
+ *   Calls nextLine() when the audio finishes to release the hold() set by the handler.
  */
 export function SoundActor() {
   const soundState = useSnapshot(gameState.sound);
@@ -20,6 +24,18 @@ export function SoundActor() {
   const isSeekingRef = useRef(false);
   isSeekingRef.current = isSeeking;
 
+  // Tracks a cancel function for the currently active waitForEnd operation.
+  const cancelWaitRef = useRef<(() => void) | null>(null);
+
+  // When skip fires while a waitForEnd sound is playing, stop the audio.
+  // The hold() will be released by the skip system's scheduleSkipNextLine.
+  useSkipCallback(
+    useCallback(() => {
+      cancelWaitRef.current?.();
+      cancelWaitRef.current = null;
+    }, []),
+  );
+
   // Handle play requests
   useEffect(() => {
     if (soundState.seq === 0) return;
@@ -27,9 +43,66 @@ export function SoundActor() {
     // Skip sound during fast-forward to avoid audio overlap
     if (isSkippingRef.current || isSeekingRef.current) return;
 
-    const { channel, src, loop, volume, fadeTime } = gameState.sound;
+    const { channel, src, loop, volume, fadeTime, waitForEnd } = gameState.sound;
     if (!src || !channel) return;
 
+    if (waitForEnd) {
+      // Two-step: load without autoPlay, then play with waitForEnd to get a
+      // completion promise. Call nextLine() when done to release the hold().
+      let cancelled = false;
+      cancelWaitRef.current = () => {
+        cancelled = true;
+        try {
+          executePluginCommand('audio', { subCommand: 'release', name: channel, fadeTime: 0 });
+        } catch (err) {
+          console.error(`Failed to stop sound on channel ${channel} during cancel:`, err);
+        }
+      };
+
+      void (async () => {
+        try {
+          await executePluginCommand('audio', {
+            subCommand: 'load',
+            name: channel,
+            src,
+            settings: {
+              autoPlay: false,
+              loopRegion: loop ? [0, -1] : undefined,
+              volume,
+              fadeTime,
+            },
+          });
+
+          if (cancelled) return;
+
+          await executePluginCommand('audio', {
+            subCommand: 'play',
+            name: channel,
+            fadeTime,
+            waitForEnd: true,
+          });
+
+          if (!cancelled) {
+            nextLine();
+          }
+        } catch (err) {
+          console.error(`Failed to play sound on channel ${channel} with waitForEnd:`, err);
+          // Advance even on error to avoid a permanent deadlock.
+          if (!cancelled) {
+            nextLine();
+          }
+        } finally {
+          cancelWaitRef.current = null;
+        }
+      })();
+
+      return () => {
+        cancelled = true;
+        cancelWaitRef.current = null;
+      };
+    }
+
+    // Normal (non-waitForEnd) path: load with autoPlay.
     try {
       executePluginCommand('audio', {
         subCommand: 'load',
@@ -51,6 +124,10 @@ export function SoundActor() {
     if (!isSeeking) {
       return;
     }
+
+    // Cancel any pending waitForEnd operation during fast solve.
+    cancelWaitRef.current?.();
+    cancelWaitRef.current = null;
 
     const channel = gameState.sound.channel || gameState.sound.stopChannel;
     if (!channel) {
@@ -89,3 +166,4 @@ export function SoundActor() {
   // Headless actor — no visual rendering.
   return null;
 }
+

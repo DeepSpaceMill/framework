@@ -112,8 +112,11 @@ export const handleBgm: CommandHandler<ScenarioCommandSchemaType> = (cmd, contro
   gameState.bgm.loop = cmd.loop;
   gameState.bgm.volume = cmd.volume;
   gameState.bgm.fadeTime = cmd.fadeTime;
+  gameState.bgm.waitForEnd = cmd.waitForEnd;
   gameState.bgm.src = cmd.src;
-  if (!cmd.noWait) {
+  if (cmd.waitForEnd) {
+    control.hold();
+  } else if (!cmd.noWait) {
     control.setWaiting(cmd.fadeTime, cmd.skippable);
   }
 };
@@ -135,8 +138,11 @@ export const handleSfx: CommandHandler<ScenarioCommandSchemaType> = (cmd, contro
   gameState.sfx.loop = cmd.loop;
   gameState.sfx.volume = cmd.volume;
   gameState.sfx.fadeTime = cmd.fadeTime;
+  gameState.sfx.waitForEnd = cmd.waitForEnd;
   gameState.sfx.seq++;
-  if (!cmd.noWait) {
+  if (cmd.waitForEnd) {
+    control.hold();
+  } else if (!cmd.noWait) {
     control.setWaiting(cmd.fadeTime, cmd.skippable);
   }
 };
@@ -152,12 +158,16 @@ export const handleSfxStop: CommandHandler<ScenarioCommandSchemaType> = (cmd, co
 };
 
 /** Play a voice clip. */
-export const handleVoice: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+export const handleVoice: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
   if (cmd.command !== 'voice') return;
   gameState.voice.src = cmd.src;
   gameState.voice.channel = getVoiceAudioChannel(cmd.name);
   gameState.voice.volume = cmd.volume;
-  // auto-advance — VoiceActor handles audio lifecycle and auto ticket
+  gameState.voice.waitForEnd = cmd.waitForEnd;
+  if (cmd.waitForEnd) {
+    control.hold();
+  }
+  // auto-advance (non-waitForEnd) — VoiceActor handles audio lifecycle and auto ticket
 };
 
 /** Stop voice playback. */
@@ -176,8 +186,11 @@ export const handleSound: CommandHandler<ScenarioCommandSchemaType> = (cmd, cont
   gameState.sound.loop = cmd.loop;
   gameState.sound.volume = cmd.volume;
   gameState.sound.fadeTime = cmd.fadeTime;
+  gameState.sound.waitForEnd = cmd.waitForEnd;
   gameState.sound.seq++;
-  if (!cmd.noWait) {
+  if (cmd.waitForEnd) {
+    control.hold();
+  } else if (!cmd.noWait) {
     control.setWaiting(cmd.fadeTime, cmd.skippable);
   }
 };
@@ -500,6 +513,7 @@ export const handleTextLine: TextLineHandler = (e, control) => {
         src: `voice/${voice}.opus`,
         name: speaker,
         volume: 1,
+        waitForEnd: false,
       },
       control,
     );

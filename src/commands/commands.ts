@@ -109,6 +109,17 @@ const noWait = (defaultValue: boolean) =>
       'x-i18n-desc': { 'zh-CN': '是否跳过等待过渡完成' },
     });
 
+const waitForEnd = z
+  .boolean()
+  .optional()
+  .default(false)
+  .describe('Whether to block the scenario until the audio finishes playing naturally')
+  .meta({
+    title: 'Wait For End',
+    'x-i18n': { 'zh-CN': '等待播放完成' },
+    'x-i18n-desc': { 'zh-CN': '是否等待音频播放完毕后再继续剧情' },
+  });
+
 const posX = z
   .number()
   .describe('X coordinate')
@@ -498,6 +509,7 @@ const BGMCommandSchema = z
     src: audioSrc,
     loop: loop(true),
     volume,
+    waitForEnd,
     fadeTime: fadeTime(1000),
     skippable: skippable(false),
     noWait: noWait(true),
@@ -529,6 +541,7 @@ const SFXCommandSchema = z
     src: audioSrc,
     loop: loop(false),
     volume,
+    waitForEnd,
     fadeTime: fadeTime(0),
     skippable: skippable(false),
     noWait: noWait(true),
@@ -568,6 +581,7 @@ const VoiceCommandSchema = z
         'x-i18n-desc': { 'zh-CN': '语音通道名称' },
       }),
     volume,
+    waitForEnd,
   })
   .describe('Play voice audio')
   .meta({
@@ -603,6 +617,7 @@ const SoundCommandSchema = z
     src: audioSrc,
     loop: loop(false),
     volume,
+    waitForEnd,
     fadeTime: fadeTime(0),
     skippable: skippable(false),
     noWait: noWait(true),

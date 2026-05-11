@@ -84,12 +84,16 @@ export interface BGMState {
   loop: boolean;
   volume: number;
   fadeTime?: number;
+  /** When true, the scenario is held until the BGM finishes playing naturally. */
+  waitForEnd: boolean;
 }
 
 export interface VoiceState {
   src: string;
   channel: string;
   volume: number;
+  /** When true, the scenario is held until the voice finishes playing naturally. */
+  waitForEnd: boolean;
 }
 
 export interface SfxState {
@@ -98,6 +102,8 @@ export interface SfxState {
   loop: boolean;
   volume: number;
   fadeTime?: number;
+  /** When true, the scenario is held until the SFX finishes playing naturally. */
+  waitForEnd: boolean;
   stopSeq: number;
   stopFadeTime?: number;
 }
@@ -109,6 +115,8 @@ export interface SoundState {
   loop: boolean;
   volume: number;
   fadeTime?: number;
+  /** When true, the scenario is held until the sound finishes playing naturally. */
+  waitForEnd: boolean;
   stopSeq: number;
   stopChannel: string;
   stopFadeTime?: number;
@@ -202,11 +210,13 @@ const gameStateDefaults: GameState = {
     loop: true,
     volume: 1.0,
     fadeTime: undefined,
+    waitForEnd: false,
   },
   voice: {
     src: '',
     channel: '',
     volume: 1.0,
+    waitForEnd: false,
   },
   sfx: {
     seq: 0,
@@ -214,6 +224,7 @@ const gameStateDefaults: GameState = {
     loop: false,
     volume: 1.0,
     fadeTime: undefined,
+    waitForEnd: false,
     stopSeq: 0,
     stopFadeTime: undefined,
   },
@@ -224,6 +235,7 @@ const gameStateDefaults: GameState = {
     loop: false,
     volume: 1.0,
     fadeTime: undefined,
+    waitForEnd: false,
     stopSeq: 0,
     stopChannel: '',
     stopFadeTime: undefined,
