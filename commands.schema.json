@@ -2138,13 +2138,13 @@
           "const": "optionShow"
         },
         "saveTo": {
-          "description": "Variable name to save the selected value to",
+          "description": "Local variable name to save the selected value to",
           "title": "Save To",
           "x-i18n": {
-            "zh-CN": "存储变量"
+            "zh-CN": "局部变量"
           },
           "x-i18n-desc": {
-            "zh-CN": "保存选择结果的变量名"
+            "zh-CN": "保存选择结果的局部变量名"
           },
           "type": "string"
         }

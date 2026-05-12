@@ -45,7 +45,7 @@
     @optionAdd text="赶她出去" value=2
     @optionShow saveTo="selected_option"
 
-    #[cond("ARCHIVE.selected_option === 2")]
+    #[cond("LOCAL.selected_option === 2")]
     {
         [我] "我今天很累，等会还要继续睡，你还是改天再来吧……"
         @camera preset="dramatic-center" fadeTime=700

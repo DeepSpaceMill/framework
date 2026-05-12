@@ -27,7 +27,7 @@ export function SelectionActor() {
   const handleSelect = (value: string | number) => {
     if (selectionState.saveTo) {
       executePluginCommand('scenario', {
-        subCommand: 'setVariable',
+        subCommand: 'setLocalVariable',
         name: selectionState.saveTo,
         value,
       });

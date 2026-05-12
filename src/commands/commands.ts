@@ -962,11 +962,11 @@ const OptionShowCommandSchema = z
     saveTo: z
       .string()
       .optional()
-      .describe('Variable name to save the selected value to')
+      .describe('Local variable name to save the selected value to')
       .meta({
         title: 'Save To',
-        'x-i18n': { 'zh-CN': '存储变量' },
-        'x-i18n-desc': { 'zh-CN': '保存选择结果的变量名' },
+        'x-i18n': { 'zh-CN': '局部变量' },
+        'x-i18n-desc': { 'zh-CN': '保存选择结果的局部变量名' },
       }),
   })
   .describe('Show all pending selection options and wait for the player to choose')
