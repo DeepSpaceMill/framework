@@ -397,6 +397,18 @@
           "minimum": 0,
           "maximum": 1
         },
+        "waitForEnd": {
+          "default": false,
+          "description": "Whether to block the scenario until the audio finishes playing naturally",
+          "title": "Wait For End",
+          "x-i18n": {
+            "zh-CN": "等待播放完成"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否等待音频播放完毕后再继续剧情"
+          },
+          "type": "boolean"
+        },
         "fadeTime": {
           "default": 1000,
           "description": "Fade time in milliseconds",
@@ -549,6 +561,18 @@
           "minimum": 0,
           "maximum": 1
         },
+        "waitForEnd": {
+          "default": false,
+          "description": "Whether to block the scenario until the audio finishes playing naturally",
+          "title": "Wait For End",
+          "x-i18n": {
+            "zh-CN": "等待播放完成"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否等待音频播放完毕后再继续剧情"
+          },
+          "type": "boolean"
+        },
         "fadeTime": {
           "default": 0,
           "description": "Fade time in milliseconds",
@@ -699,6 +723,18 @@
           "type": "number",
           "minimum": 0,
           "maximum": 1
+        },
+        "waitForEnd": {
+          "default": false,
+          "description": "Whether to block the scenario until the audio finishes playing naturally",
+          "title": "Wait For End",
+          "x-i18n": {
+            "zh-CN": "等待播放完成"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否等待音频播放完毕后再继续剧情"
+          },
+          "type": "boolean"
         }
       },
       "required": [
@@ -801,6 +837,18 @@
           "type": "number",
           "minimum": 0,
           "maximum": 1
+        },
+        "waitForEnd": {
+          "default": false,
+          "description": "Whether to block the scenario until the audio finishes playing naturally",
+          "title": "Wait For End",
+          "x-i18n": {
+            "zh-CN": "等待播放完成"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否等待音频播放完毕后再继续剧情"
+          },
+          "type": "boolean"
         },
         "fadeTime": {
           "default": 0,
