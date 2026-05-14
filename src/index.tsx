@@ -2,6 +2,7 @@ import {
   addEventListener,
   createRoot,
   executePluginCommand,
+  initUiData,
   registerAppStateAdapter,
   startRuntimeDebugSession,
   stopRuntimeDebugSession,
@@ -13,6 +14,7 @@ import { Navigation } from './router';
 import { uiActions } from './state/ui';
 import { Notification } from './components/notification';
 import { gameStateDebugAdapter } from './debug/gameStateAdapter';
+import { GameUiSchema } from './data/ui';
 
 registerAppStateAdapter(gameStateDebugAdapter);
 
@@ -49,10 +51,12 @@ function Main() {
 }
 
 addEventListener('ready', () => {
-  try {
-    const root = createRoot();
-    root.render(<Main />);
-  } catch (err) {
-    console.error('Failed to render the game:', err);
-  }
+  void initUiData(GameUiSchema)
+    .then(() => {
+      const root = createRoot();
+      root.render(<Main />);
+    })
+    .catch((err) => {
+      console.error('Failed to initialize UI data:', err);
+    });
 });

@@ -1,0 +1,299 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "title": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "type": "string",
+          "description": "Title screen background image",
+          "title": "Background",
+          "format": "asset",
+          "x-asset-kind": "image",
+          "x-i18n": {
+            "zh-CN": "背景图"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "标题界面的背景图片"
+          }
+        },
+        "fadeTime": {
+          "default": 500,
+          "description": "Fade-in time in milliseconds",
+          "title": "Fade Time",
+          "x-i18n": {
+            "zh-CN": "淡入时间"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "标题界面的淡入时间（毫秒）"
+          },
+          "type": "number"
+        },
+        "buttons": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "x": {
+                "type": "number",
+                "description": "X coordinate",
+                "title": "X",
+                "x-i18n": {
+                  "zh-CN": "X 坐标"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "按钮的 X 坐标"
+                }
+              },
+              "y": {
+                "type": "number",
+                "description": "Y coordinate",
+                "title": "Y",
+                "x-i18n": {
+                  "zh-CN": "Y 坐标"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "按钮的 Y 坐标"
+                }
+              },
+              "fileNames": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "string",
+                    "description": "Image asset path",
+                    "title": "Image",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "图片"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "图片资源路径"
+                    }
+                  },
+                  {
+                    "type": "string",
+                    "description": "Image asset path",
+                    "title": "Image",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "图片"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "图片资源路径"
+                    }
+                  },
+                  {
+                    "type": "string",
+                    "description": "Image asset path",
+                    "title": "Image",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "图片"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "图片资源路径"
+                    }
+                  }
+                ],
+                "description": "Button images in idle, hover, and pressed states",
+                "title": "Button Images",
+                "x-i18n": {
+                  "zh-CN": "按钮图片"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "按钮空闲、悬停和按下状态的图片"
+                }
+              },
+              "text": {
+                "type": "string",
+                "description": "Button label",
+                "title": "Text",
+                "x-i18n": {
+                  "zh-CN": "文字"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "按钮上显示的文字"
+                }
+              },
+              "fontSize": {
+                "default": 36,
+                "description": "Button font size",
+                "title": "Font Size",
+                "x-i18n": {
+                  "zh-CN": "字号"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "按钮文字字号"
+                },
+                "type": "number"
+              },
+              "color": {
+                "default": "#ffffff",
+                "description": "Button text color",
+                "title": "Color",
+                "format": "color",
+                "x-i18n": {
+                  "zh-CN": "颜色"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "按钮文字颜色"
+                },
+                "type": "string"
+              },
+              "action": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "gotoPage"
+                      },
+                      "name": {
+                        "type": "string",
+                        "enum": [
+                          "stage",
+                          "cg",
+                          "bgm",
+                          "credits"
+                        ],
+                        "description": "Target page name",
+                        "title": "Page",
+                        "x-i18n": {
+                          "zh-CN": "页面"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "跳转的页面名称"
+                        }
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "name"
+                    ],
+                    "description": "Navigate to another page",
+                    "title": "Go To Page",
+                    "x-i18n": {
+                      "zh-CN": "跳转页面"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "点击按钮后跳转到指定页面"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "pushOverlay"
+                      },
+                      "name": {
+                        "type": "string",
+                        "enum": [
+                          "saveload",
+                          "settings"
+                        ],
+                        "description": "Target overlay name",
+                        "title": "Overlay",
+                        "x-i18n": {
+                          "zh-CN": "浮层"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "弹出的浮层名称"
+                        }
+                      }
+                    },
+                    "required": [
+                      "type",
+                      "name"
+                    ],
+                    "description": "Open an overlay",
+                    "title": "Push Overlay",
+                    "x-i18n": {
+                      "zh-CN": "打开浮层"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "点击按钮后打开指定浮层"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "quit"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
+                    "description": "Quit the game",
+                    "title": "Quit",
+                    "x-i18n": {
+                      "zh-CN": "退出游戏"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "点击按钮后退出游戏"
+                    }
+                  }
+                ],
+                "description": "Title button action",
+                "title": "Action",
+                "x-i18n": {
+                  "zh-CN": "动作"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "标题按钮执行的动作"
+                }
+              }
+            },
+            "required": [
+              "x",
+              "y",
+              "fileNames",
+              "text",
+              "action"
+            ],
+            "description": "Title screen button",
+            "title": "Button",
+            "x-i18n": {
+              "zh-CN": "按钮"
+            },
+            "x-i18n-desc": {
+              "zh-CN": "标题界面上的一个按钮配置"
+            }
+          },
+          "description": "Title screen buttons",
+          "title": "Buttons",
+          "x-i18n": {
+            "zh-CN": "按钮列表"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "标题界面的按钮列表"
+          }
+        }
+      },
+      "required": [
+        "background",
+        "buttons"
+      ],
+      "description": "Title screen UI configuration",
+      "title": "Title Screen",
+      "x-i18n": {
+        "zh-CN": "标题界面"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "标题界面的可配置数据"
+      }
+    }
+  },
+  "required": [
+    "title"
+  ]
+}

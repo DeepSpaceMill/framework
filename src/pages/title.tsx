@@ -1,29 +1,55 @@
 import { useEffect } from 'react';
-import { MouseEvent, useFadeIn, useSoundEffect, useNavigation, animated, executePluginCommand } from '@momoyu-ink/kit';
+import {
+  MouseEvent,
+  useFadeIn,
+  useSoundEffect,
+  useNavigation,
+  useUiData,
+  animated,
+  executePluginCommand,
+} from '@momoyu-ink/kit';
 import { Button } from '../components/button';
+import type { TitleButtonAction } from '../data/ui';
 import { uiActions } from '../state/ui';
 
 export function Title() {
-  const [contentStyle, contentApi, contentSkip] = useFadeIn(500, true);
+  const titleUi = useUiData('title');
+  const [contentStyle, contentApi, contentSkip] = useFadeIn(titleUi.fadeTime, true);
   const navigation = useNavigation();
 
   const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
   const clickButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.opus');
 
-  const handleStart = (e: MouseEvent) => {
-    clickButtonSound();
-    contentApi.start({
-      to: { opacity: 0 },
-      delay: 0,
-      pause: false,
-      onRest: () => {
-        navigation.navigate('stage', { story: 'start', entry: 'entry', isNewGame: true });
-      },
-    });
-    e.stopPropagation();
-  };
+  const handleButtonClick = (action: TitleButtonAction) => (e: MouseEvent) => {
+    if (action.type === 'gotoPage') {
+      clickButtonSound();
+      contentApi.start({
+        to: { opacity: 0 },
+        delay: 0,
+        pause: false,
+        onRest: () => {
+          if (action.name === 'stage') {
+            navigation.navigate('stage', { story: 'start', entry: 'entry', isNewGame: true });
+            return;
+          }
 
-  const handleExit = (e: MouseEvent) => {
+          navigation.navigate(action.name as never);
+        },
+      });
+      e.stopPropagation();
+      return;
+    }
+
+    if (action.type === 'pushOverlay') {
+      if (action.name === 'saveload') {
+        navigation.pushOverlay('saveload', { type: 'load' });
+      } else {
+        navigation.pushOverlay('settings');
+      }
+      e.stopPropagation();
+      return;
+    }
+
     clickButtonSound();
     uiActions.confirm('确定要退出游戏吗？', () => {
       executePluginCommand('system', {
@@ -48,57 +74,23 @@ export function Title() {
           }
         }}
       >
-        <sprite src="title.webp" />
+        <sprite src={titleUi.background} />
 
-        <Button
-          fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
-          text={'开始游戏'}
-          fontSize={36}
-          color="#ffffff"
-          x={960}
-          y={670}
-          pivot={[0.5, 0.5]}
-          anchor={[0.5, 0.5]}
-          onClick={handleStart}
-          onMouseEnter={hoverButtonSound}
-        />
-        <Button
-          fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
-          text={'读取存档'}
-          fontSize={36}
-          color="#ffffff"
-          x={960}
-          y={760}
-          pivot={[0.5, 0.5]}
-          anchor={[0.5, 0.5]}
-          onClick={() => navigation.pushOverlay('saveload', { type: 'load' })}
-          onMouseEnter={hoverButtonSound}
-        />
-        <Button
-          fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
-          text={'设置'}
-          fontSize={36}
-          color="#ffffff"
-          x={960}
-          y={850}
-          pivot={[0.5, 0.5]}
-          anchor={[0.5, 0.5]}
-          onClick={() => navigation.pushOverlay('settings')}
-          onMouseEnter={hoverButtonSound}
-        />
-
-        <Button
-          fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
-          text={'退出'}
-          fontSize={36}
-          color="#ffffff"
-          x={960}
-          y={940}
-          pivot={[0.5, 0.5]}
-          anchor={[0.5, 0.5]}
-          onClick={handleExit}
-          onMouseEnter={hoverButtonSound}
-        />
+        {titleUi.buttons.map((button, index) => (
+          <Button
+            key={`${button.text}-${index}`}
+            fileNames={button.fileNames}
+            text={button.text}
+            fontSize={button.fontSize}
+            color={button.color}
+            x={button.x}
+            y={button.y}
+            pivot={[0.5, 0.5]}
+            anchor={[0.5, 0.5]}
+            onClick={handleButtonClick(button.action)}
+            onMouseEnter={hoverButtonSound}
+          />
+        ))}
       </animated.container>
     </container>
   );

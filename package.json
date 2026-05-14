@@ -8,6 +8,7 @@
     "typecheck": "tsc --noEmit",
     "build": "rspack build",
     "generate:schema": "moyu schema",
+    "generate:ui-schema": "moyu ui-schema",
     "engine:update": "moyu update",
     "engine:download": "moyu download",
     "engine:switch": "moyu switch",
