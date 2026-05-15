@@ -4,5 +4,5 @@
   "description": "标准模板，适合大多数视觉小说项目使用。",
   "author": "Icemic",
   "version": "0.1.0-alpha",
-  "assets": ["ui", "fonts", "audio/**/*"]
+  "assets": ["data", "ui", "fonts", "audio/**/*"]
 }
