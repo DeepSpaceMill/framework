@@ -1,36 +1,74 @@
 import z from 'zod';
 
-const imageSrc = z.string().describe('Image asset path').meta({
-  title: 'Image',
-  format: 'asset',
-  'x-asset-kind': 'image',
-  'x-i18n': { 'zh-CN': '图片' },
-  'x-i18n-desc': { 'zh-CN': '图片资源路径' },
-});
+const buttonIdleSrc = z
+  .string()
+  .describe('Idle state image')
+  .meta({
+    title: 'Idle',
+    format: 'asset',
+    'x-asset-kind': 'image',
+    'x-i18n': { 'zh-CN': '空闲' },
+    'x-i18n-desc': { 'zh-CN': '按钮空闲状态的图片' },
+  });
 
-const posX = z.number().describe('X coordinate').meta({
+const buttonHoverSrc = z
+  .string()
+  .describe('Hover state image')
+  .meta({
+    title: 'Hover',
+    format: 'asset',
+    'x-asset-kind': 'image',
+    'x-i18n': { 'zh-CN': '悬停' },
+    'x-i18n-desc': { 'zh-CN': '按钮悬停状态的图片' },
+  });
+
+const buttonPressedSrc = z
+  .string()
+  .describe('Pressed state image')
+  .meta({
+    title: 'Pressed',
+    format: 'asset',
+    'x-asset-kind': 'image',
+    'x-i18n': { 'zh-CN': '按下' },
+    'x-i18n-desc': { 'zh-CN': '按钮按下状态的图片' },
+  });
+
+const buttonSrc = z
+  .tuple([buttonIdleSrc, buttonHoverSrc, buttonPressedSrc])
+  .describe('Button images in idle, hover, and pressed states')
+  .meta({
+    title: 'Button Images',
+    'x-i18n': { 'zh-CN': '按钮图片' },
+    'x-i18n-desc': { 'zh-CN': '按钮空闲、悬停和按下状态的图片' },
+  });
+
+const posX = z.number().meta({
   title: 'X',
   'x-i18n': { 'zh-CN': 'X 坐标' },
-  'x-i18n-desc': { 'zh-CN': '按钮的 X 坐标' },
 });
 
-const posY = z.number().describe('Y coordinate').meta({
+const posY = z.number().meta({
   title: 'Y',
   'x-i18n': { 'zh-CN': 'Y 坐标' },
-  'x-i18n-desc': { 'zh-CN': '按钮的 Y 坐标' },
 });
 
-const TitlePageNameSchema = z.enum(['stage', 'cg', 'bgm', 'credits']).describe('Target page name').meta({
-  title: 'Page',
-  'x-i18n': { 'zh-CN': '页面' },
-  'x-i18n-desc': { 'zh-CN': '跳转的页面名称' },
-});
+const TitlePageNameSchema = z
+  .enum(['stage', 'cg', 'bgm', 'credits'])
+  .describe('Target page name')
+  .meta({
+    title: 'Page',
+    'x-i18n': { 'zh-CN': '页面' },
+    'x-i18n-desc': { 'zh-CN': '跳转的页面名称' },
+  });
 
-const TitleOverlayNameSchema = z.enum(['saveload', 'settings']).describe('Target overlay name').meta({
-  title: 'Overlay',
-  'x-i18n': { 'zh-CN': '浮层' },
-  'x-i18n-desc': { 'zh-CN': '弹出的浮层名称' },
-});
+const TitleOverlayNameSchema = z
+  .enum(['saveload', 'settings'])
+  .describe('Target overlay name')
+  .meta({
+    title: 'Overlay',
+    'x-i18n': { 'zh-CN': '浮层' },
+    'x-i18n-desc': { 'zh-CN': '弹出的浮层名称' },
+  });
 
 const TitleGotoPageActionUiSchema = z
   .object({
@@ -80,27 +118,36 @@ export const TitleButtonUiSchema = z
   .object({
     x: posX,
     y: posY,
-    fileNames: z.tuple([imageSrc, imageSrc, imageSrc]).describe('Button images in idle, hover, and pressed states').meta({
-      title: 'Button Images',
-      'x-i18n': { 'zh-CN': '按钮图片' },
-      'x-i18n-desc': { 'zh-CN': '按钮空闲、悬停和按下状态的图片' },
-    }),
-    text: z.string().describe('Button label').meta({
-      title: 'Text',
-      'x-i18n': { 'zh-CN': '文字' },
-      'x-i18n-desc': { 'zh-CN': '按钮上显示的文字' },
-    }),
-    fontSize: z.number().optional().default(36).describe('Button font size').meta({
-      title: 'Font Size',
-      'x-i18n': { 'zh-CN': '字号' },
-      'x-i18n-desc': { 'zh-CN': '按钮文字字号' },
-    }),
-    color: z.string().optional().default('#ffffff').describe('Button text color').meta({
-      title: 'Color',
-      format: 'color',
-      'x-i18n': { 'zh-CN': '颜色' },
-      'x-i18n-desc': { 'zh-CN': '按钮文字颜色' },
-    }),
+    fileNames: buttonSrc,
+    text: z
+      .string()
+      .describe('Button label')
+      .meta({
+        title: 'Text',
+        'x-i18n': { 'zh-CN': '文字' },
+        'x-i18n-desc': { 'zh-CN': '按钮上显示的文字' },
+      }),
+    fontSize: z
+      .number()
+      .optional()
+      .default(36)
+      .describe('Button font size')
+      .meta({
+        title: 'Font Size',
+        'x-i18n': { 'zh-CN': '字号' },
+        'x-i18n-desc': { 'zh-CN': '按钮文字字号' },
+      }),
+    color: z
+      .string()
+      .optional()
+      .default('#ffffff')
+      .describe('Button text color')
+      .meta({
+        title: 'Color',
+        format: 'color',
+        'x-i18n': { 'zh-CN': '颜色' },
+        'x-i18n-desc': { 'zh-CN': '按钮文字颜色' },
+      }),
     action: TitleButtonActionUiSchema,
   })
   .describe('Title screen button')
@@ -112,23 +159,35 @@ export const TitleButtonUiSchema = z
 
 export const TitleUiSchema = z
   .object({
-    background: imageSrc.describe('Title screen background image').meta({
-      title: 'Background',
-      format: 'asset',
-      'x-asset-kind': 'image',
-      'x-i18n': { 'zh-CN': '背景图' },
-      'x-i18n-desc': { 'zh-CN': '标题界面的背景图片' },
-    }),
-    fadeTime: z.number().optional().default(500).describe('Fade-in time in milliseconds').meta({
-      title: 'Fade Time',
-      'x-i18n': { 'zh-CN': '淡入时间' },
-      'x-i18n-desc': { 'zh-CN': '标题界面的淡入时间（毫秒）' },
-    }),
-    buttons: z.array(TitleButtonUiSchema).min(1).describe('Title screen buttons').meta({
-      title: 'Buttons',
-      'x-i18n': { 'zh-CN': '按钮列表' },
-      'x-i18n-desc': { 'zh-CN': '标题界面的按钮列表' },
-    }),
+    background: z
+      .string()
+      .describe('Title screen background image')
+      .meta({
+        title: 'Background',
+        format: 'asset',
+        'x-asset-kind': 'image',
+        'x-i18n': { 'zh-CN': '背景图' },
+        'x-i18n-desc': { 'zh-CN': '标题界面的背景图片' },
+      }),
+    fadeTime: z
+      .number()
+      .optional()
+      .default(500)
+      .describe('Fade-in time in milliseconds')
+      .meta({
+        title: 'Fade Time',
+        'x-i18n': { 'zh-CN': '淡入时间' },
+        'x-i18n-desc': { 'zh-CN': '标题界面的淡入时间（毫秒）' },
+      }),
+    buttons: z
+      .array(TitleButtonUiSchema)
+      .min(1)
+      .describe('Title screen buttons')
+      .meta({
+        title: 'Buttons',
+        'x-i18n': { 'zh-CN': '按钮列表' },
+        'x-i18n-desc': { 'zh-CN': '标题界面的按钮列表' },
+      }),
   })
   .describe('Title screen UI configuration')
   .meta({

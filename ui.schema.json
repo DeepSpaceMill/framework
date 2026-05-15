@@ -38,24 +38,16 @@
             "properties": {
               "x": {
                 "type": "number",
-                "description": "X coordinate",
                 "title": "X",
                 "x-i18n": {
                   "zh-CN": "X 坐标"
-                },
-                "x-i18n-desc": {
-                  "zh-CN": "按钮的 X 坐标"
                 }
               },
               "y": {
                 "type": "number",
-                "description": "Y coordinate",
                 "title": "Y",
                 "x-i18n": {
                   "zh-CN": "Y 坐标"
-                },
-                "x-i18n-desc": {
-                  "zh-CN": "按钮的 Y 坐标"
                 }
               },
               "fileNames": {
@@ -63,41 +55,41 @@
                 "prefixItems": [
                   {
                     "type": "string",
-                    "description": "Image asset path",
-                    "title": "Image",
+                    "description": "Idle state image",
+                    "title": "Idle",
                     "format": "asset",
                     "x-asset-kind": "image",
                     "x-i18n": {
-                      "zh-CN": "图片"
+                      "zh-CN": "空闲"
                     },
                     "x-i18n-desc": {
-                      "zh-CN": "图片资源路径"
+                      "zh-CN": "按钮空闲状态的图片"
                     }
                   },
                   {
                     "type": "string",
-                    "description": "Image asset path",
-                    "title": "Image",
+                    "description": "Hover state image",
+                    "title": "Hover",
                     "format": "asset",
                     "x-asset-kind": "image",
                     "x-i18n": {
-                      "zh-CN": "图片"
+                      "zh-CN": "悬停"
                     },
                     "x-i18n-desc": {
-                      "zh-CN": "图片资源路径"
+                      "zh-CN": "按钮悬停状态的图片"
                     }
                   },
                   {
                     "type": "string",
-                    "description": "Image asset path",
-                    "title": "Image",
+                    "description": "Pressed state image",
+                    "title": "Pressed",
                     "format": "asset",
                     "x-asset-kind": "image",
                     "x-i18n": {
-                      "zh-CN": "图片"
+                      "zh-CN": "按下"
                     },
                     "x-i18n-desc": {
-                      "zh-CN": "图片资源路径"
+                      "zh-CN": "按钮按下状态的图片"
                     }
                   }
                 ],
