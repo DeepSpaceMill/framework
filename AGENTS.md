@@ -301,6 +301,112 @@ useAutoBlocker(block);
    navigation.pushOverlay('myoverlay', { x: 1 });
    ```
 
+#### 为页面定义 FishFlow 可配置项（UI schema）
+
+如果这个 page 需要暴露给 FishFlow 做可视化配置，就在 `src/data/ui.ts` 中为该页面定义 schema，并生成根目录 `ui.schema.json`。
+
+1. 先定义页面级 schema，再组合出根 schema：
+
+  ```typescript
+  export const TitleUiSchema = z.object({
+    // ...
+  });
+
+  export const GameUiSchema = z.object({
+    title: TitleUiSchema,
+  });
+  ```
+
+  注意：`GameUiSchema` 顶层属性名（如 `title`）就是 page route name；FishFlow 会直接用它作为页面标识与预览跳转目标，改名会影响已有 UI 数据和页面路由。
+
+2. 每个页面、字段和可选分支都要补足展示元数据：
+
+  ```typescript
+  z.string().describe('Title screen background image').meta({
+    title: 'Background',
+    format: 'asset',
+    'x-asset-kind': 'image',
+    'x-i18n': { 'zh-CN': '背景图' },
+    'x-i18n-desc': { 'zh-CN': '标题界面的背景图片' },
+  });
+  ```
+
+  这些元数据会进入 `ui.schema.json`，由 FishFlow 用来生成字段标题、说明、资源选择器、颜色字段等编辑体验。
+
+3. 分支结构优先使用 `z.discriminatedUnion()` + `z.literal()`：
+
+  ```typescript
+  const ActionUiSchema = z.discriminatedUnion('type', [
+    z.object({ type: z.literal('gotoPage'), name: TitlePageNameSchema }),
+    z.object({ type: z.literal('pushOverlay'), name: TitleOverlayNameSchema }),
+    z.object({ type: z.literal('quit') }),
+  ]);
+  ```
+
+  这里的 `type` 是分支判别字段，不是给最终用户自由编辑的业务字段；真正可配的输入应放在其他属性里（如 `name`）。
+
+4. 运行时有自然默认值的字段，优先使用 `.optional().default(...)`：
+
+  ```typescript
+  z.number().optional().default(500)
+  ```
+
+  FishFlow 当前会保留稀疏 `ui.json`，不会主动把所有默认值展开写回文件；默认值应由 schema / runtime 在读取时补齐。
+
+5. `assets/data/ui.json` 是 framework 提供给项目的默认 UI 样例，修改 schema 结构时应同步维护它；如果 framework 暴露了 `ui.schema.json` 却没有可用的默认 `assets/data/ui.json`，FishFlow 会把它视为不完整配置并提示错误。
+
+6. 每次修改 `src/data/ui.ts` 后，都要运行：
+
+  ```bash
+  yarn generate:ui-schema
+  ```
+
+  以刷新根目录 `ui.schema.json`。若字段结构变更，同时检查 `assets/data/ui.json` 和相关页面实现是否需要同步更新。
+
+7. 若根 UI 数据结构发生变化，记得同步更新类型导出与 kit 注册：
+
+  ```typescript
+  export type GameUiData = z.infer<typeof GameUiSchema>;
+
+  declare module '@momoyu-ink/kit' {
+    interface RootUiDataMap extends GameUiData {}
+  }
+  ```
+
+8. 在运行时消费这份数据时，优先通过 kit 提供的 UI data API，而不是自己手动读取 `ui.json`：
+
+   - 入口初始化继续放在 `src/index.tsx`：
+
+     ```typescript
+     import { initUiData } from '@momoyu-ink/kit';
+     import { GameUiSchema } from './data/ui';
+
+     addEventListener('ready', () => {
+       void initUiData(GameUiSchema).then(() => {
+         const root = createRoot();
+         root.render(<Main />);
+       });
+     });
+     ```
+
+     也就是说：`GameUiSchema` 不只是给 FishFlow 生成 `ui.schema.json` 用，runtime 自己也用它来校验和初始化 UI 数据。
+
+   - 在 page / overlay 组件里，通过 `useUiData('<pageName>')` 读取对应页面的数据：
+
+     ```typescript
+     import { useUiData } from '@momoyu-ink/kit';
+
+     export function Title() {
+       const titleUi = useUiData('title');
+
+       return <sprite src={titleUi.background} />;
+     }
+     ```
+
+     `useUiData('title')` 返回值会按照 `RootUiDataMap` 推断出正确类型，并且在 debug 热替换后保持响应式更新。
+
+   - 如果只是命令式地读取一次数据（非 React render 路径），再考虑使用 `getUiData()`；组件渲染路径优先使用 `useUiData()`。
+
 ### 新增一个可复用组件
 
 放 `components/`，仅使用 kit intrinsic element 与现有 hook（如 `useButton`）：
