@@ -1,4 +1,4 @@
-import { executePluginCommand, getNavigator, type AppStateAdapter, type FastForwardOptions } from '@momoyu-ink/kit';
+import { DEBUG_EMPTY_PAGE, executePluginCommand, getNavigator, type AppStateAdapter, type FastForwardOptions } from '@momoyu-ink/kit';
 import { snapshot } from 'valtio';
 import { gameState, resetGameState, type GameState } from '../state/game';
 import { getStageSingleton } from '../lib/stageSingleton';
@@ -22,6 +22,17 @@ export const gameStateDebugAdapter: AppStateAdapter<GameState> = {
     getStageSingleton().resetRuntimeState();
     navigator.clearOverlays();
     navigator.navigate(page as never, params as never);
+  },
+  switchOverlay(overlay, params) {
+    const navigator = getNavigator();
+    if (!navigator.hasOverlay(overlay)) {
+      throw new Error(`Overlay "${overlay}" not found`);
+    }
+
+    getStageSingleton().resetRuntimeState();
+    navigator.clearOverlays();
+    navigator.navigate(DEBUG_EMPTY_PAGE as never);
+    navigator.pushOverlay(overlay as never, params as never);
   },
   enterFastForwardMode(options?: FastForwardOptions) {
     getStageSingleton().startFastForward(options);
