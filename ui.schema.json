@@ -30,25 +30,67 @@
           },
           "type": "number"
         },
+        "buttonHoverSound": {
+          "default": "audio/cursor_style_4.opus",
+          "description": "Sound effect played when hovering a title button",
+          "title": "Button Hover Sound",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "按钮悬停音效"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "鼠标悬停到标题界面按钮时播放的音效"
+          },
+          "type": "string"
+        },
+        "buttonClickSound": {
+          "default": "audio/confirm_style_5_echo_001.opus",
+          "description": "Sound effect played when clicking a title button",
+          "title": "Button Click Sound",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "按钮点击音效"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "点击标题界面按钮时播放的音效"
+          },
+          "type": "string"
+        },
         "buttons": {
           "minItems": 1,
           "type": "array",
           "items": {
             "type": "object",
             "properties": {
-              "x": {
-                "type": "number",
-                "title": "X",
+              "position": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "title": "X",
+                    "x-i18n": {
+                      "zh-CN": "X 坐标"
+                    }
+                  },
+                  "y": {
+                    "type": "number",
+                    "title": "Y",
+                    "x-i18n": {
+                      "zh-CN": "Y 坐标"
+                    }
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "title": "Coordinates",
                 "x-i18n": {
-                  "zh-CN": "X 坐标"
-                }
-              },
-              "y": {
-                "type": "number",
-                "title": "Y",
-                "x-i18n": {
-                  "zh-CN": "Y 坐标"
-                }
+                  "zh-CN": "坐标"
+                },
+                "format": "position"
               },
               "fileNames": {
                 "type": "array",
@@ -246,8 +288,7 @@
               }
             },
             "required": [
-              "x",
-              "y",
+              "position",
               "fileNames",
               "text",
               "action"

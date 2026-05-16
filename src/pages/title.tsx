@@ -17,8 +17,8 @@ export function Title() {
   const titleUi = useUiData('title');
   const navigation = useNavigation();
 
-  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
-  const clickButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.opus');
+  const hoverButtonSound = useSoundEffect(titleUi.buttonHoverSound);
+  const clickButtonSound = useSoundEffect(titleUi.buttonClickSound);
 
   // `visible` drives the enter/leave transition. A pending action is captured
   // before flipping `visible` to false so we can navigate once the leave
@@ -72,6 +72,7 @@ export function Title() {
     }
 
     if (action.type === 'pushOverlay') {
+      clickButtonSound();
       if (action.name === 'saveload') {
         navigation.pushOverlay('saveload', { type: 'load' });
       } else {

@@ -189,6 +189,28 @@ export const TitleUiSchema = z
         'x-i18n': { 'zh-CN': '淡入时间' },
         'x-i18n-desc': { 'zh-CN': '标题界面的淡入时间（毫秒）' },
       }),
+    buttonHoverSound: z
+      .string()
+      .optional()
+      .describe('Sound effect played when hovering a title button')
+      .meta({
+        title: 'Button Hover Sound',
+        format: 'asset',
+        'x-asset-kind': 'audio',
+        'x-i18n': { 'zh-CN': '按钮悬停音效' },
+        'x-i18n-desc': { 'zh-CN': '鼠标悬停到标题界面按钮时播放的音效' },
+      }),
+    buttonClickSound: z
+      .string()
+      .optional()
+      .describe('Sound effect played when clicking a title button')
+      .meta({
+        title: 'Button Click Sound',
+        format: 'asset',
+        'x-asset-kind': 'audio',
+        'x-i18n': { 'zh-CN': '按钮点击音效' },
+        'x-i18n-desc': { 'zh-CN': '点击标题界面按钮时播放的音效' },
+      }),
     buttons: z
       .array(TitleButtonUiSchema)
       .min(1)
