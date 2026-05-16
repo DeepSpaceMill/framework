@@ -52,6 +52,17 @@ const posY = z.number().meta({
   'x-i18n': { 'zh-CN': 'Y 坐标' },
 });
 
+const positionSchema = z
+  .object({
+    x: posX,
+    y: posY,
+  })
+  .meta({
+    title: 'Coordinates',
+    'x-i18n': { 'zh-CN': '坐标' },
+    format: 'position',
+  });
+
 const TitlePageNameSchema = z
   .enum(['stage', 'cg', 'bgm', 'credits'])
   .describe('Target page name')
@@ -116,8 +127,7 @@ export const TitleButtonActionUiSchema = z
 
 export const TitleButtonUiSchema = z
   .object({
-    x: posX,
-    y: posY,
+    position: positionSchema,
     fileNames: buttonSrc,
     text: z
       .string()

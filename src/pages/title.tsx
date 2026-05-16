@@ -113,8 +113,8 @@ export function Title() {
                   text={button.text}
                   fontSize={button.fontSize}
                   color={button.color}
-                  x={button.x}
-                  y={button.y}
+                  x={button.position.x}
+                  y={button.position.y}
                   pivot={[0.5, 0.5]}
                   anchor={[0.5, 0.5]}
                   onClick={handleButtonClick(button.action)}
