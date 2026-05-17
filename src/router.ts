@@ -21,17 +21,11 @@ export const navigator = createStackNavigator({
     credits: () => null,
   },
   overlays: {
-    saveload: {
-      component: SaveLoad,
-      requiredParams: ['type'],
-    },
+    saveload: SaveLoad,
     settings: Settings,
     menu: Menu,
     backlog: Backlog,
-    confirm: {
-      component: Dialog,
-      requiredParams: ['message'],
-    },
+    confirm: Dialog,
   },
 });
 
