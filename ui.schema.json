@@ -31,7 +31,6 @@
           "type": "number"
         },
         "buttonHoverSound": {
-          "default": "audio/cursor_style_4.opus",
           "description": "Sound effect played when hovering a title button",
           "title": "Button Hover Sound",
           "format": "asset",
@@ -45,7 +44,6 @@
           "type": "string"
         },
         "buttonClickSound": {
-          "default": "audio/confirm_style_5_echo_001.opus",
           "description": "Sound effect played when clicking a title button",
           "title": "Button Click Sound",
           "format": "asset",
@@ -324,9 +322,1973 @@
       "x-i18n-desc": {
         "zh-CN": "标题界面的可配置数据"
       }
+    },
+    "menu": {
+      "type": "object",
+      "properties": {
+        "background": {
+          "type": "string",
+          "description": "Menu background image",
+          "title": "Background",
+          "format": "asset",
+          "x-asset-kind": "image",
+          "x-i18n": {
+            "zh-CN": "背景图"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "菜单界面的背景图片"
+          }
+        },
+        "buttonHoverSound": {
+          "description": "Sound effect played when hovering a menu button",
+          "title": "Button Hover Sound",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "按钮悬停音效"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "鼠标悬停到菜单按钮时播放的音效"
+          },
+          "type": "string"
+        },
+        "backButtonSound": {
+          "description": "Sound effect played when closing the menu",
+          "title": "Back Sound",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "返回音效"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "关闭菜单时播放的音效"
+          },
+          "type": "string"
+        },
+        "startButtonSound": {
+          "description": "Sound effect played when confirming a menu action",
+          "title": "Confirm Sound",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "确认音效"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "确认菜单动作时播放的音效"
+          },
+          "type": "string"
+        },
+        "buttons": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "position": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "title": "X",
+                    "x-i18n": {
+                      "zh-CN": "X 坐标"
+                    }
+                  },
+                  "y": {
+                    "type": "number",
+                    "title": "Y",
+                    "x-i18n": {
+                      "zh-CN": "Y 坐标"
+                    }
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "title": "Coordinates",
+                "x-i18n": {
+                  "zh-CN": "坐标"
+                },
+                "format": "position"
+              },
+              "fileNames": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "string",
+                    "description": "Idle state image",
+                    "title": "Idle",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "空闲"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "按钮空闲状态的图片"
+                    }
+                  },
+                  {
+                    "type": "string",
+                    "description": "Hover state image",
+                    "title": "Hover",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "悬停"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "按钮悬停状态的图片"
+                    }
+                  },
+                  {
+                    "type": "string",
+                    "description": "Pressed state image",
+                    "title": "Pressed",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "按下"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "按钮按下状态的图片"
+                    }
+                  }
+                ],
+                "description": "Button images in idle, hover, and pressed states",
+                "title": "Button Images",
+                "x-i18n": {
+                  "zh-CN": "按钮图片"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "按钮空闲、悬停和按下状态的图片"
+                }
+              },
+              "text": {
+                "type": "string",
+                "description": "Button label",
+                "title": "Text",
+                "x-i18n": {
+                  "zh-CN": "文字"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "按钮上显示的文字"
+                }
+              },
+              "color": {
+                "default": "#f0f0f0",
+                "description": "Button text color",
+                "title": "Color",
+                "format": "color",
+                "x-i18n": {
+                  "zh-CN": "颜色"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "按钮文字颜色"
+                },
+                "type": "string"
+              },
+              "action": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "resume"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
+                    "description": "Close the menu overlay and resume the game",
+                    "title": "Resume",
+                    "x-i18n": {
+                      "zh-CN": "继续游戏"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "关闭菜单并继续游戏"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "settings"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
+                    "description": "Open the settings overlay from the menu",
+                    "title": "Open Settings",
+                    "x-i18n": {
+                      "zh-CN": "打开设置"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "从菜单中打开设置界面"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "title"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
+                    "description": "Return to the title screen",
+                    "title": "Return To Title",
+                    "x-i18n": {
+                      "zh-CN": "回到主界面"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "返回标题界面"
+                    }
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "type": {
+                        "type": "string",
+                        "const": "quit"
+                      }
+                    },
+                    "required": [
+                      "type"
+                    ],
+                    "description": "Quit the game from the menu",
+                    "title": "Quit Game",
+                    "x-i18n": {
+                      "zh-CN": "退出游戏"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "从菜单中退出游戏"
+                    }
+                  }
+                ],
+                "description": "Menu button action",
+                "title": "Action",
+                "x-i18n": {
+                  "zh-CN": "动作"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "菜单按钮执行的动作"
+                }
+              }
+            },
+            "required": [
+              "position",
+              "fileNames",
+              "text",
+              "action"
+            ],
+            "description": "Menu button configuration",
+            "title": "Button",
+            "x-i18n": {
+              "zh-CN": "按钮"
+            },
+            "x-i18n-desc": {
+              "zh-CN": "菜单中的一个按钮配置"
+            }
+          },
+          "description": "Menu buttons",
+          "title": "Buttons",
+          "x-i18n": {
+            "zh-CN": "按钮列表"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "菜单中的按钮列表"
+          }
+        }
+      },
+      "required": [
+        "background",
+        "buttons"
+      ],
+      "description": "Menu overlay UI configuration",
+      "title": "Menu Overlay",
+      "x-i18n": {
+        "zh-CN": "菜单界面"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "游戏内菜单的可配置数据"
+      }
+    },
+    "saveload": {
+      "type": "object",
+      "properties": {
+        "defaultType": {
+          "default": "load",
+          "description": "Default save/load mode when no overlay params are provided",
+          "title": "Default Type",
+          "x-i18n": {
+            "zh-CN": "默认模式"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "未提供 overlay 参数时，存读档界面默认展示的模式"
+          },
+          "type": "string",
+          "enum": [
+            "save",
+            "load"
+          ]
+        },
+        "mask": {
+          "type": "string",
+          "description": "Save/load overlay mask image",
+          "title": "Mask",
+          "format": "asset",
+          "x-asset-kind": "image",
+          "x-i18n": {
+            "zh-CN": "遮罩图"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "存读档界面的遮罩图片"
+          }
+        },
+        "background": {
+          "type": "string",
+          "description": "Save/load overlay background image",
+          "title": "Background",
+          "format": "asset",
+          "x-asset-kind": "image",
+          "x-i18n": {
+            "zh-CN": "背景图"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "存读档界面的背景图片"
+          }
+        },
+        "hoverButtonSound": {
+          "description": "Sound effect played when hovering save/load buttons",
+          "title": "Button Hover Sound",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "按钮悬停音效"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "鼠标悬停到存读档按钮时播放的音效"
+          },
+          "type": "string"
+        },
+        "backButtonSound": {
+          "description": "Sound effect played when closing the save/load overlay",
+          "title": "Back Sound",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "返回音效"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "关闭存读档界面时播放的音效"
+          },
+          "type": "string"
+        },
+        "enableAutoSaveSlot": {
+          "default": true,
+          "description": "Whether the first slot on the first page maps to auto-save",
+          "title": "Enable Auto-Save Slot",
+          "x-i18n": {
+            "zh-CN": "启用 auto-save 槽位"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "启用后第一页第一个槽位映射到 auto-save，否则不展示 auto-save 槽位"
+          },
+          "type": "boolean"
+        },
+        "title": {
+          "type": "object",
+          "properties": {
+            "position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "title": "X",
+                  "x-i18n": {
+                    "zh-CN": "X 坐标"
+                  }
+                },
+                "y": {
+                  "type": "number",
+                  "title": "Y",
+                  "x-i18n": {
+                    "zh-CN": "Y 坐标"
+                  }
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "title": "Coordinates",
+              "x-i18n": {
+                "zh-CN": "坐标"
+              },
+              "format": "position"
+            },
+            "saveText": {
+              "default": "SAVE",
+              "description": "Title text in save mode",
+              "title": "Save Text",
+              "x-i18n": {
+                "zh-CN": "保存标题"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "保存模式下显示的标题文字"
+              },
+              "type": "string"
+            },
+            "loadText": {
+              "default": "LOAD",
+              "description": "Title text in load mode",
+              "title": "Load Text",
+              "x-i18n": {
+                "zh-CN": "读取标题"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "读取模式下显示的标题文字"
+              },
+              "type": "string"
+            },
+            "fontSize": {
+              "default": 48,
+              "description": "Title font size",
+              "title": "Font Size",
+              "x-i18n": {
+                "zh-CN": "字号"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "存读档标题文字字号"
+              },
+              "type": "number"
+            },
+            "color": {
+              "default": "#ffffff",
+              "description": "Title text color",
+              "title": "Color",
+              "format": "color",
+              "x-i18n": {
+                "zh-CN": "颜色"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "存读档标题文字颜色"
+              },
+              "type": "string"
+            }
+          },
+          "required": [
+            "position"
+          ],
+          "description": "Save/load title configuration",
+          "title": "Title",
+          "x-i18n": {
+            "zh-CN": "标题"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "存读档界面的标题配置"
+          }
+        },
+        "closeButton": {
+          "type": "object",
+          "properties": {
+            "position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "title": "X",
+                  "x-i18n": {
+                    "zh-CN": "X 坐标"
+                  }
+                },
+                "y": {
+                  "type": "number",
+                  "title": "Y",
+                  "x-i18n": {
+                    "zh-CN": "Y 坐标"
+                  }
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "title": "Coordinates",
+              "x-i18n": {
+                "zh-CN": "坐标"
+              },
+              "format": "position"
+            },
+            "fileNames": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "description": "Idle state image",
+                  "title": "Idle",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "空闲"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮空闲状态的图片"
+                  }
+                },
+                {
+                  "type": "string",
+                  "description": "Hover state image",
+                  "title": "Hover",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "悬停"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮悬停状态的图片"
+                  }
+                },
+                {
+                  "type": "string",
+                  "description": "Pressed state image",
+                  "title": "Pressed",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "按下"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮按下状态的图片"
+                  }
+                }
+              ],
+              "description": "Button images in idle, hover, and pressed states",
+              "title": "Button Images",
+              "x-i18n": {
+                "zh-CN": "按钮图片"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮空闲、悬停和按下状态的图片"
+              }
+            }
+          },
+          "required": [
+            "position",
+            "fileNames"
+          ],
+          "description": "Close button configuration",
+          "title": "Close Button",
+          "x-i18n": {
+            "zh-CN": "关闭按钮"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "存读档界面的关闭按钮配置"
+          }
+        },
+        "pageButtons": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "position": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "title": "X",
+                    "x-i18n": {
+                      "zh-CN": "X 坐标"
+                    }
+                  },
+                  "y": {
+                    "type": "number",
+                    "title": "Y",
+                    "x-i18n": {
+                      "zh-CN": "Y 坐标"
+                    }
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "title": "Coordinates",
+                "x-i18n": {
+                  "zh-CN": "坐标"
+                },
+                "format": "position"
+              },
+              "fileNames": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "string",
+                    "description": "Idle state image",
+                    "title": "Idle",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "空闲"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "按钮空闲状态的图片"
+                    }
+                  },
+                  {
+                    "type": "string",
+                    "description": "Hover state image",
+                    "title": "Hover",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "悬停"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "按钮悬停状态的图片"
+                    }
+                  },
+                  {
+                    "type": "string",
+                    "description": "Pressed state image",
+                    "title": "Pressed",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "按下"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "按钮按下状态的图片"
+                    }
+                  }
+                ],
+                "description": "Button images in idle, hover, and pressed states",
+                "title": "Button Images",
+                "x-i18n": {
+                  "zh-CN": "按钮图片"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "按钮空闲、悬停和按下状态的图片"
+                }
+              },
+              "text": {
+                "description": "Optional page button label, defaults to page number",
+                "title": "Text",
+                "x-i18n": {
+                  "zh-CN": "文字"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "页码按钮的文字，不填时默认显示页码序号"
+                },
+                "type": "string"
+              },
+              "fontSize": {
+                "default": 36,
+                "description": "Page button font size",
+                "title": "Font Size",
+                "x-i18n": {
+                  "zh-CN": "字号"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "页码按钮文字字号"
+                },
+                "type": "number"
+              },
+              "activeTextColor": {
+                "default": "#000000",
+                "description": "Page button text color when active",
+                "title": "Active Color",
+                "format": "color",
+                "x-i18n": {
+                  "zh-CN": "激活颜色"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "当前页码按钮的文字颜色"
+                },
+                "type": "string"
+              },
+              "inactiveTextColor": {
+                "default": "#ffffff",
+                "description": "Page button text color when inactive",
+                "title": "Inactive Color",
+                "format": "color",
+                "x-i18n": {
+                  "zh-CN": "未激活颜色"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "非当前页码按钮的文字颜色"
+                },
+                "type": "string"
+              }
+            },
+            "required": [
+              "position",
+              "fileNames"
+            ],
+            "description": "Save/load page button configuration",
+            "title": "Page Button",
+            "x-i18n": {
+              "zh-CN": "页码按钮"
+            },
+            "x-i18n-desc": {
+              "zh-CN": "存读档界面的页码按钮配置"
+            }
+          },
+          "description": "Page button configurations",
+          "title": "Page Buttons",
+          "x-i18n": {
+            "zh-CN": "页码按钮"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "存读档界面的页码按钮配置"
+          }
+        },
+        "slots": {
+          "minItems": 1,
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "position": {
+                "type": "object",
+                "properties": {
+                  "x": {
+                    "type": "number",
+                    "title": "X",
+                    "x-i18n": {
+                      "zh-CN": "X 坐标"
+                    }
+                  },
+                  "y": {
+                    "type": "number",
+                    "title": "Y",
+                    "x-i18n": {
+                      "zh-CN": "Y 坐标"
+                    }
+                  }
+                },
+                "required": [
+                  "x",
+                  "y"
+                ],
+                "title": "Coordinates",
+                "x-i18n": {
+                  "zh-CN": "坐标"
+                },
+                "format": "position"
+              },
+              "fileNames": {
+                "type": "array",
+                "prefixItems": [
+                  {
+                    "type": "string",
+                    "description": "Idle state image",
+                    "title": "Idle",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "空闲"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "按钮空闲状态的图片"
+                    }
+                  },
+                  {
+                    "type": "string",
+                    "description": "Hover state image",
+                    "title": "Hover",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "悬停"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "按钮悬停状态的图片"
+                    }
+                  },
+                  {
+                    "type": "string",
+                    "description": "Pressed state image",
+                    "title": "Pressed",
+                    "format": "asset",
+                    "x-asset-kind": "image",
+                    "x-i18n": {
+                      "zh-CN": "按下"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "按钮按下状态的图片"
+                    }
+                  }
+                ],
+                "description": "Button images in idle, hover, and pressed states",
+                "title": "Button Images",
+                "x-i18n": {
+                  "zh-CN": "按钮图片"
+                },
+                "x-i18n-desc": {
+                  "zh-CN": "按钮空闲、悬停和按下状态的图片"
+                }
+              }
+            },
+            "required": [
+              "position",
+              "fileNames"
+            ],
+            "description": "Save/load slot button configuration",
+            "title": "Slot",
+            "x-i18n": {
+              "zh-CN": "槽位"
+            },
+            "x-i18n-desc": {
+              "zh-CN": "每页复用的存档槽位配置"
+            }
+          },
+          "description": "Per-page slot button configurations",
+          "title": "Slots",
+          "x-i18n": {
+            "zh-CN": "槽位列表"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "每页复用的存档槽位列表"
+          }
+        },
+        "slotContent": {
+          "type": "object",
+          "properties": {
+            "snapshot": {
+              "type": "object",
+              "properties": {
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "title": "X",
+                      "x-i18n": {
+                        "zh-CN": "X 坐标"
+                      }
+                    },
+                    "y": {
+                      "type": "number",
+                      "title": "Y",
+                      "x-i18n": {
+                        "zh-CN": "Y 坐标"
+                      }
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "title": "Coordinates",
+                  "x-i18n": {
+                    "zh-CN": "坐标"
+                  },
+                  "format": "position"
+                }
+              },
+              "required": [
+                "position"
+              ],
+              "description": "Snapshot image layout",
+              "title": "Snapshot",
+              "x-i18n": {
+                "zh-CN": "截图"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "存档截图的位置配置"
+              }
+            },
+            "deleteButton": {
+              "type": "object",
+              "properties": {
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "title": "X",
+                      "x-i18n": {
+                        "zh-CN": "X 坐标"
+                      }
+                    },
+                    "y": {
+                      "type": "number",
+                      "title": "Y",
+                      "x-i18n": {
+                        "zh-CN": "Y 坐标"
+                      }
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "title": "Coordinates",
+                  "x-i18n": {
+                    "zh-CN": "坐标"
+                  },
+                  "format": "position"
+                },
+                "fileNames": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "description": "Idle state image",
+                      "title": "Idle",
+                      "format": "asset",
+                      "x-asset-kind": "image",
+                      "x-i18n": {
+                        "zh-CN": "空闲"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "按钮空闲状态的图片"
+                      }
+                    },
+                    {
+                      "type": "string",
+                      "description": "Hover state image",
+                      "title": "Hover",
+                      "format": "asset",
+                      "x-asset-kind": "image",
+                      "x-i18n": {
+                        "zh-CN": "悬停"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "按钮悬停状态的图片"
+                      }
+                    },
+                    {
+                      "type": "string",
+                      "description": "Pressed state image",
+                      "title": "Pressed",
+                      "format": "asset",
+                      "x-asset-kind": "image",
+                      "x-i18n": {
+                        "zh-CN": "按下"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "按钮按下状态的图片"
+                      }
+                    }
+                  ],
+                  "description": "Button images in idle, hover, and pressed states",
+                  "title": "Button Images",
+                  "x-i18n": {
+                    "zh-CN": "按钮图片"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮空闲、悬停和按下状态的图片"
+                  }
+                }
+              },
+              "required": [
+                "position",
+                "fileNames"
+              ],
+              "description": "Delete button configuration",
+              "title": "Delete Button",
+              "x-i18n": {
+                "zh-CN": "删除按钮"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "存档槽位删除按钮配置"
+              }
+            },
+            "name": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": true,
+                  "description": "Whether to display this text block",
+                  "title": "Enabled",
+                  "x-i18n": {
+                    "zh-CN": "启用"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "是否显示该文本块"
+                  },
+                  "type": "boolean"
+                },
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "title": "X",
+                      "x-i18n": {
+                        "zh-CN": "X 坐标"
+                      }
+                    },
+                    "y": {
+                      "type": "number",
+                      "title": "Y",
+                      "x-i18n": {
+                        "zh-CN": "Y 坐标"
+                      }
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "title": "Coordinates",
+                  "x-i18n": {
+                    "zh-CN": "坐标"
+                  },
+                  "format": "position"
+                },
+                "fontSize": {
+                  "default": 28,
+                  "description": "Text font size",
+                  "title": "Font Size",
+                  "x-i18n": {
+                    "zh-CN": "字号"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本字号"
+                  },
+                  "type": "number"
+                },
+                "color": {
+                  "default": "#ffffff",
+                  "description": "Text color",
+                  "title": "Color",
+                  "format": "color",
+                  "x-i18n": {
+                    "zh-CN": "颜色"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本颜色"
+                  },
+                  "type": "string"
+                }
+              },
+              "required": [
+                "position"
+              ],
+              "description": "Save name text configuration",
+              "title": "Name",
+              "x-i18n": {
+                "zh-CN": "名称"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "存档名称文本的显示配置"
+              }
+            },
+            "summary": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": true,
+                  "description": "Whether to display this text block",
+                  "title": "Enabled",
+                  "x-i18n": {
+                    "zh-CN": "启用"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "是否显示该文本块"
+                  },
+                  "type": "boolean"
+                },
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "title": "X",
+                      "x-i18n": {
+                        "zh-CN": "X 坐标"
+                      }
+                    },
+                    "y": {
+                      "type": "number",
+                      "title": "Y",
+                      "x-i18n": {
+                        "zh-CN": "Y 坐标"
+                      }
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "title": "Coordinates",
+                  "x-i18n": {
+                    "zh-CN": "坐标"
+                  },
+                  "format": "position"
+                },
+                "fontSize": {
+                  "default": 20,
+                  "description": "Text font size",
+                  "title": "Font Size",
+                  "x-i18n": {
+                    "zh-CN": "字号"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本字号"
+                  },
+                  "type": "number"
+                },
+                "color": {
+                  "default": "#ffffff",
+                  "description": "Text color",
+                  "title": "Color",
+                  "format": "color",
+                  "x-i18n": {
+                    "zh-CN": "颜色"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本颜色"
+                  },
+                  "type": "string"
+                },
+                "boxWidth": {
+                  "default": 442,
+                  "description": "Summary text box width",
+                  "title": "Box Width",
+                  "x-i18n": {
+                    "zh-CN": "文本框宽度"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "摘要文本区域的宽度"
+                  },
+                  "type": "number"
+                },
+                "boxHeight": {
+                  "default": 52,
+                  "description": "Summary text box height",
+                  "title": "Box Height",
+                  "x-i18n": {
+                    "zh-CN": "文本框高度"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "摘要文本区域的高度"
+                  },
+                  "type": "number"
+                }
+              },
+              "required": [
+                "position"
+              ],
+              "description": "Save summary text configuration",
+              "title": "Summary",
+              "x-i18n": {
+                "zh-CN": "摘要"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "存档摘要文本的显示配置"
+              }
+            },
+            "timestamp": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": true,
+                  "description": "Whether to display this text block",
+                  "title": "Enabled",
+                  "x-i18n": {
+                    "zh-CN": "启用"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "是否显示该文本块"
+                  },
+                  "type": "boolean"
+                },
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "title": "X",
+                      "x-i18n": {
+                        "zh-CN": "X 坐标"
+                      }
+                    },
+                    "y": {
+                      "type": "number",
+                      "title": "Y",
+                      "x-i18n": {
+                        "zh-CN": "Y 坐标"
+                      }
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "title": "Coordinates",
+                  "x-i18n": {
+                    "zh-CN": "坐标"
+                  },
+                  "format": "position"
+                },
+                "fontSize": {
+                  "default": 16,
+                  "description": "Text font size",
+                  "title": "Font Size",
+                  "x-i18n": {
+                    "zh-CN": "字号"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本字号"
+                  },
+                  "type": "number"
+                },
+                "color": {
+                  "default": "#ffffff",
+                  "description": "Text color",
+                  "title": "Color",
+                  "format": "color",
+                  "x-i18n": {
+                    "zh-CN": "颜色"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本颜色"
+                  },
+                  "type": "string"
+                }
+              },
+              "required": [
+                "position"
+              ],
+              "description": "Save timestamp text configuration",
+              "title": "Timestamp",
+              "x-i18n": {
+                "zh-CN": "时间戳"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "存档时间文本的显示配置"
+              }
+            },
+            "emptyText": {
+              "type": "object",
+              "properties": {
+                "enabled": {
+                  "default": true,
+                  "description": "Whether to display this text block",
+                  "title": "Enabled",
+                  "x-i18n": {
+                    "zh-CN": "启用"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "是否显示该文本块"
+                  },
+                  "type": "boolean"
+                },
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "title": "X",
+                      "x-i18n": {
+                        "zh-CN": "X 坐标"
+                      }
+                    },
+                    "y": {
+                      "type": "number",
+                      "title": "Y",
+                      "x-i18n": {
+                        "zh-CN": "Y 坐标"
+                      }
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "title": "Coordinates",
+                  "x-i18n": {
+                    "zh-CN": "坐标"
+                  },
+                  "format": "position"
+                },
+                "fontSize": {
+                  "default": 32,
+                  "description": "Text font size",
+                  "title": "Font Size",
+                  "x-i18n": {
+                    "zh-CN": "字号"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本字号"
+                  },
+                  "type": "number"
+                },
+                "color": {
+                  "default": "#ffffff",
+                  "description": "Text color",
+                  "title": "Color",
+                  "format": "color",
+                  "x-i18n": {
+                    "zh-CN": "颜色"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本颜色"
+                  },
+                  "type": "string"
+                },
+                "text": {
+                  "default": "NO DATA",
+                  "description": "Placeholder text for empty slots",
+                  "title": "Text",
+                  "x-i18n": {
+                    "zh-CN": "文字"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "空存档槽位显示的文案"
+                  },
+                  "type": "string"
+                },
+                "opacity": {
+                  "default": 0.6,
+                  "description": "Placeholder text opacity",
+                  "title": "Opacity",
+                  "x-i18n": {
+                    "zh-CN": "透明度"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "空存档槽位文案的透明度"
+                  },
+                  "type": "number"
+                }
+              },
+              "required": [
+                "position"
+              ],
+              "description": "Empty slot placeholder configuration",
+              "title": "Empty Text",
+              "x-i18n": {
+                "zh-CN": "空槽文案"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "空存档槽位文案的显示配置"
+              }
+            }
+          },
+          "required": [
+            "snapshot",
+            "deleteButton",
+            "name",
+            "summary",
+            "timestamp",
+            "emptyText"
+          ],
+          "description": "Save/load slot content layout configuration",
+          "title": "Slot Content",
+          "x-i18n": {
+            "zh-CN": "槽位内容"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "存档槽位内部内容的布局与显示配置"
+          }
+        }
+      },
+      "required": [
+        "mask",
+        "background",
+        "title",
+        "closeButton",
+        "pageButtons",
+        "slots",
+        "slotContent"
+      ],
+      "description": "Save/load overlay UI configuration",
+      "title": "Save/Load Overlay",
+      "x-i18n": {
+        "zh-CN": "存读档界面"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "存读档浮层的可配置数据"
+      }
+    },
+    "confirm": {
+      "type": "object",
+      "properties": {
+        "defaultMessage": {
+          "default": "Preview",
+          "description": "Default dialog message when no overlay params are provided",
+          "title": "Default Message",
+          "x-i18n": {
+            "zh-CN": "默认消息"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "未提供 overlay 参数时，确认对话框默认显示的消息文本"
+          },
+          "type": "string"
+        },
+        "defaultMode": {
+          "default": "confirm",
+          "description": "Default dialog mode when no overlay params are provided",
+          "title": "Default Mode",
+          "x-i18n": {
+            "zh-CN": "默认模式"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "未提供 overlay 参数时，确认对话框默认使用的模式"
+          },
+          "type": "string",
+          "enum": [
+            "alert",
+            "confirm"
+          ]
+        },
+        "mask": {
+          "type": "string",
+          "description": "Confirm overlay mask image",
+          "title": "Mask",
+          "format": "asset",
+          "x-asset-kind": "image",
+          "x-i18n": {
+            "zh-CN": "遮罩图"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "确认对话框的遮罩图片"
+          }
+        },
+        "background": {
+          "type": "string",
+          "description": "Confirm dialog background image",
+          "title": "Background",
+          "format": "asset",
+          "x-asset-kind": "image",
+          "x-i18n": {
+            "zh-CN": "背景图"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "确认对话框的背景图片"
+          }
+        },
+        "confirmButtonSound": {
+          "description": "Sound effect played when confirming the dialog",
+          "title": "Confirm Sound",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "确认音效"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "点击确认按钮时播放的音效"
+          },
+          "type": "string"
+        },
+        "cancelButtonSound": {
+          "description": "Sound effect played when cancelling the dialog",
+          "title": "Cancel Sound",
+          "format": "asset",
+          "x-asset-kind": "audio",
+          "x-i18n": {
+            "zh-CN": "取消音效"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "点击取消按钮时播放的音效"
+          },
+          "type": "string"
+        },
+        "message": {
+          "type": "object",
+          "properties": {
+            "position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "title": "X",
+                  "x-i18n": {
+                    "zh-CN": "X 坐标"
+                  }
+                },
+                "y": {
+                  "type": "number",
+                  "title": "Y",
+                  "x-i18n": {
+                    "zh-CN": "Y 坐标"
+                  }
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "title": "Coordinates",
+              "x-i18n": {
+                "zh-CN": "坐标"
+              },
+              "format": "position"
+            },
+            "fontSize": {
+              "default": 36,
+              "description": "Dialog message font size",
+              "title": "Font Size",
+              "x-i18n": {
+                "zh-CN": "字号"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "对话框消息文字字号"
+              },
+              "type": "number"
+            },
+            "color": {
+              "default": "#ffffff",
+              "description": "Dialog message text color",
+              "title": "Color",
+              "format": "color",
+              "x-i18n": {
+                "zh-CN": "颜色"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "对话框消息文字颜色"
+              },
+              "type": "string"
+            }
+          },
+          "required": [
+            "position"
+          ],
+          "description": "Dialog message configuration",
+          "title": "Message",
+          "x-i18n": {
+            "zh-CN": "消息文本"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "确认对话框消息文本的显示配置"
+          }
+        },
+        "alertButton": {
+          "type": "object",
+          "properties": {
+            "position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "title": "X",
+                  "x-i18n": {
+                    "zh-CN": "X 坐标"
+                  }
+                },
+                "y": {
+                  "type": "number",
+                  "title": "Y",
+                  "x-i18n": {
+                    "zh-CN": "Y 坐标"
+                  }
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "title": "Coordinates",
+              "x-i18n": {
+                "zh-CN": "坐标"
+              },
+              "format": "position"
+            },
+            "fileNames": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "description": "Idle state image",
+                  "title": "Idle",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "空闲"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮空闲状态的图片"
+                  }
+                },
+                {
+                  "type": "string",
+                  "description": "Hover state image",
+                  "title": "Hover",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "悬停"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮悬停状态的图片"
+                  }
+                },
+                {
+                  "type": "string",
+                  "description": "Pressed state image",
+                  "title": "Pressed",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "按下"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮按下状态的图片"
+                  }
+                }
+              ],
+              "description": "Button images in idle, hover, and pressed states",
+              "title": "Button Images",
+              "x-i18n": {
+                "zh-CN": "按钮图片"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮空闲、悬停和按下状态的图片"
+              }
+            },
+            "text": {
+              "type": "string",
+              "description": "Button label",
+              "title": "Text",
+              "x-i18n": {
+                "zh-CN": "文字"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮上显示的文字"
+              }
+            },
+            "color": {
+              "default": "#ffffff",
+              "description": "Button text color",
+              "title": "Color",
+              "format": "color",
+              "x-i18n": {
+                "zh-CN": "颜色"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮文字颜色"
+              },
+              "type": "string"
+            },
+            "fontSize": {
+              "default": 36,
+              "description": "Button font size",
+              "title": "Font Size",
+              "x-i18n": {
+                "zh-CN": "字号"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮文字字号"
+              },
+              "type": "number"
+            }
+          },
+          "required": [
+            "position",
+            "fileNames",
+            "text"
+          ],
+          "description": "Alert mode button configuration",
+          "title": "Alert Button",
+          "x-i18n": {
+            "zh-CN": "提示按钮"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "alert 模式下的按钮配置"
+          }
+        },
+        "confirmButton": {
+          "type": "object",
+          "properties": {
+            "position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "title": "X",
+                  "x-i18n": {
+                    "zh-CN": "X 坐标"
+                  }
+                },
+                "y": {
+                  "type": "number",
+                  "title": "Y",
+                  "x-i18n": {
+                    "zh-CN": "Y 坐标"
+                  }
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "title": "Coordinates",
+              "x-i18n": {
+                "zh-CN": "坐标"
+              },
+              "format": "position"
+            },
+            "fileNames": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "description": "Idle state image",
+                  "title": "Idle",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "空闲"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮空闲状态的图片"
+                  }
+                },
+                {
+                  "type": "string",
+                  "description": "Hover state image",
+                  "title": "Hover",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "悬停"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮悬停状态的图片"
+                  }
+                },
+                {
+                  "type": "string",
+                  "description": "Pressed state image",
+                  "title": "Pressed",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "按下"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮按下状态的图片"
+                  }
+                }
+              ],
+              "description": "Button images in idle, hover, and pressed states",
+              "title": "Button Images",
+              "x-i18n": {
+                "zh-CN": "按钮图片"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮空闲、悬停和按下状态的图片"
+              }
+            },
+            "text": {
+              "type": "string",
+              "description": "Button label",
+              "title": "Text",
+              "x-i18n": {
+                "zh-CN": "文字"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮上显示的文字"
+              }
+            },
+            "color": {
+              "default": "#ffffff",
+              "description": "Button text color",
+              "title": "Color",
+              "format": "color",
+              "x-i18n": {
+                "zh-CN": "颜色"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮文字颜色"
+              },
+              "type": "string"
+            },
+            "fontSize": {
+              "default": 36,
+              "description": "Button font size",
+              "title": "Font Size",
+              "x-i18n": {
+                "zh-CN": "字号"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮文字字号"
+              },
+              "type": "number"
+            }
+          },
+          "required": [
+            "position",
+            "fileNames",
+            "text"
+          ],
+          "description": "Confirm mode accept button configuration",
+          "title": "Confirm Button",
+          "x-i18n": {
+            "zh-CN": "确认按钮"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "confirm 模式下的确认按钮配置"
+          }
+        },
+        "cancelButton": {
+          "type": "object",
+          "properties": {
+            "position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "title": "X",
+                  "x-i18n": {
+                    "zh-CN": "X 坐标"
+                  }
+                },
+                "y": {
+                  "type": "number",
+                  "title": "Y",
+                  "x-i18n": {
+                    "zh-CN": "Y 坐标"
+                  }
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "title": "Coordinates",
+              "x-i18n": {
+                "zh-CN": "坐标"
+              },
+              "format": "position"
+            },
+            "fileNames": {
+              "type": "array",
+              "prefixItems": [
+                {
+                  "type": "string",
+                  "description": "Idle state image",
+                  "title": "Idle",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "空闲"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮空闲状态的图片"
+                  }
+                },
+                {
+                  "type": "string",
+                  "description": "Hover state image",
+                  "title": "Hover",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "悬停"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮悬停状态的图片"
+                  }
+                },
+                {
+                  "type": "string",
+                  "description": "Pressed state image",
+                  "title": "Pressed",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "按下"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮按下状态的图片"
+                  }
+                }
+              ],
+              "description": "Button images in idle, hover, and pressed states",
+              "title": "Button Images",
+              "x-i18n": {
+                "zh-CN": "按钮图片"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮空闲、悬停和按下状态的图片"
+              }
+            },
+            "text": {
+              "type": "string",
+              "description": "Button label",
+              "title": "Text",
+              "x-i18n": {
+                "zh-CN": "文字"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮上显示的文字"
+              }
+            },
+            "color": {
+              "default": "#ffffff",
+              "description": "Button text color",
+              "title": "Color",
+              "format": "color",
+              "x-i18n": {
+                "zh-CN": "颜色"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮文字颜色"
+              },
+              "type": "string"
+            },
+            "fontSize": {
+              "default": 36,
+              "description": "Button font size",
+              "title": "Font Size",
+              "x-i18n": {
+                "zh-CN": "字号"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按钮文字字号"
+              },
+              "type": "number"
+            }
+          },
+          "required": [
+            "position",
+            "fileNames",
+            "text"
+          ],
+          "description": "Confirm mode cancel button configuration",
+          "title": "Cancel Button",
+          "x-i18n": {
+            "zh-CN": "取消按钮"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "confirm 模式下的取消按钮配置"
+          }
+        }
+      },
+      "required": [
+        "mask",
+        "background",
+        "message",
+        "alertButton",
+        "confirmButton",
+        "cancelButton"
+      ],
+      "description": "Confirm dialog overlay UI configuration",
+      "title": "Confirm Dialog",
+      "x-i18n": {
+        "zh-CN": "确认对话框"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "确认对话框浮层的可配置数据"
+      }
     }
   },
   "required": [
-    "title"
+    "title",
+    "menu",
+    "saveload",
+    "confirm"
   ]
 }

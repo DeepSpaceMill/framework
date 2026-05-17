@@ -1,14 +1,13 @@
-import { useRef, useState } from 'react';
-import { useNavigation, useNavigationParams, animated, getStageSize, useSoundEffect, useTransition } from '@momoyu-ink/kit';
+import { useEffect, useRef, useState } from 'react';
+import { useNavigation, useNavigationParams, animated, getStageSize, useSoundEffect, useTransition, useUiData } from '@momoyu-ink/kit';
 import { Button } from '../components/button';
 import { uiActions } from '../state/ui';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 
 interface SaveLoadParams {
-  type: 'save' | 'load';
+  type?: 'save' | 'load';
 }
 
-const SLOTS_PER_PAGE = 10;
 const PANEL_TRANSITION = {
   from: {
     opacity: 0,
@@ -34,6 +33,7 @@ const PANEL_TRANSITION = {
 export function SaveLoad() {
   const navigation = useNavigation();
   const params = useNavigationParams<SaveLoadParams>();
+  const saveLoadUi = useUiData('saveload');
   const pendingCloseActionRef = useRef<(() => void) | null>(null);
   const [show, setShow] = useState(true);
   const transitions = useTransition(show ? [0] : [], {
@@ -47,13 +47,25 @@ export function SaveLoad() {
     },
   });
 
-  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
-  const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
+  const hoverButtonSound = useSoundEffect(saveLoadUi.hoverButtonSound);
+  const backButtonSound = useSoundEffect(saveLoadUi.backButtonSound);
 
   const [currentPage, setCurrentPage] = useState(0);
+  const pageCount = saveLoadUi.pageButtons.length;
+  const slotsPerPage = saveLoadUi.slots.length;
+  const activePage = Math.min(currentPage, pageCount - 1);
 
-  const type = params?.type ?? 'save';
+  const type = params?.type ?? saveLoadUi.defaultType;
+  const titleText = type === 'save' ? saveLoadUi.title.saveText : saveLoadUi.title.loadText;
   const { slots, saveToSlot, loadFromSlot, deleteSaveSlot } = useSaveLoad();
+
+  useEffect(() => {
+    if (currentPage !== activePage) {
+      setCurrentPage(activePage);
+    }
+  }, [activePage, currentPage]);
+
+  const getSlotLabel = (slotId: string) => (slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId.replace('save-', '')}`);
 
   const requestClose = (afterClose?: () => void) => {
     pendingCloseActionRef.current = afterClose ?? (() => navigation.popOverlay());
@@ -61,7 +73,7 @@ export function SaveLoad() {
   };
 
   const handleSlotAction = async (slotId: string) => {
-    const slotName = slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId}`;
+    const slotName = getSlotLabel(slotId);
     const actionText = type === 'save' ? '保存到' : '读取';
 
     uiActions.confirm(`确定要${actionText}${slotName}吗？`, () => performSlotAction(slotId));
@@ -75,12 +87,12 @@ export function SaveLoad() {
         if (slotId === 'auto-save') {
           uiActions.notify('快速存档保存成功');
         } else {
-          uiActions.notify(`保存到存档槽 ${slotId} 成功`);
+          uiActions.notify(`保存到${getSlotLabel(slotId)}成功`);
         }
       } else if (type === 'load') {
         const success = await loadFromSlot(slotId);
 
-        const slotName = slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId}`;
+        const slotName = getSlotLabel(slotId);
 
         if (success) {
           uiActions.notify(`读取${slotName}成功`);
@@ -105,10 +117,10 @@ export function SaveLoad() {
   const handleDeleteSlot = async (slotId: string) => {
     try {
       await deleteSaveSlot(slotId);
-      uiActions.notify(`删除存档槽 ${slotId} 成功`);
+      uiActions.notify(`删除${getSlotLabel(slotId)}成功`);
     } catch (error) {
       console.error('Delete slot failed:', error);
-      uiActions.notify(`删除存档槽 ${slotId} 失败`);
+      uiActions.notify(`删除${getSlotLabel(slotId)}失败`);
     }
   };
 
@@ -122,130 +134,132 @@ export function SaveLoad() {
 
   return transitions((style, _) => (
     <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} scale={scale} interactive={show}>
-      <animated.sprite label="透明遮罩" src="ui/mask-transparent.png" onClick={handleExit} />
+      <animated.sprite label="透明遮罩" src={saveLoadUi.mask} onClick={handleExit} />
       <animated.sprite
         label="背景图"
-        src="ui/sl_bg.png"
+        src={saveLoadUi.background}
         pivot={[0.5, 0.5]}
         x={960}
         y={style.offsetY.to((value) => 540 + value)}
         opacity={style.opacity}
         scale={style.scale}
       >
-        <text label="标题" text={type?.toUpperCase()} fontSize={48} fillColor="white" x={64} y={54} />
+        <text
+          label="标题"
+          text={titleText}
+          fontSize={saveLoadUi.title.fontSize}
+          fillColor={saveLoadUi.title.color}
+          x={saveLoadUi.title.position.x}
+          y={saveLoadUi.title.position.y}
+        />
         <Button
-          fileNames={['ui/sl_close.png', 'ui/sl_close_hover.png', 'ui/sl_close_press.png']}
-          x={1532}
-          y={62}
+          fileNames={saveLoadUi.closeButton.fileNames}
+          x={saveLoadUi.closeButton.position.x}
+          y={saveLoadUi.closeButton.position.y}
           onClick={handleExit}
         />
-        <container x={606} y={60}>
-          {[...Array(5)].map((_, index) => (
-            <Button
-              key={`nav-button-${String(index)}`}
-              fileNames={['ui/sl_nav.png', 'ui/sl_nav_hover.png', 'ui/sl_nav_press.png']}
-              x={78 * index}
-              text={`${index + 1}`}
-              color={currentPage === index ? 'black' : 'white'}
-              lockOn={currentPage === index ? 'press' : undefined}
-              onClick={() => {
-                setCurrentPage(index);
-              }}
-            />
-          ))}
-        </container>
-        <container x={94} y={146}>
-          {[...Array(10)].map((_, index) => {
-            const slotId =
-              currentPage === 0 && index === 0
-                ? 'auto-save'
-                : `save-${currentPage * SLOTS_PER_PAGE + index + (currentPage === 0 ? 0 : 1)}`;
-            const slotData = slots.get(slotId);
-            const isInteractive = !!slotData || type === 'save';
-            const positionData = [
-              [0, 0],
-              [722, 0],
-              [0, 140],
-              [722, 140],
-              [0, 280],
-              [722, 280],
-              [0, 420],
-              [722, 420],
-              [0, 560],
-              [722, 560],
-            ][index] || [0, 0];
+        {saveLoadUi.pageButtons.map((button, index) => (
+          <Button
+            key={`nav-button-${String(index)}`}
+            fileNames={button.fileNames}
+            x={button.position.x}
+            y={button.position.y}
+            text={button.text ?? `${index + 1}`}
+            fontSize={button.fontSize}
+            color={activePage === index ? button.activeTextColor : button.inactiveTextColor}
+            lockOn={activePage === index ? 'press' : undefined}
+            onClick={() => {
+              setCurrentPage(index);
+            }}
+          />
+        ))}
+        {saveLoadUi.slots.map((slot, index) => {
+          const linearIndex = activePage * slotsPerPage + index;
+          const isAutoSaveSlot = saveLoadUi.enableAutoSaveSlot && linearIndex === 0;
+          const slotId = isAutoSaveSlot ? 'auto-save' : `save-${linearIndex + (saveLoadUi.enableAutoSaveSlot ? 0 : 1)}`;
+          const slotData = slots.get(slotId);
+          const isInteractive = !!slotData || type === 'save';
 
-            return (
-              <container key={slotId} x={positionData[0]} y={positionData[1]}>
-                <Button
-                  fileNames={['ui/sl_item.png', 'ui/sl_item_hover.png', 'ui/sl_item_press.png']}
-                  onMouseEnter={hoverButtonSound}
-                  interactive={isInteractive}
-                  onClick={() => handleSlotAction(slotId)}
-                />
-                {!slotData && (
+          return (
+            <container key={slotId} x={slot.position.x} y={slot.position.y}>
+              <Button
+                fileNames={slot.fileNames}
+                onMouseEnter={hoverButtonSound}
+                interactive={isInteractive}
+                onClick={() => handleSlotAction(slotId)}
+              />
+              {!slotData && saveLoadUi.slotContent.emptyText.enabled && (
+                <container interactive={false}>
+                  <text
+                    text={saveLoadUi.slotContent.emptyText.text}
+                    fontSize={saveLoadUi.slotContent.emptyText.fontSize}
+                    lineHeight={1.5}
+                    fillColor={saveLoadUi.slotContent.emptyText.color}
+                    opacity={saveLoadUi.slotContent.emptyText.opacity}
+                    pivot={[0.5, 0.5]}
+                    x={saveLoadUi.slotContent.emptyText.position.x}
+                    y={saveLoadUi.slotContent.emptyText.position.y}
+                  />
+                </container>
+              )}
+              {slotData && (
+                <container>
                   <container interactive={false}>
-                    <text
-                      text="NO DATA"
-                      fontSize={32}
-                      lineHeight={1.5}
-                      fillColor="#ffffff"
-                      opacity={0.6}
-                      pivot={[0.5, 0.5]}
-                      x={712 / 2}
-                      y={130 / 2}
+                    <sprite
+                      src={slotData.snapshot}
+                      x={saveLoadUi.slotContent.snapshot.position.x}
+                      y={saveLoadUi.slotContent.snapshot.position.y}
                     />
-                  </container>
-                )}
-                {slotData && (
-                  <container>
-                    <container interactive={false}>
-                      <sprite src={slotData.snapshot} x={2} y={2} />
+                    {saveLoadUi.slotContent.name.enabled && (
                       <text
-                        text={`${slotData.name === 'auto-save' ? '（快速存档）' : slotData.name.replace('save-', '存档 ')}`}
-                        fontSize={28}
+                        text={slotData.name === 'auto-save' ? '（快速存档）' : `存档 ${slotData.name.replace('save-', '')}`}
+                        fontSize={saveLoadUi.slotContent.name.fontSize}
                         lineHeight={1.2}
-                        fillColor="#ffffff"
-                        x={250}
-                        y={7}
+                        fillColor={saveLoadUi.slotContent.name.color}
+                        x={saveLoadUi.slotContent.name.position.x}
+                        y={saveLoadUi.slotContent.name.position.y}
                       />
+                    )}
+                    {saveLoadUi.slotContent.summary.enabled && (
                       <text
                         text={slotData.extra?.text ?? ''}
-                        fontSize={20}
+                        fontSize={saveLoadUi.slotContent.summary.fontSize}
                         lineHeight={1.3}
-                        boxWidth={442}
-                        boxHeight={52}
-                        fillColor="#ffffff"
-                        x={250}
-                        y={50}
+                        boxWidth={saveLoadUi.slotContent.summary.boxWidth}
+                        boxHeight={saveLoadUi.slotContent.summary.boxHeight}
+                        fillColor={saveLoadUi.slotContent.summary.color}
+                        x={saveLoadUi.slotContent.summary.position.x}
+                        y={saveLoadUi.slotContent.summary.position.y}
                       />
+                    )}
+                    {saveLoadUi.slotContent.timestamp.enabled && (
                       <text
                         text={formatTimestamp(slotData.metadata.timestamp)}
-                        fontSize={16}
+                        fontSize={saveLoadUi.slotContent.timestamp.fontSize}
                         lineHeight={1.2}
-                        fillColor="#ffffff"
+                        fillColor={saveLoadUi.slotContent.timestamp.color}
                         pivot={[1, 0]}
-                        x={689}
-                        y={104}
-                      />
-                    </container>
-                    {type === 'load' && (
-                      <Button
-                        fileNames={['ui/sl_item_del.png', 'ui/sl_item_del_hover.png', 'ui/sl_item_del_press.png']}
-                        x={676}
-                        y={15}
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          handleDeleteSlot(slotId);
-                        }}
+                        x={saveLoadUi.slotContent.timestamp.position.x}
+                        y={saveLoadUi.slotContent.timestamp.position.y}
                       />
                     )}
                   </container>
-                )}
-              </container>
-            );
-          })}
-        </container>
+                  {type === 'load' && (
+                    <Button
+                      fileNames={saveLoadUi.slotContent.deleteButton.fileNames}
+                      x={saveLoadUi.slotContent.deleteButton.position.x}
+                      y={saveLoadUi.slotContent.deleteButton.position.y}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleDeleteSlot(slotId);
+                      }}
+                    />
+                  )}
+                </container>
+              )}
+            </container>
+          );
+        })}
       </animated.sprite>
     </animated.backdrop>
   ));

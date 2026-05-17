@@ -1,15 +1,17 @@
-import { useNavigation, animated, useTransition, useSoundEffect } from '@momoyu-ink/kit';
+import { useNavigation, animated, useTransition, useSoundEffect, useUiData } from '@momoyu-ink/kit';
 import { uiActions } from '../state/ui';
 import { Button } from '../components/button';
 import { executePluginCommand } from '@momoyu-ink/kit';
 import { resetGameState } from '../state/game';
+import type { MenuButtonAction } from '../data/ui';
 
 export function Menu() {
+  const menuUi = useUiData('menu');
   const navigation = useNavigation();
 
-  const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
-  const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
-  const startButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.opus');
+  const hoverButtonSound = useSoundEffect(menuUi.buttonHoverSound);
+  const backButtonSound = useSoundEffect(menuUi.backButtonSound);
+  const startButtonSound = useSoundEffect(menuUi.startButtonSound);
 
   const transitions = useTransition([0], {
     keys: (item) => item,
@@ -65,50 +67,40 @@ export function Menu() {
     });
   };
 
+  const handleButtonClick = (action: MenuButtonAction) => () => {
+    switch (action.type) {
+      case 'resume':
+        handleExit();
+        return;
+      case 'settings':
+        handleToSettings();
+        return;
+      case 'title':
+        handleToMainMenu();
+        return;
+      case 'quit':
+        handleToQuit();
+        return;
+    }
+  };
+
   return transitions((style, _) => (
     <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity}>
       <animated.sprite label="半透明遮罩" src="ui/mask.png" onClick={handleExit} />
-      <animated.sprite label="背景图" src="ui/menu_bg.png" pivot={[0.5, 0.5]} x={960} y={540} {...style}>
-        <Button
-          fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
-          x={0}
-          y={50}
-          anchor={[0.5, 0]}
-          text="继续游戏"
-          color="#f0f0f0"
-          onMouseEnter={hoverButtonSound}
-          onClick={handleExit}
-        />
-        <Button
-          fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
-          x={0}
-          y={50 + 102}
-          anchor={[0.5, 0]}
-          text="设置"
-          color="#f0f0f0"
-          onMouseEnter={hoverButtonSound}
-          onClick={handleToSettings}
-        />
-        <Button
-          fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
-          x={0}
-          y={50 + 102 * 2}
-          anchor={[0.5, 0]}
-          text="回到主界面"
-          color="#f0f0f0"
-          onMouseEnter={hoverButtonSound}
-          onClick={handleToMainMenu}
-        />
-        <Button
-          fileNames={['ui/menu_style1.png', 'ui/menu_style1_hover.png', 'ui/menu_style1_press.png']}
-          x={0}
-          y={50 + 102 * 3}
-          anchor={[0.5, 0]}
-          text="退出到桌面"
-          color="#f0f0f0"
-          onMouseEnter={hoverButtonSound}
-          onClick={handleToQuit}
-        />
+      <animated.sprite label="背景图" src={menuUi.background} pivot={[0.5, 0.5]} x={960} y={540} {...style}>
+        {menuUi.buttons.map((button, index) => (
+          <Button
+            key={`${button.text}-${index}`}
+            fileNames={button.fileNames}
+            x={button.position.x}
+            y={button.position.y}
+            anchor={[0.5, 0]}
+            text={button.text}
+            color={button.color}
+            onMouseEnter={hoverButtonSound}
+            onClick={handleButtonClick(button.action)}
+          />
+        ))}
       </animated.sprite>
     </animated.backdrop>
   ));
