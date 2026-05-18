@@ -4,6 +4,38 @@ import { gameState, resetGameState, type GameState } from '../state/game';
 import { getStageSingleton } from '../lib/stageSingleton';
 import { applyGameStateSnapshot } from '../utils/scenarioGameState';
 
+async function restartStageStoryFromHead(story: string, entry: string) {
+  const navigator = getNavigator();
+  const currentPage = navigator.getCurrentPage();
+
+  if (currentPage !== 'stage') {
+    throw new Error('Current page is not stage');
+  }
+
+  getStageSingleton().resetRuntimeState();
+  navigator.clearOverlays();
+  resetGameState();
+
+  try {
+    await executePluginCommand('scenario', {
+      subCommand: 'terminateStory',
+    });
+  } catch {
+    // Ignore when the current story is already stopped.
+  }
+
+  await executePluginCommand('scenario', {
+    subCommand: 'addStory',
+    name: story,
+  });
+
+  await executePluginCommand('scenario', {
+    subCommand: 'startStory',
+    name: story,
+    entry,
+  });
+}
+
 export const gameStateDebugAdapter: AppStateAdapter<GameState> = {
   capture() {
     return snapshot(gameState) as GameState;
@@ -40,6 +72,9 @@ export const gameStateDebugAdapter: AppStateAdapter<GameState> = {
   exitFastForwardMode() {
     getStageSingleton().stopFastForward();
   },
+  async restartStoryFromHead({ story, entry = 'entry' }) {
+    await restartStageStoryFromHead(story, entry);
+  },
   async restartCurrentStoryFromHead() {
     const navigator = getNavigator();
     const currentPage = navigator.getCurrentPage();
@@ -55,22 +90,6 @@ export const gameStateDebugAdapter: AppStateAdapter<GameState> = {
       throw new Error('Current stage params are missing story or entry');
     }
 
-    getStageSingleton().resetRuntimeState();
-    navigator.clearOverlays();
-    resetGameState();
-
-    try {
-      await executePluginCommand('scenario', {
-        subCommand: 'terminateStory',
-      });
-    } catch {
-      // Ignore when the current story is already stopped.
-    }
-
-    await executePluginCommand('scenario', {
-      subCommand: 'startStory',
-      name: story,
-      entry,
-    });
+    await restartStageStoryFromHead(story, entry);
   },
 };
