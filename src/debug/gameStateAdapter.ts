@@ -1,8 +1,8 @@
 import { DEBUG_EMPTY_PAGE, executePluginCommand, getNavigator, type AppStateAdapter, type FastForwardOptions } from '@momoyu-ink/kit';
 import { snapshot } from 'valtio';
-import { gameState, resetGameState, type GameState } from '../state/game';
+import { gameState, type GameState } from '../state/game';
 import { getStageSingleton } from '../lib/stageSingleton';
-import { applyGameStateSnapshot } from '../utils/scenarioGameState';
+import { applyGameStateSnapshot, resetScenarioSessionForNewGame } from '../utils/scenarioGameState';
 
 async function restartStageStoryFromHead(story: string, entry: string) {
   const navigator = getNavigator();
@@ -14,15 +14,7 @@ async function restartStageStoryFromHead(story: string, entry: string) {
 
   getStageSingleton().resetRuntimeState();
   navigator.clearOverlays();
-  resetGameState();
-
-  try {
-    await executePluginCommand('scenario', {
-      subCommand: 'terminateStory',
-    });
-  } catch {
-    // Ignore when the current story is already stopped.
-  }
+  await resetScenarioSessionForNewGame();
 
   await executePluginCommand('scenario', {
     subCommand: 'addStory',
@@ -45,7 +37,7 @@ export const gameStateDebugAdapter: AppStateAdapter<GameState> = {
     getNavigator().clearOverlays();
     applyGameStateSnapshot(state);
   },
-  switchPage(page, params) {
+  async switchPage(page, params) {
     const navigator = getNavigator();
     if (!navigator.hasPage(page)) {
       throw new Error(`Page "${page}" not found`);
@@ -53,6 +45,11 @@ export const gameStateDebugAdapter: AppStateAdapter<GameState> = {
 
     getStageSingleton().resetRuntimeState();
     navigator.clearOverlays();
+
+    if (page === 'stage' && params?.isNewGame === true) {
+      await resetScenarioSessionForNewGame();
+    }
+
     navigator.navigate(page as never, params as never);
   },
   switchOverlay(overlay, params) {

@@ -12,6 +12,7 @@ import {
 import { Button } from '../components/button';
 import type { TitleButtonAction } from '../data/ui';
 import { uiActions } from '../state/ui';
+import { resetScenarioSessionForNewGame } from '../utils/scenarioGameState';
 
 export function Title() {
   const titleUi = useUiData('title');
@@ -61,7 +62,13 @@ export function Title() {
       clickButtonSound();
       pendingActionRef.current = () => {
         if (action.name === 'stage') {
-          navigation.navigate('stage', { story: 'start', entry: 'entry', isNewGame: true });
+          void resetScenarioSessionForNewGame()
+            .catch((error) => {
+              console.error('Failed to reset runtime state before starting a new game:', error);
+            })
+            .finally(() => {
+              navigation.navigate('stage', { story: 'start', entry: 'entry', isNewGame: true });
+            });
           return;
         }
         navigation.navigate(action.name as never);

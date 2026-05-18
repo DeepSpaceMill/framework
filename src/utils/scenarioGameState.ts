@@ -51,3 +51,11 @@ export function applyGameStateSnapshot(loadedGameState: GameState): void {
   gameState.video.visible = false;
   gameState.video.src = '';
 }
+
+export async function resetScenarioSessionForNewGame(): Promise<void> {
+  resetGameState();
+
+  await executePluginCommand('scenario', {
+    subCommand: 'resetGame',
+  });
+}
