@@ -14,6 +14,9 @@ module.exports = {
   watchOptions: {
     ignored: /[\\/](?:\.git[\\/]|node_modules[\\/](?!@momoyu-ink[\\/]))/,
   },
+  performance: {
+    hints: false,
+  },
   module: {
     rules: [
       {
