@@ -1,4 +1,11 @@
-import { DEBUG_EMPTY_PAGE, executePluginCommand, getNavigator, type AppStateAdapter, type FastForwardOptions } from '@momoyu-ink/kit';
+import {
+  DEBUG_EMPTY_PAGE,
+  ensureArchiveVariableDefaults,
+  executePluginCommand,
+  getNavigator,
+  type AppStateAdapter,
+  type FastForwardOptions,
+} from '@momoyu-ink/kit';
 import { snapshot } from 'valtio';
 import { gameState, type GameState } from '../state/game';
 import { getStageSingleton } from '../lib/stageSingleton';
@@ -15,6 +22,12 @@ async function restartStageStoryFromHead(story: string, entry: string) {
   getStageSingleton().resetRuntimeState();
   navigator.clearOverlays();
   await resetScenarioSessionForNewGame();
+
+  try {
+    await ensureArchiveVariableDefaults();
+  } catch (error) {
+    console.warn('Failed to apply archive variable defaults before restarting the story:', error);
+  }
 
   await executePluginCommand('scenario', {
     subCommand: 'addStory',
@@ -48,6 +61,12 @@ export const gameStateDebugAdapter: AppStateAdapter<GameState> = {
 
     if (page === 'stage' && params?.isNewGame === true) {
       await resetScenarioSessionForNewGame();
+
+      try {
+        await ensureArchiveVariableDefaults();
+      } catch (error) {
+        console.warn('Failed to apply archive variable defaults before switching to a new game route:', error);
+      }
     }
 
     navigator.navigate(page as never, params as never);

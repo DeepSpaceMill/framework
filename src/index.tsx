@@ -2,6 +2,7 @@ import {
   addEventListener,
   createRoot,
   executePluginCommand,
+  initGlobalVariableDefaults,
   initUiData,
   registerAppStateAdapter,
   startRuntimeDebugSession,
@@ -51,12 +52,12 @@ function Main() {
 }
 
 addEventListener('ready', () => {
-  void initUiData(GameUiSchema)
+  void Promise.all([initUiData(GameUiSchema), initGlobalVariableDefaults()])
     .then(() => {
       const root = createRoot();
       root.render(<Main />);
     })
     .catch((err) => {
-      console.error('Failed to initialize UI data:', err);
+      console.error('Failed to initialize runtime data:', err);
     });
 });

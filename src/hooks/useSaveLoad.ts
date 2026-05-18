@@ -1,4 +1,4 @@
-import { executePluginCommand } from '@momoyu-ink/kit';
+import { ensureArchiveVariableDefaults, executePluginCommand } from '@momoyu-ink/kit';
 import { useCallback, useEffect, useState } from 'react';
 import { restoreGameStateFromScenario, writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
 
@@ -86,6 +86,12 @@ export function useSaveLoad() {
       });
 
       await restoreGameStateFromScenario();
+
+      try {
+        await ensureArchiveVariableDefaults();
+      } catch (error) {
+        console.warn('Failed to apply archive variable defaults after loading a save:', error);
+      }
 
       console.log(`Load from slot ${slotId} completed`);
       return true;

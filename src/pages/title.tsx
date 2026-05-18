@@ -2,6 +2,7 @@ import { useEffect, useRef, useState } from 'react';
 import {
   MouseEvent,
   animated,
+  ensureArchiveVariableDefaults,
   executePluginCommand,
   useNavigation,
   useSoundEffect,
@@ -63,11 +64,16 @@ export function Title() {
       pendingActionRef.current = () => {
         if (action.name === 'stage') {
           void resetScenarioSessionForNewGame()
-            .catch((error) => {
-              console.error('Failed to reset runtime state before starting a new game:', error);
-            })
-            .finally(() => {
+            .then(() =>
+              ensureArchiveVariableDefaults().catch((error) => {
+                console.warn('Failed to apply archive variable defaults before starting a new game:', error);
+              }),
+            )
+            .then(() => {
               navigation.navigate('stage', { story: 'start', entry: 'entry', isNewGame: true });
+            })
+            .catch((error) => {
+              console.error('Failed to prepare runtime state before starting a new game:', error);
             });
           return;
         }
