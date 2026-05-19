@@ -11,6 +11,26 @@ import { gameState, type GameState } from '../state/game';
 import { getStageSingleton } from '../lib/stageSingleton';
 import { applyGameStateSnapshot, resetScenarioSessionForNewGame } from '../utils/scenarioGameState';
 
+const STAGE_ROUTE_READY_TIMEOUT_MS = 5000;
+
+async function waitForStageStoryReady(story: string): Promise<void> {
+  const deadline = Date.now() + STAGE_ROUTE_READY_TIMEOUT_MS;
+
+  while (Date.now() < deadline) {
+    const cursor = (await executePluginCommand('scenario', {
+      subCommand: 'getExecutionCursor',
+    })) as { story?: string } | null;
+
+    if (cursor?.story === story) {
+      return;
+    }
+
+    await new Promise((resolve) => setTimeout(resolve, 10));
+  }
+
+  throw new Error(`Timed out waiting for stage story "${story}" to start`);
+}
+
 async function restartStageStoryFromHead(story: string, entry: string) {
   const navigator = getNavigator();
   const currentPage = navigator.getCurrentPage();
@@ -70,6 +90,10 @@ export const gameStateDebugAdapter: AppStateAdapter<GameState> = {
     }
 
     navigator.navigate(page as never, params as never);
+
+    if (page === 'stage' && typeof params?.story === 'string') {
+      await waitForStageStoryReady(params.story);
+    }
   },
   switchOverlay(overlay, params) {
     const navigator = getNavigator();
