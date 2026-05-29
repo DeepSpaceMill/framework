@@ -1,10 +1,12 @@
 import {
+  animated,
   useAutoTicket,
   useBeforeHandleCommandCallback,
   useIsSeeking,
   useInterruptCallback,
   useIsAutoing,
   useIsSkipping,
+  useTransition,
   type AutoTicketHandle,
   type Node,
   useNavigationState,
@@ -30,6 +32,9 @@ interface TextBoxActorProps {
   onButtonClick: (button: TextBoxButton) => void;
 }
 
+const TEXTBOX_BUTTON_VISIBILITY_DELAY_MS = 80;
+const TEXTBOX_BUTTON_FADE_DURATION_MS = 140;
+
 export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   const autoing = useIsAutoing();
   const skipping = useIsSkipping();
@@ -52,6 +57,17 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   const handleMouseLeave = () => {
     setIsHovered(false);
   };
+
+  const buttonsVisible = isHovered && textBoxState.visible && !hasOverlay;
+
+  const buttonTransitions = useTransition(buttonsVisible ? [0] : [], {
+    from: { opacity: 0 },
+    enter: { opacity: 1, delay: TEXTBOX_BUTTON_VISIBILITY_DELAY_MS },
+    leave: { opacity: 0 },
+    config: {
+      duration: TEXTBOX_BUTTON_FADE_DURATION_MS,
+    },
+  });
 
   const [curPos, setCurPos] = useState<[number, number] | null>(null);
 
@@ -143,40 +159,43 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <Button
-          fileNames={['ui/textbox_close.png', 'ui/textbox_close_hover.png', 'ui/textbox_close_press.png']}
-          x={1466}
-          y={18}
-          onClick={() => {
-            gameState.textbox.hideReason = 'manual';
-            gameState.textbox.visible = false;
-          }}
-          visible={isHovered}
-        />
-        <container x={650} y={158} visible={isHovered}>
-          {[
-            TextBoxButton.QSAVE,
-            TextBoxButton.QLOAD,
-            TextBoxButton.SAVE,
-            TextBoxButton.LOAD,
-            TextBoxButton.AUTO,
-            TextBoxButton.SKIP,
-            TextBoxButton.LOG,
-            TextBoxButton.MENU,
-          ].map((button, index) => (
+        {buttonTransitions((style) => (
+          <animated.container label="文本框按钮组" opacity={style.opacity}>
             <Button
-              key={button}
-              fileNames={[`ui/textbox_button.png`, `ui/textbox_button.png`, `ui/textbox_button.png`]}
-              x={100 * index}
-              text={button}
-              fontSize={24}
-              color={['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.7)', 'rgba(255,255,255,0.9)']}
+              fileNames={['ui/textbox_close.png', 'ui/textbox_close_hover.png', 'ui/textbox_close_press.png']}
+              x={1466}
+              y={18}
               onClick={() => {
-                onButtonClick(button);
+                gameState.textbox.hideReason = 'manual';
+                gameState.textbox.visible = false;
               }}
             />
-          ))}
-        </container>
+            <container x={650} y={158}>
+              {[
+                TextBoxButton.QSAVE,
+                TextBoxButton.QLOAD,
+                TextBoxButton.SAVE,
+                TextBoxButton.LOAD,
+                TextBoxButton.AUTO,
+                TextBoxButton.SKIP,
+                TextBoxButton.LOG,
+                TextBoxButton.MENU,
+              ].map((button, index) => (
+                <Button
+                  key={button}
+                  fileNames={[`ui/textbox_button.png`, `ui/textbox_button.png`, `ui/textbox_button.png`]}
+                  x={100 * index}
+                  text={button}
+                  fontSize={24}
+                  color={['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.7)', 'rgba(255,255,255,0.9)']}
+                  onClick={() => {
+                    onButtonClick(button);
+                  }}
+                />
+              ))}
+            </container>
+          </animated.container>
+        ))}
 
         <container x={72} y={54}>
           <text
