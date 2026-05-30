@@ -83,15 +83,32 @@ function CharacterSprite({ character: propCharacter, isCurrentSpeaker }: Charact
     },
   });
 
+  const imageTransitions = useTransition(character.src ? [character.src] : [], {
+    keys: (src) => src,
+    sort: (a, b) => Number(a === character.src) - Number(b === character.src),
+    from: { opacity: 0, hold: 0 },
+    enter: { opacity: 1, hold: 1 },
+    leave: { opacity: 1, hold: 0 },
+    config: {
+      duration: shouldSkipVisuals ? 0 : character.fadeTime,
+      easing: easings.easeInOutCubic,
+    },
+  });
+
   return (
-    <animated.sprite
-      src={character.src}
-      tint={springs.tint}
-      pivot={character.pivot}
-      visible={character.visible}
-      x={springs.x}
-      y={springs.y}
-      scale={springs.scale}
-    />
+    <container label="角色图片层">
+      {imageTransitions((style, src) => (
+        <animated.sprite
+          src={src}
+          opacity={style.opacity}
+          tint={springs.tint}
+          pivot={character.pivot}
+          visible={character.visible}
+          x={springs.x}
+          y={springs.y}
+          scale={springs.scale}
+        />
+      ))}
+    </container>
   );
 }
