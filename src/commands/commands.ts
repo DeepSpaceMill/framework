@@ -499,6 +499,114 @@ const TextBoxHideCommandSchema = z
     'x-i18n-desc': { 'zh-CN': '隐藏文本框' },
   });
 
+const AvatarCommandSchema = z
+  .object({
+    command: z.literal('avatar'),
+    src: imageSrc.optional(),
+    enable: z
+      .boolean()
+      .optional()
+      .describe('Whether to show the avatar; defaults to true when setting a source')
+      .meta({
+        title: 'Enable',
+        'x-i18n': { 'zh-CN': '启用' },
+        'x-i18n-desc': { 'zh-CN': '是否显示头像；设置 src 时默认启用' },
+      }),
+    offsetX: z
+      .number()
+      .optional()
+      .describe('Horizontal offset relative to the default avatar placement')
+      .meta({
+        title: 'Offset X',
+        'x-i18n': { 'zh-CN': '偏移 X' },
+        'x-i18n-desc': { 'zh-CN': '相对于默认头像摆放位置的水平偏移' },
+      }),
+    offsetY: z
+      .number()
+      .optional()
+      .describe('Vertical offset relative to the default avatar placement')
+      .meta({
+        title: 'Offset Y',
+        'x-i18n': { 'zh-CN': '偏移 Y' },
+        'x-i18n-desc': { 'zh-CN': '相对于默认头像摆放位置的垂直偏移' },
+      }),
+    spacing: z
+      .number()
+      .min(0)
+      .optional()
+      .describe('Horizontal retreat applied to the text and name area when the avatar is visible')
+      .meta({
+        title: 'Spacing',
+        'x-i18n': { 'zh-CN': '退让尺寸' },
+        'x-i18n-desc': { 'zh-CN': '头像可见时，文本区和姓名框在水平方向上的退让尺寸' },
+      }),
+  })
+  .describe('Configure the textbox avatar')
+  .meta({
+    title: 'Textbox Avatar',
+    'x-i18n': { 'zh-CN': '文本框头像' },
+    'x-i18n-desc': { 'zh-CN': '配置文本框头像及其布局参数' },
+  });
+
+const AvatarForCommandSchema = z
+  .object({
+    command: z.literal('avatarFor'),
+    character: charName,
+    name: z
+      .string()
+      .optional()
+      .describe('Optional avatar variant name matched by the third text leading slot')
+      .meta({
+        title: 'Variant Name',
+        'x-i18n': { 'zh-CN': '头像名' },
+        'x-i18n-desc': { 'zh-CN': '可选的头像名，对应文本前导的第三个槽位' },
+      }),
+    src: imageSrc.optional(),
+    enable: z
+      .boolean()
+      .optional()
+      .describe('Whether to show the avatar; defaults to true when setting a source')
+      .meta({
+        title: 'Enable',
+        'x-i18n': { 'zh-CN': '启用' },
+        'x-i18n-desc': { 'zh-CN': '是否显示头像；设置 src 时默认启用' },
+      }),
+    offsetX: z
+      .number()
+      .optional()
+      .describe('Horizontal offset relative to the default avatar placement')
+      .meta({
+        title: 'Offset X',
+        'x-i18n': { 'zh-CN': '偏移 X' },
+        'x-i18n-desc': { 'zh-CN': '相对于默认头像摆放位置的水平偏移' },
+      }),
+    offsetY: z
+      .number()
+      .optional()
+      .describe('Vertical offset relative to the default avatar placement')
+      .meta({
+        title: 'Offset Y',
+        'x-i18n': { 'zh-CN': '偏移 Y' },
+        'x-i18n-desc': { 'zh-CN': '相对于默认头像摆放位置的垂直偏移' },
+      }),
+    spacing: z
+      .number()
+      .min(0)
+      .optional()
+      .describe('Horizontal retreat applied to the text and name area when the avatar is visible')
+      .meta({
+        title: 'Spacing',
+        'x-i18n': { 'zh-CN': '退让尺寸' },
+        'x-i18n-desc': { 'zh-CN': '头像可见时，文本区和姓名框在水平方向上的退让尺寸' },
+      }),
+  })
+  .describe('Configure a textbox avatar for a specific character and optional avatar name')
+  .meta({
+    title: 'Textbox Avatar For Character',
+    'x-i18n': { 'zh-CN': '角色文本框头像' },
+    'x-i18n-desc': { 'zh-CN': '为特定角色和可选头像名配置文本框头像' },
+  });
+
 /* ------------------------------------------------------------------ */
 /*  Sound Commands                                                     */
 /* ------------------------------------------------------------------ */
@@ -997,6 +1105,8 @@ export const ScenarioCommandSchema = z.discriminatedUnion('command', [
   TextBoxCommandSchema,
   TextBoxShowCommandSchema,
   TextBoxHideCommandSchema,
+  AvatarCommandSchema,
+  AvatarForCommandSchema,
   BGMCommandSchema,
   BGMStopCommandSchema,
   SFXCommandSchema,

@@ -63,6 +63,35 @@ const positionSchema = z
     format: 'position',
   });
 
+const boxWidth = z
+  .number()
+  .min(0)
+  .describe('Text box width in pixels')
+  .meta({
+    title: 'Box Width',
+    'x-i18n': { 'zh-CN': '文本框宽度' },
+    'x-i18n-desc': { 'zh-CN': '文本区域宽度（像素）' },
+  });
+
+const boxHeight = z
+  .number()
+  .min(0)
+  .describe('Text box height in pixels')
+  .meta({
+    title: 'Box Height',
+    'x-i18n': { 'zh-CN': '文本框高度' },
+    'x-i18n-desc': { 'zh-CN': '文本区域高度（像素）' },
+  });
+
+const pivotSchema = z
+  .tuple([z.number(), z.number()])
+  .describe('Pivot point (x, y)')
+  .meta({
+    title: 'Pivot',
+    'x-i18n': { 'zh-CN': '旋转中心' },
+    'x-i18n-desc': { 'zh-CN': '节点旋转和定位的锚点' },
+  });
+
 const TitlePageNameSchema = z
   .enum(['stage', 'cg', 'bgm', 'credits'])
   .describe('Target page name')
@@ -896,7 +925,68 @@ export const ConfirmUiSchema = z
     'x-i18n-desc': { 'zh-CN': '确认对话框浮层的可配置数据' },
   });
 
+export const StageTextBoxUiSchema = z
+  .object({
+    position: positionSchema.describe('Textbox background position').meta({
+      title: 'Textbox Position',
+      'x-i18n': { 'zh-CN': '文本框位置' },
+      'x-i18n-desc': { 'zh-CN': '文本框背景图片的位置' },
+      format: 'position',
+    }),
+    content: z
+      .object({
+        position: positionSchema,
+        boxWidth,
+        boxHeight,
+      })
+      .describe('Text content layout')
+      .meta({
+        title: 'Content',
+        'x-i18n': { 'zh-CN': '正文区域' },
+        'x-i18n-desc': { 'zh-CN': '文本框正文的位置与尺寸' },
+      }),
+    nameBox: z
+      .object({
+        position: positionSchema,
+      })
+      .describe('Name box layout')
+      .meta({
+        title: 'Name Box',
+        'x-i18n': { 'zh-CN': '姓名框' },
+        'x-i18n-desc': { 'zh-CN': '姓名框背景的位置' },
+      }),
+    avatar: z
+      .object({
+        position: positionSchema,
+        pivot: pivotSchema,
+      })
+      .describe('Default textbox avatar layout')
+      .meta({
+        title: 'Avatar',
+        'x-i18n': { 'zh-CN': '头像' },
+        'x-i18n-desc': { 'zh-CN': '文本框头像的默认位置与锚点；命令中的 offset 会相对此位置生效' },
+      }),
+  })
+  .describe('Stage textbox UI configuration')
+  .meta({
+    title: 'Textbox',
+    'x-i18n': { 'zh-CN': '文本框' },
+    'x-i18n-desc': { 'zh-CN': '舞台文本框、正文、姓名框与头像的布局配置' },
+  });
+
+export const StageUiSchema = z
+  .object({
+    textbox: StageTextBoxUiSchema,
+  })
+  .describe('Stage UI configuration')
+  .meta({
+    title: 'Stage',
+    'x-i18n': { 'zh-CN': '舞台' },
+    'x-i18n-desc': { 'zh-CN': '舞台界面的可配置数据' },
+  });
+
 export const GameUiSchema = z.object({
+  stage: StageUiSchema,
   title: TitleUiSchema,
   menu: MenuUiSchema,
   saveload: SaveLoadUiSchema,
@@ -911,6 +1001,8 @@ export type MenuButtonUiData = z.infer<typeof MenuButtonUiSchema>;
 export type MenuUiData = z.infer<typeof MenuUiSchema>;
 export type SaveLoadUiData = z.infer<typeof SaveLoadUiSchema>;
 export type ConfirmUiData = z.infer<typeof ConfirmUiSchema>;
+export type StageTextBoxUiData = z.infer<typeof StageTextBoxUiSchema>;
+export type StageUiData = z.infer<typeof StageUiSchema>;
 export type GameUiData = z.infer<typeof GameUiSchema>;
 
 declare module '@momoyu-ink/kit' {

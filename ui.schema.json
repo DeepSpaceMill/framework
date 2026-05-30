@@ -2,6 +2,251 @@
   "$schema": "https://json-schema.org/draft/2020-12/schema",
   "type": "object",
   "properties": {
+    "stage": {
+      "type": "object",
+      "properties": {
+        "textbox": {
+          "type": "object",
+          "properties": {
+            "position": {
+              "type": "object",
+              "properties": {
+                "x": {
+                  "type": "number",
+                  "title": "X",
+                  "x-i18n": {
+                    "zh-CN": "X 坐标"
+                  }
+                },
+                "y": {
+                  "type": "number",
+                  "title": "Y",
+                  "x-i18n": {
+                    "zh-CN": "Y 坐标"
+                  }
+                }
+              },
+              "required": [
+                "x",
+                "y"
+              ],
+              "title": "Textbox Position",
+              "x-i18n": {
+                "zh-CN": "文本框位置"
+              },
+              "format": "position",
+              "description": "Textbox background position",
+              "x-i18n-desc": {
+                "zh-CN": "文本框背景图片的位置"
+              }
+            },
+            "content": {
+              "type": "object",
+              "properties": {
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "title": "X",
+                      "x-i18n": {
+                        "zh-CN": "X 坐标"
+                      }
+                    },
+                    "y": {
+                      "type": "number",
+                      "title": "Y",
+                      "x-i18n": {
+                        "zh-CN": "Y 坐标"
+                      }
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "title": "Coordinates",
+                  "x-i18n": {
+                    "zh-CN": "坐标"
+                  },
+                  "format": "position"
+                },
+                "boxWidth": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "Text box width in pixels",
+                  "title": "Box Width",
+                  "x-i18n": {
+                    "zh-CN": "文本框宽度"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本区域宽度（像素）"
+                  }
+                },
+                "boxHeight": {
+                  "type": "number",
+                  "minimum": 0,
+                  "description": "Text box height in pixels",
+                  "title": "Box Height",
+                  "x-i18n": {
+                    "zh-CN": "文本框高度"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本区域高度（像素）"
+                  }
+                }
+              },
+              "required": [
+                "position",
+                "boxWidth",
+                "boxHeight"
+              ],
+              "description": "Text content layout",
+              "title": "Content",
+              "x-i18n": {
+                "zh-CN": "正文区域"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "文本框正文的位置与尺寸"
+              }
+            },
+            "nameBox": {
+              "type": "object",
+              "properties": {
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "title": "X",
+                      "x-i18n": {
+                        "zh-CN": "X 坐标"
+                      }
+                    },
+                    "y": {
+                      "type": "number",
+                      "title": "Y",
+                      "x-i18n": {
+                        "zh-CN": "Y 坐标"
+                      }
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "title": "Coordinates",
+                  "x-i18n": {
+                    "zh-CN": "坐标"
+                  },
+                  "format": "position"
+                }
+              },
+              "required": [
+                "position"
+              ],
+              "description": "Name box layout",
+              "title": "Name Box",
+              "x-i18n": {
+                "zh-CN": "姓名框"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "姓名框背景的位置"
+              }
+            },
+            "avatar": {
+              "type": "object",
+              "properties": {
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "title": "X",
+                      "x-i18n": {
+                        "zh-CN": "X 坐标"
+                      }
+                    },
+                    "y": {
+                      "type": "number",
+                      "title": "Y",
+                      "x-i18n": {
+                        "zh-CN": "Y 坐标"
+                      }
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "title": "Coordinates",
+                  "x-i18n": {
+                    "zh-CN": "坐标"
+                  },
+                  "format": "position"
+                },
+                "pivot": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ],
+                  "description": "Pivot point (x, y)",
+                  "title": "Pivot",
+                  "x-i18n": {
+                    "zh-CN": "旋转中心"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "节点旋转和定位的锚点"
+                  }
+                }
+              },
+              "required": [
+                "position",
+                "pivot"
+              ],
+              "description": "Default textbox avatar layout",
+              "title": "Avatar",
+              "x-i18n": {
+                "zh-CN": "头像"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "文本框头像的默认位置与锚点；命令中的 offset 会相对此位置生效"
+              }
+            }
+          },
+          "required": [
+            "position",
+            "content",
+            "nameBox",
+            "avatar"
+          ],
+          "description": "Stage textbox UI configuration",
+          "title": "Textbox",
+          "x-i18n": {
+            "zh-CN": "文本框"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "舞台文本框、正文、姓名框与头像的布局配置"
+          }
+        }
+      },
+      "required": [
+        "textbox"
+      ],
+      "description": "Stage UI configuration",
+      "title": "Stage",
+      "x-i18n": {
+        "zh-CN": "舞台"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "舞台界面的可配置数据"
+      }
+    },
     "title": {
       "type": "object",
       "properties": {
@@ -2286,6 +2531,7 @@
     }
   },
   "required": [
+    "stage",
     "title",
     "menu",
     "saveload",

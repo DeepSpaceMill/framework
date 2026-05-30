@@ -1,5 +1,5 @@
 import { getNavigator, getSeekingType, TextLine, type CommandHandler, type TextLineHandler } from '@momoyu-ink/kit';
-import { gameState, resetGameState } from '../state/game';
+import { gameState, resetGameState, type TextBoxAvatarConfig } from '../state/game';
 import { GamePage } from '../state/ui';
 import { writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
 import { ScenarioCommandSchemaType } from './commands';
@@ -21,7 +21,31 @@ function parseTextLeading(leading: string | null | undefined) {
   return {
     speaker: parts[0] ?? '',
     voice: parts[1] ?? '',
+    avatarName: parts[2] ?? '',
   };
+}
+
+function applyAvatarPatch(
+  target: TextBoxAvatarConfig,
+  patch: {
+    src?: string;
+    enable?: boolean;
+    offsetX?: number;
+    offsetY?: number;
+    spacing?: number;
+  },
+) {
+  if (patch.src !== undefined) {
+    target.src = patch.src;
+    if (patch.enable === undefined) {
+      target.enable = true;
+    }
+  }
+
+  if (patch.enable !== undefined) target.enable = patch.enable;
+  if (patch.offsetX !== undefined) target.offsetX = patch.offsetX;
+  if (patch.offsetY !== undefined) target.offsetY = patch.offsetY;
+  if (patch.spacing !== undefined) target.spacing = patch.spacing;
 }
 
 // ---------------------------------------------------------------------------
@@ -60,6 +84,8 @@ export const handleTextClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
   if (cmd.command !== 'textClear') return;
   gameState.textbox.text = '';
   gameState.textbox.name = '';
+  gameState.textbox.avatarName = '';
+  gameState.character.currentSpeaker = undefined;
   // auto-advance
 };
 
@@ -101,6 +127,49 @@ export const handleTextBoxHide: CommandHandler<ScenarioCommandSchemaType> = (cmd
   if (cmd.command !== 'textBoxHide') return;
   gameState.textbox.hideReason = 'command';
   gameState.textbox.visible = false;
+  // auto-advance
+};
+
+/** Configure direct textbox avatar settings. */
+export const handleAvatar: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'avatar') return;
+
+  applyAvatarPatch(gameState.textbox.avatar, cmd);
+  // auto-advance
+};
+
+/** Configure textbox avatar settings for a specific character and optional avatar name. */
+export const handleAvatarFor: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'avatarFor') return;
+
+  const targetName = cmd.name?.trim();
+  const entryIndex = gameState.textbox.avatarFor.findIndex(
+    (entry) => entry.character === cmd.character && entry.name === targetName,
+  );
+  const nextEntry =
+    entryIndex === -1
+      ? {
+          src: '',
+          enable: true,
+          offsetX: 0,
+          offsetY: 0,
+          spacing: 0,
+          character: cmd.character,
+          name: targetName,
+        }
+      : {
+          ...gameState.textbox.avatarFor[entryIndex],
+          character: cmd.character,
+          name: targetName,
+        };
+
+  applyAvatarPatch(nextEntry, cmd);
+
+  if (entryIndex !== -1) {
+    gameState.textbox.avatarFor.splice(entryIndex, 1, nextEntry);
+  } else {
+    gameState.textbox.avatarFor.push(nextEntry);
+  }
   // auto-advance
 };
 
@@ -506,7 +575,7 @@ export const handleOptionClear: CommandHandler<ScenarioCommandSchemaType> = (cmd
 
 /** Process a text line from the scenario engine. */
 export const handleTextLine: TextLineHandler = (e, control) => {
-  const { speaker, voice } = parseTextLeading(e.leading);
+  const { speaker, voice, avatarName } = parseTextLeading(e.leading);
 
   if (voice) {
     handleVoice(
@@ -521,7 +590,9 @@ export const handleTextLine: TextLineHandler = (e, control) => {
     );
   }
 
+  gameState.character.currentSpeaker = speaker || undefined;
   gameState.textbox.name = speaker;
+  gameState.textbox.avatarName = avatarName;
 
   if (gameState.textbox.shouldAddNewline) {
     gameState.textbox.text += '\n';

@@ -10,12 +10,14 @@ import {
   type AutoTicketHandle,
   type Node,
   useNavigationState,
+  useUiData,
 } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
-import { gameState } from '../state/game';
+import { gameState, type TextBoxAvatarConfig, type TextBoxState } from '../state/game';
 import { settingsState } from '../state/settings';
 import { Button } from '../components/button';
+import type { StageTextBoxUiData } from '../data/ui';
 
 export enum TextBoxButton {
   QSAVE = 'QSAV',
@@ -35,6 +37,42 @@ interface TextBoxActorProps {
 const TEXTBOX_BUTTON_VISIBILITY_DELAY_MS = 80;
 const TEXTBOX_BUTTON_FADE_DURATION_MS = 140;
 
+function resolveActiveAvatar(textboxState: TextBoxState): TextBoxAvatarConfig | null {
+  const character = textboxState.name.trim();
+  const avatarName = textboxState.avatarName.trim();
+  const globalAvatar = textboxState.avatar.enable ? textboxState.avatar : null;
+
+  if (!character) {
+    return globalAvatar;
+  }
+
+  // Prefer a named variant match, fall back to the unnamed default for this character.
+  const matched =
+    textboxState.avatarFor.findLast(
+      (avatar) => avatar.character === character && avatar.name !== undefined && avatar.name === avatarName,
+    ) ?? textboxState.avatarFor.findLast((avatar) => avatar.character === character && avatar.name === undefined);
+
+  return matched?.enable ? matched : globalAvatar;
+}
+
+function resolveTextLayout(textBoxUi: StageTextBoxUiData, avatar: TextBoxAvatarConfig | null) {
+  if (!avatar) {
+    return {
+      textX: textBoxUi.content.position.x,
+      textWidth: textBoxUi.content.boxWidth,
+      nameBoxX: textBoxUi.nameBox.position.x,
+    };
+  }
+
+  const spacing = Math.max(0, avatar.spacing);
+
+  return {
+    textX: textBoxUi.content.position.x + spacing,
+    textWidth: Math.max(0, textBoxUi.content.boxWidth - spacing),
+    nameBoxX: textBoxUi.nameBox.position.x + spacing,
+  };
+}
+
 export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   const autoing = useIsAutoing();
   const skipping = useIsSkipping();
@@ -47,8 +85,11 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
 
   const textBoxState = useSnapshot(gameState.textbox);
   const settings = useSnapshot(settingsState);
+  const textBoxUi = useUiData('stage').textbox;
   const navState = useNavigationState();
   const hasOverlay = navState.overlayStack.length > 0;
+  const activeAvatar = resolveActiveAvatar(textBoxState as TextBoxState);
+  const layout = resolveTextLayout(textBoxUi, activeAvatar);
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -154,8 +195,8 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
       <sprite
         label="文本框"
         src="ui/textbox.png"
-        x={206}
-        y={830}
+        x={textBoxUi.position.x}
+        y={textBoxUi.position.y}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
@@ -197,15 +238,25 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
           </animated.container>
         ))}
 
-        <container x={72} y={54}>
+        {activeAvatar ? (
+          <sprite
+            label="文本框头像"
+            src={activeAvatar.src}
+            x={textBoxUi.avatar.position.x + activeAvatar.offsetX}
+            y={textBoxUi.avatar.position.y + activeAvatar.offsetY}
+            pivot={textBoxUi.avatar.pivot}
+          />
+        ) : null}
+
+        <container x={layout.textX} y={textBoxUi.content.position.y}>
           <text
             label="对话内容"
             ref={textWindowRef}
             text={textBoxState.text}
             fontSize={32}
             lineHeight={textBoxState.lineHeight}
-            boxWidth={1384}
-            boxHeight={110}
+            boxWidth={layout.textWidth}
+            boxHeight={textBoxUi.content.boxHeight}
             fillColor={textBoxState.fillColor}
             printMode={effectivePrintMode}
             printSpeed={effectivePrintSpeed}
@@ -241,8 +292,8 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
       <sprite
         label="姓名框"
         src="ui/namebox.png"
-        x={278}
-        y={794}
+        x={layout.nameBoxX}
+        y={textBoxUi.nameBox.position.y}
         anchor={[0.5, 0.5]}
         opacity={textBoxState.name.length > 0 ? 1 : 0}
       >

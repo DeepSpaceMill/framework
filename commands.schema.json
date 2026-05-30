@@ -356,6 +356,186 @@
       "properties": {
         "command": {
           "type": "string",
+          "const": "avatar"
+        },
+        "src": {
+          "type": "string",
+          "description": "Image asset path",
+          "title": "Image",
+          "format": "asset",
+          "x-asset-kind": "image",
+          "x-i18n": {
+            "zh-CN": "图片"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "图片资源路径"
+          }
+        },
+        "enable": {
+          "description": "Whether to show the avatar; defaults to true when setting a source",
+          "title": "Enable",
+          "x-i18n": {
+            "zh-CN": "启用"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否显示头像；设置 src 时默认启用"
+          },
+          "type": "boolean"
+        },
+        "offsetX": {
+          "description": "Horizontal offset relative to the default avatar placement",
+          "title": "Offset X",
+          "x-i18n": {
+            "zh-CN": "偏移 X"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "相对于默认头像摆放位置的水平偏移"
+          },
+          "type": "number"
+        },
+        "offsetY": {
+          "description": "Vertical offset relative to the default avatar placement",
+          "title": "Offset Y",
+          "x-i18n": {
+            "zh-CN": "偏移 Y"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "相对于默认头像摆放位置的垂直偏移"
+          },
+          "type": "number"
+        },
+        "spacing": {
+          "description": "Horizontal retreat applied to the text and name area when the avatar is visible",
+          "title": "Spacing",
+          "x-i18n": {
+            "zh-CN": "退让尺寸"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "头像可见时，文本区和姓名框在水平方向上的退让尺寸"
+          },
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "description": "Configure the textbox avatar",
+      "title": "Textbox Avatar",
+      "x-i18n": {
+        "zh-CN": "文本框头像"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "配置文本框头像及其布局参数"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "avatarFor"
+        },
+        "character": {
+          "type": "string",
+          "description": "Character identifier",
+          "title": "Name",
+          "format": "character",
+          "x-i18n": {
+            "zh-CN": "角色名"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "角色标识符"
+          }
+        },
+        "name": {
+          "description": "Optional avatar variant name matched by the third text leading slot",
+          "title": "Variant Name",
+          "x-i18n": {
+            "zh-CN": "头像名"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "可选的头像名，对应文本前导的第三个槽位"
+          },
+          "type": "string"
+        },
+        "src": {
+          "type": "string",
+          "description": "Image asset path",
+          "title": "Image",
+          "format": "asset",
+          "x-asset-kind": "image",
+          "x-i18n": {
+            "zh-CN": "图片"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "图片资源路径"
+          }
+        },
+        "enable": {
+          "description": "Whether to show the avatar; defaults to true when setting a source",
+          "title": "Enable",
+          "x-i18n": {
+            "zh-CN": "启用"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否显示头像；设置 src 时默认启用"
+          },
+          "type": "boolean"
+        },
+        "offsetX": {
+          "description": "Horizontal offset relative to the default avatar placement",
+          "title": "Offset X",
+          "x-i18n": {
+            "zh-CN": "偏移 X"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "相对于默认头像摆放位置的水平偏移"
+          },
+          "type": "number"
+        },
+        "offsetY": {
+          "description": "Vertical offset relative to the default avatar placement",
+          "title": "Offset Y",
+          "x-i18n": {
+            "zh-CN": "偏移 Y"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "相对于默认头像摆放位置的垂直偏移"
+          },
+          "type": "number"
+        },
+        "spacing": {
+          "description": "Horizontal retreat applied to the text and name area when the avatar is visible",
+          "title": "Spacing",
+          "x-i18n": {
+            "zh-CN": "退让尺寸"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "头像可见时，文本区和姓名框在水平方向上的退让尺寸"
+          },
+          "type": "number",
+          "minimum": 0
+        }
+      },
+      "required": [
+        "command",
+        "character"
+      ],
+      "description": "Configure a textbox avatar for a specific character and optional avatar name",
+      "title": "Textbox Avatar For Character",
+      "x-i18n": {
+        "zh-CN": "角色文本框头像"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "为特定角色和可选头像名配置文本框头像"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
           "const": "bgm"
         },
         "src": {
