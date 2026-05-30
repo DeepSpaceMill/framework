@@ -28,16 +28,23 @@
     // 开门声
     @sfx src="non-free/sfx/room_door_O.mp3" volume=0.8 noWait=false
     @charEnter src="non-free/fg/josei_20_a.png" name="墨语" preset="right" y=450
+    // Textbox avatar demo: direct avatar shown on the left.
+    @avatar src="non-free/avatar/moyu-neutral.png" offsetY=0 spacing=150
     // Camera demo: push to the visitor first, then follow her move to center.
     @camera preset="close-right" fadeTime=700
     [墨语] "早，老哥"
+    @avatar enable=false
     @bgm src="non-free/bgm/抒情钢琴曲II.opus" volume=0.5 fadeTime=2000
     "果然是<fillColor=\"#e0324b\">墨语</fillColor>，从小就认识的邻居家的女儿"
+    // Textbox avatar demo: per-character mapping shown on the right.
+    @avatarFor character="墨语" src="non-free/avatar/moyu-neutral.png" offsetY=6 spacing=150
+    @avatarFor character="墨语" name="happy" src="non-free/avatar/moyu-happy.png" offsetY=6 spacing=150
+    @avatarFor character="墨语" name="grin" src="non-free/avatar/moyu-grin.png" offsetY=6 spacing=150
     // 半叹气地说
     [我] "我还没醒呢，周末一大早的"
     @charAction src="non-free/fg/josei_20_g.png" name="墨语" preset="center" y=450
     @camera preset="close-center" fadeTime=700
-    [墨语] "嘻嘻"
+    [墨语||happy] "嘻嘻"
     "她侧身越过我，倚靠着茶几坐在地毯上"
     @camera preset="reset" fadeTime=600
 
@@ -72,7 +79,7 @@
     "我指着房间角落里东西说，那是她过去半年逐渐带过来的「保管物」"
     // 女主立绘：流汗
     @charAction src="non-free/fg/josei_20_f.png" name="墨语" skippable=true
-    [墨语] "emm……emmm……您看我这穷苦大学生，宿舍实在没地方了……"
+    [墨语||grin] "emm……emmm……您看我这穷苦大学生，宿舍实在没地方了……"
     [墨语] "您作为已经工作快一年的大人，行行好，我还一年半就毕业了"
     "听起来还要放蛮久的……"
     [我] "……我困了，你想接着看上次的漫画就继续吧，我去再睡一觉，有事别叫我"

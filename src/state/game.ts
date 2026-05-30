@@ -53,10 +53,25 @@ export interface CharacterState {
   autoTint: string;
 }
 
+export interface TextBoxAvatarConfig {
+  src: string;
+  enable: boolean;
+  offsetX: number;
+  offsetY: number;
+  /** Horizontal retreat applied to the text and name area when visible. */
+  spacing: number;
+}
+
+export interface TextBoxAvatarForConfig extends TextBoxAvatarConfig {
+  character: string;
+  name?: string;
+}
+
 // TextBox state interface
 export interface TextBoxState {
   name: string;
   text: string;
+  avatarName: string;
   x?: number;
   y?: number;
   visible: boolean;
@@ -78,6 +93,8 @@ export interface TextBoxState {
   shadowOffsetY: number;
   shadowBlur: number;
   shadowWidth: number;
+  avatar: TextBoxAvatarConfig;
+  avatarFor: TextBoxAvatarForConfig[];
 }
 
 export interface BGMState {
@@ -190,6 +207,7 @@ const gameStateDefaults: GameState = {
   textbox: {
     name: '',
     text: '',
+    avatarName: '',
     visible: true,
     hideReason: undefined,
     printMode: 'typewriter',
@@ -206,6 +224,14 @@ const gameStateDefaults: GameState = {
     shadowOffsetY: 0,
     shadowBlur: 0,
     shadowWidth: 0,
+    avatar: {
+      src: '',
+      enable: false,
+      offsetX: 0,
+      offsetY: 0,
+      spacing: 0,
+    },
+    avatarFor: [],
   },
   bgm: {
     src: '',
