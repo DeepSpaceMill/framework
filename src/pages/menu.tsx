@@ -58,7 +58,7 @@ export function Menu() {
 
   const handleToQuit = () => {
     startButtonSound();
-    uiActions.confirm('确定要退出游戏吗？', () => {
+    uiActions.confirmUnique('exit-game', '确定要退出游戏吗？', () => {
       executePluginCommand('system', {
         subCommand: 'quit',
       });
