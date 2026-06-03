@@ -96,7 +96,7 @@ export function Title() {
     }
 
     clickButtonSound();
-    uiActions.confirm('确定要退出游戏吗？', () => {
+    uiActions.confirmUnique('exit-game', '确定要退出游戏吗？', () => {
       executePluginCommand('system', {
         subCommand: 'quit',
       });

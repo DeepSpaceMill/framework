@@ -62,6 +62,22 @@ export const uiActions = {
     });
   },
 
+  // 便捷方法：显示确认对话框，确保同一时间只有一个具有相同ID的对话框存在
+  confirmUnique: (id: string, message: string, onConfirm?: () => void, onCancel?: () => void) => {
+    if (getNavigator().hasActiveOverlay('confirm', id)) {
+      return; // 已经存在相同ID的确认对话框，直接返回
+    }
+    getNavigator().pushOverlay(
+      'confirm',
+      {
+        message,
+        onConfirm,
+        onCancel,
+      },
+      id,
+    );
+  },
+
   // 通知管理
   /**
    * 显示全局通知
