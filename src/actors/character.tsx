@@ -5,7 +5,6 @@ import { gameState, Character } from '../state/game';
 
 export function CharacterActor() {
   const characterState = useSnapshot(gameState.character) as typeof gameState.character;
-  const textboxState = useSnapshot(gameState.textbox);
   const skipping = useIsSkipping();
   const seeking = useIsSeeking();
   const shouldSkipVisuals = skipping || seeking;
@@ -32,7 +31,7 @@ export function CharacterActor() {
           <CharacterSprite
             key={character.name}
             character={character}
-            isCurrentSpeaker={character.name === textboxState.name}
+            isCurrentSpeaker={character.name === characterState.currentSpeaker}
           />
         </animated.container>
       ))}
