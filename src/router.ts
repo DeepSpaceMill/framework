@@ -12,10 +12,7 @@ export const navigator = createStackNavigator({
   initialPage: 'title',
   pages: {
     title: Title,
-    stage: {
-      component: Stage,
-      requiredParams: ['story', 'entry', 'isNewGame'],
-    },
+    stage: Stage,
     cg: () => null,
     bgm: () => null,
     credits: () => null,
