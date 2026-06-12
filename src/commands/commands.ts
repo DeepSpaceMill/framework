@@ -109,6 +109,17 @@ const noWait = (defaultValue: boolean) =>
       'x-i18n-desc': { 'zh-CN': '是否跳过等待过渡完成' },
     });
 
+const transitionDirection = z
+  .enum(['left', 'right', 'up', 'down'])
+  .optional()
+  .default('left')
+  .describe('Transition direction')
+  .meta({
+    title: 'Direction',
+    'x-i18n': { 'zh-CN': '方向' },
+    'x-i18n-desc': { 'zh-CN': '转场方向' },
+  });
+
 const waitForEnd = z
   .boolean()
   .optional()
@@ -235,6 +246,15 @@ const cameraBlur = z
     title: 'Blur',
     'x-i18n': { 'zh-CN': '背景模糊' },
     'x-i18n-desc': { 'zh-CN': '背景模糊半径' },
+  });
+
+const transitionRetain = z
+  .enum(['static', 'live'])
+  .describe('How the previous scene should be retained before the transition starts')
+  .meta({
+    title: 'Retain',
+    'x-i18n': { 'zh-CN': '保留模式' },
+    'x-i18n-desc': { 'zh-CN': '在转场开始前如何保留旧场景' },
   });
 
 /** Common character transform properties shared by charEnter / charAction */
@@ -824,6 +844,238 @@ const CameraCommandSchema = z
     'x-i18n-desc': { 'zh-CN': '设置镜头焦点、推近、景深和背景模糊' },
   });
 
+const TransPrepareCommandSchema = z
+  .object({
+    command: z.literal('transPrepare'),
+    retain: transitionRetain.optional().default('static'),
+  })
+  .describe('Prepare a full-scene transition while keeping the current scene visible')
+  .meta({
+    title: 'Prepare Scene Transition',
+    'x-i18n': { 'zh-CN': '准备场景转场' },
+    'x-i18n-desc': { 'zh-CN': '准备整个场景的转场，但暂不开始播放' },
+  });
+
+function createTransitionEffectCommandSchemas<TCommand extends string, TExtra extends z.ZodRawShape>(
+  command: TCommand,
+  extraFields: TExtra,
+) {
+  return [
+    z.object({
+      command: z.literal(command),
+      effect: z
+        .literal('crossfade')
+        .optional()
+        .default('crossfade')
+        .describe('Transition effect')
+        .meta({
+          title: 'Effect',
+          'x-i18n': { 'zh-CN': '效果' },
+          'x-i18n-desc': { 'zh-CN': '转场效果' },
+        }),
+      ...extraFields,
+    }),
+    z.object({
+      command: z.literal(command),
+      effect: z
+        .literal('wipe')
+        .describe('Transition effect')
+        .meta({
+          title: 'Effect',
+          'x-i18n': { 'zh-CN': '效果' },
+          'x-i18n-desc': { 'zh-CN': '转场效果' },
+        }),
+      direction: transitionDirection,
+      softness: z
+        .number()
+        .min(0)
+        .max(1)
+        .optional()
+        .default(0)
+        .describe('Edge feather ratio from 0 to 1')
+        .meta({
+          title: 'Softness',
+          'x-i18n': { 'zh-CN': '羽化' },
+          'x-i18n-desc': { 'zh-CN': '擦除边缘的羽化程度，范围 0 到 1' },
+        }),
+      ...extraFields,
+    }),
+    z.object({
+      command: z.literal(command),
+      effect: z
+        .literal('push')
+        .describe('Transition effect')
+        .meta({
+          title: 'Effect',
+          'x-i18n': { 'zh-CN': '效果' },
+          'x-i18n-desc': { 'zh-CN': '转场效果' },
+        }),
+      direction: transitionDirection,
+      ...extraFields,
+    }),
+    z.object({
+      command: z.literal(command),
+      effect: z
+        .literal('slideaway')
+        .describe('Transition effect')
+        .meta({
+          title: 'Effect',
+          'x-i18n': { 'zh-CN': '效果' },
+          'x-i18n-desc': { 'zh-CN': '转场效果' },
+        }),
+      direction: transitionDirection,
+      ...extraFields,
+    }),
+    z.object({
+      command: z.literal(command),
+      effect: z
+        .literal('fade')
+        .describe('Transition effect')
+        .meta({
+          title: 'Effect',
+          'x-i18n': { 'zh-CN': '效果' },
+          'x-i18n-desc': { 'zh-CN': '转场效果' },
+        }),
+      in: z
+        .number()
+        .describe('Fade-in ratio from 0 to 1')
+        .meta({
+          title: 'In',
+          'x-i18n': { 'zh-CN': '淡入占比' },
+          'x-i18n-desc': { 'zh-CN': '新画面从纯色淡入阶段的时长占比，预期范围 0 到 1' },
+        }),
+      hold: z
+        .number()
+        .describe('Hold ratio from 0 to 1')
+        .meta({
+          title: 'Hold',
+          'x-i18n': { 'zh-CN': '停留占比' },
+          'x-i18n-desc': { 'zh-CN': '纯色画面停留阶段的时长占比，预期范围 0 到 1' },
+        }),
+      out: z
+        .number()
+        .describe('Fade-out ratio from 0 to 1')
+        .meta({
+          title: 'Out',
+          'x-i18n': { 'zh-CN': '淡出占比' },
+          'x-i18n-desc': { 'zh-CN': '旧画面淡出到纯色阶段的时长占比，预期范围 0 到 1' },
+        }),
+      color: z
+        .string()
+        .optional()
+        .default('#000')
+        .describe('Fade color')
+        .meta({
+          title: 'Color',
+          format: 'color',
+          'x-i18n': { 'zh-CN': '颜色' },
+          'x-i18n-desc': { 'zh-CN': '淡出与停留阶段使用的颜色' },
+        }),
+      ...extraFields,
+    }),
+    z.object({
+      command: z.literal(command),
+      effect: z
+        .literal('zoom')
+        .describe('Transition effect')
+        .meta({
+          title: 'Effect',
+          'x-i18n': { 'zh-CN': '效果' },
+          'x-i18n-desc': { 'zh-CN': '转场效果' },
+        }),
+      startScale: z
+        .number()
+        .optional()
+        .default(0)
+        .describe('Initial display scale of the incoming scene')
+        .meta({
+          title: 'Start Scale',
+          'x-i18n': { 'zh-CN': '起始缩放' },
+          'x-i18n-desc': { 'zh-CN': '新画面的起始显示缩放' },
+        }),
+      endScale: z
+        .number()
+        .optional()
+        .default(1)
+        .describe('Final display scale of the incoming scene')
+        .meta({
+          title: 'End Scale',
+          'x-i18n': { 'zh-CN': '结束缩放' },
+          'x-i18n-desc': { 'zh-CN': '新画面的结束显示缩放' },
+        }),
+      origin: z
+        .tuple([z.number().min(0).max(1), z.number().min(0).max(1)])
+        .optional()
+        .default([0.5, 0.5])
+        .describe('Zoom origin normalized to the screen, from 0 to 1')
+        .meta({
+          title: 'Origin',
+          'x-i18n': { 'zh-CN': '缩放原点' },
+          'x-i18n-desc': { 'zh-CN': '按屏幕归一化的缩放原点，范围 0 到 1' },
+        }),
+      ...extraFields,
+    }),
+    z.object({
+      command: z.literal(command),
+      effect: z
+        .literal('pixellate')
+        .describe('Transition effect')
+        .meta({
+          title: 'Effect',
+          'x-i18n': { 'zh-CN': '效果' },
+          'x-i18n-desc': { 'zh-CN': '转场效果' },
+        }),
+      steps: z
+        .number()
+        .int()
+        .min(0)
+        .optional()
+        .default(4)
+        .describe('Pixel block size exponent, where 4 means 16x16 blocks')
+        .meta({
+          title: 'Steps',
+          'x-i18n': { 'zh-CN': '像素化步数' },
+          'x-i18n-desc': { 'zh-CN': '像素块大小的 2 次幂指数，例如 4 表示 16x16 像素块' },
+        }),
+      ...extraFields,
+    }),
+  ] as const;
+}
+
+const TransPerformCommandSchema = z
+  .discriminatedUnion(
+    'effect',
+    createTransitionEffectCommandSchemas('transPerform', {
+      fadeTime: fadeTime(1000),
+      skippable: skippable(false),
+      noWait: noWait(false),
+    }),
+  )
+  .describe('Start a prepared full-scene transition')
+  .meta({
+    title: 'Start Scene Transition',
+    'x-i18n': { 'zh-CN': '执行场景转场' },
+    'x-i18n-desc': { 'zh-CN': '启动已准备好的整个场景转场' },
+  });
+
+const BgTransEffectCommandSchema = z
+  .discriminatedUnion('effect', createTransitionEffectCommandSchemas('bgTransEffect', {}))
+  .describe('Set the transition effect used by background changes')
+  .meta({
+    title: 'Set Background Transition Effect',
+    'x-i18n': { 'zh-CN': '设置背景转场效果' },
+    'x-i18n-desc': { 'zh-CN': '设置背景切换时使用的转场效果' },
+  });
+
+const CharTransEffectCommandSchema = z
+  .discriminatedUnion('effect', createTransitionEffectCommandSchemas('charTransEffect', {}))
+  .describe('Set the transition effect used by character changes')
+  .meta({
+    title: 'Set Character Transition Effect',
+    'x-i18n': { 'zh-CN': '设置角色转场效果' },
+    'x-i18n-desc': { 'zh-CN': '设置角色切换时使用的转场效果' },
+  });
+
 /* ------------------------------------------------------------------ */
 /*  Character Commands                                                 */
 /* ------------------------------------------------------------------ */
@@ -1119,6 +1371,10 @@ export const ScenarioCommandSchema = z.discriminatedUnion('command', [
   BgCommandSchema,
   BgTintCommandSchema,
   CameraCommandSchema,
+  TransPrepareCommandSchema,
+  TransPerformCommandSchema,
+  BgTransEffectCommandSchema,
+  CharTransEffectCommandSchema,
   CharEnterCommandSchema,
   CharActionCommandSchema,
   CharLeaveCommandSchema,

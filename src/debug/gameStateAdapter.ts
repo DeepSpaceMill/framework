@@ -1,12 +1,11 @@
 import { executePluginCommand, getNavigator, type AppStateAdapter, type FastForwardOptions } from '@momoyu-ink/kit';
-import { snapshot } from 'valtio';
-import { gameState, resetGameState, type GameState } from '../state/game';
+import { resetGameState, snapshotGameState, type GameState } from '../state/game';
 import { getStageSingleton } from '../lib/stageSingleton';
 import { applyGameStateSnapshot } from '../utils/scenarioGameState';
 
 export const gameStateDebugAdapter: AppStateAdapter<GameState> = {
   capture() {
-    return snapshot(gameState) as GameState;
+    return snapshotGameState();
   },
   restore(state) {
     getStageSingleton().resetRuntimeState();

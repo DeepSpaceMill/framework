@@ -1,5 +1,11 @@
 import { getNavigator, getSeekingType, TextLine, type CommandHandler, type TextLineHandler } from '@momoyu-ink/kit';
-import { gameState, resetGameState, type TextBoxAvatarConfig } from '../state/game';
+import {
+  gameState,
+  resetGameState,
+  type BuiltinTransitionEffect,
+  type SceneTransitionEffect,
+  type TextBoxAvatarConfig,
+} from '../state/game';
 import { GamePage } from '../state/ui';
 import { writeCurrentGameStateToScenario } from '../utils/scenarioGameState';
 import { ScenarioCommandSchemaType } from './commands';
@@ -359,6 +365,60 @@ export const handleCamera: CommandHandler<ScenarioCommandSchemaType> = (cmd, con
   }
 };
 
+/** Prepare a full-scene transition without starting playback yet. */
+export const handleTransPrepare: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'transPrepare') return;
+
+  if (gameState.sceneTransition.phase !== 'stable') {
+    console.warn('transPrepare: called while another transition is still active');
+    return;
+  }
+
+  gameState.sceneTransition.key += 1;
+  gameState.sceneTransition.phase = 'prepared';
+  gameState.sceneTransition.retain = cmd.retain;
+  // auto-advance
+};
+
+/** Start the prepared full-scene transition. */
+export const handleTransPerform: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
+  if (cmd.command !== 'transPerform') return;
+
+  if (gameState.sceneTransition.phase !== 'prepared') {
+    console.warn('transPerform: called without a pending transPrepare');
+    return;
+  }
+
+  gameState.sceneTransition.performKey += 1;
+  gameState.sceneTransition.phase = 'performing';
+  const { command: _, effect, fadeTime, skippable, noWait, ...otherArgs } = cmd;
+  gameState.sceneTransition.effect = { type: 'builtin', name: effect, ...otherArgs } as SceneTransitionEffect;
+  gameState.sceneTransition.fadeTime = fadeTime;
+  gameState.sceneTransition.skippable = skippable;
+
+  if (!noWait) {
+    control.setWaiting(fadeTime, skippable);
+  }
+};
+
+/** Set the transition effect used by background changes. */
+export const handleBgTransEffect: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'bgTransEffect') return;
+
+  const { command: _, effect, ...otherArgs } = cmd;
+  gameState.background.transitionEffect = { type: 'builtin', name: effect, ...otherArgs } as BuiltinTransitionEffect;
+  // auto-advance
+};
+
+/** Set the transition effect used by character changes. */
+export const handleCharTransEffect: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'charTransEffect') return;
+
+  const { command: _, effect, ...otherArgs } = cmd;
+  gameState.character.transitionEffect = { type: 'builtin', name: effect, ...otherArgs } as BuiltinTransitionEffect;
+  // auto-advance
+};
+
 // ---------------------------------------------------------------------------
 // Character command handlers
 // ---------------------------------------------------------------------------
@@ -372,9 +432,11 @@ export const handleCharEnter: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
   if (cmd.preset && !presetData) {
     console.warn(`Unknown character preset: ${cmd.preset}`);
   }
+  const targetVisible = cmd.visible ?? presetData?.visible ?? true;
 
   if (existingIndex !== -1) {
     const char = gameState.character.characters[existingIndex];
+    const wasVisible = char.visible && char.presence !== 'leaving';
 
     char.src = cmd.src;
     char.x = cmd.x ?? presetData?.x ?? char.x;
@@ -383,18 +445,30 @@ export const handleCharEnter: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
     char.tint = cmd.tint ?? presetData?.tint ?? char.tint;
     char.pivot = cmd.pivot ?? presetData?.pivot ?? char.pivot;
     char.fadeTime = cmd.fadeTime;
-    char.visible = cmd.visible ?? presetData?.visible ?? true;
+    if (targetVisible) {
+      if (wasVisible) {
+        char.visible = true;
+        char.presence = 'present';
+      } else {
+        char.visible = false;
+        char.presence = 'entering';
+      }
+    } else {
+      char.visible = false;
+      char.presence = 'present';
+    }
   } else {
     gameState.character.characters.push({
       name: cmd.name,
       src: cmd.src,
+      presence: targetVisible ? 'entering' : 'present',
       x: cmd.x ?? presetData?.x ?? 0,
       y: cmd.y ?? presetData?.y ?? 0,
       scale: cmd.scale ?? presetData?.scale ?? 1,
       tint: cmd.tint ?? presetData?.tint ?? '#fff',
       pivot: cmd.pivot ?? presetData?.pivot ?? [0.5, 1],
       fadeTime: cmd.fadeTime,
-      visible: cmd.visible ?? presetData?.visible ?? true,
+      visible: false,
     });
   }
   if (!cmd.noWait) {
@@ -416,6 +490,7 @@ export const handleCharAction: CommandHandler<ScenarioCommandSchemaType> = (cmd,
   if (cmd.preset && !presetData) {
     console.warn(`Unknown character preset: ${cmd.preset}`);
   }
+  const targetVisible = cmd.visible ?? presetData?.visible ?? char.visible;
 
   char.src = cmd.src ?? char.src;
   char.x = cmd.x ?? presetData?.x ?? char.x;
@@ -424,7 +499,13 @@ export const handleCharAction: CommandHandler<ScenarioCommandSchemaType> = (cmd,
   char.tint = cmd.tint ?? presetData?.tint ?? char.tint;
   char.pivot = cmd.pivot ?? presetData?.pivot ?? char.pivot;
   char.fadeTime = cmd.fadeTime;
-  char.visible = cmd.visible ?? presetData?.visible ?? char.visible;
+  if (targetVisible) {
+    char.visible = true;
+    char.presence = 'present';
+  } else {
+    char.visible = false;
+    char.presence = 'present';
+  }
 
   if (!cmd.noWait) {
     control.setWaiting(cmd.fadeTime, cmd.skippable);
@@ -439,7 +520,8 @@ export const handleCharLeave: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
   const character = gameState.character.characters[index];
 
   character.fadeTime = cmd.fadeTime;
-  gameState.character.characters.splice(index, 1);
+  character.visible = false;
+  character.presence = 'leaving';
   if (!cmd.noWait) {
     control.setWaiting(cmd.fadeTime, cmd.skippable);
   }
@@ -450,8 +532,9 @@ export const handleCharClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
   if (cmd.command !== 'charClear') return;
   gameState.character.characters.forEach((char) => {
     char.fadeTime = cmd.fadeTime;
+    char.visible = false;
+    char.presence = 'leaving';
   });
-  gameState.character.characters.length = 0;
   if (!cmd.noWait) {
     control.setWaiting(cmd.fadeTime, cmd.skippable);
   }
