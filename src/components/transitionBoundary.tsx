@@ -62,6 +62,7 @@ export function TransitionBoundary({
   });
   const committedChildrenRef = useRef(children);
   const effectivePerformKey = performKey ?? transitionKey;
+  const maskRule = effect?.type === 'builtin' && effect.name === 'mask' ? effect.rule : undefined;
 
   useLayoutEffect(() => {
     if (transitionKey === currentKey) {
@@ -210,6 +211,11 @@ export function TransitionBoundary({
     >
       {renderSlot('a')}
       {renderSlot('b')}
+      {maskRule ? (
+        <shader-slot channel={2} static={true} space="shader">
+          <sprite src={maskRule} />
+        </shader-slot>
+      ) : null}
     </shader>
   );
 }
