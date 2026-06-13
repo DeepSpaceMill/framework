@@ -2121,6 +2121,107 @@
             "command",
             "effect"
           ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "const": "transPerform"
+            },
+            "effect": {
+              "type": "string",
+              "const": "mask",
+              "description": "Transition effect",
+              "title": "Effect",
+              "x-i18n": {
+                "zh-CN": "效果"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "转场效果"
+              }
+            },
+            "rule": {
+              "type": "string",
+              "description": "Mask rule image",
+              "title": "Rule",
+              "format": "asset",
+              "x-asset-kind": "image",
+              "x-i18n": {
+                "zh-CN": "规则图"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "用于遮罩转场的规则图资源"
+              }
+            },
+            "softness": {
+              "default": 0.0625,
+              "description": "Mask feather ratio from 0 to 1",
+              "title": "Softness",
+              "x-i18n": {
+                "zh-CN": "羽化"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "遮罩边缘的羽化程度，范围 0 到 1"
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "reverse": {
+              "default": false,
+              "description": "Whether to reverse the rule order",
+              "title": "Reverse",
+              "x-i18n": {
+                "zh-CN": "反转"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "是否反转黑白出现顺序"
+              },
+              "type": "boolean"
+            },
+            "fadeTime": {
+              "default": 1000,
+              "description": "Fade time in milliseconds",
+              "title": "Fade Time",
+              "x-i18n": {
+                "zh-CN": "渐变时间"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "渐变时间（毫秒）"
+              },
+              "type": "number"
+            },
+            "skippable": {
+              "default": false,
+              "description": "Whether it can be skipped",
+              "title": "Skippable",
+              "x-i18n": {
+                "zh-CN": "可跳过"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "是否可跳过"
+              },
+              "type": "boolean"
+            },
+            "noWait": {
+              "default": false,
+              "description": "Whether to skip waiting for the transition to complete",
+              "title": "No Wait",
+              "x-i18n": {
+                "zh-CN": "不等待"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "是否跳过等待过渡完成"
+              },
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "command",
+            "effect",
+            "rule"
+          ]
         }
       ],
       "description": "Start a prepared full-scene transition",
@@ -2490,6 +2591,71 @@
             "command",
             "effect"
           ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "const": "bgTransEffect"
+            },
+            "effect": {
+              "type": "string",
+              "const": "mask",
+              "description": "Transition effect",
+              "title": "Effect",
+              "x-i18n": {
+                "zh-CN": "效果"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "转场效果"
+              }
+            },
+            "rule": {
+              "type": "string",
+              "description": "Mask rule image",
+              "title": "Rule",
+              "format": "asset",
+              "x-asset-kind": "image",
+              "x-i18n": {
+                "zh-CN": "规则图"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "用于遮罩转场的规则图资源"
+              }
+            },
+            "softness": {
+              "default": 0.0625,
+              "description": "Mask feather ratio from 0 to 1",
+              "title": "Softness",
+              "x-i18n": {
+                "zh-CN": "羽化"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "遮罩边缘的羽化程度，范围 0 到 1"
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "reverse": {
+              "default": false,
+              "description": "Whether to reverse the rule order",
+              "title": "Reverse",
+              "x-i18n": {
+                "zh-CN": "反转"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "是否反转黑白出现顺序"
+              },
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "command",
+            "effect",
+            "rule"
+          ]
         }
       ],
       "description": "Set the transition effect used by background changes",
@@ -2858,6 +3024,71 @@
           "required": [
             "command",
             "effect"
+          ]
+        },
+        {
+          "type": "object",
+          "properties": {
+            "command": {
+              "type": "string",
+              "const": "charTransEffect"
+            },
+            "effect": {
+              "type": "string",
+              "const": "mask",
+              "description": "Transition effect",
+              "title": "Effect",
+              "x-i18n": {
+                "zh-CN": "效果"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "转场效果"
+              }
+            },
+            "rule": {
+              "type": "string",
+              "description": "Mask rule image",
+              "title": "Rule",
+              "format": "asset",
+              "x-asset-kind": "image",
+              "x-i18n": {
+                "zh-CN": "规则图"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "用于遮罩转场的规则图资源"
+              }
+            },
+            "softness": {
+              "default": 0.0625,
+              "description": "Mask feather ratio from 0 to 1",
+              "title": "Softness",
+              "x-i18n": {
+                "zh-CN": "羽化"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "遮罩边缘的羽化程度，范围 0 到 1"
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
+            },
+            "reverse": {
+              "default": false,
+              "description": "Whether to reverse the rule order",
+              "title": "Reverse",
+              "x-i18n": {
+                "zh-CN": "反转"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "是否反转黑白出现顺序"
+              },
+              "type": "boolean"
+            }
+          },
+          "required": [
+            "command",
+            "effect",
+            "rule"
           ]
         }
       ],

@@ -1039,6 +1039,47 @@ function createTransitionEffectCommandSchemas<TCommand extends string, TExtra ex
         }),
       ...extraFields,
     }),
+    z.object({
+      command: z.literal(command),
+      effect: z
+        .literal('mask')
+        .describe('Transition effect')
+        .meta({
+          title: 'Effect',
+          'x-i18n': { 'zh-CN': '效果' },
+          'x-i18n-desc': { 'zh-CN': '转场效果' },
+        }),
+      rule: imageSrc.describe('Mask rule image').meta({
+        title: 'Rule',
+        format: 'asset',
+        'x-asset-kind': 'image',
+        'x-i18n': { 'zh-CN': '规则图' },
+        'x-i18n-desc': { 'zh-CN': '用于遮罩转场的规则图资源' },
+      }),
+      softness: z
+        .number()
+        .min(0)
+        .max(1)
+        .optional()
+        .default(0.0625)
+        .describe('Mask feather ratio from 0 to 1')
+        .meta({
+          title: 'Softness',
+          'x-i18n': { 'zh-CN': '羽化' },
+          'x-i18n-desc': { 'zh-CN': '遮罩边缘的羽化程度，范围 0 到 1' },
+        }),
+      reverse: z
+        .boolean()
+        .optional()
+        .default(false)
+        .describe('Whether to reverse the rule order')
+        .meta({
+          title: 'Reverse',
+          'x-i18n': { 'zh-CN': '反转' },
+          'x-i18n-desc': { 'zh-CN': '是否反转黑白出现顺序' },
+        }),
+      ...extraFields,
+    }),
   ] as const;
 }
 
