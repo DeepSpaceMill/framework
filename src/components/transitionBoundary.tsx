@@ -1,6 +1,6 @@
 import { useSkipCallback, type Node, type RetainMode } from '@momoyu-ink/kit';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
-import { proxy, subscribe } from 'valtio';
+import { useCallback, useLayoutEffect, useRef, useState, type ReactNode } from 'react';
+import { proxy } from 'valtio';
 import {
   snapshotGameState,
   type GameState,
@@ -23,18 +23,8 @@ export interface TransitionBoundaryProps {
 
 type SlotId = 'a' | 'b';
 
-function otherSlot(slot: SlotId): SlotId {
-  return slot === 'a' ? 'b' : 'a';
-}
-
-interface StableEntry {
-  key: string;
-  snapshot: GameState;
-}
-
 interface FromEntry {
   slot: SlotId;
-  key: string;
   children: ReactNode;
   store: GameStateStore;
 }
@@ -50,17 +40,13 @@ export function TransitionBoundary({
   children,
 }: TransitionBoundaryProps) {
   const toStore = useGameStateStore();
-  const [containerNode, setContainerNode] = useState<Node | null>(null);
+  const shaderRef = useRef<Node | null>(null);
   const [activeSlot, setActiveSlot] = useState<SlotId>('a');
   const [currentKey, setCurrentKey] = useState(transitionKey);
   const [fromEntry, setFromEntry] = useState<FromEntry | null>(null);
   const preparedKeyRef = useRef<string | null>(null);
   const performedTriggerRef = useRef<string | number | null | undefined>(undefined);
-  const stableEntryRef = useRef<StableEntry>({
-    key: transitionKey,
-    snapshot: snapshotGameState(),
-  });
-  const committedChildrenRef = useRef(children);
+  const stableSnapshotRef = useRef<GameState>(snapshotGameState());
   const effectivePerformKey = performKey ?? transitionKey;
   const maskRule = effect?.type === 'builtin' && effect.name === 'mask' ? effect.rule : undefined;
 
@@ -69,62 +55,22 @@ export function TransitionBoundary({
       return;
     }
 
-    const fromSnapshot =
-      fromEntry === null
-        ? retain === 'live'
-          ? snapshotGameState()
-          : stableEntryRef.current.snapshot
-        : snapshotGameState();
-
     setFromEntry({
       slot: activeSlot,
-      key: currentKey,
-      children: committedChildrenRef.current,
-      store: proxy(fromSnapshot),
+      children,
+      store: proxy(stableSnapshotRef.current),
     });
-    setActiveSlot(otherSlot(activeSlot));
+    setActiveSlot(activeSlot === 'a' ? 'b' : 'a');
     setCurrentKey(transitionKey);
-  }, [activeSlot, currentKey, fromEntry, retain, transitionKey]);
+  }, [activeSlot, currentKey, transitionKey, children]);
 
   useLayoutEffect(() => {
-    if (fromEntry !== null || transitionKey !== currentKey) {
-      return;
-    }
-
-    stableEntryRef.current = {
-      key: currentKey,
-      snapshot: snapshotGameState(),
-    };
-  }, [currentKey, fromEntry, transitionKey]);
-
-  useEffect(() => {
-    if (retain !== 'live') {
-      return;
-    }
-
-    return subscribe(toStore, () => {
-      if (fromEntry !== null || transitionKey !== currentKey) {
-        return;
-      }
-
-      stableEntryRef.current = {
-        key: currentKey,
-        snapshot: snapshotGameState(),
-      };
-    });
-  }, [currentKey, fromEntry, retain, toStore, transitionKey]);
-
-  useLayoutEffect(() => {
-    committedChildrenRef.current = children;
-  }, [children]);
-
-  useLayoutEffect(() => {
-    if (fromEntry === null || containerNode === null) {
+    if (fromEntry === null || shaderRef.current === null) {
       return;
     }
 
     if (preparedKeyRef.current !== currentKey) {
-      containerNode.executeCommand({
+      shaderRef.current.executeCommand({
         subCommand: 'prepare',
         fromChannel: 0,
         toChannel: 1,
@@ -139,7 +85,7 @@ export function TransitionBoundary({
     }
 
     if (performedTriggerRef.current !== undefined) {
-      containerNode.executeCommand({
+      shaderRef.current.executeCommand({
         subCommand: 'prepare',
         fromChannel: 0,
         toChannel: 1,
@@ -147,38 +93,33 @@ export function TransitionBoundary({
       });
     }
 
-    containerNode.executeCommand({
+    shaderRef.current.executeCommand({
       subCommand: 'perform',
       duration,
     });
     performedTriggerRef.current = effectivePerformKey;
-  }, [containerNode, currentKey, duration, effect, effectivePerformKey, fromEntry, retain]);
+  }, [currentKey, duration, effect, effectivePerformKey, fromEntry, retain]);
 
   const finishTransitionNow = useCallback(() => {
-    if (fromEntry === null || containerNode === null || effect === undefined) {
+    if (fromEntry === null || shaderRef.current === null || effect === undefined) {
       return;
     }
 
-    containerNode.executeCommand({
+    shaderRef.current.executeCommand({
       subCommand: 'perform',
       duration: 0,
     });
-  }, [containerNode, effect, fromEntry]);
+  }, [effect, fromEntry]);
 
   useSkipCallback(finishTransitionNow);
-
-  const handleContainerRef = useCallback((node: Node | null) => {
-    setContainerNode(node);
-  }, []);
 
   const handleFinished = useCallback(() => {
     preparedKeyRef.current = null;
     performedTriggerRef.current = undefined;
+    stableSnapshotRef.current = snapshotGameState();
     setFromEntry(null);
     onFinished?.();
   }, [onFinished]);
-
-  const activeChildren = currentKey === transitionKey ? children : committedChildrenRef.current;
 
   const renderSlot = (slot: SlotId) => {
     if (fromEntry?.slot === slot) {
@@ -192,7 +133,7 @@ export function TransitionBoundary({
     if (activeSlot === slot) {
       return (
         <shader-slot key={`slot-${slot}`} channel={1}>
-          <GameStateProvider store={toStore}>{activeChildren}</GameStateProvider>
+          <GameStateProvider store={toStore}>{children}</GameStateProvider>
         </shader-slot>
       );
     }
@@ -203,7 +144,7 @@ export function TransitionBoundary({
   return (
     <shader
       label={label}
-      ref={handleContainerRef}
+      ref={shaderRef}
       shader={effect ?? { type: 'builtin', name: 'crossfade' }}
       timeControl="transition"
       displayChannel={1}
