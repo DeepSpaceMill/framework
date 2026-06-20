@@ -54,18 +54,6 @@ function applyAvatarPatch(
   if (patch.spacing !== undefined) target.spacing = patch.spacing;
 }
 
-function toBuiltinTransitionEffect(
-  cmd: Extract<ScenarioCommandSchemaType, { effect: string }>,
-): BuiltinTransitionEffect {
-  const { command: _, effect, fadeTime: __, skippable: ___, noWait: ____, ...otherArgs } = cmd as typeof cmd & {
-    fadeTime?: number;
-    skippable?: boolean;
-    noWait?: boolean;
-  };
-
-  return { type: 'builtin', name: effect, ...otherArgs } as BuiltinTransitionEffect;
-}
-
 // ---------------------------------------------------------------------------
 // Text command handlers
 // ---------------------------------------------------------------------------
@@ -403,8 +391,8 @@ export const handleTransPerform: CommandHandler<ScenarioCommandSchemaType> = (cm
 
   gameState.sceneTransition.performKey += 1;
   gameState.sceneTransition.phase = 'performing';
-  const { fadeTime, skippable, noWait } = cmd;
-  gameState.sceneTransition.effect = toBuiltinTransitionEffect(cmd) as SceneTransitionEffect;
+  const { command: _, effect, fadeTime, skippable, noWait, ...otherArgs } = cmd;
+  gameState.sceneTransition.effect = { type: 'builtin', name: effect, ...otherArgs } as SceneTransitionEffect;
   gameState.sceneTransition.fadeTime = fadeTime;
   gameState.sceneTransition.skippable = skippable;
 
@@ -417,7 +405,8 @@ export const handleTransPerform: CommandHandler<ScenarioCommandSchemaType> = (cm
 export const handleBgTransEffect: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'bgTransEffect') return;
 
-  gameState.background.transitionEffect = toBuiltinTransitionEffect(cmd);
+  const { command: _, effect, ...otherArgs } = cmd;
+  gameState.background.transitionEffect = { type: 'builtin', name: effect, ...otherArgs } as BuiltinTransitionEffect;
   // auto-advance
 };
 
@@ -425,7 +414,8 @@ export const handleBgTransEffect: CommandHandler<ScenarioCommandSchemaType> = (c
 export const handleCharTransEffect: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'charTransEffect') return;
 
-  gameState.character.transitionEffect = toBuiltinTransitionEffect(cmd);
+  const { command: _, effect, ...otherArgs } = cmd;
+  gameState.character.transitionEffect = { type: 'builtin', name: effect, ...otherArgs } as BuiltinTransitionEffect;
   // auto-advance
 };
 
