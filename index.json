@@ -8,5 +8,6 @@
   "entryFilename": "./main.js",
   "autorun": "all",
   "fontFile": "fonts/SourceHanSansSC-Regular.otf",
-  "enableGamepads": true
+  "enableGamepads": true,
+  "presentMode": "autonovsync"
 }
