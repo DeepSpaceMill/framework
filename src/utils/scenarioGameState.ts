@@ -1,8 +1,9 @@
 import { executePluginCommand } from '@momoyu-ink/kit';
-import { gameState, resetGameState, snapshotGameState, syncGameState, type GameState } from '../state/game';
+import { snapshot } from 'valtio';
+import { gameState, resetGameState, syncGameStateSection, type GameState } from '../state/game';
 
 export function writeCurrentGameStateToScenario(): GameState {
-  const currentGameState = snapshotGameState();
+  const currentGameState = snapshot(gameState);
 
   void executePluginCommand('scenario', {
     subCommand: 'setVariables',
@@ -29,12 +30,10 @@ export async function restoreGameStateFromScenario(): Promise<void> {
 
 export function applyGameStateSnapshot(loadedGameState: GameState): void {
   resetGameState();
-  syncGameState(loadedGameState);
 
-  // Restored snapshots always resume from a stable visual state rather than
-  // trying to reconstruct an in-flight scene transition.
-  gameState.sceneTransition.phase = 'stable';
-  gameState.sceneTransition.retain = 'static';
+  for (const key of Object.keys(loadedGameState) as Array<keyof GameState>) {
+    syncGameStateSection(key, loadedGameState[key]);
+  }
 
   // Reset audio trigger counters and voice src after restoring saved state.
   // Without this, SfxActor/SoundActor would treat the restored seq values as

@@ -1,17 +1,10 @@
-import {
-  createGameStateContext,
-  Tuple2,
-  type GameStateStore as KitGameStateStore,
-  type RetainMode as KitRetainMode,
-  type ShaderSource as KitShaderSource,
-} from '@momoyu-ink/kit';
+import { Tuple2 } from '@momoyu-ink/kit';
+import { proxy } from 'valtio';
 import { CAMERA_DEFAULT_STATE } from '../lib/camera';
 
 export interface Animation {
   fadeTime: number;
 }
-
-export type BuiltinTransitionEffect = Extract<KitShaderSource, { type: 'builtin' }>;
 
 export interface StoryState {
   title: string;
@@ -21,7 +14,6 @@ export interface BackgroundState extends Animation {
   src: string;
   tint?: string;
   skippable: boolean;
-  transitionEffect: BuiltinTransitionEffect;
 }
 
 export interface CameraState extends Animation {
@@ -32,24 +24,9 @@ export interface CameraState extends Animation {
   blur: number;
 }
 
-export type SceneTransitionPhase = 'stable' | 'prepared' | 'performing';
-export type SceneTransitionEffect = BuiltinTransitionEffect;
-export type SceneTransitionRetain = KitRetainMode;
-
-export interface SceneTransitionState {
-  key: number;
-  performKey: number;
-  phase: SceneTransitionPhase;
-  retain: SceneTransitionRetain;
-  effect: SceneTransitionEffect;
-  fadeTime: number;
-  skippable: boolean;
-}
-
 export interface Character extends Animation {
   name?: string;
   src: string;
-  presence: 'present' | 'entering' | 'leaving';
   scale: number;
   tint: string;
   visible: boolean;
@@ -74,7 +51,6 @@ export interface CharacterState {
   currentSpeaker?: string;
   autoTintEnabled: boolean;
   autoTint: string;
-  transitionEffect: BuiltinTransitionEffect;
 }
 
 export interface TextBoxAvatarConfig {
@@ -190,7 +166,6 @@ export interface GameState {
   story: StoryState;
   background: BackgroundState;
   camera: CameraState;
-  sceneTransition: SceneTransitionState;
   character: CharacterState;
   textbox: TextBoxState;
   bgm: BGMState;
@@ -209,7 +184,6 @@ const gameStateDefaults: GameState = {
     src: '',
     fadeTime: 1000,
     skippable: false,
-    transitionEffect: { type: 'builtin', name: 'crossfade' },
   },
   camera: {
     x: CAMERA_DEFAULT_STATE.x,
@@ -218,15 +192,6 @@ const gameStateDefaults: GameState = {
     depth: CAMERA_DEFAULT_STATE.depth,
     blur: CAMERA_DEFAULT_STATE.blur,
     fadeTime: CAMERA_DEFAULT_STATE.fadeTime,
-  },
-  sceneTransition: {
-    key: 0,
-    performKey: 0,
-    phase: 'stable',
-    retain: 'static',
-    effect: { type: 'builtin', name: 'crossfade' },
-    fadeTime: 0,
-    skippable: false,
   },
   character: {
     presets: {
@@ -238,7 +203,6 @@ const gameStateDefaults: GameState = {
     currentSpeaker: undefined,
     autoTintEnabled: true,
     autoTint: '#666',
-    transitionEffect: { type: 'builtin', name: 'crossfade' },
   },
   textbox: {
     name: '',
@@ -317,14 +281,93 @@ const gameStateDefaults: GameState = {
   },
 };
 
-export const {
-  gameState,
-  snapshotGameState,
-  syncGameState,
-  resetGameState,
-  GameStateProvider,
-  useGameStateStore,
-  useGameStateSection,
-} = createGameStateContext<GameState>(gameStateDefaults);
+function createDefaultGameState(): GameState {
+  return JSON.parse(JSON.stringify(gameStateDefaults)) as GameState;
+}
 
-export type GameStateStore = KitGameStateStore<GameState>;
+function cloneStateValue<T>(value: T): T {
+  return JSON.parse(JSON.stringify(value)) as T;
+}
+
+function isPlainObject(value: unknown): value is Record<string, unknown> {
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
+}
+
+function syncStateArray(target: unknown[], source: unknown[]) {
+  target.length = source.length;
+
+  for (let index = 0; index < source.length; index += 1) {
+    const nextValue = source[index];
+    const currentValue = target[index];
+
+    if (Array.isArray(nextValue)) {
+      if (Array.isArray(currentValue)) {
+        syncStateArray(currentValue, nextValue);
+      } else {
+        target[index] = cloneStateValue(nextValue);
+      }
+      continue;
+    }
+
+    if (isPlainObject(nextValue)) {
+      if (isPlainObject(currentValue)) {
+        syncStateRecord(currentValue, nextValue);
+      } else {
+        target[index] = cloneStateValue(nextValue);
+      }
+      continue;
+    }
+
+    target[index] = nextValue;
+  }
+}
+
+function syncStateRecord(target: Record<string, unknown>, source: Record<string, unknown>) {
+  for (const key of Object.keys(target)) {
+    if (!Object.hasOwn(source, key)) {
+      delete target[key];
+    }
+  }
+
+  for (const [key, nextValue] of Object.entries(source)) {
+    const currentValue = target[key];
+
+    if (Array.isArray(nextValue)) {
+      if (Array.isArray(currentValue)) {
+        syncStateArray(currentValue, nextValue);
+      } else {
+        target[key] = cloneStateValue(nextValue);
+      }
+      continue;
+    }
+
+    if (isPlainObject(nextValue)) {
+      if (isPlainObject(currentValue)) {
+        syncStateRecord(currentValue, nextValue);
+      } else {
+        target[key] = cloneStateValue(nextValue);
+      }
+      continue;
+    }
+
+    target[key] = nextValue;
+  }
+}
+
+export function syncGameStateSection<K extends keyof GameState>(key: K, nextState: GameState[K]) {
+  const target = gameState[key] as unknown as Record<string, unknown>;
+  const source = nextState as unknown as Record<string, unknown>;
+
+  syncStateRecord(target, source);
+}
+
+// Create the main game state store using valtio
+export const gameState = proxy<GameState>(createDefaultGameState());
+
+export function resetGameState() {
+  const defaults = createDefaultGameState();
+
+  for (const key of Object.keys(defaults) as Array<keyof GameState>) {
+    syncGameStateSection(key, defaults[key]);
+  }
+}

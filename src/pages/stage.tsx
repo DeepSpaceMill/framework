@@ -29,10 +29,6 @@ import {
   handleBg,
   handleBgTint,
   handleCamera,
-  handleTransPrepare,
-  handleTransPerform,
-  handleBgTransEffect,
-  handleCharTransEffect,
   handleCharEnter,
   handleCharAction,
   handleCharLeave,
@@ -64,7 +60,6 @@ import { SfxActor } from '../actors/sfx';
 import { SoundActor } from '../actors/sound';
 import { VideoActor } from '../actors/video';
 import { ScenarioCommandSchema } from '../commands/commands';
-import { SceneTransitionBoundary } from '../components/sceneTransitionBoundary';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 import { getStageSingleton, type StageInstance } from '../lib/stageSingleton';
 
@@ -89,10 +84,6 @@ function registerStageHandlers(stage: StageInstance): Array<() => void> {
     stage.registerCommand('bg', handleBg),
     stage.registerCommand('bgTint', handleBgTint),
     stage.registerCommand('camera', handleCamera),
-    stage.registerCommand('transPrepare', handleTransPrepare),
-    stage.registerCommand('transPerform', handleTransPerform),
-    stage.registerCommand('bgTransEffect', handleBgTransEffect),
-    stage.registerCommand('charTransEffect', handleCharTransEffect),
     stage.registerCommand('charEnter', handleCharEnter),
     stage.registerCommand('charAction', handleCharAction),
     stage.registerCommand('charLeave', handleCharLeave),
@@ -350,16 +341,14 @@ export function Stage() {
 
   return (
     <StageContextProvider stage={stage}>
-      <SceneTransitionBoundary>
-        <CameraActor>
-          <BackgroundPlane>
-            <BackgroundActor />
-          </BackgroundPlane>
-          <CharacterPlane>
-            <CharacterActor />
-          </CharacterPlane>
-        </CameraActor>
-      </SceneTransitionBoundary>
+      <CameraActor>
+        <BackgroundPlane>
+          <BackgroundActor />
+        </BackgroundPlane>
+        <CharacterPlane>
+          <CharacterActor />
+        </CharacterPlane>
+      </CameraActor>
       <TextBoxActor onButtonClick={handleButtonClick} />
       <BGMActor />
       <VoiceActor />

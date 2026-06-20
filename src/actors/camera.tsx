@@ -10,8 +10,9 @@ import {
   useSpringRef,
 } from '@momoyu-ink/kit';
 import { Children, cloneElement, isValidElement, useCallback, useEffect, type ReactNode } from 'react';
+import { useSnapshot } from 'valtio';
+import { gameState } from '../state/game';
 import { getCameraPlaneTargets } from '../lib/camera';
-import { useGameStateSection } from '../state/game';
 
 interface CameraSpringState {
   backgroundX: number;
@@ -92,7 +93,7 @@ export function CharacterPlane({ children, cameraRuntime }: CameraPlaneProps) {
 }
 
 export function CameraActor({ children }: CameraActorProps) {
-  const cameraState = useGameStateSection('camera');
+  const cameraState = useSnapshot(gameState.camera);
   const skipping = useIsSkipping();
   const seeking = useIsSeeking();
   const shouldSkipVisuals = skipping || seeking;
@@ -142,7 +143,7 @@ export function CameraActor({ children }: CameraActorProps) {
   // Skip should immediately settle both planes at the final target so visual
   // state and flow-control timing stay consistent.
   const finishTransition = useCallback(() => {
-    const targets = getCameraPlaneTargets(cameraState, { width, height });
+    const targets = getCameraPlaneTargets(gameState.camera, { width, height });
     springRef.set({
       backgroundX: targets.backgroundX,
       backgroundY: targets.backgroundY,
@@ -150,9 +151,9 @@ export function CameraActor({ children }: CameraActorProps) {
       characterX: targets.characterX,
       characterY: targets.characterY,
       characterScale: targets.characterScale,
-      blur: cameraState.blur,
+      blur: gameState.camera.blur,
     });
-  }, [cameraState, height, springRef, width]);
+  }, [height, springRef, width]);
 
   useSkipCallback(finishTransition);
 
