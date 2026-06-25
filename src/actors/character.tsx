@@ -1,76 +1,95 @@
-import { useRef } from 'react';
-import { animated, useTransition, useSpring, useIsSeeking, useIsSkipping, getStageSize, easings } from '@momoyu-ink/kit';
-import { useSnapshot } from 'valtio';
-import { gameState, Character } from '../state/game';
+import { useCallback, useLayoutEffect } from 'react';
+import { animated, useSpring, useIsSeeking, useIsSkipping, getStageSize, easings } from '@momoyu-ink/kit';
+import { Character, useGameStateSection, useGameStateStore } from '../state/game';
+import { TransitionBoundary } from '../components/transitionBoundary';
+
+const EMPTY_CHARACTER_KEY = '__character-empty__';
+const DEFAULT_CHARACTER_SLOT_KEY = '__default__';
+
+function getCharacterSlotKey(name?: string): string {
+  return name ?? DEFAULT_CHARACTER_SLOT_KEY;
+}
 
 export function CharacterActor() {
-  const characterState = useSnapshot(gameState.character) as typeof gameState.character;
-  const skipping = useIsSkipping();
-  const seeking = useIsSeeking();
-  const shouldSkipVisuals = skipping || seeking;
+  const characterStore = useGameStateStore().character;
+  const characterState = useGameStateSection('character');
 
-  const transitions = useTransition(
-    Object.values(characterState.characters).filter((char) => char.visible),
-    {
-      keys: (char) => char.name ?? char.src,
-      from: { opacity: 0 },
-      enter: { opacity: 1 },
-      leave: { opacity: 0 },
-      config: (char) => ({
-        duration: shouldSkipVisuals ? 0 : char.fadeTime,
-      }),
+  // biome-ignore lint/correctness/useExhaustiveDependencies: it is essential to listen to characterState.characterschanges to trigger presence state update, but characterStore is also needed to update character visibility and presence state.
+  useLayoutEffect(() => {
+    for (const character of characterStore.characters) {
+      if (character.presence === 'entering' && !character.visible) {
+        character.visible = true;
+        character.presence = 'present';
+      }
+    }
+  }, [characterStore, characterState.characters]);
+
+  const handleCharacterExited = useCallback(
+    (slotKey: string) => {
+      const index = characterStore.characters.findIndex((character) => getCharacterSlotKey(character.name) === slotKey);
+      if (index === -1) {
+        return;
+      }
+
+      const character = characterStore.characters[index];
+      if (character.presence === 'leaving' && !character.visible) {
+        characterStore.characters.splice(index, 1);
+      }
     },
+    [characterStore],
   );
 
   const stageSize = getStageSize();
 
   return (
     <container label="立绘容器" x={stageSize.width / 2} y={stageSize.height}>
-      {transitions((style, character) => (
-        <animated.container opacity={style.opacity}>
+      {characterState.characters.map((character) => {
+        const slotKey = getCharacterSlotKey(character.name);
+        const characterLabel = character.name ?? character.src;
+
+        return (
           <CharacterSprite
-            key={character.name}
-            character={character}
-            isCurrentSpeaker={character.name === characterState.currentSpeaker}
+            key={slotKey}
+            slotKey={slotKey}
+            characterLabel={characterLabel}
+            fallbackCharacter={character}
+            onExited={handleCharacterExited}
           />
-        </animated.container>
-      ))}
+        );
+      })}
     </container>
   );
 }
 
 interface CharacterSpriteProps {
-  character: Character;
-  isCurrentSpeaker: boolean;
+  slotKey: string;
+  characterLabel: string;
+  fallbackCharacter: Character;
+  onExited: (slotKey: string) => void;
 }
 
-function CharacterSprite({ character: propCharacter, isCurrentSpeaker }: CharacterSpriteProps) {
+function CharacterSprite({ slotKey, characterLabel, fallbackCharacter, onExited }: CharacterSpriteProps) {
+  const characterState = useGameStateSection('character');
   const skipping = useIsSkipping();
   const seeking = useIsSeeking();
   const shouldSkipVisuals = skipping || seeking;
-  const characterState = useSnapshot(gameState.character) as typeof gameState.character;
-
-  const liveCharacter = (characterState.characters as Character[]).find(
-    (c) => (c.name ?? c.src) === (propCharacter.name ?? propCharacter.src),
-  );
-
-  // Track the last known live state so the leave animation uses correct props.
-  // propCharacter from useTransition is stale (captured at enter time) and does
-  // not reflect changes made by charAction, so we cannot rely on it as a fallback.
-  const lastLiveRef = useRef<Character | null>(null);
-  if (liveCharacter) {
-    lastLiveRef.current = liveCharacter;
-  }
-
-  // During leave phase, fall back to last known live state instead of propCharacter
-  const character = liveCharacter ?? lastLiveRef.current ?? propCharacter;
+  const liveCharacter = characterState.characters.find((character) => getCharacterSlotKey(character.name) === slotKey);
+  const character = liveCharacter ?? fallbackCharacter;
+  const transitionKey =
+    liveCharacter === undefined ||
+    !liveCharacter.visible ||
+    liveCharacter.presence === 'entering' ||
+    liveCharacter.presence === 'leaving'
+      ? EMPTY_CHARACTER_KEY
+      : liveCharacter.src;
+  const fadeTime = character.fadeTime;
+  const isCurrentSpeaker = character.name !== undefined && character.name === characterState.currentSpeaker;
 
   const autoTintEnabled = characterState.autoTintEnabled;
   const autoTint = autoTintEnabled ? characterState.autoTint : '#fff';
   const currentTint = autoTintEnabled && !isCurrentSpeaker ? autoTint : character.tint;
   const tintFadeTime = autoTintEnabled && !isCurrentSpeaker ? 200 : character.fadeTime;
 
-  // Reactive spring: re-animates automatically whenever character state changes
   const springs = useSpring({
     x: character.x,
     y: character.y,
@@ -82,24 +101,19 @@ function CharacterSprite({ character: propCharacter, isCurrentSpeaker }: Charact
     },
   });
 
-  const imageTransitions = useTransition(character.src ? [character.src] : [], {
-    keys: (src) => src,
-    sort: (a, b) => Number(a === character.src) - Number(b === character.src),
-    from: { opacity: 0, hold: 0 },
-    enter: { opacity: 1, hold: 1 },
-    leave: { opacity: 1, hold: 0 },
-    config: {
-      duration: shouldSkipVisuals ? 0 : character.fadeTime,
-      easing: easings.easeInOutCubic,
-    },
-  });
-
   return (
-    <container label="角色图片层">
-      {imageTransitions((style, src) => (
+    <TransitionBoundary
+      label={`立绘转场容器:${characterLabel}`}
+      transitionKey={transitionKey}
+      retain="static"
+      performKey={`${transitionKey}:${shouldSkipVisuals ? 'skip' : 'run'}`}
+      effect={characterState.transitionEffect}
+      duration={shouldSkipVisuals ? 0 : fadeTime}
+      onFinished={() => onExited(slotKey)}
+    >
+      <container label="角色图片层">
         <animated.sprite
-          src={src}
-          opacity={style.opacity}
+          src={character.src}
           tint={springs.tint}
           pivot={character.pivot}
           visible={character.visible}
@@ -107,7 +121,7 @@ function CharacterSprite({ character: propCharacter, isCurrentSpeaker }: Charact
           y={springs.y}
           scale={springs.scale}
         />
-      ))}
-    </container>
+      </container>
+    </TransitionBoundary>
   );
 }

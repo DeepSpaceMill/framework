@@ -283,9 +283,9 @@ __metadata:
   languageName: node
   linkType: hard
 
-"@momoyu-ink/cli@npm:^0.5.0":
-  version: 0.5.0
-  resolution: "@momoyu-ink/cli@npm:0.5.0"
+"@momoyu-ink/cli@npm:^0.6.1":
+  version: 0.6.1
+  resolution: "@momoyu-ink/cli@npm:0.6.1"
   dependencies:
     "@zip.js/zip.js": "npm:^2.8.23"
     citty: "npm:^0.2.1"
@@ -295,7 +295,7 @@ __metadata:
     tar: "npm:^7.4.3"
   bin:
     moyu: dist/index.js
-  checksum: 10c0/1680862095724a55cc3039a0ca769459984cc98ea1aac0588fd3ba01f806d40e574c50bbef80523aadb81380d22ec0b42d392dd321d2dbc5b9afc08ea802a716
+  checksum: 10c0/7ac89344dc0dce9553ca95e8958913e522cb29384174f4559a43b170b013620984fc0d975f70a7fdc771fe38aa8700fc3a0ebbd816de60db1dd13204ebded315
   languageName: node
   linkType: hard
 
@@ -304,8 +304,8 @@ __metadata:
   resolution: "@momoyu-ink/framework@workspace:."
   dependencies:
     "@biomejs/biome": "npm:^2.1.4"
-    "@momoyu-ink/cli": "npm:^0.5.0"
-    "@momoyu-ink/kit": "npm:^0.8.2"
+    "@momoyu-ink/cli": "npm:^0.6.1"
+    "@momoyu-ink/kit": "npm:^0.9.0"
     "@rspack/cli": "npm:^1.7.11"
     "@rspack/core": "npm:^1.7.11"
     "@rspack/plugin-react-refresh": "npm:^1.6.2"
@@ -325,9 +325,9 @@ __metadata:
   languageName: unknown
   linkType: soft
 
-"@momoyu-ink/kit@npm:^0.8.2":
-  version: 0.8.2
-  resolution: "@momoyu-ink/kit@npm:0.8.2"
+"@momoyu-ink/kit@npm:^0.9.0":
+  version: 0.9.0
+  resolution: "@momoyu-ink/kit@npm:0.9.0"
   dependencies:
     "@react-spring/animated": "npm:^10.0.3"
     "@react-spring/core": "npm:^10.0.3"
@@ -338,7 +338,7 @@ __metadata:
     zod: "npm:^4.2.0"
   peerDependencies:
     react: ^19.2.1
-  checksum: 10c0/485457b1867cc888f921e3e5208677fa8f5f9bc81a83bd135b98c18ebd86525218e41adbb047e8336580895e9949c1a9a2d6ef220725fdb7b08400a6039bff71
+  checksum: 10c0/2b814372558f7a515fc56e2ba879e3ae4a348f3da9129ca416c328186e9eed8a797251589fba760812aa1682959353533d5d03f3c69e2a90fcdf17171f7f9359
   languageName: node
   linkType: hard
 

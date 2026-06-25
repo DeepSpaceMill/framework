@@ -6,8 +6,7 @@ import {
   type AppStateAdapter,
   type FastForwardOptions,
 } from '@momoyu-ink/kit';
-import { snapshot } from 'valtio';
-import { gameState, type GameState } from '../state/game';
+import { snapshotGameState, type GameState } from '../state/game';
 import { getStageSingleton } from '../lib/stageSingleton';
 import { applyGameStateSnapshot, resetScenarioSessionForNewGame } from '../utils/scenarioGameState';
 
@@ -63,7 +62,7 @@ async function restartStageStoryFromHead(story: string, entry: string) {
 
 export const gameStateDebugAdapter: AppStateAdapter<GameState> = {
   capture() {
-    return snapshot(gameState) as GameState;
+    return snapshotGameState();
   },
   restore(state) {
     getStageSingleton().resetRuntimeState();
