@@ -47,6 +47,7 @@ export function TransitionBoundary({
   const preparedKeyRef = useRef<string | null>(null);
   const performedTriggerRef = useRef<string | number | null | undefined>(undefined);
   const stableSnapshotRef = useRef<GameState>(snapshotGameState());
+  const stableChildrenRef = useRef<ReactNode>(children);
   const effectivePerformKey = performKey ?? transitionKey;
   const maskRule = effect?.type === 'builtin' && effect.name === 'mask' ? effect.rule : undefined;
 
@@ -57,12 +58,21 @@ export function TransitionBoundary({
 
     setFromEntry({
       slot: activeSlot,
-      children,
+      children: stableChildrenRef.current,
       store: proxy(stableSnapshotRef.current),
     });
     setActiveSlot(activeSlot === 'a' ? 'b' : 'a');
     setCurrentKey(transitionKey);
-  }, [activeSlot, currentKey, transitionKey, children]);
+  }, [activeSlot, currentKey, transitionKey]);
+
+  useLayoutEffect(() => {
+    if (fromEntry !== null || transitionKey !== currentKey) {
+      return;
+    }
+
+    stableSnapshotRef.current = snapshotGameState();
+    stableChildrenRef.current = children;
+  }, [children, currentKey, transitionKey, fromEntry]);
 
   useLayoutEffect(() => {
     if (fromEntry === null || shaderRef.current === null) {
@@ -117,9 +127,10 @@ export function TransitionBoundary({
     preparedKeyRef.current = null;
     performedTriggerRef.current = undefined;
     stableSnapshotRef.current = snapshotGameState();
+    stableChildrenRef.current = children;
     setFromEntry(null);
     onFinished?.();
-  }, [onFinished]);
+  }, [children, onFinished]);
 
   const renderSlot = (slot: SlotId) => {
     if (fromEntry?.slot === slot) {

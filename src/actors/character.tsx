@@ -1,4 +1,4 @@
-import { useCallback, useLayoutEffect, useRef, type ReactNode } from 'react';
+import { useCallback, useLayoutEffect } from 'react';
 import { animated, useSpring, useIsSeeking, useIsSkipping, getStageSize, easings } from '@momoyu-ink/kit';
 import { Character, useGameStateSection, useGameStateStore } from '../state/game';
 import { TransitionBoundary } from '../components/transitionBoundary';
@@ -48,85 +48,41 @@ export function CharacterActor() {
         const characterLabel = character.name ?? character.src;
 
         return (
-          <CharacterTransitionBoundary
+          <CharacterSprite
             key={slotKey}
             slotKey={slotKey}
             characterLabel={characterLabel}
             fallbackCharacter={character}
             onExited={handleCharacterExited}
-          >
-            <CharacterSprite slotKey={slotKey} fallbackCharacter={character} />
-          </CharacterTransitionBoundary>
+          />
         );
       })}
     </container>
   );
 }
 
-interface CharacterTransitionBoundaryProps {
+interface CharacterSpriteProps {
   slotKey: string;
   characterLabel: string;
   fallbackCharacter: Character;
   onExited: (slotKey: string) => void;
-  children: ReactNode;
 }
 
-function CharacterTransitionBoundary({
-  slotKey,
-  characterLabel,
-  fallbackCharacter,
-  onExited,
-  children,
-}: CharacterTransitionBoundaryProps) {
+function CharacterSprite({ slotKey, characterLabel, fallbackCharacter, onExited }: CharacterSpriteProps) {
   const characterState = useGameStateSection('character');
   const skipping = useIsSkipping();
   const seeking = useIsSeeking();
   const shouldSkipVisuals = skipping || seeking;
   const liveCharacter = characterState.characters.find((character) => getCharacterSlotKey(character.name) === slotKey);
+  const character = liveCharacter ?? fallbackCharacter;
   const transitionKey =
-    liveCharacter === undefined || liveCharacter.presence === 'entering' || liveCharacter.presence === 'leaving'
+    liveCharacter === undefined ||
+    !liveCharacter.visible ||
+    liveCharacter.presence === 'entering' ||
+    liveCharacter.presence === 'leaving'
       ? EMPTY_CHARACTER_KEY
       : liveCharacter.src;
-  const fadeTime = liveCharacter?.fadeTime ?? fallbackCharacter.fadeTime;
-
-  const handleFinished = useCallback(() => {
-    onExited(slotKey);
-  }, [onExited, slotKey]);
-
-  return (
-    <TransitionBoundary
-      label={`立绘转场容器:${characterLabel}`}
-      transitionKey={transitionKey}
-      retain="static"
-      performKey={`${transitionKey}:${shouldSkipVisuals ? 'skip' : 'run'}`}
-      effect={characterState.transitionEffect}
-      duration={shouldSkipVisuals ? 0 : fadeTime}
-      onFinished={handleFinished}
-    >
-      {children}
-    </TransitionBoundary>
-  );
-}
-
-interface CharacterSpriteProps {
-  slotKey: string;
-  fallbackCharacter: Character;
-}
-
-function CharacterSprite({ slotKey, fallbackCharacter }: CharacterSpriteProps) {
-  const skipping = useIsSkipping();
-  const seeking = useIsSeeking();
-  const shouldSkipVisuals = skipping || seeking;
-  const characterState = useGameStateSection('character');
-
-  const liveCharacter = characterState.characters.find((character) => getCharacterSlotKey(character.name) === slotKey);
-
-  const lastVisibleRef = useRef<Character | null>(null);
-  if (liveCharacter?.visible) {
-    lastVisibleRef.current = liveCharacter;
-  }
-
-  const character = liveCharacter ?? lastVisibleRef.current ?? fallbackCharacter;
+  const fadeTime = character.fadeTime;
   const isCurrentSpeaker = character.name !== undefined && character.name === characterState.currentSpeaker;
 
   const autoTintEnabled = characterState.autoTintEnabled;
@@ -146,16 +102,26 @@ function CharacterSprite({ slotKey, fallbackCharacter }: CharacterSpriteProps) {
   });
 
   return (
-    <container label="角色图片层">
-      <animated.sprite
-        src={character.src}
-        tint={springs.tint}
-        pivot={character.pivot}
-        visible={character.visible}
-        x={springs.x}
-        y={springs.y}
-        scale={springs.scale}
-      />
-    </container>
+    <TransitionBoundary
+      label={`立绘转场容器:${characterLabel}`}
+      transitionKey={transitionKey}
+      retain="static"
+      performKey={`${transitionKey}:${shouldSkipVisuals ? 'skip' : 'run'}`}
+      effect={characterState.transitionEffect}
+      duration={shouldSkipVisuals ? 0 : fadeTime}
+      onFinished={() => onExited(slotKey)}
+    >
+      <container label="角色图片层">
+        <animated.sprite
+          src={character.src}
+          tint={springs.tint}
+          pivot={character.pivot}
+          visible={character.visible}
+          x={springs.x}
+          y={springs.y}
+          scale={springs.scale}
+        />
+      </container>
+    </TransitionBoundary>
   );
 }
