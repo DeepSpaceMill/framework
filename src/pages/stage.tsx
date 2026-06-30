@@ -143,8 +143,8 @@ export function Stage() {
   const params = useNavigationParams<StageParams>();
   const navigation = useNavigation();
 
-  const story = params?.story ?? '';
-  const entry = params?.entry ?? '';
+  const story = params?.story ?? 'start';
+  const entry = params?.entry ?? 'entry';
   const isNewGame = params?.isNewGame ?? true;
 
   useEffect(() => {
