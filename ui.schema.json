@@ -8,36 +8,284 @@
         "textbox": {
           "type": "object",
           "properties": {
-            "position": {
-              "type": "object",
-              "properties": {
-                "x": {
-                  "type": "number",
-                  "title": "X",
+            "background": {
+              "oneOf": [
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "normal"
+                    },
+                    "src": {
+                      "type": "string",
+                      "description": "Image asset path",
+                      "title": "Image",
+                      "format": "asset",
+                      "x-asset-kind": "image",
+                      "x-i18n": {
+                        "zh-CN": "图片"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "图片资源路径"
+                      }
+                    },
+                    "position": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "title": "X",
+                          "x-i18n": {
+                            "zh-CN": "X 坐标"
+                          }
+                        },
+                        "y": {
+                          "type": "number",
+                          "title": "Y",
+                          "x-i18n": {
+                            "zh-CN": "Y 坐标"
+                          }
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ],
+                      "title": "Coordinates",
+                      "x-i18n": {
+                        "zh-CN": "坐标"
+                      },
+                      "format": "position"
+                    },
+                    "anchor": {
+                      "default": [
+                        0,
+                        0
+                      ],
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "description": "Anchor point (x, y)",
+                      "title": "Anchor",
+                      "x-i18n": {
+                        "zh-CN": "锚点"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "节点对齐使用的锚点"
+                      }
+                    },
+                    "pivot": {
+                      "default": [
+                        0,
+                        0
+                      ],
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "description": "Pivot point (x, y)",
+                      "title": "Pivot",
+                      "x-i18n": {
+                        "zh-CN": "旋转中心"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "节点旋转和定位的锚点"
+                      }
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "src",
+                    "position"
+                  ],
+                  "description": "Normal textbox image",
+                  "title": "Normal Image",
                   "x-i18n": {
-                    "zh-CN": "X 坐标"
+                    "zh-CN": "普通图片"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "使用普通图片渲染文本框背景"
                   }
                 },
-                "y": {
-                  "type": "number",
-                  "title": "Y",
+                {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "type": "string",
+                      "const": "nineslice"
+                    },
+                    "src": {
+                      "type": "string",
+                      "description": "Image asset path",
+                      "title": "Image",
+                      "format": "asset",
+                      "x-asset-kind": "image",
+                      "x-i18n": {
+                        "zh-CN": "图片"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "图片资源路径"
+                      }
+                    },
+                    "position": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "title": "X",
+                          "x-i18n": {
+                            "zh-CN": "X 坐标"
+                          }
+                        },
+                        "y": {
+                          "type": "number",
+                          "title": "Y",
+                          "x-i18n": {
+                            "zh-CN": "Y 坐标"
+                          }
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ],
+                      "title": "Coordinates",
+                      "x-i18n": {
+                        "zh-CN": "坐标"
+                      },
+                      "format": "position"
+                    },
+                    "anchor": {
+                      "default": [
+                        0,
+                        0
+                      ],
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "description": "Anchor point (x, y)",
+                      "title": "Anchor",
+                      "x-i18n": {
+                        "zh-CN": "锚点"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "节点对齐使用的锚点"
+                      }
+                    },
+                    "pivot": {
+                      "default": [
+                        0,
+                        0
+                      ],
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "description": "Pivot point (x, y)",
+                      "title": "Pivot",
+                      "x-i18n": {
+                        "zh-CN": "旋转中心"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "节点旋转和定位的锚点"
+                      }
+                    },
+                    "bounds": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "description": "Nine-slice bounds [left, top, right, bottom]",
+                      "title": "Bounds",
+                      "x-i18n": {
+                        "zh-CN": "九宫格边界"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "九宫格缩放使用的边界 [left, top, right, bottom]"
+                      }
+                    },
+                    "targetWidth": {
+                      "description": "Target width for the nineslice image",
+                      "title": "Target Width",
+                      "x-i18n": {
+                        "zh-CN": "目标宽度"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "九宫格图片的目标宽度"
+                      },
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "targetHeight": {
+                      "description": "Target height for the nineslice image",
+                      "title": "Target Height",
+                      "x-i18n": {
+                        "zh-CN": "目标高度"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "九宫格图片的目标高度"
+                      },
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "src",
+                    "position",
+                    "bounds"
+                  ],
+                  "description": "Nineslice textbox image",
+                  "title": "Nine-slice Image",
                   "x-i18n": {
-                    "zh-CN": "Y 坐标"
+                    "zh-CN": "九宫格图片"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "使用九宫格方式渲染文本框背景"
                   }
                 }
-              },
-              "required": [
-                "x",
-                "y"
               ],
-              "title": "Textbox Position",
+              "description": "Textbox image configuration",
+              "title": "Background",
               "x-i18n": {
-                "zh-CN": "文本框位置"
+                "zh-CN": "背景"
               },
-              "format": "position",
-              "description": "Textbox background position",
               "x-i18n-desc": {
-                "zh-CN": "文本框背景图片的位置"
+                "zh-CN": "文本框背景图片配置"
               }
             },
             "content": {
@@ -94,12 +342,214 @@
                   "x-i18n-desc": {
                     "zh-CN": "文本区域高度（像素）"
                   }
+                },
+                "printMode": {
+                  "default": "typewriter",
+                  "description": "Default text printing mode",
+                  "title": "Print Mode",
+                  "x-i18n": {
+                    "zh-CN": "打字模式"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "正文默认的文字打印模式"
+                  },
+                  "type": "string",
+                  "enum": [
+                    "instant",
+                    "typewriter",
+                    "printer"
+                  ]
+                },
+                "printSpeed": {
+                  "default": 20,
+                  "description": "Default print speed: chars/sec (typewriter) or lines/sec (printer)",
+                  "title": "Print Speed",
+                  "x-i18n": {
+                    "zh-CN": "打字速度"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "正文默认的打印速度；逐字模式为字/秒，打印机模式为行/秒"
+                  },
+                  "type": "number"
+                },
+                "textStyle": {
+                  "type": "object",
+                  "properties": {
+                    "fontSize": {
+                      "default": 32,
+                      "description": "Text font size",
+                      "title": "Font Size",
+                      "x-i18n": {
+                        "zh-CN": "字号"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文本字号"
+                      },
+                      "type": "number"
+                    },
+                    "fillColor": {
+                      "default": "#f0f0f0",
+                      "description": "Text color",
+                      "title": "Fill Color",
+                      "format": "color",
+                      "x-i18n": {
+                        "zh-CN": "文字颜色"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文字填充颜色"
+                      },
+                      "type": "string"
+                    },
+                    "lineHeight": {
+                      "default": 1.5,
+                      "description": "Line height multiplier",
+                      "title": "Line Height",
+                      "x-i18n": {
+                        "zh-CN": "行高"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "行高倍数"
+                      },
+                      "type": "number"
+                    },
+                    "indent": {
+                      "default": 0,
+                      "description": "First-line indentation in pixels",
+                      "title": "Indent",
+                      "x-i18n": {
+                        "zh-CN": "缩进"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "段落首行缩进（像素）"
+                      },
+                      "type": "number"
+                    },
+                    "stroke": {
+                      "default": false,
+                      "description": "Whether to apply text stroke",
+                      "title": "Stroke",
+                      "x-i18n": {
+                        "zh-CN": "描边"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "是否启用文字描边"
+                      },
+                      "type": "boolean"
+                    },
+                    "strokeColor": {
+                      "default": "#000000",
+                      "description": "Stroke color",
+                      "title": "Stroke Color",
+                      "format": "color",
+                      "x-i18n": {
+                        "zh-CN": "描边颜色"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文字描边颜色"
+                      },
+                      "type": "string"
+                    },
+                    "strokeWidth": {
+                      "default": 2,
+                      "description": "Stroke width in pixels",
+                      "title": "Stroke Width",
+                      "x-i18n": {
+                        "zh-CN": "描边宽度"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文字描边宽度（像素）"
+                      },
+                      "type": "number"
+                    },
+                    "shadow": {
+                      "default": false,
+                      "description": "Whether to apply text shadow",
+                      "title": "Shadow",
+                      "x-i18n": {
+                        "zh-CN": "阴影"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "是否启用文字阴影"
+                      },
+                      "type": "boolean"
+                    },
+                    "shadowColor": {
+                      "default": "#000000",
+                      "description": "Shadow color",
+                      "title": "Shadow Color",
+                      "format": "color",
+                      "x-i18n": {
+                        "zh-CN": "阴影颜色"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文字阴影颜色"
+                      },
+                      "type": "string"
+                    },
+                    "shadowOffsetX": {
+                      "default": 0,
+                      "description": "Shadow X offset in pixels",
+                      "title": "Shadow Offset X",
+                      "x-i18n": {
+                        "zh-CN": "阴影偏移 X"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "阴影 X 轴偏移（像素）"
+                      },
+                      "type": "number"
+                    },
+                    "shadowOffsetY": {
+                      "default": 0,
+                      "description": "Shadow Y offset in pixels",
+                      "title": "Shadow Offset Y",
+                      "x-i18n": {
+                        "zh-CN": "阴影偏移 Y"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "阴影 Y 轴偏移（像素）"
+                      },
+                      "type": "number"
+                    },
+                    "shadowBlur": {
+                      "default": 0,
+                      "description": "Shadow blur radius in pixels",
+                      "title": "Shadow Blur",
+                      "x-i18n": {
+                        "zh-CN": "阴影模糊"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "阴影模糊半径（像素）"
+                      },
+                      "type": "number"
+                    },
+                    "shadowWidth": {
+                      "default": 0,
+                      "description": "Shadow width in pixels, only effective when shadow is enabled",
+                      "title": "Shadow Width",
+                      "x-i18n": {
+                        "zh-CN": "阴影宽度"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "阴影宽度（像素），仅在启用阴影时生效"
+                      },
+                      "type": "number"
+                    }
+                  },
+                  "description": "Text style configuration",
+                  "title": "Text Style",
+                  "x-i18n": {
+                    "zh-CN": "文字样式"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本渲染使用的样式配置"
+                  }
                 }
               },
               "required": [
                 "position",
                 "boxWidth",
-                "boxHeight"
+                "boxHeight",
+                "textStyle"
               ],
               "description": "Text content layout",
               "title": "Content",
@@ -113,37 +563,553 @@
             "nameBox": {
               "type": "object",
               "properties": {
-                "position": {
-                  "type": "object",
-                  "properties": {
-                    "x": {
-                      "type": "number",
-                      "title": "X",
+                "background": {
+                  "oneOf": [
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "normal"
+                        },
+                        "src": {
+                          "type": "string",
+                          "description": "Image asset path",
+                          "title": "Image",
+                          "format": "asset",
+                          "x-asset-kind": "image",
+                          "x-i18n": {
+                            "zh-CN": "图片"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "图片资源路径"
+                          }
+                        },
+                        "position": {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": "number",
+                              "title": "X",
+                              "x-i18n": {
+                                "zh-CN": "X 坐标"
+                              }
+                            },
+                            "y": {
+                              "type": "number",
+                              "title": "Y",
+                              "x-i18n": {
+                                "zh-CN": "Y 坐标"
+                              }
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ],
+                          "title": "Coordinates",
+                          "x-i18n": {
+                            "zh-CN": "坐标"
+                          },
+                          "format": "position"
+                        },
+                        "anchor": {
+                          "default": [
+                            0,
+                            0
+                          ],
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ],
+                          "description": "Anchor point (x, y)",
+                          "title": "Anchor",
+                          "x-i18n": {
+                            "zh-CN": "锚点"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "节点对齐使用的锚点"
+                          }
+                        },
+                        "pivot": {
+                          "default": [
+                            0,
+                            0
+                          ],
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ],
+                          "description": "Pivot point (x, y)",
+                          "title": "Pivot",
+                          "x-i18n": {
+                            "zh-CN": "旋转中心"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "节点旋转和定位的锚点"
+                          }
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "src",
+                        "position"
+                      ],
+                      "description": "Normal textbox image",
+                      "title": "Normal Image",
                       "x-i18n": {
-                        "zh-CN": "X 坐标"
+                        "zh-CN": "普通图片"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "使用普通图片渲染文本框背景"
                       }
                     },
-                    "y": {
-                      "type": "number",
-                      "title": "Y",
+                    {
+                      "type": "object",
+                      "properties": {
+                        "type": {
+                          "type": "string",
+                          "const": "nineslice"
+                        },
+                        "src": {
+                          "type": "string",
+                          "description": "Image asset path",
+                          "title": "Image",
+                          "format": "asset",
+                          "x-asset-kind": "image",
+                          "x-i18n": {
+                            "zh-CN": "图片"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "图片资源路径"
+                          }
+                        },
+                        "position": {
+                          "type": "object",
+                          "properties": {
+                            "x": {
+                              "type": "number",
+                              "title": "X",
+                              "x-i18n": {
+                                "zh-CN": "X 坐标"
+                              }
+                            },
+                            "y": {
+                              "type": "number",
+                              "title": "Y",
+                              "x-i18n": {
+                                "zh-CN": "Y 坐标"
+                              }
+                            }
+                          },
+                          "required": [
+                            "x",
+                            "y"
+                          ],
+                          "title": "Coordinates",
+                          "x-i18n": {
+                            "zh-CN": "坐标"
+                          },
+                          "format": "position"
+                        },
+                        "anchor": {
+                          "default": [
+                            0,
+                            0
+                          ],
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ],
+                          "description": "Anchor point (x, y)",
+                          "title": "Anchor",
+                          "x-i18n": {
+                            "zh-CN": "锚点"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "节点对齐使用的锚点"
+                          }
+                        },
+                        "pivot": {
+                          "default": [
+                            0,
+                            0
+                          ],
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ],
+                          "description": "Pivot point (x, y)",
+                          "title": "Pivot",
+                          "x-i18n": {
+                            "zh-CN": "旋转中心"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "节点旋转和定位的锚点"
+                          }
+                        },
+                        "bounds": {
+                          "type": "array",
+                          "prefixItems": [
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ],
+                          "description": "Nine-slice bounds [left, top, right, bottom]",
+                          "title": "Bounds",
+                          "x-i18n": {
+                            "zh-CN": "九宫格边界"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "九宫格缩放使用的边界 [left, top, right, bottom]"
+                          }
+                        },
+                        "targetWidth": {
+                          "description": "Target width for the nineslice image",
+                          "title": "Target Width",
+                          "x-i18n": {
+                            "zh-CN": "目标宽度"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "九宫格图片的目标宽度"
+                          },
+                          "type": "number",
+                          "minimum": 0
+                        },
+                        "targetHeight": {
+                          "description": "Target height for the nineslice image",
+                          "title": "Target Height",
+                          "x-i18n": {
+                            "zh-CN": "目标高度"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "九宫格图片的目标高度"
+                          },
+                          "type": "number",
+                          "minimum": 0
+                        }
+                      },
+                      "required": [
+                        "type",
+                        "src",
+                        "position",
+                        "bounds"
+                      ],
+                      "description": "Nineslice textbox image",
+                      "title": "Nine-slice Image",
                       "x-i18n": {
-                        "zh-CN": "Y 坐标"
+                        "zh-CN": "九宫格图片"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "使用九宫格方式渲染文本框背景"
+                      }
+                    }
+                  ],
+                  "description": "Textbox image configuration",
+                  "title": "Background",
+                  "x-i18n": {
+                    "zh-CN": "背景"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本框背景图片配置"
+                  }
+                },
+                "text": {
+                  "type": "object",
+                  "properties": {
+                    "position": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "title": "X",
+                          "x-i18n": {
+                            "zh-CN": "X 坐标"
+                          }
+                        },
+                        "y": {
+                          "type": "number",
+                          "title": "Y",
+                          "x-i18n": {
+                            "zh-CN": "Y 坐标"
+                          }
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ],
+                      "title": "Coordinates",
+                      "x-i18n": {
+                        "zh-CN": "坐标"
+                      },
+                      "format": "position"
+                    },
+                    "anchor": {
+                      "default": [
+                        0.5,
+                        0.5
+                      ],
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "description": "Anchor point (x, y)",
+                      "title": "Anchor",
+                      "x-i18n": {
+                        "zh-CN": "锚点"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "节点对齐使用的锚点"
+                      }
+                    },
+                    "pivot": {
+                      "default": [
+                        0.5,
+                        0.5
+                      ],
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "description": "Pivot point (x, y)",
+                      "title": "Pivot",
+                      "x-i18n": {
+                        "zh-CN": "旋转中心"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "节点旋转和定位的锚点"
+                      }
+                    },
+                    "textStyle": {
+                      "type": "object",
+                      "properties": {
+                        "fontSize": {
+                          "default": 32,
+                          "description": "Text font size",
+                          "title": "Font Size",
+                          "x-i18n": {
+                            "zh-CN": "字号"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "文本字号"
+                          },
+                          "type": "number"
+                        },
+                        "fillColor": {
+                          "default": "#f0f0f0",
+                          "description": "Text color",
+                          "title": "Fill Color",
+                          "format": "color",
+                          "x-i18n": {
+                            "zh-CN": "文字颜色"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "文字填充颜色"
+                          },
+                          "type": "string"
+                        },
+                        "lineHeight": {
+                          "default": 1.5,
+                          "description": "Line height multiplier",
+                          "title": "Line Height",
+                          "x-i18n": {
+                            "zh-CN": "行高"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "行高倍数"
+                          },
+                          "type": "number"
+                        },
+                        "indent": {
+                          "default": 0,
+                          "description": "First-line indentation in pixels",
+                          "title": "Indent",
+                          "x-i18n": {
+                            "zh-CN": "缩进"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "段落首行缩进（像素）"
+                          },
+                          "type": "number"
+                        },
+                        "stroke": {
+                          "default": false,
+                          "description": "Whether to apply text stroke",
+                          "title": "Stroke",
+                          "x-i18n": {
+                            "zh-CN": "描边"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "是否启用文字描边"
+                          },
+                          "type": "boolean"
+                        },
+                        "strokeColor": {
+                          "default": "#000000",
+                          "description": "Stroke color",
+                          "title": "Stroke Color",
+                          "format": "color",
+                          "x-i18n": {
+                            "zh-CN": "描边颜色"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "文字描边颜色"
+                          },
+                          "type": "string"
+                        },
+                        "strokeWidth": {
+                          "default": 2,
+                          "description": "Stroke width in pixels",
+                          "title": "Stroke Width",
+                          "x-i18n": {
+                            "zh-CN": "描边宽度"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "文字描边宽度（像素）"
+                          },
+                          "type": "number"
+                        },
+                        "shadow": {
+                          "default": false,
+                          "description": "Whether to apply text shadow",
+                          "title": "Shadow",
+                          "x-i18n": {
+                            "zh-CN": "阴影"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "是否启用文字阴影"
+                          },
+                          "type": "boolean"
+                        },
+                        "shadowColor": {
+                          "default": "#000000",
+                          "description": "Shadow color",
+                          "title": "Shadow Color",
+                          "format": "color",
+                          "x-i18n": {
+                            "zh-CN": "阴影颜色"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "文字阴影颜色"
+                          },
+                          "type": "string"
+                        },
+                        "shadowOffsetX": {
+                          "default": 0,
+                          "description": "Shadow X offset in pixels",
+                          "title": "Shadow Offset X",
+                          "x-i18n": {
+                            "zh-CN": "阴影偏移 X"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "阴影 X 轴偏移（像素）"
+                          },
+                          "type": "number"
+                        },
+                        "shadowOffsetY": {
+                          "default": 0,
+                          "description": "Shadow Y offset in pixels",
+                          "title": "Shadow Offset Y",
+                          "x-i18n": {
+                            "zh-CN": "阴影偏移 Y"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "阴影 Y 轴偏移（像素）"
+                          },
+                          "type": "number"
+                        },
+                        "shadowBlur": {
+                          "default": 0,
+                          "description": "Shadow blur radius in pixels",
+                          "title": "Shadow Blur",
+                          "x-i18n": {
+                            "zh-CN": "阴影模糊"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "阴影模糊半径（像素）"
+                          },
+                          "type": "number"
+                        },
+                        "shadowWidth": {
+                          "default": 0,
+                          "description": "Shadow width in pixels, only effective when shadow is enabled",
+                          "title": "Shadow Width",
+                          "x-i18n": {
+                            "zh-CN": "阴影宽度"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "阴影宽度（像素），仅在启用阴影时生效"
+                          },
+                          "type": "number"
+                        }
+                      },
+                      "description": "Text style configuration",
+                      "title": "Text Style",
+                      "x-i18n": {
+                        "zh-CN": "文字样式"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文本渲染使用的样式配置"
                       }
                     }
                   },
                   "required": [
-                    "x",
-                    "y"
+                    "position",
+                    "textStyle"
                   ],
-                  "title": "Coordinates",
+                  "description": "Name text layout and style",
+                  "title": "Name Text",
                   "x-i18n": {
-                    "zh-CN": "坐标"
+                    "zh-CN": "姓名文字"
                   },
-                  "format": "position"
+                  "x-i18n-desc": {
+                    "zh-CN": "姓名框内文字的位置与样式配置"
+                  }
                 }
               },
               "required": [
-                "position"
+                "background",
+                "text"
               ],
               "description": "Name box layout",
               "title": "Name Box",
@@ -151,7 +1117,7 @@
                 "zh-CN": "姓名框"
               },
               "x-i18n-desc": {
-                "zh-CN": "姓名框背景的位置"
+                "zh-CN": "姓名框背景与姓名文字的配置"
               }
             },
             "avatar": {
@@ -185,6 +1151,29 @@
                   },
                   "format": "position"
                 },
+                "anchor": {
+                  "default": [
+                    0,
+                    0
+                  ],
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "number"
+                    },
+                    {
+                      "type": "number"
+                    }
+                  ],
+                  "description": "Anchor point (x, y)",
+                  "title": "Anchor",
+                  "x-i18n": {
+                    "zh-CN": "锚点"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "节点对齐使用的锚点"
+                  }
+                },
                 "pivot": {
                   "type": "array",
                   "prefixItems": [
@@ -217,13 +1206,556 @@
               "x-i18n-desc": {
                 "zh-CN": "文本框头像的默认位置与锚点；命令中的 offset 会相对此位置生效"
               }
+            },
+            "controls": {
+              "type": "object",
+              "properties": {
+                "closeButton": {
+                  "type": "object",
+                  "properties": {
+                    "position": {
+                      "type": "object",
+                      "properties": {
+                        "x": {
+                          "type": "number",
+                          "title": "X",
+                          "x-i18n": {
+                            "zh-CN": "X 坐标"
+                          }
+                        },
+                        "y": {
+                          "type": "number",
+                          "title": "Y",
+                          "x-i18n": {
+                            "zh-CN": "Y 坐标"
+                          }
+                        }
+                      },
+                      "required": [
+                        "x",
+                        "y"
+                      ],
+                      "title": "Coordinates",
+                      "x-i18n": {
+                        "zh-CN": "坐标"
+                      },
+                      "format": "position"
+                    },
+                    "fileNames": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "string",
+                          "description": "Idle state image",
+                          "title": "Idle",
+                          "format": "asset",
+                          "x-asset-kind": "image",
+                          "x-i18n": {
+                            "zh-CN": "空闲"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "按钮空闲状态的图片"
+                          }
+                        },
+                        {
+                          "type": "string",
+                          "description": "Hover state image",
+                          "title": "Hover",
+                          "format": "asset",
+                          "x-asset-kind": "image",
+                          "x-i18n": {
+                            "zh-CN": "悬停"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "按钮悬停状态的图片"
+                          }
+                        },
+                        {
+                          "type": "string",
+                          "description": "Pressed state image",
+                          "title": "Pressed",
+                          "format": "asset",
+                          "x-asset-kind": "image",
+                          "x-i18n": {
+                            "zh-CN": "按下"
+                          },
+                          "x-i18n-desc": {
+                            "zh-CN": "按钮按下状态的图片"
+                          }
+                        }
+                      ],
+                      "description": "Button images in idle, hover, and pressed states",
+                      "title": "Button Images",
+                      "x-i18n": {
+                        "zh-CN": "按钮图片"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "按钮空闲、悬停和按下状态的图片"
+                      }
+                    },
+                    "anchor": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "description": "Anchor point (x, y)",
+                      "title": "Anchor",
+                      "x-i18n": {
+                        "zh-CN": "锚点"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "节点对齐使用的锚点"
+                      }
+                    },
+                    "pivot": {
+                      "type": "array",
+                      "prefixItems": [
+                        {
+                          "type": "number"
+                        },
+                        {
+                          "type": "number"
+                        }
+                      ],
+                      "description": "Pivot point (x, y)",
+                      "title": "Pivot",
+                      "x-i18n": {
+                        "zh-CN": "旋转中心"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "节点旋转和定位的锚点"
+                      }
+                    }
+                  },
+                  "required": [
+                    "position",
+                    "fileNames"
+                  ],
+                  "description": "Close button configuration",
+                  "title": "Close Button",
+                  "x-i18n": {
+                    "zh-CN": "关闭按钮"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本框右上角关闭按钮配置"
+                  }
+                },
+                "buttons": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "action": {
+                        "type": "string",
+                        "enum": [
+                          "QSAV",
+                          "QLOD",
+                          "SAVE",
+                          "LOAD",
+                          "AUTO",
+                          "SKIP",
+                          "LOG",
+                          "MENU"
+                        ],
+                        "description": "Textbox button action",
+                        "title": "Action",
+                        "x-i18n": {
+                          "zh-CN": "动作"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "按钮点击后触发的文本框动作"
+                        }
+                      },
+                      "position": {
+                        "type": "object",
+                        "properties": {
+                          "x": {
+                            "type": "number",
+                            "title": "X",
+                            "x-i18n": {
+                              "zh-CN": "X 坐标"
+                            }
+                          },
+                          "y": {
+                            "type": "number",
+                            "title": "Y",
+                            "x-i18n": {
+                              "zh-CN": "Y 坐标"
+                            }
+                          }
+                        },
+                        "required": [
+                          "x",
+                          "y"
+                        ],
+                        "title": "Coordinates",
+                        "x-i18n": {
+                          "zh-CN": "坐标"
+                        },
+                        "format": "position"
+                      },
+                      "fileNames": {
+                        "type": "array",
+                        "prefixItems": [
+                          {
+                            "type": "string",
+                            "description": "Idle state image",
+                            "title": "Idle",
+                            "format": "asset",
+                            "x-asset-kind": "image",
+                            "x-i18n": {
+                              "zh-CN": "空闲"
+                            },
+                            "x-i18n-desc": {
+                              "zh-CN": "按钮空闲状态的图片"
+                            }
+                          },
+                          {
+                            "type": "string",
+                            "description": "Hover state image",
+                            "title": "Hover",
+                            "format": "asset",
+                            "x-asset-kind": "image",
+                            "x-i18n": {
+                              "zh-CN": "悬停"
+                            },
+                            "x-i18n-desc": {
+                              "zh-CN": "按钮悬停状态的图片"
+                            }
+                          },
+                          {
+                            "type": "string",
+                            "description": "Pressed state image",
+                            "title": "Pressed",
+                            "format": "asset",
+                            "x-asset-kind": "image",
+                            "x-i18n": {
+                              "zh-CN": "按下"
+                            },
+                            "x-i18n-desc": {
+                              "zh-CN": "按钮按下状态的图片"
+                            }
+                          }
+                        ],
+                        "description": "Button images in idle, hover, and pressed states",
+                        "title": "Button Images",
+                        "x-i18n": {
+                          "zh-CN": "按钮图片"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "按钮空闲、悬停和按下状态的图片"
+                        }
+                      },
+                      "text": {
+                        "type": "string",
+                        "description": "Button label",
+                        "title": "Text",
+                        "x-i18n": {
+                          "zh-CN": "文字"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "按钮上显示的文字"
+                        }
+                      },
+                      "fontSize": {
+                        "default": 24,
+                        "description": "Button font size",
+                        "title": "Font Size",
+                        "x-i18n": {
+                          "zh-CN": "字号"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "按钮文字字号"
+                        },
+                        "type": "number"
+                      },
+                      "color": {
+                        "default": [
+                          "rgba(255,255,255,0.3)",
+                          "rgba(255,255,255,0.7)",
+                          "rgba(255,255,255,0.9)"
+                        ],
+                        "anyOf": [
+                          {
+                            "type": "string"
+                          },
+                          {
+                            "type": "array",
+                            "prefixItems": [
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "string"
+                              },
+                              {
+                                "type": "string"
+                              }
+                            ]
+                          }
+                        ],
+                        "description": "Button text color, either a single color or colors for idle/hover/pressed states",
+                        "title": "Color",
+                        "format": "color",
+                        "x-i18n": {
+                          "zh-CN": "颜色"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "按钮文字颜色，可以是单色或空闲/悬停/按下三态颜色"
+                        }
+                      },
+                      "anchor": {
+                        "type": "array",
+                        "prefixItems": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "number"
+                          }
+                        ],
+                        "description": "Anchor point (x, y)",
+                        "title": "Anchor",
+                        "x-i18n": {
+                          "zh-CN": "锚点"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "节点对齐使用的锚点"
+                        }
+                      },
+                      "pivot": {
+                        "type": "array",
+                        "prefixItems": [
+                          {
+                            "type": "number"
+                          },
+                          {
+                            "type": "number"
+                          }
+                        ],
+                        "description": "Pivot point (x, y)",
+                        "title": "Pivot",
+                        "x-i18n": {
+                          "zh-CN": "旋转中心"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "节点旋转和定位的锚点"
+                        }
+                      },
+                      "textOffsetX": {
+                        "description": "Horizontal text offset inside the button",
+                        "title": "Text Offset X",
+                        "x-i18n": {
+                          "zh-CN": "文字偏移 X"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "按钮内文字的水平偏移"
+                        },
+                        "type": "number"
+                      },
+                      "textOffsetY": {
+                        "description": "Vertical text offset inside the button",
+                        "title": "Text Offset Y",
+                        "x-i18n": {
+                          "zh-CN": "文字偏移 Y"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "按钮内文字的垂直偏移"
+                        },
+                        "type": "number"
+                      },
+                      "lockOnActive": {
+                        "default": false,
+                        "description": "Whether to lock the button to the pressed state while its action is active",
+                        "title": "Lock On Active",
+                        "x-i18n": {
+                          "zh-CN": "激活时锁定"
+                        },
+                        "x-i18n-desc": {
+                          "zh-CN": "当对应动作处于激活状态时，是否锁定为按下态"
+                        },
+                        "type": "boolean"
+                      }
+                    },
+                    "required": [
+                      "action",
+                      "position",
+                      "fileNames",
+                      "text"
+                    ],
+                    "description": "Textbox action button configuration",
+                    "title": "Button",
+                    "x-i18n": {
+                      "zh-CN": "按钮"
+                    },
+                    "x-i18n-desc": {
+                      "zh-CN": "文本框动作按钮配置"
+                    }
+                  },
+                  "description": "Textbox action buttons",
+                  "title": "Buttons",
+                  "x-i18n": {
+                    "zh-CN": "按钮列表"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本框功能按钮列表"
+                  }
+                },
+                "cursor": {
+                  "type": "object",
+                  "properties": {
+                    "enabled": {
+                      "default": true,
+                      "description": "Whether to show the textbox cursor",
+                      "title": "Enabled",
+                      "x-i18n": {
+                        "zh-CN": "启用"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "是否显示文本框光标"
+                      },
+                      "type": "boolean"
+                    },
+                    "src": {
+                      "type": "string",
+                      "description": "Cursor asset path",
+                      "title": "Cursor",
+                      "format": "asset",
+                      "x-asset-kind": "image",
+                      "x-i18n": {
+                        "zh-CN": "光标素材"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文本框光标使用的素材路径"
+                      }
+                    },
+                    "tint": {
+                      "default": "#999999",
+                      "description": "Cursor tint color",
+                      "title": "Tint",
+                      "format": "color",
+                      "x-i18n": {
+                        "zh-CN": "着色"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文本框光标的着色颜色"
+                      },
+                      "type": "string"
+                    },
+                    "offsetX": {
+                      "default": 8,
+                      "description": "Cursor horizontal offset relative to the reported text cursor position",
+                      "title": "Offset X",
+                      "x-i18n": {
+                        "zh-CN": "偏移 X"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "相对于文字光标位置的水平偏移"
+                      },
+                      "type": "number"
+                    },
+                    "offsetY": {
+                      "default": 10,
+                      "description": "Cursor vertical offset relative to the reported text cursor position",
+                      "title": "Offset Y",
+                      "x-i18n": {
+                        "zh-CN": "偏移 Y"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "相对于文字光标位置的垂直偏移"
+                      },
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "src"
+                  ],
+                  "description": "Textbox cursor configuration",
+                  "title": "Cursor",
+                  "x-i18n": {
+                    "zh-CN": "光标"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本框打字光标的显示配置"
+                  }
+                },
+                "hover": {
+                  "type": "object",
+                  "properties": {
+                    "showOnHover": {
+                      "default": true,
+                      "description": "Whether to show buttons only when hovering the textbox",
+                      "title": "Show On Hover",
+                      "x-i18n": {
+                        "zh-CN": "悬停显示"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "是否仅在鼠标悬停文本框时显示按钮"
+                      },
+                      "type": "boolean"
+                    },
+                    "visibilityDelayMs": {
+                      "default": 80,
+                      "description": "Delay before the button group starts fading in",
+                      "title": "Visibility Delay",
+                      "x-i18n": {
+                        "zh-CN": "显示延迟"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "按钮组开始淡入前的延迟时间（毫秒）"
+                      },
+                      "type": "number"
+                    },
+                    "fadeDurationMs": {
+                      "default": 140,
+                      "description": "Fade duration for the button group",
+                      "title": "Fade Duration",
+                      "x-i18n": {
+                        "zh-CN": "淡入淡出时长"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "按钮组淡入淡出的持续时间（毫秒）"
+                      },
+                      "type": "number"
+                    }
+                  },
+                  "description": "Textbox hover behavior",
+                  "title": "Hover",
+                  "x-i18n": {
+                    "zh-CN": "悬停行为"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本框按钮在悬停时的显示行为配置"
+                  }
+                }
+              },
+              "required": [
+                "closeButton",
+                "buttons",
+                "cursor",
+                "hover"
+              ],
+              "description": "Textbox controls configuration",
+              "title": "Controls",
+              "x-i18n": {
+                "zh-CN": "控件"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "文本框按钮、光标与悬停行为配置"
+              }
             }
           },
           "required": [
-            "position",
+            "background",
             "content",
             "nameBox",
-            "avatar"
+            "avatar",
+            "controls"
           ],
           "description": "Stage textbox UI configuration",
           "title": "Textbox",

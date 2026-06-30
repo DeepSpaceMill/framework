@@ -497,6 +497,17 @@ const TextBoxCommandSchema = z
     'x-i18n-desc': { 'zh-CN': '配置文本框外观与行为' },
   });
 
+const TextBoxResetCommandSchema = z
+  .object({
+    command: z.literal('textBoxReset'),
+  })
+  .describe('Reset textbox runtime style overrides')
+  .meta({
+    title: 'Reset Text Box Style',
+    'x-i18n': { 'zh-CN': '重置文本框样式' },
+    'x-i18n-desc': { 'zh-CN': '清除文本框运行时样式覆盖，恢复使用 UI 默认值' },
+  });
+
 const TextBoxShowCommandSchema = z
   .object({
     command: z.literal('textBoxShow'),
@@ -1396,6 +1407,7 @@ export const ScenarioCommandSchema = z.discriminatedUnion('command', [
   TextCommandSchema,
   TextClearCommandSchema,
   TextBoxCommandSchema,
+  TextBoxResetCommandSchema,
   TextBoxShowCommandSchema,
   TextBoxHideCommandSchema,
   AvatarCommandSchema,

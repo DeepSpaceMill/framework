@@ -34,9 +34,6 @@ interface TextBoxActorProps {
   onButtonClick: (button: TextBoxButton) => void;
 }
 
-const TEXTBOX_BUTTON_VISIBILITY_DELAY_MS = 80;
-const TEXTBOX_BUTTON_FADE_DURATION_MS = 140;
-
 function resolveActiveAvatar(textboxState: TextBoxState): TextBoxAvatarConfig | null {
   const character = textboxState.name.trim();
   const avatarName = textboxState.avatarName.trim();
@@ -60,7 +57,7 @@ function resolveTextLayout(textBoxUi: StageTextBoxUiData, avatar: TextBoxAvatarC
     return {
       textX: textBoxUi.content.position.x,
       textWidth: textBoxUi.content.boxWidth,
-      nameBoxX: textBoxUi.nameBox.position.x,
+      nameBoxX: textBoxUi.nameBox.background.position.x,
     };
   }
 
@@ -69,8 +66,21 @@ function resolveTextLayout(textBoxUi: StageTextBoxUiData, avatar: TextBoxAvatarC
   return {
     textX: textBoxUi.content.position.x + spacing,
     textWidth: Math.max(0, textBoxUi.content.boxWidth - spacing),
-    nameBoxX: textBoxUi.nameBox.position.x + spacing,
+    nameBoxX: textBoxUi.nameBox.background.position.x + spacing,
   };
+}
+
+function resolveNineSlice(imageConfig: StageTextBoxUiData['background']) {
+  if (imageConfig.type === 'nineslice') {
+    return {
+      mode: 'nineslice' as const,
+      bounds: imageConfig.bounds,
+      targetWidth: imageConfig.targetWidth,
+      targetHeight: imageConfig.targetHeight,
+    };
+  }
+
+  return {};
 }
 
 export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
@@ -90,6 +100,9 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   const hasOverlay = navState.overlayStack.length > 0;
   const activeAvatar = resolveActiveAvatar(textBoxState as TextBoxState);
   const layout = resolveTextLayout(textBoxUi, activeAvatar);
+  const mergedTextStyle = { ...textBoxUi.content.textStyle, ...textBoxState.textStyle };
+  const mergedNameTextStyle = textBoxUi.nameBox.text.textStyle;
+  const hoverUi = textBoxUi.controls.hover;
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -99,14 +112,14 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
     setIsHovered(false);
   };
 
-  const buttonsVisible = isHovered && textBoxState.visible && !hasOverlay;
+  const buttonsVisible = (hoverUi.showOnHover ? isHovered : true) && textBoxState.visible && !hasOverlay;
 
   const buttonTransitions = useTransition(buttonsVisible ? [0] : [], {
     from: { opacity: 0 },
-    enter: { opacity: 1, delay: TEXTBOX_BUTTON_VISIBILITY_DELAY_MS },
+    enter: { opacity: 1, delay: hoverUi.visibilityDelayMs },
     leave: { opacity: 0 },
     config: {
-      duration: TEXTBOX_BUTTON_FADE_DURATION_MS,
+      duration: hoverUi.fadeDurationMs,
     },
   });
 
@@ -167,11 +180,12 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
     autoTicketRef.current = null;
   }, [autoing]);
 
-  const effectivePrintMode = skipping || seeking ? 'instant' : textBoxState.printMode;
+  const mergedPrintMode = textBoxState.printMode ?? textBoxUi.content.printMode;
+  const mergedPrintSpeed = textBoxState.printSpeed ?? textBoxUi.content.printSpeed;
+
+  const effectivePrintMode = skipping || seeking ? 'instant' : mergedPrintMode;
   const effectivePrintSpeed =
-    effectivePrintMode === 'instant'
-      ? textBoxState.printSpeed
-      : Math.max(1, textBoxState.printSpeed * settings.text_speed);
+    effectivePrintMode === 'instant' ? mergedPrintSpeed : Math.max(1, mergedPrintSpeed * settings.text_speed);
 
   useLayoutEffect(() => {
     if (!autoing || seeking) {
@@ -194,43 +208,49 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
     >
       <sprite
         label="文本框"
-        src="ui/textbox.png"
-        x={textBoxUi.position.x}
-        y={textBoxUi.position.y}
+        src={textBoxUi.background.src}
+        x={textBoxUi.background.position.x}
+        y={textBoxUi.background.position.y}
+        anchor={textBoxUi.background.anchor}
+        pivot={textBoxUi.background.pivot}
+        {...resolveNineSlice(textBoxUi.background)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
         {buttonTransitions((style) => (
           <animated.container label="文本框按钮组" opacity={style.opacity}>
             <Button
-              fileNames={['ui/textbox_close.png', 'ui/textbox_close_hover.png', 'ui/textbox_close_press.png']}
-              x={1466}
-              y={18}
+              fileNames={textBoxUi.controls.closeButton.fileNames}
+              x={textBoxUi.controls.closeButton.position.x}
+              y={textBoxUi.controls.closeButton.position.y}
+              anchor={textBoxUi.controls.closeButton.anchor}
               onClick={() => {
                 gameState.textbox.hideReason = 'manual';
                 gameState.textbox.visible = false;
               }}
             />
             <container x={650} y={158}>
-              {[
-                TextBoxButton.QSAVE,
-                TextBoxButton.QLOAD,
-                TextBoxButton.SAVE,
-                TextBoxButton.LOAD,
-                TextBoxButton.AUTO,
-                TextBoxButton.SKIP,
-                TextBoxButton.LOG,
-                TextBoxButton.MENU,
-              ].map((button, index) => (
+              {textBoxUi.controls.buttons.map((button) => (
                 <Button
-                  key={button}
-                  fileNames={[`ui/textbox_button.png`, `ui/textbox_button.png`, `ui/textbox_button.png`]}
-                  x={100 * index}
-                  text={button}
-                  fontSize={24}
-                  color={['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.7)', 'rgba(255,255,255,0.9)']}
+                  key={`${button.action}-${button.position.x}-${button.position.y}`}
+                  fileNames={button.fileNames}
+                  x={button.position.x}
+                  y={button.position.y}
+                  anchor={button.anchor}
+                  text={button.text}
+                  fontSize={button.fontSize}
+                  color={button.color}
+                  textOffsetX={button.textOffsetX}
+                  textOffsetY={button.textOffsetY}
+                  lockOn={
+                    button.lockOnActive &&
+                    ((button.action === TextBoxButton.AUTO && autoing) ||
+                      (button.action === TextBoxButton.SKIP && skipping))
+                      ? 'press'
+                      : undefined
+                  }
                   onClick={() => {
-                    onButtonClick(button);
+                    onButtonClick(button.action as TextBoxButton);
                   }}
                 />
               ))}
@@ -253,23 +273,23 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
             label="对话内容"
             ref={textWindowRef}
             text={textBoxState.text}
-            fontSize={32}
-            lineHeight={textBoxState.lineHeight}
+            fontSize={mergedTextStyle.fontSize}
+            lineHeight={mergedTextStyle.lineHeight}
             boxWidth={layout.textWidth}
             boxHeight={textBoxUi.content.boxHeight}
-            fillColor={textBoxState.fillColor}
+            fillColor={mergedTextStyle.fillColor}
             printMode={effectivePrintMode}
             printSpeed={effectivePrintSpeed}
-            indent={textBoxState.indent}
-            stroke={textBoxState.stroke}
-            shadow={textBoxState.shadow}
-            strokeColor={textBoxState.strokeColor}
-            strokeWidth={textBoxState.strokeWidth}
-            shadowColor={textBoxState.shadowColor}
-            shadowOffsetX={textBoxState.shadowOffsetX}
-            shadowOffsetY={textBoxState.shadowOffsetY}
-            shadowBlur={textBoxState.shadowBlur}
-            shadowWidth={textBoxState.shadowWidth}
+            indent={mergedTextStyle.indent}
+            stroke={mergedTextStyle.stroke}
+            shadow={mergedTextStyle.shadow}
+            strokeColor={mergedTextStyle.strokeColor}
+            strokeWidth={mergedTextStyle.strokeWidth}
+            shadowColor={mergedTextStyle.shadowColor}
+            shadowOffsetX={mergedTextStyle.shadowOffsetX}
+            shadowOffsetY={mergedTextStyle.shadowOffsetY}
+            shadowBlur={mergedTextStyle.shadowBlur}
+            shadowWidth={mergedTextStyle.shadowWidth}
             onStart={() => {
               progress.current = 0;
             }}
@@ -284,29 +304,47 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
             }}
             interactive={false}
           />
-          {curPos ? (
-            <animation src="cursor.apng" format="apng" tint="#999" x={curPos[0] + 8} y={curPos[1] + 10} />
+          {curPos && textBoxUi.controls.cursor.enabled ? (
+            <animation
+              src={textBoxUi.controls.cursor.src}
+              format="apng"
+              tint={textBoxUi.controls.cursor.tint}
+              x={curPos[0] + textBoxUi.controls.cursor.offsetX}
+              y={curPos[1] + textBoxUi.controls.cursor.offsetY}
+            />
           ) : null}
         </container>
       </sprite>
       <sprite
         label="姓名框"
-        src="ui/namebox.png"
+        src={textBoxUi.nameBox.background.src}
         x={layout.nameBoxX}
-        y={textBoxUi.nameBox.position.y}
-        anchor={[0.5, 0.5]}
+        y={textBoxUi.nameBox.background.position.y}
+        anchor={textBoxUi.nameBox.background.anchor}
+        pivot={textBoxUi.nameBox.background.pivot}
+        {...resolveNineSlice(textBoxUi.nameBox.background)}
         opacity={textBoxState.name.length > 0 ? 1 : 0}
       >
         <text
           label="姓名"
           text={textBoxState.name}
-          fontSize={32}
-          lineHeight={1.5}
-          fillColor="#f0f0f0"
-          anchor={[0.5, 0.5]}
-          pivot={[0.5, 0.5]}
-          x={0}
-          y={0}
+          fontSize={mergedNameTextStyle.fontSize}
+          lineHeight={mergedNameTextStyle.lineHeight}
+          fillColor={mergedNameTextStyle.fillColor}
+          anchor={textBoxUi.nameBox.text.anchor}
+          pivot={textBoxUi.nameBox.text.pivot}
+          x={textBoxUi.nameBox.text.position.x}
+          y={textBoxUi.nameBox.text.position.y}
+          indent={mergedNameTextStyle.indent}
+          stroke={mergedNameTextStyle.stroke}
+          shadow={mergedNameTextStyle.shadow}
+          strokeColor={mergedNameTextStyle.strokeColor}
+          strokeWidth={mergedNameTextStyle.strokeWidth}
+          shadowColor={mergedNameTextStyle.shadowColor}
+          shadowOffsetX={mergedNameTextStyle.shadowOffsetX}
+          shadowOffsetY={mergedNameTextStyle.shadowOffsetY}
+          shadowBlur={mergedNameTextStyle.shadowBlur}
+          shadowWidth={mergedNameTextStyle.shadowWidth}
         />
       </sprite>
     </container>

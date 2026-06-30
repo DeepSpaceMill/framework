@@ -117,18 +117,27 @@ export const handleTextBox: CommandHandler<ScenarioCommandSchemaType> = (cmd, _c
   }
   if (cmd.printMode !== undefined) tb.printMode = cmd.printMode;
   if (cmd.printSpeed !== undefined) tb.printSpeed = cmd.printSpeed;
-  if (cmd.fillColor !== undefined) tb.fillColor = cmd.fillColor;
-  if (cmd.lineHeight !== undefined) tb.lineHeight = cmd.lineHeight;
-  if (cmd.indent !== undefined) tb.indent = cmd.indent;
-  if (cmd.stroke !== undefined) tb.stroke = cmd.stroke;
-  if (cmd.shadow !== undefined) tb.shadow = cmd.shadow;
-  if (cmd.strokeColor !== undefined) tb.strokeColor = cmd.strokeColor;
-  if (cmd.strokeWidth !== undefined) tb.strokeWidth = cmd.strokeWidth;
-  if (cmd.shadowColor !== undefined) tb.shadowColor = cmd.shadowColor;
-  if (cmd.shadowOffsetX !== undefined) tb.shadowOffsetX = cmd.shadowOffsetX;
-  if (cmd.shadowOffsetY !== undefined) tb.shadowOffsetY = cmd.shadowOffsetY;
-  if (cmd.shadowBlur !== undefined) tb.shadowBlur = cmd.shadowBlur;
-  if (cmd.shadowWidth !== undefined) tb.shadowWidth = cmd.shadowWidth;
+  if (cmd.fillColor !== undefined) tb.textStyle.fillColor = cmd.fillColor;
+  if (cmd.lineHeight !== undefined) tb.textStyle.lineHeight = cmd.lineHeight;
+  if (cmd.indent !== undefined) tb.textStyle.indent = cmd.indent;
+  if (cmd.stroke !== undefined) tb.textStyle.stroke = cmd.stroke;
+  if (cmd.shadow !== undefined) tb.textStyle.shadow = cmd.shadow;
+  if (cmd.strokeColor !== undefined) tb.textStyle.strokeColor = cmd.strokeColor;
+  if (cmd.strokeWidth !== undefined) tb.textStyle.strokeWidth = cmd.strokeWidth;
+  if (cmd.shadowColor !== undefined) tb.textStyle.shadowColor = cmd.shadowColor;
+  if (cmd.shadowOffsetX !== undefined) tb.textStyle.shadowOffsetX = cmd.shadowOffsetX;
+  if (cmd.shadowOffsetY !== undefined) tb.textStyle.shadowOffsetY = cmd.shadowOffsetY;
+  if (cmd.shadowBlur !== undefined) tb.textStyle.shadowBlur = cmd.shadowBlur;
+  if (cmd.shadowWidth !== undefined) tb.textStyle.shadowWidth = cmd.shadowWidth;
+  // auto-advance
+};
+
+/** Clear runtime textbox style overrides and fall back to UI defaults. */
+export const handleTextBoxReset: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'textBoxReset') return;
+  gameState.textbox.printMode = undefined;
+  gameState.textbox.printSpeed = undefined;
+  gameState.textbox.textStyle = {};
   // auto-advance
 };
 

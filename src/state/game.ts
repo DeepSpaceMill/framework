@@ -91,6 +91,22 @@ export interface TextBoxAvatarForConfig extends TextBoxAvatarConfig {
   name?: string;
 }
 
+export interface TextStyle {
+  fontSize?: number;
+  fillColor?: string;
+  lineHeight?: number;
+  indent?: number;
+  stroke?: boolean;
+  shadow?: boolean;
+  strokeColor?: string;
+  strokeWidth?: number;
+  shadowColor?: string;
+  shadowOffsetX?: number;
+  shadowOffsetY?: number;
+  shadowBlur?: number;
+  shadowWidth?: number;
+}
+
 // TextBox state interface
 export interface TextBoxState {
   name: string;
@@ -102,21 +118,10 @@ export interface TextBoxState {
   hideReason?: 'command' | 'manual';
   shouldClear?: boolean;
   shouldAddNewline?: boolean;
-  // Text rendering config (set by textBox command)
-  printMode: 'instant' | 'typewriter' | 'printer';
-  printSpeed: number;
-  fillColor: string;
-  lineHeight: number;
-  indent: number;
-  stroke: boolean;
-  shadow: boolean;
-  strokeColor: string;
-  strokeWidth: number;
-  shadowColor: string;
-  shadowOffsetX: number;
-  shadowOffsetY: number;
-  shadowBlur: number;
-  shadowWidth: number;
+  // Runtime print config overrides set by textBox command.
+  printMode?: 'instant' | 'typewriter' | 'printer';
+  printSpeed?: number;
+  textStyle: TextStyle;
   avatar: TextBoxAvatarConfig;
   avatarFor: TextBoxAvatarForConfig[];
 }
@@ -246,20 +251,9 @@ const gameStateDefaults: GameState = {
     avatarName: '',
     visible: true,
     hideReason: undefined,
-    printMode: 'typewriter',
-    printSpeed: 20,
-    fillColor: '#f0f0f0',
-    lineHeight: 1.5,
-    indent: 0,
-    stroke: false,
-    shadow: false,
-    strokeColor: '#000000',
-    strokeWidth: 2,
-    shadowColor: '#000000',
-    shadowOffsetX: 0,
-    shadowOffsetY: 0,
-    shadowBlur: 0,
-    shadowWidth: 0,
+    printMode: undefined,
+    printSpeed: undefined,
+    textStyle: {},
     avatar: {
       src: '',
       enable: false,

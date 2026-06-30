@@ -92,6 +92,355 @@ const pivotSchema = z
     'x-i18n-desc': { 'zh-CN': '节点旋转和定位的锚点' },
   });
 
+const anchorSchema = z
+  .tuple([z.number(), z.number()])
+  .describe('Anchor point (x, y)')
+  .meta({
+    title: 'Anchor',
+    'x-i18n': { 'zh-CN': '锚点' },
+    'x-i18n-desc': { 'zh-CN': '节点对齐使用的锚点' },
+  });
+
+export const TextStyleUiSchema = z
+  .object({
+    fontSize: z
+      .number()
+      .optional()
+      .default(32)
+      .describe('Text font size')
+      .meta({
+        title: 'Font Size',
+        'x-i18n': { 'zh-CN': '字号' },
+        'x-i18n-desc': { 'zh-CN': '文本字号' },
+      }),
+    fillColor: z
+      .string()
+      .optional()
+      .default('#f0f0f0')
+      .describe('Text color')
+      .meta({
+        title: 'Fill Color',
+        format: 'color',
+        'x-i18n': { 'zh-CN': '文字颜色' },
+        'x-i18n-desc': { 'zh-CN': '文字填充颜色' },
+      }),
+    lineHeight: z
+      .number()
+      .optional()
+      .default(1.5)
+      .describe('Line height multiplier')
+      .meta({
+        title: 'Line Height',
+        'x-i18n': { 'zh-CN': '行高' },
+        'x-i18n-desc': { 'zh-CN': '行高倍数' },
+      }),
+    indent: z
+      .number()
+      .optional()
+      .default(0)
+      .describe('First-line indentation in pixels')
+      .meta({
+        title: 'Indent',
+        'x-i18n': { 'zh-CN': '缩进' },
+        'x-i18n-desc': { 'zh-CN': '段落首行缩进（像素）' },
+      }),
+    stroke: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe('Whether to apply text stroke')
+      .meta({
+        title: 'Stroke',
+        'x-i18n': { 'zh-CN': '描边' },
+        'x-i18n-desc': { 'zh-CN': '是否启用文字描边' },
+      }),
+    strokeColor: z
+      .string()
+      .optional()
+      .default('#000000')
+      .describe('Stroke color')
+      .meta({
+        title: 'Stroke Color',
+        format: 'color',
+        'x-i18n': { 'zh-CN': '描边颜色' },
+        'x-i18n-desc': { 'zh-CN': '文字描边颜色' },
+      }),
+    strokeWidth: z
+      .number()
+      .optional()
+      .default(2)
+      .describe('Stroke width in pixels')
+      .meta({
+        title: 'Stroke Width',
+        'x-i18n': { 'zh-CN': '描边宽度' },
+        'x-i18n-desc': { 'zh-CN': '文字描边宽度（像素）' },
+      }),
+    shadow: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe('Whether to apply text shadow')
+      .meta({
+        title: 'Shadow',
+        'x-i18n': { 'zh-CN': '阴影' },
+        'x-i18n-desc': { 'zh-CN': '是否启用文字阴影' },
+      }),
+    shadowColor: z
+      .string()
+      .optional()
+      .default('#000000')
+      .describe('Shadow color')
+      .meta({
+        title: 'Shadow Color',
+        format: 'color',
+        'x-i18n': { 'zh-CN': '阴影颜色' },
+        'x-i18n-desc': { 'zh-CN': '文字阴影颜色' },
+      }),
+    shadowOffsetX: z
+      .number()
+      .optional()
+      .default(0)
+      .describe('Shadow X offset in pixels')
+      .meta({
+        title: 'Shadow Offset X',
+        'x-i18n': { 'zh-CN': '阴影偏移 X' },
+        'x-i18n-desc': { 'zh-CN': '阴影 X 轴偏移（像素）' },
+      }),
+    shadowOffsetY: z
+      .number()
+      .optional()
+      .default(0)
+      .describe('Shadow Y offset in pixels')
+      .meta({
+        title: 'Shadow Offset Y',
+        'x-i18n': { 'zh-CN': '阴影偏移 Y' },
+        'x-i18n-desc': { 'zh-CN': '阴影 Y 轴偏移（像素）' },
+      }),
+    shadowBlur: z
+      .number()
+      .optional()
+      .default(0)
+      .describe('Shadow blur radius in pixels')
+      .meta({
+        title: 'Shadow Blur',
+        'x-i18n': { 'zh-CN': '阴影模糊' },
+        'x-i18n-desc': { 'zh-CN': '阴影模糊半径（像素）' },
+      }),
+    shadowWidth: z
+      .number()
+      .optional()
+      .default(0)
+      .describe('Shadow width in pixels, only effective when shadow is enabled')
+      .meta({
+        title: 'Shadow Width',
+        'x-i18n': { 'zh-CN': '阴影宽度' },
+        'x-i18n-desc': { 'zh-CN': '阴影宽度（像素），仅在启用阴影时生效' },
+      }),
+  })
+  .describe('Text style configuration')
+  .meta({
+    title: 'Text Style',
+    'x-i18n': { 'zh-CN': '文字样式' },
+    'x-i18n-desc': { 'zh-CN': '文本渲染使用的样式配置' },
+  });
+
+const printModeUiSchema = z
+  .enum(['instant', 'typewriter', 'printer'])
+  .optional()
+  .default('typewriter')
+  .describe('Default text printing mode')
+  .meta({
+    title: 'Print Mode',
+    'x-i18n': { 'zh-CN': '打字模式' },
+    'x-i18n-desc': { 'zh-CN': '正文默认的文字打印模式' },
+  });
+
+const printSpeedUiSchema = z
+  .number()
+  .optional()
+  .default(20)
+  .describe('Default print speed: chars/sec (typewriter) or lines/sec (printer)')
+  .meta({
+    title: 'Print Speed',
+    'x-i18n': { 'zh-CN': '打字速度' },
+    'x-i18n-desc': { 'zh-CN': '正文默认的打印速度；逐字模式为字/秒，打印机模式为行/秒' },
+  });
+
+const ninesliceBoundsSchema = z
+  .tuple([z.number(), z.number(), z.number(), z.number()])
+  .describe('Nine-slice bounds [left, top, right, bottom]')
+  .meta({
+    title: 'Bounds',
+    'x-i18n': { 'zh-CN': '九宫格边界' },
+    'x-i18n-desc': { 'zh-CN': '九宫格缩放使用的边界 [left, top, right, bottom]' },
+  });
+
+const TextboxImageNormalUiSchema = z
+  .object({
+    type: z.literal('normal'),
+    src: z
+      .string()
+      .describe('Image asset path')
+      .meta({
+        title: 'Image',
+        format: 'asset',
+        'x-asset-kind': 'image',
+        'x-i18n': { 'zh-CN': '图片' },
+        'x-i18n-desc': { 'zh-CN': '图片资源路径' },
+      }),
+    position: positionSchema,
+    anchor: anchorSchema.optional().default([0, 0]),
+    pivot: pivotSchema.optional().default([0, 0]),
+  })
+  .describe('Normal textbox image')
+  .meta({
+    title: 'Normal Image',
+    'x-i18n': { 'zh-CN': '普通图片' },
+    'x-i18n-desc': { 'zh-CN': '使用普通图片渲染文本框背景' },
+  });
+
+const TextboxImageNinesliceUiSchema = z
+  .object({
+    type: z.literal('nineslice'),
+    src: z
+      .string()
+      .describe('Image asset path')
+      .meta({
+        title: 'Image',
+        format: 'asset',
+        'x-asset-kind': 'image',
+        'x-i18n': { 'zh-CN': '图片' },
+        'x-i18n-desc': { 'zh-CN': '图片资源路径' },
+      }),
+    position: positionSchema,
+    anchor: anchorSchema.optional().default([0, 0]),
+    pivot: pivotSchema.optional().default([0, 0]),
+    bounds: ninesliceBoundsSchema,
+    targetWidth: z
+      .number()
+      .min(0)
+      .optional()
+      .describe('Target width for the nineslice image')
+      .meta({
+        title: 'Target Width',
+        'x-i18n': { 'zh-CN': '目标宽度' },
+        'x-i18n-desc': { 'zh-CN': '九宫格图片的目标宽度' },
+      }),
+    targetHeight: z
+      .number()
+      .min(0)
+      .optional()
+      .describe('Target height for the nineslice image')
+      .meta({
+        title: 'Target Height',
+        'x-i18n': { 'zh-CN': '目标高度' },
+        'x-i18n-desc': { 'zh-CN': '九宫格图片的目标高度' },
+      }),
+  })
+  .describe('Nineslice textbox image')
+  .meta({
+    title: 'Nine-slice Image',
+    'x-i18n': { 'zh-CN': '九宫格图片' },
+    'x-i18n-desc': { 'zh-CN': '使用九宫格方式渲染文本框背景' },
+  });
+
+const TextboxImageUiSchema = z
+  .discriminatedUnion('type', [TextboxImageNormalUiSchema, TextboxImageNinesliceUiSchema])
+  .describe('Textbox image configuration')
+  .meta({
+    title: 'Background',
+    'x-i18n': { 'zh-CN': '背景' },
+    'x-i18n-desc': { 'zh-CN': '文本框背景图片配置' },
+  });
+
+const textboxButtonTextColorSchema = z
+  .union([
+    z.string(),
+    z.tuple([z.string(), z.string(), z.string()]),
+  ])
+  .describe('Button text color, either a single color or colors for idle/hover/pressed states')
+  .meta({
+    title: 'Color',
+    format: 'color',
+    'x-i18n': { 'zh-CN': '颜色' },
+    'x-i18n-desc': { 'zh-CN': '按钮文字颜色，可以是单色或空闲/悬停/按下三态颜色' },
+  });
+
+const TextBoxButtonActionUiSchema = z
+  .enum(['QSAV', 'QLOD', 'SAVE', 'LOAD', 'AUTO', 'SKIP', 'LOG', 'MENU'])
+  .describe('Textbox button action')
+  .meta({
+    title: 'Action',
+    'x-i18n': { 'zh-CN': '动作' },
+    'x-i18n-desc': { 'zh-CN': '按钮点击后触发的文本框动作' },
+  });
+
+const TextBoxActionButtonUiSchema = z
+  .object({
+    action: TextBoxButtonActionUiSchema,
+    position: positionSchema,
+    fileNames: buttonSrc,
+    text: z
+      .string()
+      .describe('Button label')
+      .meta({
+        title: 'Text',
+        'x-i18n': { 'zh-CN': '文字' },
+        'x-i18n-desc': { 'zh-CN': '按钮上显示的文字' },
+      }),
+    fontSize: z
+      .number()
+      .optional()
+      .default(24)
+      .describe('Button font size')
+      .meta({
+        title: 'Font Size',
+        'x-i18n': { 'zh-CN': '字号' },
+        'x-i18n-desc': { 'zh-CN': '按钮文字字号' },
+      }),
+    color: textboxButtonTextColorSchema.optional().default([
+      'rgba(255,255,255,0.3)',
+      'rgba(255,255,255,0.7)',
+      'rgba(255,255,255,0.9)',
+    ]),
+    anchor: anchorSchema.optional(),
+    pivot: pivotSchema.optional(),
+    textOffsetX: z
+      .number()
+      .optional()
+      .describe('Horizontal text offset inside the button')
+      .meta({
+        title: 'Text Offset X',
+        'x-i18n': { 'zh-CN': '文字偏移 X' },
+        'x-i18n-desc': { 'zh-CN': '按钮内文字的水平偏移' },
+      }),
+    textOffsetY: z
+      .number()
+      .optional()
+      .describe('Vertical text offset inside the button')
+      .meta({
+        title: 'Text Offset Y',
+        'x-i18n': { 'zh-CN': '文字偏移 Y' },
+        'x-i18n-desc': { 'zh-CN': '按钮内文字的垂直偏移' },
+      }),
+    lockOnActive: z
+      .boolean()
+      .optional()
+      .default(false)
+      .describe('Whether to lock the button to the pressed state while its action is active')
+      .meta({
+        title: 'Lock On Active',
+        'x-i18n': { 'zh-CN': '激活时锁定' },
+        'x-i18n-desc': { 'zh-CN': '当对应动作处于激活状态时，是否锁定为按下态' },
+      }),
+  })
+  .describe('Textbox action button configuration')
+  .meta({
+    title: 'Button',
+    'x-i18n': { 'zh-CN': '按钮' },
+    'x-i18n-desc': { 'zh-CN': '文本框动作按钮配置' },
+  });
+
 const TitlePageNameSchema = z
   .enum(['stage', 'cg', 'bgm', 'credits'])
   .describe('Target page name')
@@ -927,17 +1276,15 @@ export const ConfirmUiSchema = z
 
 export const StageTextBoxUiSchema = z
   .object({
-    position: positionSchema.describe('Textbox background position').meta({
-      title: 'Textbox Position',
-      'x-i18n': { 'zh-CN': '文本框位置' },
-      'x-i18n-desc': { 'zh-CN': '文本框背景图片的位置' },
-      format: 'position',
-    }),
+    background: TextboxImageUiSchema,
     content: z
       .object({
         position: positionSchema,
         boxWidth,
         boxHeight,
+        printMode: printModeUiSchema,
+        printSpeed: printSpeedUiSchema,
+        textStyle: TextStyleUiSchema,
       })
       .describe('Text content layout')
       .meta({
@@ -947,17 +1294,31 @@ export const StageTextBoxUiSchema = z
       }),
     nameBox: z
       .object({
-        position: positionSchema,
+        background: TextboxImageUiSchema,
+        text: z
+          .object({
+            position: positionSchema,
+            anchor: anchorSchema.optional().default([0.5, 0.5]),
+            pivot: pivotSchema.optional().default([0.5, 0.5]),
+            textStyle: TextStyleUiSchema,
+          })
+          .describe('Name text layout and style')
+          .meta({
+            title: 'Name Text',
+            'x-i18n': { 'zh-CN': '姓名文字' },
+            'x-i18n-desc': { 'zh-CN': '姓名框内文字的位置与样式配置' },
+          }),
       })
       .describe('Name box layout')
       .meta({
         title: 'Name Box',
         'x-i18n': { 'zh-CN': '姓名框' },
-        'x-i18n-desc': { 'zh-CN': '姓名框背景的位置' },
+        'x-i18n-desc': { 'zh-CN': '姓名框背景与姓名文字的配置' },
       }),
     avatar: z
       .object({
         position: positionSchema,
+        anchor: anchorSchema.optional().default([0, 0]),
         pivot: pivotSchema,
       })
       .describe('Default textbox avatar layout')
@@ -965,6 +1326,135 @@ export const StageTextBoxUiSchema = z
         title: 'Avatar',
         'x-i18n': { 'zh-CN': '头像' },
         'x-i18n-desc': { 'zh-CN': '文本框头像的默认位置与锚点；命令中的 offset 会相对此位置生效' },
+      }),
+    controls: z
+      .object({
+        closeButton: z
+          .object({
+            position: positionSchema,
+            fileNames: buttonSrc,
+            anchor: anchorSchema.optional(),
+            pivot: pivotSchema.optional(),
+          })
+          .describe('Close button configuration')
+          .meta({
+            title: 'Close Button',
+            'x-i18n': { 'zh-CN': '关闭按钮' },
+            'x-i18n-desc': { 'zh-CN': '文本框右上角关闭按钮配置' },
+          }),
+        buttons: z
+          .array(TextBoxActionButtonUiSchema)
+          .describe('Textbox action buttons')
+          .meta({
+            title: 'Buttons',
+            'x-i18n': { 'zh-CN': '按钮列表' },
+            'x-i18n-desc': { 'zh-CN': '文本框功能按钮列表' },
+          }),
+        cursor: z
+          .object({
+            enabled: z
+              .boolean()
+              .optional()
+              .default(true)
+              .describe('Whether to show the textbox cursor')
+              .meta({
+                title: 'Enabled',
+                'x-i18n': { 'zh-CN': '启用' },
+                'x-i18n-desc': { 'zh-CN': '是否显示文本框光标' },
+              }),
+            src: z
+              .string()
+              .describe('Cursor asset path')
+              .meta({
+                title: 'Cursor',
+                format: 'asset',
+                'x-asset-kind': 'image',
+                'x-i18n': { 'zh-CN': '光标素材' },
+                'x-i18n-desc': { 'zh-CN': '文本框光标使用的素材路径' },
+              }),
+            tint: z
+              .string()
+              .optional()
+              .default('#999999')
+              .describe('Cursor tint color')
+              .meta({
+                title: 'Tint',
+                format: 'color',
+                'x-i18n': { 'zh-CN': '着色' },
+                'x-i18n-desc': { 'zh-CN': '文本框光标的着色颜色' },
+              }),
+            offsetX: z
+              .number()
+              .optional()
+              .default(8)
+              .describe('Cursor horizontal offset relative to the reported text cursor position')
+              .meta({
+                title: 'Offset X',
+                'x-i18n': { 'zh-CN': '偏移 X' },
+                'x-i18n-desc': { 'zh-CN': '相对于文字光标位置的水平偏移' },
+              }),
+            offsetY: z
+              .number()
+              .optional()
+              .default(10)
+              .describe('Cursor vertical offset relative to the reported text cursor position')
+              .meta({
+                title: 'Offset Y',
+                'x-i18n': { 'zh-CN': '偏移 Y' },
+                'x-i18n-desc': { 'zh-CN': '相对于文字光标位置的垂直偏移' },
+              }),
+          })
+          .describe('Textbox cursor configuration')
+          .meta({
+            title: 'Cursor',
+            'x-i18n': { 'zh-CN': '光标' },
+            'x-i18n-desc': { 'zh-CN': '文本框打字光标的显示配置' },
+          }),
+        hover: z
+          .object({
+            showOnHover: z
+              .boolean()
+              .optional()
+              .default(true)
+              .describe('Whether to show buttons only when hovering the textbox')
+              .meta({
+                title: 'Show On Hover',
+                'x-i18n': { 'zh-CN': '悬停显示' },
+                'x-i18n-desc': { 'zh-CN': '是否仅在鼠标悬停文本框时显示按钮' },
+              }),
+            visibilityDelayMs: z
+              .number()
+              .optional()
+              .default(80)
+              .describe('Delay before the button group starts fading in')
+              .meta({
+                title: 'Visibility Delay',
+                'x-i18n': { 'zh-CN': '显示延迟' },
+                'x-i18n-desc': { 'zh-CN': '按钮组开始淡入前的延迟时间（毫秒）' },
+              }),
+            fadeDurationMs: z
+              .number()
+              .optional()
+              .default(140)
+              .describe('Fade duration for the button group')
+              .meta({
+                title: 'Fade Duration',
+                'x-i18n': { 'zh-CN': '淡入淡出时长' },
+                'x-i18n-desc': { 'zh-CN': '按钮组淡入淡出的持续时间（毫秒）' },
+              }),
+          })
+          .describe('Textbox hover behavior')
+          .meta({
+            title: 'Hover',
+            'x-i18n': { 'zh-CN': '悬停行为' },
+            'x-i18n-desc': { 'zh-CN': '文本框按钮在悬停时的显示行为配置' },
+          }),
+      })
+      .describe('Textbox controls configuration')
+      .meta({
+        title: 'Controls',
+        'x-i18n': { 'zh-CN': '控件' },
+        'x-i18n-desc': { 'zh-CN': '文本框按钮、光标与悬停行为配置' },
       }),
   })
   .describe('Stage textbox UI configuration')
@@ -1001,6 +1491,7 @@ export type MenuButtonUiData = z.infer<typeof MenuButtonUiSchema>;
 export type MenuUiData = z.infer<typeof MenuUiSchema>;
 export type SaveLoadUiData = z.infer<typeof SaveLoadUiSchema>;
 export type ConfirmUiData = z.infer<typeof ConfirmUiSchema>;
+export type TextStyleUiData = z.infer<typeof TextStyleUiSchema>;
 export type StageTextBoxUiData = z.infer<typeof StageTextBoxUiSchema>;
 export type StageUiData = z.infer<typeof StageUiSchema>;
 export type GameUiData = z.infer<typeof GameUiSchema>;
