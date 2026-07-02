@@ -1,5 +1,14 @@
 import z from 'zod';
 import { CAMERA_PRESET_NAMES } from '../lib/camera';
+import {
+  tuplePointSchema,
+  normalizedNumberSchema,
+  timeMillisSchema,
+  normalizedNumberOneSchema,
+  printModeSchema,
+  printSpeedSchema,
+  textStyleSchema,
+} from '../data/shared';
 
 /* ------------------------------------------------------------------ */
 /*  Shared Fields                                                      */
@@ -38,10 +47,7 @@ const videoSrc = z
     'x-i18n-desc': { 'zh-CN': '视频资源路径' },
   });
 
-const volume = z
-  .number()
-  .min(0)
-  .max(1)
+const volume = normalizedNumberSchema
   .optional()
   .default(1)
   .describe('Volume, ranges from 0 to 1')
@@ -52,8 +58,7 @@ const volume = z
   });
 
 const fadeTime = (defaultMs: number) =>
-  z
-    .number()
+  timeMillisSchema
     .optional()
     .default(defaultMs)
     .describe('Fade time in milliseconds')
@@ -63,8 +68,7 @@ const fadeTime = (defaultMs: number) =>
       'x-i18n-desc': { 'zh-CN': '渐变时间（毫秒）' },
     });
 
-const fadeTimeOpt = z
-  .number()
+const fadeTimeOpt = timeMillisSchema
   .optional()
   .describe('Fade time in milliseconds')
   .meta({
@@ -151,23 +155,17 @@ const tint = z
     'x-i18n-desc': { 'zh-CN': '颜色色调' },
   });
 
-const nodeScale = z
-  .number()
-  .describe('Scale factor')
-  .meta({
-    title: 'Scale',
-    'x-i18n': { 'zh-CN': '缩放' },
-    'x-i18n-desc': { 'zh-CN': '缩放系数' },
-  });
+const nodeScale = normalizedNumberOneSchema.describe('Scale factor').meta({
+  title: 'Scale',
+  'x-i18n': { 'zh-CN': '缩放' },
+  'x-i18n-desc': { 'zh-CN': '缩放系数' },
+});
 
-const nodePivot = z
-  .tuple([z.number(), z.number()])
-  .describe('Pivot point (x, y) in pixels')
-  .meta({
-    title: 'Pivot',
-    'x-i18n': { 'zh-CN': '旋转中心' },
-    'x-i18n-desc': { 'zh-CN': '旋转中心点 (x, y)，单位像素' },
-  });
+const nodePivot = tuplePointSchema.describe('Pivot point (x, y) in pixels').meta({
+  title: 'Pivot',
+  'x-i18n': { 'zh-CN': '旋转中心' },
+  'x-i18n-desc': { 'zh-CN': '旋转中心点 (x, y)，单位像素' },
+});
 
 const nodeVisible = z
   .boolean()
@@ -222,25 +220,22 @@ const cameraZoom = z
   .describe('Camera zoom ratio')
   .meta({
     title: 'Zoom',
+    'x-step': 0.01,
     'x-i18n': { 'zh-CN': '镜头缩放' },
     'x-i18n-desc': { 'zh-CN': '镜头缩放倍率' },
   });
 
-const cameraDepth = z
-  .number()
-  .min(0)
-  .max(1)
-  .describe('Depth intensity from 0 to 1')
-  .meta({
-    title: 'Depth',
-    'x-i18n': { 'zh-CN': '景深强度' },
-    'x-i18n-desc': { 'zh-CN': '景深强度，范围 0 到 1' },
-  });
+const cameraDepth = normalizedNumberSchema.describe('Depth intensity from 0 to 1').meta({
+  title: 'Depth',
+  'x-i18n': { 'zh-CN': '景深强度' },
+  'x-i18n-desc': { 'zh-CN': '景深强度，范围 0 到 1' },
+});
 
 const cameraBlur = z
   .number()
   .min(0)
   .max(8)
+  .multipleOf(1)
   .describe('Background blur radius')
   .meta({
     title: 'Blur',
@@ -360,136 +355,10 @@ const TextBoxCommandSchema = z
         'x-i18n': { 'zh-CN': '位置' },
         'x-i18n-desc': { 'zh-CN': '文本框位置坐标 (x, y)' },
       }),
-    printMode: z
-      .enum(['instant', 'typewriter', 'printer'])
-      .optional()
-      .describe('Text printing mode')
-      .meta({
-        title: 'Print Mode',
-        'x-i18n': { 'zh-CN': '打字模式' },
-        'x-i18n-desc': { 'zh-CN': '文本打字模式' },
-      }),
-    printSpeed: z
-      .number()
-      .optional()
-      .describe('Print speed: chars/sec (typewriter) or lines/sec (printer)')
-      .meta({
-        title: 'Print Speed',
-        'x-i18n': { 'zh-CN': '打字速度' },
-        'x-i18n-desc': { 'zh-CN': '逐字模式为字/秒，打印机模式为行/秒' },
-      }),
-    fillColor: z
-      .string()
-      .optional()
-      .describe('Text color')
-      .meta({
-        title: 'Text Color',
-        format: 'color',
-        'x-i18n': { 'zh-CN': '文字颜色' },
-        'x-i18n-desc': { 'zh-CN': '文字颜色' },
-      }),
-    lineHeight: z
-      .number()
-      .optional()
-      .describe('Line height multiplier')
-      .meta({
-        title: 'Line Height',
-        'x-i18n': { 'zh-CN': '行高' },
-        'x-i18n-desc': { 'zh-CN': '行高倍数' },
-      }),
-    indent: z
-      .number()
-      .optional()
-      .describe('First-line indentation in pixels')
-      .meta({
-        title: 'Indent',
-        'x-i18n': { 'zh-CN': '缩进' },
-        'x-i18n-desc': { 'zh-CN': '段落首行缩进（像素）' },
-      }),
-    stroke: z
-      .boolean()
-      .optional()
-      .describe('Whether to apply text stroke')
-      .meta({
-        title: 'Stroke',
-        'x-i18n': { 'zh-CN': '描边' },
-        'x-i18n-desc': { 'zh-CN': '是否启用文字描边' },
-      }),
-    shadow: z
-      .boolean()
-      .optional()
-      .describe('Whether to apply text shadow')
-      .meta({
-        title: 'Shadow',
-        'x-i18n': { 'zh-CN': '阴影' },
-        'x-i18n-desc': { 'zh-CN': '是否启用文字阴影' },
-      }),
-    strokeColor: z
-      .string()
-      .optional()
-      .describe('Stroke color')
-      .meta({
-        title: 'Stroke Color',
-        format: 'color',
-        'x-i18n': { 'zh-CN': '描边颜色' },
-        'x-i18n-desc': { 'zh-CN': '描边颜色' },
-      }),
-    strokeWidth: z
-      .number()
-      .optional()
-      .describe('Stroke width in pixels')
-      .meta({
-        title: 'Stroke Width',
-        'x-i18n': { 'zh-CN': '描边宽度' },
-        'x-i18n-desc': { 'zh-CN': '描边宽度（像素）' },
-      }),
-    shadowColor: z
-      .string()
-      .optional()
-      .describe('Shadow color')
-      .meta({
-        title: 'Shadow Color',
-        format: 'color',
-        'x-i18n': { 'zh-CN': '阴影颜色' },
-        'x-i18n-desc': { 'zh-CN': '阴影颜色' },
-      }),
-    shadowOffsetX: z
-      .number()
-      .optional()
-      .describe('Shadow X offset in pixels')
-      .meta({
-        title: 'Shadow Offset X',
-        'x-i18n': { 'zh-CN': '阴影偏移 X' },
-        'x-i18n-desc': { 'zh-CN': '阴影 X 轴偏移（像素）' },
-      }),
-    shadowOffsetY: z
-      .number()
-      .optional()
-      .describe('Shadow Y offset in pixels')
-      .meta({
-        title: 'Shadow Offset Y',
-        'x-i18n': { 'zh-CN': '阴影偏移 Y' },
-        'x-i18n-desc': { 'zh-CN': '阴影 Y 轴偏移（像素）' },
-      }),
-    shadowBlur: z
-      .number()
-      .optional()
-      .describe('Shadow blur radius in pixels')
-      .meta({
-        title: 'Shadow Blur',
-        'x-i18n': { 'zh-CN': '阴影模糊' },
-        'x-i18n-desc': { 'zh-CN': '阴影模糊半径（像素）' },
-      }),
-    shadowWidth: z
-      .number()
-      .optional()
-      .describe('Shadow width in pixels, only effective when shadow is enabled')
-      .meta({
-        title: 'Shadow Width',
-        'x-i18n': { 'zh-CN': '阴影宽度' },
-        'x-i18n-desc': { 'zh-CN': '阴影宽度（像素），仅在启用阴影时生效' },
-      }),
+    printMode: printModeSchema,
+    printSpeed: printSpeedSchema,
   })
+  .extend(textStyleSchema.shape)
   .describe('Configure text box appearance and behavior')
   .meta({
     title: 'Text Box Settings',
@@ -549,6 +418,7 @@ const AvatarCommandSchema = z
       .describe('Horizontal offset relative to the default avatar placement')
       .meta({
         title: 'Offset X',
+        'x-step': 1,
         'x-i18n': { 'zh-CN': '偏移 X' },
         'x-i18n-desc': { 'zh-CN': '相对于默认头像摆放位置的水平偏移' },
       }),
@@ -558,6 +428,7 @@ const AvatarCommandSchema = z
       .describe('Vertical offset relative to the default avatar placement')
       .meta({
         title: 'Offset Y',
+        'x-step': 1,
         'x-i18n': { 'zh-CN': '偏移 Y' },
         'x-i18n-desc': { 'zh-CN': '相对于默认头像摆放位置的垂直偏移' },
       }),
@@ -568,6 +439,7 @@ const AvatarCommandSchema = z
       .describe('Horizontal retreat applied to the text and name area when the avatar is visible')
       .meta({
         title: 'Spacing',
+        'x-step': 1,
         'x-i18n': { 'zh-CN': '退让尺寸' },
         'x-i18n-desc': { 'zh-CN': '头像可见时，文本区和姓名框在水平方向上的退让尺寸' },
       }),
@@ -608,6 +480,7 @@ const AvatarForCommandSchema = z
       .describe('Horizontal offset relative to the default avatar placement')
       .meta({
         title: 'Offset X',
+        'x-step': 1,
         'x-i18n': { 'zh-CN': '偏移 X' },
         'x-i18n-desc': { 'zh-CN': '相对于默认头像摆放位置的水平偏移' },
       }),
@@ -617,6 +490,7 @@ const AvatarForCommandSchema = z
       .describe('Vertical offset relative to the default avatar placement')
       .meta({
         title: 'Offset Y',
+        'x-step': 1,
         'x-i18n': { 'zh-CN': '偏移 Y' },
         'x-i18n-desc': { 'zh-CN': '相对于默认头像摆放位置的垂直偏移' },
       }),
@@ -627,6 +501,7 @@ const AvatarForCommandSchema = z
       .describe('Horizontal retreat applied to the text and name area when the avatar is visible')
       .meta({
         title: 'Spacing',
+        'x-step': 1,
         'x-i18n': { 'zh-CN': '退让尺寸' },
         'x-i18n-desc': { 'zh-CN': '头像可见时，文本区和姓名框在水平方向上的退让尺寸' },
       }),
@@ -947,30 +822,24 @@ function createTransitionEffectCommandSchemas<TCommand extends string, TExtra ex
           'x-i18n': { 'zh-CN': '效果' },
           'x-i18n-desc': { 'zh-CN': '转场效果' },
         }),
-      in: z
-        .number()
-        .describe('Fade-in ratio from 0 to 1')
-        .meta({
-          title: 'In',
-          'x-i18n': { 'zh-CN': '淡入占比' },
-          'x-i18n-desc': { 'zh-CN': '新画面从纯色淡入阶段的时长占比，预期范围 0 到 1' },
-        }),
-      hold: z
-        .number()
-        .describe('Hold ratio from 0 to 1')
-        .meta({
-          title: 'Hold',
-          'x-i18n': { 'zh-CN': '停留占比' },
-          'x-i18n-desc': { 'zh-CN': '纯色画面停留阶段的时长占比，预期范围 0 到 1' },
-        }),
-      out: z
-        .number()
-        .describe('Fade-out ratio from 0 to 1')
-        .meta({
-          title: 'Out',
-          'x-i18n': { 'zh-CN': '淡出占比' },
-          'x-i18n-desc': { 'zh-CN': '旧画面淡出到纯色阶段的时长占比，预期范围 0 到 1' },
-        }),
+      in: normalizedNumberSchema.describe('Fade-in ratio from 0 to 1').meta({
+        title: 'In',
+        'x-step': 0.01,
+        'x-i18n': { 'zh-CN': '淡入占比' },
+        'x-i18n-desc': { 'zh-CN': '新画面从纯色淡入阶段的时长占比，预期范围 0 到 1' },
+      }),
+      hold: normalizedNumberSchema.describe('Hold ratio from 0 to 1').meta({
+        title: 'Hold',
+        'x-step': 0.01,
+        'x-i18n': { 'zh-CN': '停留占比' },
+        'x-i18n-desc': { 'zh-CN': '纯色画面停留阶段的时长占比，预期范围 0 到 1' },
+      }),
+      out: normalizedNumberSchema.describe('Fade-out ratio from 0 to 1').meta({
+        title: 'Out',
+        'x-step': 0.01,
+        'x-i18n': { 'zh-CN': '淡出占比' },
+        'x-i18n-desc': { 'zh-CN': '旧画面淡出到纯色阶段的时长占比，预期范围 0 到 1' },
+      }),
       color: z
         .string()
         .optional()
@@ -996,6 +865,7 @@ function createTransitionEffectCommandSchemas<TCommand extends string, TExtra ex
         }),
       startScale: z
         .number()
+        .nonnegative()
         .optional()
         .default(0)
         .describe('Initial display scale of the incoming scene')
@@ -1006,6 +876,7 @@ function createTransitionEffectCommandSchemas<TCommand extends string, TExtra ex
         }),
       endScale: z
         .number()
+        .nonnegative()
         .optional()
         .default(1)
         .describe('Final display scale of the incoming scene')
@@ -1014,8 +885,7 @@ function createTransitionEffectCommandSchemas<TCommand extends string, TExtra ex
           'x-i18n': { 'zh-CN': '结束缩放' },
           'x-i18n-desc': { 'zh-CN': '新画面的结束显示缩放' },
         }),
-      origin: z
-        .tuple([z.number().min(0).max(1), z.number().min(0).max(1)])
+      origin: tuplePointSchema
         .optional()
         .default([0.5, 0.5])
         .describe('Zoom origin normalized to the screen, from 0 to 1')
@@ -1038,7 +908,7 @@ function createTransitionEffectCommandSchemas<TCommand extends string, TExtra ex
         }),
       steps: z
         .number()
-        .int()
+        .nonnegative()
         .min(0)
         .optional()
         .default(4)
@@ -1261,14 +1131,11 @@ const CharAutoTintCommandSchema = z
 const WaitCommandSchema = z
   .object({
     command: z.literal('wait'),
-    time: z
-      .number()
-      .describe('Wait duration in milliseconds')
-      .meta({
-        title: 'Duration',
-        'x-i18n': { 'zh-CN': '时长' },
-        'x-i18n-desc': { 'zh-CN': '等待时长（毫秒）' },
-      }),
+    time: timeMillisSchema.describe('Wait duration in milliseconds').meta({
+      title: 'Duration',
+      'x-i18n': { 'zh-CN': '时长' },
+      'x-i18n-desc': { 'zh-CN': '等待时长（毫秒）' },
+    }),
     skippable: skippable(false)
       .describe('Whether the wait can be skipped')
       .meta({

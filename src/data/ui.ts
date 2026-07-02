@@ -1,279 +1,16 @@
 import z from 'zod';
-
-const buttonIdleSrc = z
-  .string()
-  .describe('Idle state image')
-  .meta({
-    title: 'Idle',
-    format: 'asset',
-    'x-asset-kind': 'image',
-    'x-i18n': { 'zh-CN': '空闲' },
-    'x-i18n-desc': { 'zh-CN': '按钮空闲状态的图片' },
-  });
-
-const buttonHoverSrc = z
-  .string()
-  .describe('Hover state image')
-  .meta({
-    title: 'Hover',
-    format: 'asset',
-    'x-asset-kind': 'image',
-    'x-i18n': { 'zh-CN': '悬停' },
-    'x-i18n-desc': { 'zh-CN': '按钮悬停状态的图片' },
-  });
-
-const buttonPressedSrc = z
-  .string()
-  .describe('Pressed state image')
-  .meta({
-    title: 'Pressed',
-    format: 'asset',
-    'x-asset-kind': 'image',
-    'x-i18n': { 'zh-CN': '按下' },
-    'x-i18n-desc': { 'zh-CN': '按钮按下状态的图片' },
-  });
-
-const buttonSrc = z
-  .tuple([buttonIdleSrc, buttonHoverSrc, buttonPressedSrc])
-  .describe('Button images in idle, hover, and pressed states')
-  .meta({
-    title: 'Button Images',
-    'x-i18n': { 'zh-CN': '按钮图片' },
-    'x-i18n-desc': { 'zh-CN': '按钮空闲、悬停和按下状态的图片' },
-  });
-
-const posX = z.number().meta({
-  title: 'X',
-  'x-i18n': { 'zh-CN': 'X 坐标' },
-});
-
-const posY = z.number().meta({
-  title: 'Y',
-  'x-i18n': { 'zh-CN': 'Y 坐标' },
-});
-
-const positionSchema = z
-  .object({
-    x: posX,
-    y: posY,
-  })
-  .meta({
-    title: 'Coordinates',
-    'x-i18n': { 'zh-CN': '坐标' },
-    format: 'position',
-  });
-
-const boxWidth = z
-  .number()
-  .min(0)
-  .describe('Text box width in pixels')
-  .meta({
-    title: 'Box Width',
-    'x-i18n': { 'zh-CN': '文本框宽度' },
-    'x-i18n-desc': { 'zh-CN': '文本区域宽度（像素）' },
-  });
-
-const boxHeight = z
-  .number()
-  .min(0)
-  .describe('Text box height in pixels')
-  .meta({
-    title: 'Box Height',
-    'x-i18n': { 'zh-CN': '文本框高度' },
-    'x-i18n-desc': { 'zh-CN': '文本区域高度（像素）' },
-  });
-
-const pivotSchema = z
-  .tuple([z.number(), z.number()])
-  .describe('Pivot point (x, y)')
-  .meta({
-    title: 'Pivot',
-    'x-i18n': { 'zh-CN': '旋转中心' },
-    'x-i18n-desc': { 'zh-CN': '节点旋转和定位的锚点' },
-  });
-
-const anchorSchema = z
-  .tuple([z.number(), z.number()])
-  .describe('Anchor point (x, y)')
-  .meta({
-    title: 'Anchor',
-    'x-i18n': { 'zh-CN': '锚点' },
-    'x-i18n-desc': { 'zh-CN': '节点对齐使用的锚点' },
-  });
-
-export const TextStyleUiSchema = z
-  .object({
-    fontSize: z
-      .number()
-      .optional()
-      .default(32)
-      .describe('Text font size')
-      .meta({
-        title: 'Font Size',
-        'x-i18n': { 'zh-CN': '字号' },
-        'x-i18n-desc': { 'zh-CN': '文本字号' },
-      }),
-    fillColor: z
-      .string()
-      .optional()
-      .default('#f0f0f0')
-      .describe('Text color')
-      .meta({
-        title: 'Fill Color',
-        format: 'color',
-        'x-i18n': { 'zh-CN': '文字颜色' },
-        'x-i18n-desc': { 'zh-CN': '文字填充颜色' },
-      }),
-    lineHeight: z
-      .number()
-      .optional()
-      .default(1.5)
-      .describe('Line height multiplier')
-      .meta({
-        title: 'Line Height',
-        'x-i18n': { 'zh-CN': '行高' },
-        'x-i18n-desc': { 'zh-CN': '行高倍数' },
-      }),
-    indent: z
-      .number()
-      .optional()
-      .default(0)
-      .describe('First-line indentation in pixels')
-      .meta({
-        title: 'Indent',
-        'x-i18n': { 'zh-CN': '缩进' },
-        'x-i18n-desc': { 'zh-CN': '段落首行缩进（像素）' },
-      }),
-    stroke: z
-      .boolean()
-      .optional()
-      .default(false)
-      .describe('Whether to apply text stroke')
-      .meta({
-        title: 'Stroke',
-        'x-i18n': { 'zh-CN': '描边' },
-        'x-i18n-desc': { 'zh-CN': '是否启用文字描边' },
-      }),
-    strokeColor: z
-      .string()
-      .optional()
-      .default('#000000')
-      .describe('Stroke color')
-      .meta({
-        title: 'Stroke Color',
-        format: 'color',
-        'x-i18n': { 'zh-CN': '描边颜色' },
-        'x-i18n-desc': { 'zh-CN': '文字描边颜色' },
-      }),
-    strokeWidth: z
-      .number()
-      .optional()
-      .default(2)
-      .describe('Stroke width in pixels')
-      .meta({
-        title: 'Stroke Width',
-        'x-i18n': { 'zh-CN': '描边宽度' },
-        'x-i18n-desc': { 'zh-CN': '文字描边宽度（像素）' },
-      }),
-    shadow: z
-      .boolean()
-      .optional()
-      .default(false)
-      .describe('Whether to apply text shadow')
-      .meta({
-        title: 'Shadow',
-        'x-i18n': { 'zh-CN': '阴影' },
-        'x-i18n-desc': { 'zh-CN': '是否启用文字阴影' },
-      }),
-    shadowColor: z
-      .string()
-      .optional()
-      .default('#000000')
-      .describe('Shadow color')
-      .meta({
-        title: 'Shadow Color',
-        format: 'color',
-        'x-i18n': { 'zh-CN': '阴影颜色' },
-        'x-i18n-desc': { 'zh-CN': '文字阴影颜色' },
-      }),
-    shadowOffsetX: z
-      .number()
-      .optional()
-      .default(0)
-      .describe('Shadow X offset in pixels')
-      .meta({
-        title: 'Shadow Offset X',
-        'x-i18n': { 'zh-CN': '阴影偏移 X' },
-        'x-i18n-desc': { 'zh-CN': '阴影 X 轴偏移（像素）' },
-      }),
-    shadowOffsetY: z
-      .number()
-      .optional()
-      .default(0)
-      .describe('Shadow Y offset in pixels')
-      .meta({
-        title: 'Shadow Offset Y',
-        'x-i18n': { 'zh-CN': '阴影偏移 Y' },
-        'x-i18n-desc': { 'zh-CN': '阴影 Y 轴偏移（像素）' },
-      }),
-    shadowBlur: z
-      .number()
-      .optional()
-      .default(0)
-      .describe('Shadow blur radius in pixels')
-      .meta({
-        title: 'Shadow Blur',
-        'x-i18n': { 'zh-CN': '阴影模糊' },
-        'x-i18n-desc': { 'zh-CN': '阴影模糊半径（像素）' },
-      }),
-    shadowWidth: z
-      .number()
-      .optional()
-      .default(0)
-      .describe('Shadow width in pixels, only effective when shadow is enabled')
-      .meta({
-        title: 'Shadow Width',
-        'x-i18n': { 'zh-CN': '阴影宽度' },
-        'x-i18n-desc': { 'zh-CN': '阴影宽度（像素），仅在启用阴影时生效' },
-      }),
-  })
-  .describe('Text style configuration')
-  .meta({
-    title: 'Text Style',
-    'x-i18n': { 'zh-CN': '文字样式' },
-    'x-i18n-desc': { 'zh-CN': '文本渲染使用的样式配置' },
-  });
-
-const printModeUiSchema = z
-  .enum(['instant', 'typewriter', 'printer'])
-  .optional()
-  .default('typewriter')
-  .describe('Default text printing mode')
-  .meta({
-    title: 'Print Mode',
-    'x-i18n': { 'zh-CN': '打字模式' },
-    'x-i18n-desc': { 'zh-CN': '正文默认的文字打印模式' },
-  });
-
-const printSpeedUiSchema = z
-  .number()
-  .optional()
-  .default(20)
-  .describe('Default print speed: chars/sec (typewriter) or lines/sec (printer)')
-  .meta({
-    title: 'Print Speed',
-    'x-i18n': { 'zh-CN': '打字速度' },
-    'x-i18n-desc': { 'zh-CN': '正文默认的打印速度；逐字模式为字/秒，打印机模式为行/秒' },
-  });
-
-const ninesliceBoundsSchema = z
-  .tuple([z.number(), z.number(), z.number(), z.number()])
-  .describe('Nine-slice bounds [left, top, right, bottom]')
-  .meta({
-    title: 'Bounds',
-    'x-i18n': { 'zh-CN': '九宫格边界' },
-    'x-i18n-desc': { 'zh-CN': '九宫格缩放使用的边界 [left, top, right, bottom]' },
-  });
+import {
+  positionSchema,
+  anchorSchema,
+  pivotSchema,
+  ninesliceBoundsSchema,
+  textStyleSchema,
+  printModeSchema,
+  printSpeedSchema,
+  boxWidthSchema,
+  boxHeightSchema,
+  buttonSchema,
+} from './shared';
 
 const TextboxImageNormalUiSchema = z
   .object({
@@ -354,10 +91,7 @@ const TextboxImageUiSchema = z
   });
 
 const textboxButtonTextColorSchema = z
-  .union([
-    z.string(),
-    z.tuple([z.string(), z.string(), z.string()]),
-  ])
+  .union([z.string(), z.tuple([z.string(), z.string(), z.string()])])
   .describe('Button text color, either a single color or colors for idle/hover/pressed states')
   .meta({
     title: 'Color',
@@ -379,7 +113,7 @@ const TextBoxActionButtonUiSchema = z
   .object({
     action: TextBoxButtonActionUiSchema,
     position: positionSchema,
-    fileNames: buttonSrc,
+    fileNames: buttonSchema,
     text: z
       .string()
       .describe('Button label')
@@ -398,11 +132,9 @@ const TextBoxActionButtonUiSchema = z
         'x-i18n': { 'zh-CN': '字号' },
         'x-i18n-desc': { 'zh-CN': '按钮文字字号' },
       }),
-    color: textboxButtonTextColorSchema.optional().default([
-      'rgba(255,255,255,0.3)',
-      'rgba(255,255,255,0.7)',
-      'rgba(255,255,255,0.9)',
-    ]),
+    color: textboxButtonTextColorSchema
+      .optional()
+      .default(['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.7)', 'rgba(255,255,255,0.9)']),
     anchor: anchorSchema.optional(),
     pivot: pivotSchema.optional(),
     textOffsetX: z
@@ -564,7 +296,7 @@ export const MenuButtonActionUiSchema = z
 const OverlayIconButtonUiSchema = z
   .object({
     position: positionSchema,
-    fileNames: buttonSrc,
+    fileNames: buttonSchema,
   })
   .describe('Overlay icon button')
   .meta({
@@ -576,7 +308,7 @@ const OverlayIconButtonUiSchema = z
 const OverlayTextButtonUiSchema = z
   .object({
     position: positionSchema,
-    fileNames: buttonSrc,
+    fileNames: buttonSchema,
     text: z
       .string()
       .describe('Button label')
@@ -617,7 +349,7 @@ const OverlayTextButtonUiSchema = z
 export const TitleButtonUiSchema = z
   .object({
     position: positionSchema,
-    fileNames: buttonSrc,
+    fileNames: buttonSchema,
     text: z
       .string()
       .describe('Button label')
@@ -659,7 +391,7 @@ export const TitleButtonUiSchema = z
 export const MenuButtonUiSchema = z
   .object({
     position: positionSchema,
-    fileNames: buttonSrc,
+    fileNames: buttonSchema,
     text: z
       .string()
       .describe('Button label')
@@ -850,7 +582,7 @@ const createSaveLoadTextUiSchema = (defaultFontSize: number, defaultColor: strin
 const SaveLoadPageButtonUiSchema = z
   .object({
     position: positionSchema,
-    fileNames: buttonSrc,
+    fileNames: buttonSchema,
     text: z
       .string()
       .optional()
@@ -903,7 +635,7 @@ const SaveLoadPageButtonUiSchema = z
 const SaveLoadSlotButtonUiSchema = z
   .object({
     position: positionSchema,
-    fileNames: buttonSrc,
+    fileNames: buttonSchema,
   })
   .describe('Save/load slot button configuration')
   .meta({
@@ -1280,11 +1012,11 @@ export const StageTextBoxUiSchema = z
     content: z
       .object({
         position: positionSchema,
-        boxWidth,
-        boxHeight,
-        printMode: printModeUiSchema,
-        printSpeed: printSpeedUiSchema,
-        textStyle: TextStyleUiSchema,
+        boxWidth: boxWidthSchema,
+        boxHeight: boxHeightSchema,
+        printMode: printModeSchema,
+        printSpeed: printSpeedSchema,
+        textStyle: textStyleSchema,
       })
       .describe('Text content layout')
       .meta({
@@ -1300,7 +1032,7 @@ export const StageTextBoxUiSchema = z
             position: positionSchema,
             anchor: anchorSchema.optional().default([0.5, 0.5]),
             pivot: pivotSchema.optional().default([0.5, 0.5]),
-            textStyle: TextStyleUiSchema,
+            textStyle: textStyleSchema,
           })
           .describe('Name text layout and style')
           .meta({
@@ -1332,7 +1064,7 @@ export const StageTextBoxUiSchema = z
         closeButton: z
           .object({
             position: positionSchema,
-            fileNames: buttonSrc,
+            fileNames: buttonSchema,
             anchor: anchorSchema.optional(),
             pivot: pivotSchema.optional(),
           })
@@ -1491,7 +1223,7 @@ export type MenuButtonUiData = z.infer<typeof MenuButtonUiSchema>;
 export type MenuUiData = z.infer<typeof MenuUiSchema>;
 export type SaveLoadUiData = z.infer<typeof SaveLoadUiSchema>;
 export type ConfirmUiData = z.infer<typeof ConfirmUiSchema>;
-export type TextStyleUiData = z.infer<typeof TextStyleUiSchema>;
+export type TextStyleUiData = z.infer<typeof textStyleSchema>;
 export type StageTextBoxUiData = z.infer<typeof StageTextBoxUiSchema>;
 export type StageUiData = z.infer<typeof StageUiSchema>;
 export type GameUiData = z.infer<typeof GameUiSchema>;

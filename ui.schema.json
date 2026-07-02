@@ -66,12 +66,21 @@
                       "type": "array",
                       "prefixItems": [
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         },
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       ],
+                      "format": "point",
                       "description": "Anchor point (x, y)",
                       "title": "Anchor",
                       "x-i18n": {
@@ -89,12 +98,21 @@
                       "type": "array",
                       "prefixItems": [
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         },
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       ],
+                      "format": "point",
                       "description": "Pivot point (x, y)",
                       "title": "Pivot",
                       "x-i18n": {
@@ -175,12 +193,21 @@
                       "type": "array",
                       "prefixItems": [
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         },
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       ],
+                      "format": "point",
                       "description": "Anchor point (x, y)",
                       "title": "Anchor",
                       "x-i18n": {
@@ -198,12 +225,21 @@
                       "type": "array",
                       "prefixItems": [
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         },
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       ],
+                      "format": "point",
                       "description": "Pivot point (x, y)",
                       "title": "Pivot",
                       "x-i18n": {
@@ -217,18 +253,35 @@
                       "type": "array",
                       "prefixItems": [
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         },
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         },
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         },
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       ],
+                      "format": "bounds",
                       "description": "Nine-slice bounds [left, top, right, bottom]",
                       "title": "Bounds",
                       "x-i18n": {
@@ -364,13 +417,15 @@
                   "default": 20,
                   "description": "Default print speed: chars/sec (typewriter) or lines/sec (printer)",
                   "title": "Print Speed",
+                  "x-step": 0.1,
                   "x-i18n": {
                     "zh-CN": "打字速度"
                   },
                   "x-i18n-desc": {
                     "zh-CN": "正文默认的打印速度；逐字模式为字/秒，打印机模式为行/秒"
                   },
-                  "type": "number"
+                  "type": "number",
+                  "minimum": 0
                 },
                 "textStyle": {
                   "type": "object",
@@ -385,7 +440,8 @@
                       "x-i18n-desc": {
                         "zh-CN": "文本字号"
                       },
-                      "type": "number"
+                      "type": "number",
+                      "minimum": 0
                     },
                     "fillColor": {
                       "default": "#f0f0f0",
@@ -404,25 +460,29 @@
                       "default": 1.5,
                       "description": "Line height multiplier",
                       "title": "Line Height",
+                      "x-step": 0.1,
                       "x-i18n": {
                         "zh-CN": "行高"
                       },
                       "x-i18n-desc": {
                         "zh-CN": "行高倍数"
                       },
-                      "type": "number"
+                      "type": "number",
+                      "minimum": 0
                     },
                     "indent": {
                       "default": 0,
                       "description": "First-line indentation in pixels",
                       "title": "Indent",
+                      "x-step": 0.1,
                       "x-i18n": {
                         "zh-CN": "缩进"
                       },
                       "x-i18n-desc": {
                         "zh-CN": "段落首行缩进（像素）"
                       },
-                      "type": "number"
+                      "type": "number",
+                      "minimum": 0
                     },
                     "stroke": {
                       "default": false,
@@ -453,13 +513,15 @@
                       "default": 2,
                       "description": "Stroke width in pixels",
                       "title": "Stroke Width",
+                      "x-step": 0.01,
                       "x-i18n": {
                         "zh-CN": "描边宽度"
                       },
                       "x-i18n-desc": {
                         "zh-CN": "文字描边宽度（像素）"
                       },
-                      "type": "number"
+                      "type": "number",
+                      "minimum": 0
                     },
                     "shadow": {
                       "default": false,
@@ -490,6 +552,7 @@
                       "default": 0,
                       "description": "Shadow X offset in pixels",
                       "title": "Shadow Offset X",
+                      "x-step": 0.01,
                       "x-i18n": {
                         "zh-CN": "阴影偏移 X"
                       },
@@ -502,6 +565,7 @@
                       "default": 0,
                       "description": "Shadow Y offset in pixels",
                       "title": "Shadow Offset Y",
+                      "x-step": 0.01,
                       "x-i18n": {
                         "zh-CN": "阴影偏移 Y"
                       },
@@ -514,29 +578,34 @@
                       "default": 0,
                       "description": "Shadow blur radius in pixels",
                       "title": "Shadow Blur",
+                      "x-step": 0.01,
                       "x-i18n": {
                         "zh-CN": "阴影模糊"
                       },
                       "x-i18n-desc": {
                         "zh-CN": "阴影模糊半径（像素）"
                       },
-                      "type": "number"
+                      "type": "number",
+                      "minimum": 0
                     },
                     "shadowWidth": {
                       "default": 0,
                       "description": "Shadow width in pixels, only effective when shadow is enabled",
                       "title": "Shadow Width",
+                      "x-step": 0.01,
                       "x-i18n": {
                         "zh-CN": "阴影宽度"
                       },
                       "x-i18n-desc": {
                         "zh-CN": "阴影宽度（像素），仅在启用阴影时生效"
                       },
-                      "type": "number"
+                      "type": "number",
+                      "minimum": 0
                     }
                   },
                   "description": "Text style configuration",
                   "title": "Text Style",
+                  "format": "text-style",
                   "x-i18n": {
                     "zh-CN": "文字样式"
                   },
@@ -621,12 +690,21 @@
                           "type": "array",
                           "prefixItems": [
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             },
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             }
                           ],
+                          "format": "point",
                           "description": "Anchor point (x, y)",
                           "title": "Anchor",
                           "x-i18n": {
@@ -644,12 +722,21 @@
                           "type": "array",
                           "prefixItems": [
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             },
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             }
                           ],
+                          "format": "point",
                           "description": "Pivot point (x, y)",
                           "title": "Pivot",
                           "x-i18n": {
@@ -730,12 +817,21 @@
                           "type": "array",
                           "prefixItems": [
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             },
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             }
                           ],
+                          "format": "point",
                           "description": "Anchor point (x, y)",
                           "title": "Anchor",
                           "x-i18n": {
@@ -753,12 +849,21 @@
                           "type": "array",
                           "prefixItems": [
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             },
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             }
                           ],
+                          "format": "point",
                           "description": "Pivot point (x, y)",
                           "title": "Pivot",
                           "x-i18n": {
@@ -772,18 +877,35 @@
                           "type": "array",
                           "prefixItems": [
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             },
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             },
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             },
                             {
-                              "type": "number"
+                              "default": 0,
+                              "x-step": 0.01,
+                              "type": "number",
+                              "minimum": 0,
+                              "maximum": 1
                             }
                           ],
+                          "format": "bounds",
                           "description": "Nine-slice bounds [left, top, right, bottom]",
                           "title": "Bounds",
                           "x-i18n": {
@@ -882,12 +1004,21 @@
                       "type": "array",
                       "prefixItems": [
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         },
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       ],
+                      "format": "point",
                       "description": "Anchor point (x, y)",
                       "title": "Anchor",
                       "x-i18n": {
@@ -905,12 +1036,21 @@
                       "type": "array",
                       "prefixItems": [
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         },
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       ],
+                      "format": "point",
                       "description": "Pivot point (x, y)",
                       "title": "Pivot",
                       "x-i18n": {
@@ -933,7 +1073,8 @@
                           "x-i18n-desc": {
                             "zh-CN": "文本字号"
                           },
-                          "type": "number"
+                          "type": "number",
+                          "minimum": 0
                         },
                         "fillColor": {
                           "default": "#f0f0f0",
@@ -952,25 +1093,29 @@
                           "default": 1.5,
                           "description": "Line height multiplier",
                           "title": "Line Height",
+                          "x-step": 0.1,
                           "x-i18n": {
                             "zh-CN": "行高"
                           },
                           "x-i18n-desc": {
                             "zh-CN": "行高倍数"
                           },
-                          "type": "number"
+                          "type": "number",
+                          "minimum": 0
                         },
                         "indent": {
                           "default": 0,
                           "description": "First-line indentation in pixels",
                           "title": "Indent",
+                          "x-step": 0.1,
                           "x-i18n": {
                             "zh-CN": "缩进"
                           },
                           "x-i18n-desc": {
                             "zh-CN": "段落首行缩进（像素）"
                           },
-                          "type": "number"
+                          "type": "number",
+                          "minimum": 0
                         },
                         "stroke": {
                           "default": false,
@@ -1001,13 +1146,15 @@
                           "default": 2,
                           "description": "Stroke width in pixels",
                           "title": "Stroke Width",
+                          "x-step": 0.01,
                           "x-i18n": {
                             "zh-CN": "描边宽度"
                           },
                           "x-i18n-desc": {
                             "zh-CN": "文字描边宽度（像素）"
                           },
-                          "type": "number"
+                          "type": "number",
+                          "minimum": 0
                         },
                         "shadow": {
                           "default": false,
@@ -1038,6 +1185,7 @@
                           "default": 0,
                           "description": "Shadow X offset in pixels",
                           "title": "Shadow Offset X",
+                          "x-step": 0.01,
                           "x-i18n": {
                             "zh-CN": "阴影偏移 X"
                           },
@@ -1050,6 +1198,7 @@
                           "default": 0,
                           "description": "Shadow Y offset in pixels",
                           "title": "Shadow Offset Y",
+                          "x-step": 0.01,
                           "x-i18n": {
                             "zh-CN": "阴影偏移 Y"
                           },
@@ -1062,29 +1211,34 @@
                           "default": 0,
                           "description": "Shadow blur radius in pixels",
                           "title": "Shadow Blur",
+                          "x-step": 0.01,
                           "x-i18n": {
                             "zh-CN": "阴影模糊"
                           },
                           "x-i18n-desc": {
                             "zh-CN": "阴影模糊半径（像素）"
                           },
-                          "type": "number"
+                          "type": "number",
+                          "minimum": 0
                         },
                         "shadowWidth": {
                           "default": 0,
                           "description": "Shadow width in pixels, only effective when shadow is enabled",
                           "title": "Shadow Width",
+                          "x-step": 0.01,
                           "x-i18n": {
                             "zh-CN": "阴影宽度"
                           },
                           "x-i18n-desc": {
                             "zh-CN": "阴影宽度（像素），仅在启用阴影时生效"
                           },
-                          "type": "number"
+                          "type": "number",
+                          "minimum": 0
                         }
                       },
                       "description": "Text style configuration",
                       "title": "Text Style",
+                      "format": "text-style",
                       "x-i18n": {
                         "zh-CN": "文字样式"
                       },
@@ -1159,12 +1313,21 @@
                   "type": "array",
                   "prefixItems": [
                     {
-                      "type": "number"
+                      "default": 0,
+                      "x-step": 0.01,
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
                     },
                     {
-                      "type": "number"
+                      "default": 0,
+                      "x-step": 0.01,
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
                     }
                   ],
+                  "format": "point",
                   "description": "Anchor point (x, y)",
                   "title": "Anchor",
                   "x-i18n": {
@@ -1178,12 +1341,21 @@
                   "type": "array",
                   "prefixItems": [
                     {
-                      "type": "number"
+                      "default": 0,
+                      "x-step": 0.01,
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
                     },
                     {
-                      "type": "number"
+                      "default": 0,
+                      "x-step": 0.01,
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
                     }
                   ],
+                  "format": "point",
                   "description": "Pivot point (x, y)",
                   "title": "Pivot",
                   "x-i18n": {
@@ -1297,12 +1469,21 @@
                       "type": "array",
                       "prefixItems": [
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         },
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       ],
+                      "format": "point",
                       "description": "Anchor point (x, y)",
                       "title": "Anchor",
                       "x-i18n": {
@@ -1316,12 +1497,21 @@
                       "type": "array",
                       "prefixItems": [
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         },
                         {
-                          "type": "number"
+                          "default": 0,
+                          "x-step": 0.01,
+                          "type": "number",
+                          "minimum": 0,
+                          "maximum": 1
                         }
                       ],
+                      "format": "point",
                       "description": "Pivot point (x, y)",
                       "title": "Pivot",
                       "x-i18n": {
@@ -1513,12 +1703,21 @@
                         "type": "array",
                         "prefixItems": [
                           {
-                            "type": "number"
+                            "default": 0,
+                            "x-step": 0.01,
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
                           },
                           {
-                            "type": "number"
+                            "default": 0,
+                            "x-step": 0.01,
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
                           }
                         ],
+                        "format": "point",
                         "description": "Anchor point (x, y)",
                         "title": "Anchor",
                         "x-i18n": {
@@ -1532,12 +1731,21 @@
                         "type": "array",
                         "prefixItems": [
                           {
-                            "type": "number"
+                            "default": 0,
+                            "x-step": 0.01,
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
                           },
                           {
-                            "type": "number"
+                            "default": 0,
+                            "x-step": 0.01,
+                            "type": "number",
+                            "minimum": 0,
+                            "maximum": 1
                           }
                         ],
+                        "format": "point",
                         "description": "Pivot point (x, y)",
                         "title": "Pivot",
                         "x-i18n": {

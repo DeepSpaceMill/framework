@@ -137,13 +137,14 @@
           }
         },
         "printMode": {
-          "description": "Text printing mode",
+          "default": "typewriter",
+          "description": "Default text printing mode",
           "title": "Print Mode",
           "x-i18n": {
             "zh-CN": "打字模式"
           },
           "x-i18n-desc": {
-            "zh-CN": "文本打字模式"
+            "zh-CN": "正文默认的文字打印模式"
           },
           "type": "string",
           "enum": [
@@ -153,51 +154,75 @@
           ]
         },
         "printSpeed": {
-          "description": "Print speed: chars/sec (typewriter) or lines/sec (printer)",
+          "default": 20,
+          "description": "Default print speed: chars/sec (typewriter) or lines/sec (printer)",
           "title": "Print Speed",
+          "x-step": 0.1,
           "x-i18n": {
             "zh-CN": "打字速度"
           },
           "x-i18n-desc": {
-            "zh-CN": "逐字模式为字/秒，打印机模式为行/秒"
+            "zh-CN": "正文默认的打印速度；逐字模式为字/秒，打印机模式为行/秒"
           },
-          "type": "number"
+          "type": "number",
+          "minimum": 0
+        },
+        "fontSize": {
+          "default": 32,
+          "description": "Text font size",
+          "title": "Font Size",
+          "x-i18n": {
+            "zh-CN": "字号"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "文本字号"
+          },
+          "type": "number",
+          "minimum": 0
         },
         "fillColor": {
+          "default": "#f0f0f0",
           "description": "Text color",
-          "title": "Text Color",
+          "title": "Fill Color",
           "format": "color",
           "x-i18n": {
             "zh-CN": "文字颜色"
           },
           "x-i18n-desc": {
-            "zh-CN": "文字颜色"
+            "zh-CN": "文字填充颜色"
           },
           "type": "string"
         },
         "lineHeight": {
+          "default": 1.5,
           "description": "Line height multiplier",
           "title": "Line Height",
+          "x-step": 0.1,
           "x-i18n": {
             "zh-CN": "行高"
           },
           "x-i18n-desc": {
             "zh-CN": "行高倍数"
           },
-          "type": "number"
+          "type": "number",
+          "minimum": 0
         },
         "indent": {
+          "default": 0,
           "description": "First-line indentation in pixels",
           "title": "Indent",
+          "x-step": 0.1,
           "x-i18n": {
             "zh-CN": "缩进"
           },
           "x-i18n-desc": {
             "zh-CN": "段落首行缩进（像素）"
           },
-          "type": "number"
+          "type": "number",
+          "minimum": 0
         },
         "stroke": {
+          "default": false,
           "description": "Whether to apply text stroke",
           "title": "Stroke",
           "x-i18n": {
@@ -208,7 +233,35 @@
           },
           "type": "boolean"
         },
+        "strokeColor": {
+          "default": "#000000",
+          "description": "Stroke color",
+          "title": "Stroke Color",
+          "format": "color",
+          "x-i18n": {
+            "zh-CN": "描边颜色"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "文字描边颜色"
+          },
+          "type": "string"
+        },
+        "strokeWidth": {
+          "default": 2,
+          "description": "Stroke width in pixels",
+          "title": "Stroke Width",
+          "x-step": 0.01,
+          "x-i18n": {
+            "zh-CN": "描边宽度"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "文字描边宽度（像素）"
+          },
+          "type": "number",
+          "minimum": 0
+        },
         "shadow": {
+          "default": false,
           "description": "Whether to apply text shadow",
           "title": "Shadow",
           "x-i18n": {
@@ -219,30 +272,8 @@
           },
           "type": "boolean"
         },
-        "strokeColor": {
-          "description": "Stroke color",
-          "title": "Stroke Color",
-          "format": "color",
-          "x-i18n": {
-            "zh-CN": "描边颜色"
-          },
-          "x-i18n-desc": {
-            "zh-CN": "描边颜色"
-          },
-          "type": "string"
-        },
-        "strokeWidth": {
-          "description": "Stroke width in pixels",
-          "title": "Stroke Width",
-          "x-i18n": {
-            "zh-CN": "描边宽度"
-          },
-          "x-i18n-desc": {
-            "zh-CN": "描边宽度（像素）"
-          },
-          "type": "number"
-        },
         "shadowColor": {
+          "default": "#000000",
           "description": "Shadow color",
           "title": "Shadow Color",
           "format": "color",
@@ -250,13 +281,15 @@
             "zh-CN": "阴影颜色"
           },
           "x-i18n-desc": {
-            "zh-CN": "阴影颜色"
+            "zh-CN": "文字阴影颜色"
           },
           "type": "string"
         },
         "shadowOffsetX": {
+          "default": 0,
           "description": "Shadow X offset in pixels",
           "title": "Shadow Offset X",
+          "x-step": 0.01,
           "x-i18n": {
             "zh-CN": "阴影偏移 X"
           },
@@ -266,8 +299,10 @@
           "type": "number"
         },
         "shadowOffsetY": {
+          "default": 0,
           "description": "Shadow Y offset in pixels",
           "title": "Shadow Offset Y",
+          "x-step": 0.01,
           "x-i18n": {
             "zh-CN": "阴影偏移 Y"
           },
@@ -277,26 +312,32 @@
           "type": "number"
         },
         "shadowBlur": {
+          "default": 0,
           "description": "Shadow blur radius in pixels",
           "title": "Shadow Blur",
+          "x-step": 0.01,
           "x-i18n": {
             "zh-CN": "阴影模糊"
           },
           "x-i18n-desc": {
             "zh-CN": "阴影模糊半径（像素）"
           },
-          "type": "number"
+          "type": "number",
+          "minimum": 0
         },
         "shadowWidth": {
+          "default": 0,
           "description": "Shadow width in pixels, only effective when shadow is enabled",
           "title": "Shadow Width",
+          "x-step": 0.01,
           "x-i18n": {
             "zh-CN": "阴影宽度"
           },
           "x-i18n-desc": {
             "zh-CN": "阴影宽度（像素），仅在启用阴影时生效"
           },
-          "type": "number"
+          "type": "number",
+          "minimum": 0
         }
       },
       "required": [
@@ -309,6 +350,26 @@
       },
       "x-i18n-desc": {
         "zh-CN": "配置文本框外观与行为"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "textBoxReset"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "description": "Reset textbox runtime style overrides",
+      "title": "Reset Text Box Style",
+      "x-i18n": {
+        "zh-CN": "重置文本框样式"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "清除文本框运行时样式覆盖，恢复使用 UI 默认值"
       }
     },
     {
@@ -385,6 +446,7 @@
         "offsetX": {
           "description": "Horizontal offset relative to the default avatar placement",
           "title": "Offset X",
+          "x-step": 1,
           "x-i18n": {
             "zh-CN": "偏移 X"
           },
@@ -396,6 +458,7 @@
         "offsetY": {
           "description": "Vertical offset relative to the default avatar placement",
           "title": "Offset Y",
+          "x-step": 1,
           "x-i18n": {
             "zh-CN": "偏移 Y"
           },
@@ -407,6 +470,7 @@
         "spacing": {
           "description": "Horizontal retreat applied to the text and name area when the avatar is visible",
           "title": "Spacing",
+          "x-step": 1,
           "x-i18n": {
             "zh-CN": "退让尺寸"
           },
@@ -486,6 +550,7 @@
         "offsetX": {
           "description": "Horizontal offset relative to the default avatar placement",
           "title": "Offset X",
+          "x-step": 1,
           "x-i18n": {
             "zh-CN": "偏移 X"
           },
@@ -497,6 +562,7 @@
         "offsetY": {
           "description": "Vertical offset relative to the default avatar placement",
           "title": "Offset Y",
+          "x-step": 1,
           "x-i18n": {
             "zh-CN": "偏移 Y"
           },
@@ -508,6 +574,7 @@
         "spacing": {
           "description": "Horizontal retreat applied to the text and name area when the avatar is visible",
           "title": "Spacing",
+          "x-step": 1,
           "x-i18n": {
             "zh-CN": "退让尺寸"
           },
@@ -573,6 +640,7 @@
           "x-i18n-desc": {
             "zh-CN": "音量，范围 0 到 1"
           },
+          "x-step": 0.01,
           "type": "number",
           "minimum": 0,
           "maximum": 1
@@ -599,7 +667,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -656,7 +727,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -737,6 +811,7 @@
           "x-i18n-desc": {
             "zh-CN": "音量，范围 0 到 1"
           },
+          "x-step": 0.01,
           "type": "number",
           "minimum": 0,
           "maximum": 1
@@ -763,7 +838,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -820,7 +898,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -900,6 +981,7 @@
           "x-i18n-desc": {
             "zh-CN": "音量，范围 0 到 1"
           },
+          "x-step": 0.01,
           "type": "number",
           "minimum": 0,
           "maximum": 1
@@ -1014,6 +1096,7 @@
           "x-i18n-desc": {
             "zh-CN": "音量，范围 0 到 1"
           },
+          "x-step": 0.01,
           "type": "number",
           "minimum": 0,
           "maximum": 1
@@ -1040,7 +1123,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -1109,7 +1195,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -1179,7 +1268,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -1237,7 +1329,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -1306,7 +1401,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -1393,6 +1491,7 @@
           "maximum": 2,
           "description": "Camera zoom ratio",
           "title": "Zoom",
+          "x-step": 0.01,
           "x-i18n": {
             "zh-CN": "镜头缩放"
           },
@@ -1401,9 +1500,8 @@
           }
         },
         "depth": {
-          "type": "number",
-          "minimum": 0,
-          "maximum": 1,
+          "default": 0,
+          "x-step": 0.01,
           "description": "Depth intensity from 0 to 1",
           "title": "Depth",
           "x-i18n": {
@@ -1411,12 +1509,16 @@
           },
           "x-i18n-desc": {
             "zh-CN": "景深强度，范围 0 到 1"
-          }
+          },
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         },
         "blur": {
           "type": "number",
           "minimum": 0,
           "maximum": 8,
+          "multipleOf": 1,
           "description": "Background blur radius",
           "title": "Blur",
           "x-i18n": {
@@ -1436,7 +1538,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -1543,7 +1648,10 @@
               "x-i18n-desc": {
                 "zh-CN": "渐变时间（毫秒）"
               },
-              "type": "number"
+              "x-step": 50,
+              "type": "number",
+              "minimum": 0,
+              "multipleOf": 1
             },
             "skippable": {
               "default": false,
@@ -1635,7 +1743,10 @@
               "x-i18n-desc": {
                 "zh-CN": "渐变时间（毫秒）"
               },
-              "type": "number"
+              "x-step": 50,
+              "type": "number",
+              "minimum": 0,
+              "multipleOf": 1
             },
             "skippable": {
               "default": false,
@@ -1714,7 +1825,10 @@
               "x-i18n-desc": {
                 "zh-CN": "渐变时间（毫秒）"
               },
-              "type": "number"
+              "x-step": 50,
+              "type": "number",
+              "minimum": 0,
+              "multipleOf": 1
             },
             "skippable": {
               "default": false,
@@ -1793,7 +1907,10 @@
               "x-i18n-desc": {
                 "zh-CN": "渐变时间（毫秒）"
               },
-              "type": "number"
+              "x-step": 50,
+              "type": "number",
+              "minimum": 0,
+              "multipleOf": 1
             },
             "skippable": {
               "default": false,
@@ -1845,7 +1962,8 @@
               }
             },
             "in": {
-              "type": "number",
+              "default": 0,
+              "x-step": 0.01,
               "description": "Fade-in ratio from 0 to 1",
               "title": "In",
               "x-i18n": {
@@ -1853,10 +1971,14 @@
               },
               "x-i18n-desc": {
                 "zh-CN": "新画面从纯色淡入阶段的时长占比，预期范围 0 到 1"
-              }
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             "hold": {
-              "type": "number",
+              "default": 0,
+              "x-step": 0.01,
               "description": "Hold ratio from 0 to 1",
               "title": "Hold",
               "x-i18n": {
@@ -1864,10 +1986,14 @@
               },
               "x-i18n-desc": {
                 "zh-CN": "纯色画面停留阶段的时长占比，预期范围 0 到 1"
-              }
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             "out": {
-              "type": "number",
+              "default": 0,
+              "x-step": 0.01,
               "description": "Fade-out ratio from 0 to 1",
               "title": "Out",
               "x-i18n": {
@@ -1875,7 +2001,10 @@
               },
               "x-i18n-desc": {
                 "zh-CN": "旧画面淡出到纯色阶段的时长占比，预期范围 0 到 1"
-              }
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             "color": {
               "default": "#000",
@@ -1900,7 +2029,10 @@
               "x-i18n-desc": {
                 "zh-CN": "渐变时间（毫秒）"
               },
-              "type": "number"
+              "x-step": 50,
+              "type": "number",
+              "minimum": 0,
+              "multipleOf": 1
             },
             "skippable": {
               "default": false,
@@ -1929,10 +2061,7 @@
           },
           "required": [
             "command",
-            "effect",
-            "in",
-            "hold",
-            "out"
+            "effect"
           ]
         },
         {
@@ -1964,7 +2093,8 @@
               "x-i18n-desc": {
                 "zh-CN": "新画面的起始显示缩放"
               },
-              "type": "number"
+              "type": "number",
+              "minimum": 0
             },
             "endScale": {
               "default": 1,
@@ -1976,7 +2106,8 @@
               "x-i18n-desc": {
                 "zh-CN": "新画面的结束显示缩放"
               },
-              "type": "number"
+              "type": "number",
+              "minimum": 0
             },
             "origin": {
               "default": [
@@ -1994,16 +2125,21 @@
               "type": "array",
               "prefixItems": [
                 {
+                  "default": 0,
+                  "x-step": 0.01,
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
                 },
                 {
+                  "default": 0,
+                  "x-step": 0.01,
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
                 }
-              ]
+              ],
+              "format": "point"
             },
             "fadeTime": {
               "default": 1000,
@@ -2015,7 +2151,10 @@
               "x-i18n-desc": {
                 "zh-CN": "渐变时间（毫秒）"
               },
-              "type": "number"
+              "x-step": 50,
+              "type": "number",
+              "minimum": 0,
+              "multipleOf": 1
             },
             "skippable": {
               "default": false,
@@ -2076,9 +2215,8 @@
               "x-i18n-desc": {
                 "zh-CN": "像素块大小的 2 次幂指数，例如 4 表示 16x16 像素块"
               },
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 9007199254740991
+              "type": "number",
+              "minimum": 0
             },
             "fadeTime": {
               "default": 1000,
@@ -2090,7 +2228,10 @@
               "x-i18n-desc": {
                 "zh-CN": "渐变时间（毫秒）"
               },
-              "type": "number"
+              "x-step": 50,
+              "type": "number",
+              "minimum": 0,
+              "multipleOf": 1
             },
             "skippable": {
               "default": false,
@@ -2190,7 +2331,10 @@
               "x-i18n-desc": {
                 "zh-CN": "渐变时间（毫秒）"
               },
-              "type": "number"
+              "x-step": 50,
+              "type": "number",
+              "minimum": 0,
+              "multipleOf": 1
             },
             "skippable": {
               "default": false,
@@ -2423,7 +2567,8 @@
               }
             },
             "in": {
-              "type": "number",
+              "default": 0,
+              "x-step": 0.01,
               "description": "Fade-in ratio from 0 to 1",
               "title": "In",
               "x-i18n": {
@@ -2431,10 +2576,14 @@
               },
               "x-i18n-desc": {
                 "zh-CN": "新画面从纯色淡入阶段的时长占比，预期范围 0 到 1"
-              }
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             "hold": {
-              "type": "number",
+              "default": 0,
+              "x-step": 0.01,
               "description": "Hold ratio from 0 to 1",
               "title": "Hold",
               "x-i18n": {
@@ -2442,10 +2591,14 @@
               },
               "x-i18n-desc": {
                 "zh-CN": "纯色画面停留阶段的时长占比，预期范围 0 到 1"
-              }
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             "out": {
-              "type": "number",
+              "default": 0,
+              "x-step": 0.01,
               "description": "Fade-out ratio from 0 to 1",
               "title": "Out",
               "x-i18n": {
@@ -2453,7 +2606,10 @@
               },
               "x-i18n-desc": {
                 "zh-CN": "旧画面淡出到纯色阶段的时长占比，预期范围 0 到 1"
-              }
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             "color": {
               "default": "#000",
@@ -2471,10 +2627,7 @@
           },
           "required": [
             "command",
-            "effect",
-            "in",
-            "hold",
-            "out"
+            "effect"
           ]
         },
         {
@@ -2506,7 +2659,8 @@
               "x-i18n-desc": {
                 "zh-CN": "新画面的起始显示缩放"
               },
-              "type": "number"
+              "type": "number",
+              "minimum": 0
             },
             "endScale": {
               "default": 1,
@@ -2518,7 +2672,8 @@
               "x-i18n-desc": {
                 "zh-CN": "新画面的结束显示缩放"
               },
-              "type": "number"
+              "type": "number",
+              "minimum": 0
             },
             "origin": {
               "default": [
@@ -2536,16 +2691,21 @@
               "type": "array",
               "prefixItems": [
                 {
+                  "default": 0,
+                  "x-step": 0.01,
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
                 },
                 {
+                  "default": 0,
+                  "x-step": 0.01,
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
                 }
-              ]
+              ],
+              "format": "point"
             }
           },
           "required": [
@@ -2582,9 +2742,8 @@
               "x-i18n-desc": {
                 "zh-CN": "像素块大小的 2 次幂指数，例如 4 表示 16x16 像素块"
               },
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 9007199254740991
+              "type": "number",
+              "minimum": 0
             }
           },
           "required": [
@@ -2857,7 +3016,8 @@
               }
             },
             "in": {
-              "type": "number",
+              "default": 0,
+              "x-step": 0.01,
               "description": "Fade-in ratio from 0 to 1",
               "title": "In",
               "x-i18n": {
@@ -2865,10 +3025,14 @@
               },
               "x-i18n-desc": {
                 "zh-CN": "新画面从纯色淡入阶段的时长占比，预期范围 0 到 1"
-              }
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             "hold": {
-              "type": "number",
+              "default": 0,
+              "x-step": 0.01,
               "description": "Hold ratio from 0 to 1",
               "title": "Hold",
               "x-i18n": {
@@ -2876,10 +3040,14 @@
               },
               "x-i18n-desc": {
                 "zh-CN": "纯色画面停留阶段的时长占比，预期范围 0 到 1"
-              }
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             "out": {
-              "type": "number",
+              "default": 0,
+              "x-step": 0.01,
               "description": "Fade-out ratio from 0 to 1",
               "title": "Out",
               "x-i18n": {
@@ -2887,7 +3055,10 @@
               },
               "x-i18n-desc": {
                 "zh-CN": "旧画面淡出到纯色阶段的时长占比，预期范围 0 到 1"
-              }
+              },
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             "color": {
               "default": "#000",
@@ -2905,10 +3076,7 @@
           },
           "required": [
             "command",
-            "effect",
-            "in",
-            "hold",
-            "out"
+            "effect"
           ]
         },
         {
@@ -2940,7 +3108,8 @@
               "x-i18n-desc": {
                 "zh-CN": "新画面的起始显示缩放"
               },
-              "type": "number"
+              "type": "number",
+              "minimum": 0
             },
             "endScale": {
               "default": 1,
@@ -2952,7 +3121,8 @@
               "x-i18n-desc": {
                 "zh-CN": "新画面的结束显示缩放"
               },
-              "type": "number"
+              "type": "number",
+              "minimum": 0
             },
             "origin": {
               "default": [
@@ -2970,16 +3140,21 @@
               "type": "array",
               "prefixItems": [
                 {
+                  "default": 0,
+                  "x-step": 0.01,
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
                 },
                 {
+                  "default": 0,
+                  "x-step": 0.01,
                   "type": "number",
                   "minimum": 0,
                   "maximum": 1
                 }
-              ]
+              ],
+              "format": "point"
             }
           },
           "required": [
@@ -3016,9 +3191,8 @@
               "x-i18n-desc": {
                 "zh-CN": "像素块大小的 2 次幂指数，例如 4 表示 16x16 像素块"
               },
-              "type": "integer",
-              "minimum": 0,
-              "maximum": 9007199254740991
+              "type": "number",
+              "minimum": 0
             }
           },
           "required": [
@@ -3177,7 +3351,8 @@
           }
         },
         "scale": {
-          "type": "number",
+          "default": 1,
+          "x-step": 0.01,
           "description": "Scale factor",
           "title": "Scale",
           "x-i18n": {
@@ -3185,7 +3360,10 @@
           },
           "x-i18n-desc": {
             "zh-CN": "缩放系数"
-          }
+          },
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         },
         "tint": {
           "type": "string",
@@ -3203,12 +3381,21 @@
           "type": "array",
           "prefixItems": [
             {
-              "type": "number"
+              "default": 0,
+              "x-step": 0.01,
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             {
-              "type": "number"
+              "default": 0,
+              "x-step": 0.01,
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             }
           ],
+          "format": "point",
           "description": "Pivot point (x, y) in pixels",
           "title": "Pivot",
           "x-i18n": {
@@ -3228,7 +3415,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -3344,7 +3534,8 @@
           }
         },
         "scale": {
-          "type": "number",
+          "default": 1,
+          "x-step": 0.01,
           "description": "Scale factor",
           "title": "Scale",
           "x-i18n": {
@@ -3352,7 +3543,10 @@
           },
           "x-i18n-desc": {
             "zh-CN": "缩放系数"
-          }
+          },
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         },
         "tint": {
           "type": "string",
@@ -3370,12 +3564,21 @@
           "type": "array",
           "prefixItems": [
             {
-              "type": "number"
+              "default": 0,
+              "x-step": 0.01,
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             {
-              "type": "number"
+              "default": 0,
+              "x-step": 0.01,
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             }
           ],
+          "format": "point",
           "description": "Pivot point (x, y) in pixels",
           "title": "Pivot",
           "x-i18n": {
@@ -3395,7 +3598,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -3463,7 +3669,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -3519,7 +3728,10 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -3637,7 +3849,8 @@
           }
         },
         "scale": {
-          "type": "number",
+          "default": 1,
+          "x-step": 0.01,
           "description": "Scale factor",
           "title": "Scale",
           "x-i18n": {
@@ -3645,7 +3858,10 @@
           },
           "x-i18n-desc": {
             "zh-CN": "缩放系数"
-          }
+          },
+          "type": "number",
+          "minimum": 0,
+          "maximum": 1
         },
         "tint": {
           "type": "string",
@@ -3674,12 +3890,21 @@
           "type": "array",
           "prefixItems": [
             {
-              "type": "number"
+              "default": 0,
+              "x-step": 0.01,
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             },
             {
-              "type": "number"
+              "default": 0,
+              "x-step": 0.01,
+              "type": "number",
+              "minimum": 0,
+              "maximum": 1
             }
           ],
+          "format": "point",
           "description": "Pivot point (x, y) in pixels",
           "title": "Pivot",
           "x-i18n": {
@@ -3698,7 +3923,11 @@
           "x-i18n-desc": {
             "zh-CN": "渐变时间（毫秒）"
           },
-          "type": "number"
+          "default": 0,
+          "x-step": 50,
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         }
       },
       "required": [
@@ -3765,7 +3994,8 @@
           "const": "wait"
         },
         "time": {
-          "type": "number",
+          "default": 0,
+          "x-step": 50,
           "description": "Wait duration in milliseconds",
           "title": "Duration",
           "x-i18n": {
@@ -3773,7 +4003,10 @@
           },
           "x-i18n-desc": {
             "zh-CN": "等待时长（毫秒）"
-          }
+          },
+          "type": "number",
+          "minimum": 0,
+          "multipleOf": 1
         },
         "skippable": {
           "default": false,
@@ -3789,8 +4022,7 @@
         }
       },
       "required": [
-        "command",
-        "time"
+        "command"
       ],
       "description": "Wait for a specified duration",
       "title": "Wait",
