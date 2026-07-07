@@ -1,5 +1,21 @@
 import z from 'zod';
 
+type TextStyleDefaults = {
+  fontSize?: number;
+  fillColor?: string;
+  lineHeight?: number;
+  indent?: number;
+  stroke?: boolean;
+  strokeColor?: string;
+  strokeWidth?: number;
+  shadow?: boolean;
+  shadowColor?: string;
+  shadowOffsetX?: number;
+  shadowOffsetY?: number;
+  shadowBlur?: number;
+  shadowWidth?: number;
+};
+
 export const normalizedNumberSchema = z.number().min(0).max(1).default(0).meta({
   'x-step': 0.01,
 });
@@ -230,6 +246,66 @@ export const textStyleSchema = z
     'x-i18n': { 'zh-CN': '文字样式' },
     'x-i18n-desc': { 'zh-CN': '文本渲染使用的样式配置' },
   });
+
+export function createTextStyleWithDefaults(defaults: TextStyleDefaults = {}) {
+  return textStyleSchema
+    .extend({
+      fontSize:
+        defaults.fontSize === undefined
+          ? textStyleSchema.shape.fontSize
+          : textStyleSchema.shape.fontSize.default(defaults.fontSize),
+      fillColor:
+        defaults.fillColor === undefined
+          ? textStyleSchema.shape.fillColor
+          : textStyleSchema.shape.fillColor.default(defaults.fillColor),
+      lineHeight:
+        defaults.lineHeight === undefined
+          ? textStyleSchema.shape.lineHeight
+          : textStyleSchema.shape.lineHeight.default(defaults.lineHeight),
+      indent:
+        defaults.indent === undefined
+          ? textStyleSchema.shape.indent
+          : textStyleSchema.shape.indent.default(defaults.indent),
+      stroke:
+        defaults.stroke === undefined
+          ? textStyleSchema.shape.stroke
+          : textStyleSchema.shape.stroke.default(defaults.stroke),
+      strokeColor:
+        defaults.strokeColor === undefined
+          ? textStyleSchema.shape.strokeColor
+          : textStyleSchema.shape.strokeColor.default(defaults.strokeColor),
+      strokeWidth:
+        defaults.strokeWidth === undefined
+          ? textStyleSchema.shape.strokeWidth
+          : textStyleSchema.shape.strokeWidth.default(defaults.strokeWidth),
+      shadow:
+        defaults.shadow === undefined
+          ? textStyleSchema.shape.shadow
+          : textStyleSchema.shape.shadow.default(defaults.shadow),
+      shadowColor:
+        defaults.shadowColor === undefined
+          ? textStyleSchema.shape.shadowColor
+          : textStyleSchema.shape.shadowColor.default(defaults.shadowColor),
+      shadowOffsetX:
+        defaults.shadowOffsetX === undefined
+          ? textStyleSchema.shape.shadowOffsetX
+          : textStyleSchema.shape.shadowOffsetX.default(defaults.shadowOffsetX),
+      shadowOffsetY:
+        defaults.shadowOffsetY === undefined
+          ? textStyleSchema.shape.shadowOffsetY
+          : textStyleSchema.shape.shadowOffsetY.default(defaults.shadowOffsetY),
+      shadowBlur:
+        defaults.shadowBlur === undefined
+          ? textStyleSchema.shape.shadowBlur
+          : textStyleSchema.shape.shadowBlur.default(defaults.shadowBlur),
+      shadowWidth:
+        defaults.shadowWidth === undefined
+          ? textStyleSchema.shape.shadowWidth
+          : textStyleSchema.shape.shadowWidth.default(defaults.shadowWidth),
+    })
+    .describe(textStyleSchema.description ?? '')
+    .meta(textStyleSchema.meta() ?? {});
+}
 
 export const printModeSchema = z
   .enum(['instant', 'typewriter', 'printer'])

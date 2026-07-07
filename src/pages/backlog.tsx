@@ -5,33 +5,15 @@ import {
   getStageSize,
   type MouseEvent,
   useSoundEffect,
+  useUiData,
   type TouchEvent,
   useTransition,
 } from '@momoyu-ink/kit';
 import { useCallback, useEffect, useRef, useState } from 'react';
 import { Button } from '../components/button';
+import type { BacklogUiData } from '../data/ui';
 import { type BacklogRecord, useBacklog } from '../hooks/useBacklog';
 import { uiActions } from '../state/ui';
-
-const PANEL_WIDTH = 1630;
-const VIEWPORT_WIDTH = 1450;
-const VIEWPORT_HEIGHT = 620;
-const VIEWPORT_X = 90;
-const VIEWPORT_Y = 166;
-const VIEWPORT_PADDING_X = 22;
-const VIEWPORT_PADDING_Y = 18;
-const ROW_HEIGHT = 110;
-const ROW_CARD_WIDTH = VIEWPORT_WIDTH - VIEWPORT_PADDING_X * 2;
-const BUTTON_WIDTH = 42;
-const CONTENT_WIDTH = ROW_CARD_WIDTH - BUTTON_WIDTH - 88;
-const SCROLLBAR_WIDTH = 20;
-const SCROLLBAR_X = VIEWPORT_X + VIEWPORT_WIDTH - SCROLLBAR_WIDTH - 8;
-const SCROLLBAR_Y = VIEWPORT_Y + VIEWPORT_PADDING_Y;
-const SCROLLBAR_BOUNDS: [number, number, number, number] = [0.34, 0.2, 0.34, 0.2];
-const VOICE_BUTTON_X = 0;
-const VOICE_BUTTON_Y = 8;
-const VOICE_BUTTON_SCALE = 1;
-const VOICE_TITLE_GAP = 44;
 const BACKLOG_VOICE_CHANNEL_PREFIX = 'voice:backlog';
 const PANEL_TRANSITION = {
   from: {
@@ -55,7 +37,7 @@ const PANEL_TRANSITION = {
   },
 };
 
-async function replayBacklogVoice(speaker: string, voice: string) {
+async function replayBacklogVoice(speaker: string, voice: string, replayVoiceFailedMessage: string) {
   const channelName = speaker
     ? `${BACKLOG_VOICE_CHANNEL_PREFIX}:${speaker}`
     : `${BACKLOG_VOICE_CHANNEL_PREFIX}:default`;
@@ -78,16 +60,20 @@ async function replayBacklogVoice(speaker: string, voice: string) {
     });
   } catch (error) {
     console.error('Failed to replay backlog voice:', error);
-    uiActions.notify('语音重播失败');
+    uiActions.notify(replayVoiceFailedMessage);
   }
 }
 
 export function Backlog() {
+  const backlogUi = useUiData('stage').backlog;
   const stageSize = getStageSize();
   const scale = stageSize.width / 1920;
-  const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
+  const backButtonSound = useSoundEffect(backlogUi.backButtonSound);
   const pendingCloseActionRef = useRef<(() => void) | null>(null);
   const [show, setShow] = useState(true);
+  const viewport = backlogUi.panel.viewport;
+  const innerViewportHeight = Math.max(0, viewport.height - viewport.paddingY * 2);
+  const rowStep = backlogUi.list.itemHeight + backlogUi.list.itemGap;
   const transitions = useTransition(show ? [0] : [], {
     keys: (item) => item,
     ...PANEL_TRANSITION,
@@ -111,14 +97,15 @@ export function Backlog() {
     jumpToRecord,
     close,
   } = useBacklog({
-    itemHeight: ROW_HEIGHT,
-    viewportHeight: VIEWPORT_HEIGHT - VIEWPORT_PADDING_Y * 2,
+    itemHeight: rowStep,
+    viewportHeight: innerViewportHeight,
+    minScrollbarHeight: backlogUi.scrollbar.minHeight,
   });
 
   const draggingScrollbarRef = useRef(false);
   const dragStartClientYRef = useRef(0);
   const dragStartRatioRef = useRef(0);
-  const scrollbarTravel = VIEWPORT_HEIGHT - VIEWPORT_PADDING_Y * 2 - scrollbarHeight;
+  const scrollbarTravel = innerViewportHeight - scrollbarHeight;
 
   const handleScrollbarDragStart = useCallback(
     (event: MouseEvent | TouchEvent) => {
@@ -177,7 +164,7 @@ export function Backlog() {
   };
 
   const handleJumpRequest = (record: BacklogRecord) => {
-    uiActions.confirm('确定要跳转到这个位置吗？', () => {
+    uiActions.confirm(backlogUi.messages.confirmJump, () => {
       requestClose(() => {
         void jumpToRecord(record.id);
       });
@@ -188,7 +175,7 @@ export function Backlog() {
     <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} scale={scale} interactive={show}>
       <animated.sprite
         label="透明遮罩"
-        src="ui/mask-transparent.png"
+        src={backlogUi.mask}
         onClick={(event) => {
           event.stopPropagation();
           handleClose();
@@ -196,43 +183,72 @@ export function Backlog() {
       />
       <animated.sprite
         label="历史背景"
-        src="ui/backlog_bg.png"
+        src={backlogUi.background}
         pivot={[0.5, 0.5]}
-        x={960}
-        y={style.offsetY.to((value) => 540 + value)}
+        x={backlogUi.panel.position.x}
+        y={style.offsetY.to((value) => backlogUi.panel.position.y + value)}
         opacity={style.opacity}
         scale={style.scale}
       >
-        <text text="BACKLOG" fontSize={44} fillColor="#ffffff" x={104} y={72} />
+        <text
+          text={backlogUi.title.text}
+          fontSize={backlogUi.title.textStyle.fontSize}
+          lineHeight={backlogUi.title.textStyle.lineHeight}
+          fillColor={backlogUi.title.textStyle.fillColor}
+          indent={backlogUi.title.textStyle.indent}
+          stroke={backlogUi.title.textStyle.stroke}
+          shadow={backlogUi.title.textStyle.shadow}
+          strokeColor={backlogUi.title.textStyle.strokeColor}
+          strokeWidth={backlogUi.title.textStyle.strokeWidth}
+          shadowColor={backlogUi.title.textStyle.shadowColor}
+          shadowOffsetX={backlogUi.title.textStyle.shadowOffsetX}
+          shadowOffsetY={backlogUi.title.textStyle.shadowOffsetY}
+          shadowBlur={backlogUi.title.textStyle.shadowBlur}
+          shadowWidth={backlogUi.title.textStyle.shadowWidth}
+          x={backlogUi.title.position.x}
+          y={backlogUi.title.position.y}
+        />
         <Button
-          fileNames={['ui/sl_close.png', 'ui/sl_close_hover.png', 'ui/sl_close_press.png']}
-          x={PANEL_WIDTH - 98}
-          y={60}
+          fileNames={backlogUi.closeButton.fileNames}
+          x={backlogUi.closeButton.position.x}
+          y={backlogUi.closeButton.position.y}
           onClick={(event) => {
             event.stopPropagation();
             handleClose();
           }}
         />
-        <container x={VIEWPORT_X} y={VIEWPORT_Y}>
-          <clip width={VIEWPORT_WIDTH} height={VIEWPORT_HEIGHT}>
-            <animated.container x={VIEWPORT_PADDING_X} y={scrollOffset.to((value) => VIEWPORT_PADDING_Y - value)}>
+        <container x={viewport.position.x} y={viewport.position.y}>
+          <clip width={viewport.width} height={viewport.height}>
+            <animated.container x={viewport.paddingX} y={scrollOffset.to((value) => viewport.paddingY - value)}>
               {records.length === 0 ? (
                 <text
-                  text="暂无历史记录"
-                  fontSize={30}
-                  fillColor="#ffffff"
-                  opacity={0.72}
-                  x={ROW_CARD_WIDTH / 2}
-                  y={VIEWPORT_HEIGHT / 2 - 20}
-                  pivot={[0.5, 0.5]}
-                  anchor={[0.5, 0.5]}
+                  text={backlogUi.list.emptyState.text}
+                  fontSize={backlogUi.list.emptyState.textStyle.fontSize}
+                  lineHeight={backlogUi.list.emptyState.textStyle.lineHeight}
+                  fillColor={backlogUi.list.emptyState.textStyle.fillColor}
+                  indent={backlogUi.list.emptyState.textStyle.indent}
+                  stroke={backlogUi.list.emptyState.textStyle.stroke}
+                  shadow={backlogUi.list.emptyState.textStyle.shadow}
+                  strokeColor={backlogUi.list.emptyState.textStyle.strokeColor}
+                  strokeWidth={backlogUi.list.emptyState.textStyle.strokeWidth}
+                  shadowColor={backlogUi.list.emptyState.textStyle.shadowColor}
+                  shadowOffsetX={backlogUi.list.emptyState.textStyle.shadowOffsetX}
+                  shadowOffsetY={backlogUi.list.emptyState.textStyle.shadowOffsetY}
+                  shadowBlur={backlogUi.list.emptyState.textStyle.shadowBlur}
+                  shadowWidth={backlogUi.list.emptyState.textStyle.shadowWidth}
+                  opacity={backlogUi.list.emptyState.opacity}
+                  x={backlogUi.list.emptyState.position.x}
+                  y={backlogUi.list.emptyState.position.y}
+                  pivot={backlogUi.list.emptyState.pivot}
+                  anchor={backlogUi.list.emptyState.anchor}
                 />
               ) : (
                 records.map((record, index) => (
                   <BacklogRow
                     key={record.id}
                     record={record}
-                    y={index * ROW_HEIGHT}
+                    ui={backlogUi}
+                    y={index * rowStep}
                     onJump={() => {
                       handleJumpRequest(record);
                     }}
@@ -242,23 +258,23 @@ export function Backlog() {
             </animated.container>
           </clip>
         </container>
-        {showScrollbar && (
+        {backlogUi.scrollbar.enabled && showScrollbar && (
           <animated.sprite
-            src="ui/backlog_scrollbar.png"
+            src={backlogUi.scrollbar.src}
             mode="nineslice"
-            bounds={SCROLLBAR_BOUNDS}
-            targetWidth={SCROLLBAR_WIDTH}
+            bounds={backlogUi.scrollbar.bounds}
+            targetWidth={backlogUi.scrollbar.width}
             targetHeight={scrollbarHeight}
-            x={SCROLLBAR_X}
+            x={backlogUi.scrollbar.position.x}
             y={
               typeof scrollbarOffset === 'number'
-                ? SCROLLBAR_Y + scrollbarOffset
-                : scrollbarOffset.to((value) => SCROLLBAR_Y + value)
+                ? backlogUi.scrollbar.position.y + scrollbarOffset
+                : scrollbarOffset.to((value) => backlogUi.scrollbar.position.y + value)
             }
             cursor="pointer"
             onMouseDown={handleScrollbarDragStart}
             onTouchStart={handleScrollbarDragStart}
-            opacity={0.92}
+            opacity={backlogUi.scrollbar.opacity}
           />
         )}
       </animated.sprite>
@@ -268,11 +284,12 @@ export function Backlog() {
 
 interface BacklogRowProps {
   record: BacklogRecord;
+  ui: BacklogUiData;
   y: number;
   onJump: () => void;
 }
 
-function BacklogRow({ record, y, onJump }: BacklogRowProps) {
+function BacklogRow({ record, ui, y, onJump }: BacklogRowProps) {
   let title = '';
   let content = '';
   let voice = '';
@@ -283,7 +300,7 @@ function BacklogRow({ record, y, onJump }: BacklogRowProps) {
       voice = record.meta.voice || '';
 
       if (title.length > 0) {
-        content = `「${record.meta.text}」`;
+        content = `${ui.recordKinds.text.quoteLeft}${record.meta.text}${ui.recordKinds.text.quoteRight}`;
       } else {
         content = record.meta.text;
       }
@@ -291,14 +308,14 @@ function BacklogRow({ record, y, onJump }: BacklogRowProps) {
       break;
     }
     case 'selection': {
-      title = '选择';
+      title = ui.recordKinds.selection.titleText;
       content = record.meta.options.join(' / ');
       break;
     }
   }
 
   const [hovered, setHovered] = useState<'text' | 'voice' | null>(null);
-  const titleX = voice ? VOICE_TITLE_GAP : 0;
+  const titleX = voice ? ui.item.title.position.x + ui.item.title.withVoiceOffsetX : ui.item.title.position.x;
 
   return (
     <container y={y}>
@@ -308,43 +325,64 @@ function BacklogRow({ record, y, onJump }: BacklogRowProps) {
           event.stopPropagation();
           onJump();
         }}
-        opacity={hovered ? 1 : 0.92}
+        opacity={hovered ? ui.item.hoverOpacity : ui.item.opacity}
       >
         {voice ? (
           <Button
-            fileNames={['ui/backlog_voice.png', 'ui/backlog_voice.png', 'ui/backlog_voice.png']}
+            fileNames={ui.item.voiceButton.fileNames}
             label="Replay Voice"
-            x={VOICE_BUTTON_X}
-            y={VOICE_BUTTON_Y}
-            scale={VOICE_BUTTON_SCALE}
-            tint={hovered === 'voice' ? '#D18F52' : 'rgba(255, 255, 255, 0.92)'}
+            x={ui.item.voiceButton.position.x}
+            y={ui.item.voiceButton.position.y}
+            scale={1}
+            tint={hovered === 'voice' ? ui.item.voiceButton.hoverTint : ui.item.voiceButton.idleTint}
             onMouseEnter={() => setHovered('voice')}
             onClick={(event) => {
               event.stopPropagation();
-              void replayBacklogVoice(title, voice);
+              void replayBacklogVoice(title, voice, ui.messages.replayVoiceFailed);
             }}
           />
         ) : null}
         <text
           label="text"
           text={title}
-          fontSize={28}
-          lineHeight={1.5}
-          fillColor="#ffffff"
+          fontSize={ui.item.title.textStyle.fontSize}
+          lineHeight={ui.item.title.textStyle.lineHeight}
+          fillColor={ui.item.title.textStyle.fillColor}
+          indent={ui.item.title.textStyle.indent}
+          stroke={ui.item.title.textStyle.stroke}
+          shadow={ui.item.title.textStyle.shadow}
+          strokeColor={ui.item.title.textStyle.strokeColor}
+          strokeWidth={ui.item.title.textStyle.strokeWidth}
+          shadowColor={ui.item.title.textStyle.shadowColor}
+          shadowOffsetX={ui.item.title.textStyle.shadowOffsetX}
+          shadowOffsetY={ui.item.title.textStyle.shadowOffsetY}
+          shadowBlur={ui.item.title.textStyle.shadowBlur}
+          shadowWidth={ui.item.title.textStyle.shadowWidth}
           x={titleX}
+          y={ui.item.title.position.y}
           cursor="pointer"
           onMouseEnter={() => setHovered('text')}
         />
         <text
           label="text"
           text={content}
-          fontSize={28}
-          lineHeight={1.5}
-          boxWidth={CONTENT_WIDTH}
-          boxHeight={62}
-          fillColor="#f0f0f0"
-          tint={hovered === 'text' ? '#D18F52' : '#fff'}
-          x={140}
+          fontSize={ui.item.content.textStyle.fontSize}
+          lineHeight={ui.item.content.textStyle.lineHeight}
+          boxWidth={ui.item.content.boxWidth}
+          boxHeight={ui.item.content.boxHeight}
+          fillColor={hovered === 'text' ? ui.item.content.hoverColor : ui.item.content.textStyle.fillColor}
+          indent={ui.item.content.textStyle.indent}
+          stroke={ui.item.content.textStyle.stroke}
+          shadow={ui.item.content.textStyle.shadow}
+          strokeColor={ui.item.content.textStyle.strokeColor}
+          strokeWidth={ui.item.content.textStyle.strokeWidth}
+          shadowColor={ui.item.content.textStyle.shadowColor}
+          shadowOffsetX={ui.item.content.textStyle.shadowOffsetX}
+          shadowOffsetY={ui.item.content.textStyle.shadowOffsetY}
+          shadowBlur={ui.item.content.textStyle.shadowBlur}
+          shadowWidth={ui.item.content.textStyle.shadowWidth}
+          x={ui.item.content.position.x}
+          y={ui.item.content.position.y}
           cursor="pointer"
           onMouseEnter={() => setHovered('text')}
         />

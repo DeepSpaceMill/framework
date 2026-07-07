@@ -3,8 +3,6 @@ import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { uiActions } from '../state/ui';
 import { restoreGameStateFromScenario } from '../utils/scenarioGameState';
 
-const MIN_SCROLLBAR_HEIGHT = 56;
-
 export type BacklogMeta =
   | {
       kind: 'text';
@@ -26,6 +24,7 @@ export interface BacklogRecord {
 interface UseBacklogOptions {
   itemHeight: number;
   viewportHeight: number;
+  minScrollbarHeight?: number;
 }
 
 function clamp01(value: number) {
@@ -48,7 +47,7 @@ function normalizeWheelDelta(event: WheelEvent, viewportHeight: number): number 
   }
 }
 
-export function useBacklog({ itemHeight, viewportHeight }: UseBacklogOptions) {
+export function useBacklog({ itemHeight, viewportHeight, minScrollbarHeight = 56 }: UseBacklogOptions) {
   const navigation = useNavigation();
   const [records, setRecords] = useState<BacklogRecord[]>([]);
   const [didLoadRecords, setDidLoadRecords] = useState(false);
@@ -124,11 +123,8 @@ export function useBacklog({ itemHeight, viewportHeight }: UseBacklogOptions) {
   const scrollbarHeight = useMemo(() => {
     if (maxScroll <= 0 || totalContentHeight <= 0) return 0;
 
-    return Math.min(
-      viewportHeight,
-      Math.max(MIN_SCROLLBAR_HEIGHT, (viewportHeight * viewportHeight) / totalContentHeight),
-    );
-  }, [maxScroll, totalContentHeight, viewportHeight]);
+    return Math.min(viewportHeight, Math.max(minScrollbarHeight, (viewportHeight * viewportHeight) / totalContentHeight));
+  }, [maxScroll, minScrollbarHeight, totalContentHeight, viewportHeight]);
 
   const scrollbarOffset = useMemo(() => {
     if (maxScroll <= 0 || scrollbarHeight <= 0) return 0;

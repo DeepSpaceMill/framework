@@ -5,6 +5,7 @@ import {
   pivotSchema,
   ninesliceBoundsSchema,
   textStyleSchema,
+  createTextStyleWithDefaults,
   printModeSchema,
   printSpeedSchema,
   boxWidthSchema,
@@ -888,6 +889,495 @@ export const SaveLoadUiSchema = z
     'x-i18n-desc': { 'zh-CN': '存读档浮层的可配置数据' },
   });
 
+const BacklogTitleUiSchema = z
+  .object({
+    position: positionSchema,
+    text: z
+      .string()
+      .optional()
+      .default('BACKLOG')
+      .describe('Backlog title text')
+      .meta({
+        title: 'Text',
+        'x-i18n': { 'zh-CN': '标题文字' },
+        'x-i18n-desc': { 'zh-CN': '顶部显示的标题文字' },
+      }),
+    textStyle: createTextStyleWithDefaults({
+      fontSize: 44,
+      fillColor: '#ffffff',
+      lineHeight: 1.2,
+    }),
+  })
+  .describe('Backlog title configuration')
+  .meta({
+    title: 'Title',
+    'x-i18n': { 'zh-CN': '标题' },
+    'x-i18n-desc': { 'zh-CN': '标题的文字与位置配置' },
+  });
+
+const BacklogViewportUiSchema = z
+  .object({
+    position: positionSchema,
+    width: z
+      .number()
+      .min(1)
+      .describe('Viewport width')
+      .meta({
+        title: 'Width',
+        'x-i18n': { 'zh-CN': '宽度' },
+        'x-i18n-desc': { 'zh-CN': '历史记录可滚动区域的宽度' },
+      }),
+    height: z
+      .number()
+      .min(1)
+      .describe('Viewport height')
+      .meta({
+        title: 'Height',
+        'x-i18n': { 'zh-CN': '高度' },
+        'x-i18n-desc': { 'zh-CN': '历史记录可滚动区域的高度' },
+      }),
+    paddingX: z
+      .number()
+      .min(0)
+      .optional()
+      .default(22)
+      .describe('Horizontal padding inside the viewport')
+      .meta({
+        title: 'Padding X',
+        'x-i18n': { 'zh-CN': '内边距 X' },
+        'x-i18n-desc': { 'zh-CN': '可滚动区域内容的水平内边距' },
+      }),
+    paddingY: z
+      .number()
+      .min(0)
+      .optional()
+      .default(18)
+      .describe('Vertical padding inside the viewport')
+      .meta({
+        title: 'Padding Y',
+        'x-i18n': { 'zh-CN': '内边距 Y' },
+        'x-i18n-desc': { 'zh-CN': '可滚动区域内容的垂直内边距' },
+      }),
+  })
+  .describe('Backlog viewport configuration')
+  .meta({
+    title: 'Viewport',
+    'x-i18n': { 'zh-CN': '可视区域' },
+    'x-i18n-desc': { 'zh-CN': '历史记录列表的可视区域位置、尺寸和内边距' },
+  });
+
+const BacklogPanelUiSchema = z
+  .object({
+    position: positionSchema,
+    viewport: BacklogViewportUiSchema,
+  })
+  .describe('Backlog panel configuration')
+  .meta({
+    title: 'Panel',
+    'x-i18n': { 'zh-CN': '面板' },
+    'x-i18n-desc': { 'zh-CN': '历史记录主面板及其可视区域配置' },
+  });
+
+const BacklogEmptyStateUiSchema = z
+  .object({
+    position: positionSchema,
+    textStyle: createTextStyleWithDefaults({
+      fontSize: 30,
+      fillColor: '#ffffff',
+    }),
+    text: z
+      .string()
+      .optional()
+      .default('暂无历史记录')
+      .describe('Empty state text')
+      .meta({
+        title: 'Text',
+        'x-i18n': { 'zh-CN': '文案' },
+        'x-i18n-desc': { 'zh-CN': '没有历史记录时显示的文字' },
+      }),
+    opacity: z
+      .number()
+      .min(0)
+      .max(1)
+      .optional()
+      .default(0.72)
+      .describe('Empty state opacity')
+      .meta({
+        title: 'Opacity',
+        'x-i18n': { 'zh-CN': '透明度' },
+        'x-i18n-desc': { 'zh-CN': '空状态文字的透明度' },
+      }),
+    anchor: anchorSchema.optional().default([0.5, 0.5]),
+    pivot: pivotSchema.optional().default([0.5, 0.5]),
+  })
+  .describe('Backlog empty state configuration')
+  .meta({
+    title: 'Empty State',
+    'x-i18n': { 'zh-CN': '空状态' },
+    'x-i18n-desc': { 'zh-CN': '历史记录为空时的文字与位置配置' },
+  });
+
+const BacklogListUiSchema = z
+  .object({
+    itemHeight: z
+      .number()
+      .min(1)
+      .optional()
+      .default(110)
+      .describe('Base height for each backlog item')
+      .meta({
+        title: 'Item Height',
+        'x-i18n': { 'zh-CN': '条目高度' },
+        'x-i18n-desc': { 'zh-CN': '单个历史记录条目的基础高度' },
+      }),
+    itemGap: z
+      .number()
+      .min(0)
+      .optional()
+      .default(0)
+      .describe('Additional gap between backlog items')
+      .meta({
+        title: 'Item Gap',
+        'x-i18n': { 'zh-CN': '条目间距' },
+        'x-i18n-desc': { 'zh-CN': '历史记录条目之间的额外间距' },
+      }),
+    emptyState: BacklogEmptyStateUiSchema,
+  })
+  .describe('Backlog list configuration')
+  .meta({
+    title: 'List',
+    'x-i18n': { 'zh-CN': '列表' },
+    'x-i18n-desc': { 'zh-CN': '历史记录列表条目尺寸、间距与空状态配置' },
+  });
+
+const BacklogVoiceButtonUiSchema = OverlayIconButtonUiSchema.extend({
+  idleTint: z
+    .string()
+    .optional()
+    .default('rgba(255, 255, 255, 0.92)')
+    .describe('Voice replay button tint when idle')
+    .meta({
+      title: 'Idle Tint',
+      format: 'color',
+      'x-i18n': { 'zh-CN': '空闲着色' },
+      'x-i18n-desc': { 'zh-CN': '语音重播按钮空闲状态的着色颜色' },
+    }),
+  hoverTint: z
+    .string()
+    .optional()
+    .default('#D18F52')
+    .describe('Voice replay button tint when hovered')
+    .meta({
+      title: 'Hover Tint',
+      format: 'color',
+      'x-i18n': { 'zh-CN': '悬停着色' },
+      'x-i18n-desc': { 'zh-CN': '语音重播按钮悬停状态的着色颜色' },
+    }),
+})
+  .describe('Backlog voice replay button configuration')
+  .meta({
+    title: 'Voice Button',
+    'x-i18n': { 'zh-CN': '语音按钮' },
+    'x-i18n-desc': { 'zh-CN': '历史记录中语音重播按钮的素材、位置与着色配置' },
+  });
+
+const BacklogItemTitleUiSchema = z
+  .object({
+    position: positionSchema,
+    textStyle: createTextStyleWithDefaults({
+      fontSize: 28,
+      fillColor: '#ffffff',
+    }),
+    withVoiceOffsetX: z
+      .number()
+      .optional()
+      .default(44)
+      .describe('Additional horizontal offset for the title when the voice button is visible')
+      .meta({
+        title: 'Voice Offset X',
+        'x-i18n': { 'zh-CN': '语音偏移 X' },
+        'x-i18n-desc': { 'zh-CN': '存在语音按钮时，标题额外增加的水平偏移' },
+      }),
+  })
+  .describe('Backlog item title configuration')
+  .meta({
+    title: 'Title',
+    'x-i18n': { 'zh-CN': '标题文字' },
+    'x-i18n-desc': { 'zh-CN': '历史记录条目标题文字的位置与样式配置' },
+  });
+
+const BacklogItemContentUiSchema = z
+  .object({
+    position: positionSchema,
+    textStyle: createTextStyleWithDefaults({
+      fontSize: 28,
+      fillColor: '#f0f0f0',
+    }),
+    hoverColor: z
+      .string()
+      .optional()
+      .default('#D18F52')
+      .describe('Text color while hovering the content text')
+      .meta({
+        title: 'Hover Color',
+        format: 'color',
+        'x-i18n': { 'zh-CN': '悬停颜色' },
+        'x-i18n-desc': { 'zh-CN': '鼠标悬停正文时的文字颜色' },
+      }),
+    boxWidth: boxWidthSchema.optional().default(1276),
+    boxHeight: boxHeightSchema.optional().default(62),
+  })
+  .describe('Backlog item content configuration')
+  .meta({
+    title: 'Content',
+    'x-i18n': { 'zh-CN': '正文文字' },
+    'x-i18n-desc': { 'zh-CN': '历史记录条目正文文字的位置、尺寸与样式配置' },
+  });
+
+const BacklogItemUiSchema = z
+  .object({
+    opacity: z
+      .number()
+      .min(0)
+      .max(1)
+      .optional()
+      .default(0.92)
+      .describe('Default item opacity')
+      .meta({
+        title: 'Opacity',
+        'x-i18n': { 'zh-CN': '透明度' },
+        'x-i18n-desc': { 'zh-CN': '历史记录条目默认的整体透明度' },
+      }),
+    hoverOpacity: z
+      .number()
+      .min(0)
+      .max(1)
+      .optional()
+      .default(1)
+      .describe('Item opacity while hovering interactive content')
+      .meta({
+        title: 'Hover Opacity',
+        'x-i18n': { 'zh-CN': '悬停透明度' },
+        'x-i18n-desc': { 'zh-CN': '鼠标悬停可交互内容时的整体透明度' },
+      }),
+    voiceButton: BacklogVoiceButtonUiSchema,
+    title: BacklogItemTitleUiSchema,
+    content: BacklogItemContentUiSchema,
+  })
+  .describe('Backlog item layout configuration')
+  .meta({
+    title: 'Item',
+    'x-i18n': { 'zh-CN': '条目' },
+    'x-i18n-desc': { 'zh-CN': '历史记录单个条目内部元素的布局和样式配置' },
+  });
+
+const BacklogScrollbarUiSchema = z
+  .object({
+    enabled: z
+      .boolean()
+      .optional()
+      .default(true)
+      .describe('Whether to render the scrollbar when the list overflows')
+      .meta({
+        title: 'Enabled',
+        'x-i18n': { 'zh-CN': '启用' },
+        'x-i18n-desc': { 'zh-CN': '列表超出可视区域时是否显示滚动条' },
+      }),
+    src: z
+      .string()
+      .describe('Scrollbar image asset path')
+      .meta({
+        title: 'Image',
+        format: 'asset',
+        'x-asset-kind': 'image',
+        'x-i18n': { 'zh-CN': '图片' },
+        'x-i18n-desc': { 'zh-CN': '滚动条使用的图片资源路径' },
+      }),
+    position: positionSchema,
+    width: z
+      .number()
+      .min(1)
+      .optional()
+      .default(20)
+      .describe('Scrollbar width')
+      .meta({
+        title: 'Width',
+        'x-i18n': { 'zh-CN': '宽度' },
+        'x-i18n-desc': { 'zh-CN': '滚动条的目标宽度' },
+      }),
+    bounds: ninesliceBoundsSchema.optional().default([0.34, 0.2, 0.34, 0.2]),
+    opacity: z
+      .number()
+      .min(0)
+      .max(1)
+      .optional()
+      .default(0.92)
+      .describe('Scrollbar opacity')
+      .meta({
+        title: 'Opacity',
+        'x-i18n': { 'zh-CN': '透明度' },
+        'x-i18n-desc': { 'zh-CN': '滚动条的透明度' },
+      }),
+    minHeight: z
+      .number()
+      .min(0)
+      .optional()
+      .default(56)
+      .describe('Minimum scrollbar height')
+      .meta({
+        title: 'Min Height',
+        'x-i18n': { 'zh-CN': '最小高度' },
+        'x-i18n-desc': { 'zh-CN': '滚动条拖柄的最小高度' },
+      }),
+  })
+  .describe('Backlog scrollbar configuration')
+  .meta({
+    title: 'Scrollbar',
+    'x-i18n': { 'zh-CN': '滚动条' },
+    'x-i18n-desc': { 'zh-CN': '历史记录滚动条的素材、位置和尺寸配置' },
+  });
+
+const BacklogMessagesUiSchema = z
+  .object({
+    confirmJump: z
+      .string()
+      .optional()
+      .default('确定要跳转到这个位置吗？')
+      .describe('Confirmation message shown before jumping to a record')
+      .meta({
+        title: 'Confirm Jump',
+        'x-i18n': { 'zh-CN': '跳转确认' },
+        'x-i18n-desc': { 'zh-CN': '跳转到历史记录前显示的确认消息' },
+      }),
+    replayVoiceFailed: z
+      .string()
+      .optional()
+      .default('语音重播失败')
+      .describe('Toast message shown when replaying voice fails')
+      .meta({
+        title: 'Replay Voice Failed',
+        'x-i18n': { 'zh-CN': '语音重播失败' },
+        'x-i18n-desc': { 'zh-CN': '语音重播失败时显示的提示消息' },
+      }),
+  })
+  .describe('Backlog messages configuration')
+  .meta({
+    title: 'Messages',
+    'x-i18n': { 'zh-CN': '提示文案' },
+    'x-i18n-desc': { 'zh-CN': '确认与错误提示文案配置' },
+  });
+
+const BacklogRecordKindsUiSchema = z
+  .object({
+    text: z
+      .object({
+        quoteLeft: z
+          .string()
+          .optional()
+          .default('「')
+          .describe('Opening quote used for text records with a speaker')
+          .meta({
+            title: 'Quote Left',
+            'x-i18n': { 'zh-CN': '左引号' },
+            'x-i18n-desc': { 'zh-CN': '有说话者时正文前面的左引号' },
+          }),
+        quoteRight: z
+          .string()
+          .optional()
+          .default('」')
+          .describe('Closing quote used for text records with a speaker')
+          .meta({
+            title: 'Quote Right',
+            'x-i18n': { 'zh-CN': '右引号' },
+            'x-i18n-desc': { 'zh-CN': '有说话者时正文后面的右引号' },
+          }),
+      })
+      .describe('Text record configuration')
+      .meta({
+        title: 'Text Record',
+        'x-i18n': { 'zh-CN': '文本记录' },
+        'x-i18n-desc': { 'zh-CN': '文本类历史记录的文案配置' },
+      }),
+    selection: z
+      .object({
+        titleText: z
+          .string()
+          .optional()
+          .default('选择')
+          .describe('Title text used for selection records')
+          .meta({
+            title: 'Title Text',
+            'x-i18n': { 'zh-CN': '标题文字' },
+            'x-i18n-desc': { 'zh-CN': '选项类历史记录显示的标题文字' },
+          }),
+      })
+      .describe('Selection record configuration')
+      .meta({
+        title: 'Selection Record',
+        'x-i18n': { 'zh-CN': '选项记录' },
+        'x-i18n-desc': { 'zh-CN': '选项类历史记录的文案配置' },
+      }),
+  })
+  .describe('Backlog record kind configuration')
+  .meta({
+    title: 'Record Kinds',
+    'x-i18n': { 'zh-CN': '记录类型' },
+    'x-i18n-desc': { 'zh-CN': '不同历史记录类型的独立文案配置' },
+  });
+
+export const BacklogUiSchema = z
+  .object({
+    mask: z
+      .string()
+      .describe('Backlog overlay mask image')
+      .meta({
+        title: 'Mask',
+        format: 'asset',
+        'x-asset-kind': 'image',
+        'x-i18n': { 'zh-CN': '遮罩图' },
+        'x-i18n-desc': { 'zh-CN': '遮罩图片' },
+      }),
+    background: z
+      .string()
+      .describe('Backlog background image')
+      .meta({
+        title: 'Background',
+        format: 'asset',
+        'x-asset-kind': 'image',
+        'x-i18n': { 'zh-CN': '背景图' },
+        'x-i18n-desc': { 'zh-CN': '背景图片' },
+      }),
+    backButtonSound: z
+      .string()
+      .optional()
+      .describe('Sound effect played when closing the backlog overlay')
+      .meta({
+        title: 'Back Sound',
+        format: 'asset',
+        'x-asset-kind': 'audio',
+        'x-i18n': { 'zh-CN': '返回音效' },
+        'x-i18n-desc': { 'zh-CN': '关闭时播放的音效' },
+      }),
+    title: BacklogTitleUiSchema,
+    panel: BacklogPanelUiSchema,
+    closeButton: OverlayIconButtonUiSchema.describe('Close button configuration').meta({
+      title: 'Close Button',
+      'x-i18n': { 'zh-CN': '关闭按钮' },
+      'x-i18n-desc': { 'zh-CN': '关闭按钮配置' },
+    }),
+    list: BacklogListUiSchema,
+    item: BacklogItemUiSchema,
+    scrollbar: BacklogScrollbarUiSchema,
+    messages: BacklogMessagesUiSchema,
+    recordKinds: BacklogRecordKindsUiSchema,
+  })
+  .describe('Backlog overlay UI configuration')
+  .meta({
+    title: 'Backlog Overlay',
+    'x-i18n': { 'zh-CN': '历史记录' },
+    'x-i18n-desc': { 'zh-CN': '历史记录浮层的可配置数据' },
+  });
+
 export const ConfirmUiSchema = z
   .object({
     defaultMessage: z
@@ -1199,12 +1689,13 @@ export const StageTextBoxUiSchema = z
 export const StageUiSchema = z
   .object({
     textbox: StageTextBoxUiSchema,
+    backlog: BacklogUiSchema,
   })
   .describe('Stage UI configuration')
   .meta({
     title: 'Stage',
     'x-i18n': { 'zh-CN': '舞台' },
-    'x-i18n-desc': { 'zh-CN': '舞台界面的可配置数据' },
+    'x-i18n-desc': { 'zh-CN': '舞台界面及其关联浮层的可配置数据' },
   });
 
 export const GameUiSchema = z.object({
@@ -1222,6 +1713,7 @@ export type MenuButtonAction = z.infer<typeof MenuButtonActionUiSchema>;
 export type MenuButtonUiData = z.infer<typeof MenuButtonUiSchema>;
 export type MenuUiData = z.infer<typeof MenuUiSchema>;
 export type SaveLoadUiData = z.infer<typeof SaveLoadUiSchema>;
+export type BacklogUiData = z.infer<typeof BacklogUiSchema>;
 export type ConfirmUiData = z.infer<typeof ConfirmUiSchema>;
 export type TextStyleUiData = z.infer<typeof textStyleSchema>;
 export type StageTextBoxUiData = z.infer<typeof StageTextBoxUiSchema>;
