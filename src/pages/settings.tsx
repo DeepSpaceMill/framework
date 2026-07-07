@@ -1,5 +1,5 @@
-import { useNavigation, getStageSize, type Node, useSoundEffect } from '@momoyu-ink/kit';
-import { useRef } from 'react';
+import { useNavigation, animated, getStageSize, type Node, useSoundEffect, useTransition } from '@momoyu-ink/kit';
+import { useRef, useState } from 'react';
 import { Button } from '../components/button';
 import { Checkbox } from '../components/checkbox';
 import { Select } from '../components/select';
@@ -8,11 +8,44 @@ import { useSnapshot } from 'valtio';
 import { SettingsData, settingsState } from '../state/settings';
 
 const PREVIEW_TEXT = '点击这里预览文本框的效果设置';
+const PANEL_TRANSITION = {
+  from: {
+    opacity: 0,
+    scale: 0.985,
+    offsetY: 16,
+  },
+  enter: {
+    opacity: 1,
+    scale: 1,
+    offsetY: 0,
+  },
+  leave: {
+    opacity: 0,
+    scale: 0.985,
+    offsetY: 16,
+  },
+  config: {
+    tension: 280,
+    friction: 24,
+  },
+};
 
 export function Settings() {
   const navigation = useNavigation();
   const textWindowRef = useRef<Node>(null);
   const textWindowReplayRef = useRef<number>(0);
+  const pendingCloseActionRef = useRef<(() => void) | null>(null);
+  const [show, setShow] = useState(true);
+  const transitions = useTransition(show ? [0] : [], {
+    keys: (item) => item,
+    ...PANEL_TRANSITION,
+    onRest: () => {
+      if (!show) {
+        pendingCloseActionRef.current?.();
+        pendingCloseActionRef.current = null;
+      }
+    },
+  });
 
   const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
   const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
@@ -26,11 +59,14 @@ export function Settings() {
     });
   };
 
+  const requestClose = (afterClose?: () => void) => {
+    pendingCloseActionRef.current = afterClose ?? (() => navigation.popOverlay());
+    setShow(false);
+  };
+
   const handleExit = () => {
     backButtonSound();
-    setTimeout(() => {
-      navigation.popOverlay();
-    }, 100);
+    requestClose();
   };
 
   const setValue = (key: keyof SettingsData, value: any) => {
@@ -54,10 +90,18 @@ export function Settings() {
   const stageSize = getStageSize();
   const scale = stageSize.width / 1920;
 
-  return (
-    <container scale={scale}>
-      <sprite label="透明遮罩" src="ui/mask-transparent.png" onClick={handleExit} />
-      <sprite label="背景图" src="ui/sl_bg.png" pivot={[0.5, 0.5]} x={960} y={540}>
+  return transitions((style, _) => (
+    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} scale={scale} interactive={show}>
+      <animated.sprite label="透明遮罩" src="ui/mask-transparent.png" onClick={handleExit} />
+      <animated.sprite
+        label="背景图"
+        src="ui/sl_bg.png"
+        pivot={[0.5, 0.5]}
+        x={960}
+        y={style.offsetY.to((value) => 540 + value)}
+        opacity={style.opacity}
+        scale={style.scale}
+      >
         <text label="标题" text="SETTINGS" fontSize={48} fillColor="white" x={64} y={54} />
         <Button
           fileNames={['ui/sl_close.png', 'ui/sl_close_hover.png', 'ui/sl_close_press.png']}
@@ -184,7 +228,7 @@ export function Settings() {
             />
           </sprite>
         </container>
-      </sprite>
-    </container>
-  );
+      </animated.sprite>
+    </animated.backdrop>
+  ));
 }

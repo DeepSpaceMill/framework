@@ -1,4 +1,4 @@
-import { executePluginCommand, nextLine, useAutoBlocker, useIsSeeking, useSkipBlocker } from '@momoyu-ink/kit';
+import { animated, executePluginCommand, nextLine, useAutoBlocker, useIsSeeking, useSkipBlocker, useTransition } from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect } from 'react';
 import { gameState } from '../state/game';
@@ -13,6 +13,27 @@ const CENTER_Y = 540;
 const BUTTON_WIDTH = 700;
 const BUTTON_HEIGHT = 67;
 const NINESLICE_BOUNDS: [number, number, number, number] = [0.3, 0.3, 0.3, 0.3];
+const PANEL_TRANSITION = {
+  from: {
+    opacity: 0,
+    scale: 0.985,
+    offsetY: 16,
+  },
+  enter: {
+    opacity: 1,
+    scale: 1,
+    offsetY: 0,
+  },
+  leave: {
+    opacity: 0,
+    scale: 0.985,
+    offsetY: 16,
+  },
+  config: {
+    tension: 280,
+    friction: 24,
+  },
+};
 
 export function SelectionActor() {
   const selectionState = useSnapshot(gameState.selection);
@@ -49,35 +70,45 @@ export function SelectionActor() {
     }
   }, [seeking]);
 
-  // Vertically center the option list around the screen center
-  const startY = CENTER_Y - ((selectionState.options.length - 1) * ITEM_SPACING) / 2;
+  const show = selectionState.visible && !seeking;
+  const transitions = useTransition(show ? [0] : [], {
+    keys: (item) => item,
+    ...PANEL_TRANSITION,
+  });
 
-  return (
-    <container
-      label="选择支容器"
-      visible={selectionState.visible && !seeking}
-      interactive={selectionState.visible && !seeking}
-    >
-      {selectionState.options.map((option, index) => (
-        <Button
-          // biome-ignore lint/suspicious/noArrayIndexKey: options are static per show cycle
-          key={index}
-          label={`选项_${index}`}
-          fileNames={['ui/selection.png', 'ui/selection_hover.png', 'ui/selection_press.png']}
-          mode="nineslice"
-          bounds={NINESLICE_BOUNDS}
-          targetWidth={BUTTON_WIDTH}
-          targetHeight={BUTTON_HEIGHT}
-          text={option.text}
-          fontSize={32}
-          color="#ffffff"
-          textAlign="center"
-          anchor={[0.5, 0.5]}
-          x={CENTER_X}
-          y={startY + index * ITEM_SPACING}
-          onClick={() => handleSelect(option.value)}
-        />
-      ))}
-    </container>
-  );
+  if (!show) {
+    return null;
+  }
+
+  return transitions((style, _) => {
+    const startY = CENTER_Y - ((selectionState.options.length - 1) * ITEM_SPACING) / 2;
+
+    return (
+      <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} interactive={show}>
+        <animated.sprite label="选择支遮罩" src="ui/mask-transparent.png" opacity={style.opacity} />
+        <animated.container label="选择支容器" opacity={style.opacity} scale={style.scale} y={style.offsetY} interactive={show}>
+          {selectionState.options.map((option, index) => (
+            <Button
+              // biome-ignore lint/suspicious/noArrayIndexKey: options are static per show cycle
+              key={index}
+              label={`选项_${index}`}
+              fileNames={['ui/selection.png', 'ui/selection_hover.png', 'ui/selection_press.png']}
+              mode="nineslice"
+              bounds={NINESLICE_BOUNDS}
+              targetWidth={BUTTON_WIDTH}
+              targetHeight={BUTTON_HEIGHT}
+              text={option.text}
+              fontSize={32}
+              color="#ffffff"
+              textAlign="center"
+              anchor={[0.5, 0.5]}
+              x={CENTER_X}
+              y={startY + index * ITEM_SPACING}
+              onClick={() => handleSelect(option.value)}
+            />
+          ))}
+        </animated.container>
+      </animated.backdrop>
+    );
+  });
 }
