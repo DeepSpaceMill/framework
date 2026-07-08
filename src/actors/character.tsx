@@ -1,7 +1,7 @@
 import { useCallback, useLayoutEffect } from 'react';
 import { animated, useSpring, useIsSeeking, useIsSkipping, getStageSize, easings } from '@momoyu-ink/kit';
 import { Character, useGameStateSection, useGameStateStore } from '../state/game';
-import { TransitionBoundary } from '../components/transitionBoundary';
+import { Sprite } from '../components/sprite';
 
 const EMPTY_CHARACTER_KEY = '__character-empty__';
 const DEFAULT_CHARACTER_SLOT_KEY = '__default__';
@@ -68,6 +68,8 @@ interface CharacterSpriteProps {
   onExited: (slotKey: string) => void;
 }
 
+const AnimatedSprite = animated(Sprite);
+
 function CharacterSprite({ slotKey, characterLabel, fallbackCharacter, onExited }: CharacterSpriteProps) {
   const characterState = useGameStateSection('character');
   const skipping = useIsSkipping();
@@ -102,26 +104,24 @@ function CharacterSprite({ slotKey, characterLabel, fallbackCharacter, onExited 
   });
 
   return (
-    <TransitionBoundary
-      label={`立绘转场容器:${characterLabel}`}
-      transitionKey={transitionKey}
-      retain="static"
-      performKey={`${transitionKey}:${shouldSkipVisuals ? 'skip' : 'run'}`}
-      effect={characterState.transitionEffect}
-      duration={shouldSkipVisuals ? 0 : fadeTime}
-      onFinished={() => onExited(slotKey)}
-    >
-      <container label="角色图片层">
-        <animated.sprite
-          src={character.src}
-          tint={springs.tint}
-          pivot={character.pivot}
-          visible={character.visible}
-          x={springs.x}
-          y={springs.y}
-          scale={springs.scale}
-        />
-      </container>
-    </TransitionBoundary>
+    <AnimatedSprite
+      label={`立绘:${characterLabel}`}
+      src={character.src}
+      tint={springs.tint}
+      pivot={character.pivot}
+      visible={character.visible}
+      x={springs.x}
+      y={springs.y}
+      scale={springs.scale}
+      transition={{
+        label: `立绘转场容器:${characterLabel}`,
+        transitionKey: transitionKey,
+        retain: 'static',
+        performKey: `${transitionKey}:${shouldSkipVisuals ? 'skip' : 'run'}`,
+        effect: characterState.transitionEffect,
+        duration: shouldSkipVisuals ? 0 : fadeTime,
+        onFinished: () => onExited(slotKey),
+      }}
+    />
   );
 }
