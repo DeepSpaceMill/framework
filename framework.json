@@ -3,6 +3,6 @@
   "title": "标准模板",
   "description": "标准模板，适合大多数视觉小说项目使用。",
   "author": "Icemic",
-  "version": "0.3.0",
+  "version": "0.5.0",
   "assets": ["*.*", "data", "ui", "fonts", "audio/**/*"]
 }
