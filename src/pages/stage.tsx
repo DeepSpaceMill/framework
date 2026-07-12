@@ -45,6 +45,12 @@ import {
   handleTextLine,
   handleCharPreset,
   handleCharAutoTint,
+  handleSprite,
+  handleSpriteChange,
+  handleSpriteRemove,
+  handleSpriteMove,
+  handleSpriteTransEffect,
+  handleSpriteTransEffectReset,
   handleOptionAdd,
   handleOptionShow,
   handleOptionClear,
@@ -56,6 +62,7 @@ import { settingsState } from '../state/settings';
 import { BackgroundActor } from '../actors/background';
 import { CameraActor, BackgroundPlane, CharacterPlane } from '../actors/camera';
 import { CharacterActor } from '../actors/character';
+import { FreeSpriteActor } from '../actors/freeSprite';
 import { SelectionActor } from '../actors/selection';
 import { TextBoxActor, TextBoxButton } from '../actors/textbox';
 import { BGMActor } from '../actors/bgm';
@@ -100,6 +107,12 @@ function registerStageHandlers(stage: StageInstance): Array<() => void> {
     stage.registerCommand('charName', handleCharName),
     stage.registerCommand('charPreset', handleCharPreset),
     stage.registerCommand('charAutoTint', handleCharAutoTint),
+    stage.registerCommand('sprite', handleSprite),
+    stage.registerCommand('spriteChange', handleSpriteChange),
+    stage.registerCommand('spriteRemove', handleSpriteRemove),
+    stage.registerCommand('spriteMove', handleSpriteMove),
+    stage.registerCommand('spriteTransEffect', handleSpriteTransEffect),
+    stage.registerCommand('spriteTransEffectReset', handleSpriteTransEffectReset),
     stage.registerCommand('wait', handleWait),
     stage.registerCommand('waitClick', handleWaitClick),
     stage.registerCommand('leaveStage', handleLeaveStage),
@@ -359,6 +372,7 @@ export function Stage() {
             <CharacterActor />
           </CharacterPlane>
         </CameraActor>
+        <FreeSpriteActor />
       </SceneTransitionBoundary>
       <TextBoxActor onButtonClick={handleButtonClick} />
       <BGMActor />

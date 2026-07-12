@@ -1,4 +1,4 @@
-import { animated, MoyuNodeAttributes, MoyuSpriteAttributes, MoyuVideoAttributes } from '@momoyu-ink/kit';
+import { animated, MoyuAnimationAttributes, MoyuNodeAttributes, MoyuSpriteAttributes, MoyuVideoAttributes } from '@momoyu-ink/kit';
 import { TransitionBoundary, TransitionBoundaryProps } from '../components/transitionBoundary';
 
 // File extensions treated as looping background video instead of static image.
@@ -11,6 +11,7 @@ function isVideoSrc(src: string): boolean {
 
 export type SpriteProps = MoyuNodeAttributes &
   MoyuSpriteAttributes &
+  Partial<MoyuAnimationAttributes> &
   MoyuVideoAttributes & {
     transition: Omit<TransitionBoundaryProps, 'children'>;
     isAnimation?: boolean;
