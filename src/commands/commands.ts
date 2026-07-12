@@ -1,14 +1,14 @@
 import z from 'zod';
-import { CAMERA_PRESET_NAMES } from '../lib/camera';
 import {
-  tuplePointSchema,
-  normalizedNumberSchema,
-  timeMillisSchema,
   normalizedNumberOneSchema,
+  normalizedNumberSchema,
   printModeSchema,
   printSpeedSchema,
   textStyleSchema,
+  timeMillisSchema,
+  tuplePointSchema,
 } from '../data/shared';
+import { CAMERA_PRESET_NAMES } from '../lib/camera';
 
 /* ------------------------------------------------------------------ */
 /*  Shared Fields                                                      */
@@ -34,6 +34,17 @@ const imageSrc = z
     'x-asset-kind': 'image',
     'x-i18n': { 'zh-CN': '图片' },
     'x-i18n-desc': { 'zh-CN': '图片资源路径' },
+  });
+
+const spriteLayerSrc = z
+  .string()
+  .describe('Sprite asset path')
+  .meta({
+    title: 'Asset',
+    format: 'asset',
+    'x-asset-kind': 'image',
+    'x-i18n': { 'zh-CN': '资源' },
+    'x-i18n-desc': { 'zh-CN': '精灵资源路径；当前 schema 按 image asset 处理' },
   });
 
 const videoSrc = z
@@ -175,6 +186,101 @@ const nodeVisible = z
     'x-i18n': { 'zh-CN': '可见' },
     'x-i18n-desc': { 'zh-CN': '是否可见' },
   });
+
+const nodeOpacity = normalizedNumberSchema.describe('Opacity from 0 to 1').meta({
+  title: 'Opacity',
+  'x-i18n': { 'zh-CN': '透明度' },
+  'x-i18n-desc': { 'zh-CN': '透明度，范围 0 到 1' },
+});
+
+const nodeScaleX = z.number().describe('Horizontal scale factor').meta({
+  title: 'Scale X',
+  'x-i18n': { 'zh-CN': '横向缩放' },
+  'x-i18n-desc': { 'zh-CN': '横向缩放系数' },
+});
+
+const nodeScaleY = z.number().describe('Vertical scale factor').meta({
+  title: 'Scale Y',
+  'x-i18n': { 'zh-CN': '纵向缩放' },
+  'x-i18n-desc': { 'zh-CN': '纵向缩放系数' },
+});
+
+const nodeRotation = z.number().describe('Rotation in radians').meta({
+  title: 'Rotation',
+  'x-i18n': { 'zh-CN': '旋转' },
+  'x-i18n-desc': { 'zh-CN': '旋转角度（弧度）' },
+});
+
+const nodeSkewX = z.number().describe('Horizontal skew in radians').meta({
+  title: 'Skew X',
+  'x-i18n': { 'zh-CN': '横向斜切' },
+  'x-i18n-desc': { 'zh-CN': '横向斜切角度（弧度）' },
+});
+
+const nodeSkewY = z.number().describe('Vertical skew in radians').meta({
+  title: 'Skew Y',
+  'x-i18n': { 'zh-CN': '纵向斜切' },
+  'x-i18n-desc': { 'zh-CN': '纵向斜切角度（弧度）' },
+});
+
+const nodeAnchor = tuplePointSchema.describe('Anchor point normalized to the node, from 0 to 1').meta({
+  title: 'Anchor',
+  'x-i18n': { 'zh-CN': '锚点' },
+  'x-i18n-desc': { 'zh-CN': '锚点坐标 (x, y)，通常范围 0 到 1' },
+});
+
+const nodeInteractive = z.boolean().describe('Whether the node is interactive').meta({
+  title: 'Interactive',
+  'x-i18n': { 'zh-CN': '可交互' },
+  'x-i18n-desc': { 'zh-CN': '是否标记为可交互节点' },
+});
+
+const nodeZIndex = z.number().describe('Sibling order under the same parent').meta({
+  title: 'Z Index',
+  'x-i18n': { 'zh-CN': '层级顺序' },
+  'x-i18n-desc': { 'zh-CN': '同一父节点下的层级顺序' },
+});
+
+const spriteName = z.string().describe('Sprite node name').meta({
+  title: 'Name',
+  'x-i18n': { 'zh-CN': '名称' },
+  'x-i18n-desc': { 'zh-CN': '精灵节点名称，要求全局唯一' },
+});
+
+const spriteParentName = z.string().describe('Parent sprite node name').meta({
+  title: 'Parent',
+  'x-i18n': { 'zh-CN': '父节点' },
+  'x-i18n-desc': { 'zh-CN': '父精灵节点名称' },
+});
+
+const spriteKind = z.enum(['image', 'video', 'animation']).describe('Sprite resource kind').meta({
+  title: 'Kind',
+  'x-i18n': { 'zh-CN': '资源类型' },
+  'x-i18n-desc': { 'zh-CN': '精灵资源类型，可选 image / video / animation' },
+});
+
+const spriteAnimationFormat = z.enum(['apng', 'webp']).describe('Animation format').meta({
+  title: 'Animation Format',
+  'x-i18n': { 'zh-CN': '动画格式' },
+  'x-i18n-desc': { 'zh-CN': '动画格式，可选 apng / webp' },
+});
+
+const spriteTransformProps = {
+  x: posX.optional(),
+  y: posY.optional(),
+  scaleX: nodeScaleX.optional(),
+  scaleY: nodeScaleY.optional(),
+  rotation: nodeRotation.optional(),
+  skewX: nodeSkewX.optional(),
+  skewY: nodeSkewY.optional(),
+  anchor: nodeAnchor.optional(),
+  pivot: nodePivot.optional(),
+  opacity: nodeOpacity.optional(),
+  visible: nodeVisible.optional(),
+  tint: tint.optional(),
+  interactive: nodeInteractive.optional(),
+  zIndex: nodeZIndex.optional(),
+};
 
 const charName = z
   .string()
@@ -1125,6 +1231,104 @@ const CharAutoTintCommandSchema = z
   });
 
 /* ------------------------------------------------------------------ */
+/*  Free Sprite Commands                                               */
+/* ------------------------------------------------------------------ */
+
+const SpriteCommandSchema = z
+  .object({
+    command: z.literal('sprite'),
+    name: spriteName,
+    src: spriteLayerSrc,
+    kind: spriteKind.optional(),
+    animationFormat: spriteAnimationFormat.optional(),
+    parent: spriteParentName.optional(),
+    ...spriteTransformProps,
+    fadeTime: fadeTime(500),
+    skippable: skippable(false),
+    noWait: noWait(true),
+  })
+  .describe('Create a sprite node or update it when the name already exists')
+  .meta({
+    title: 'Create Sprite',
+    'x-i18n': { 'zh-CN': '创建精灵' },
+    'x-i18n-desc': { 'zh-CN': '创建一个自由精灵节点；若同名已存在，则按局部更新处理' },
+  });
+
+const SpriteChangeCommandSchema = z
+  .object({
+    command: z.literal('spriteChange'),
+    name: spriteName,
+    src: spriteLayerSrc.optional(),
+    kind: spriteKind.optional(),
+    animationFormat: spriteAnimationFormat.optional(),
+    ...spriteTransformProps,
+    fadeTime: fadeTime(500),
+    skippable: skippable(false),
+    noWait: noWait(true),
+  })
+  .describe('Change an existing sprite node')
+  .meta({
+    title: 'Change Sprite',
+    'x-i18n': { 'zh-CN': '修改精灵' },
+    'x-i18n-desc': { 'zh-CN': '修改一个已存在的自由精灵节点' },
+  });
+
+const SpriteRemoveCommandSchema = z
+  .object({
+    command: z.literal('spriteRemove'),
+    name: spriteName,
+    fadeTime: fadeTime(500),
+    skippable: skippable(false),
+    noWait: noWait(true),
+  })
+  .describe('Remove a sprite node and all of its descendants')
+  .meta({
+    title: 'Remove Sprite',
+    'x-i18n': { 'zh-CN': '移除精灵' },
+    'x-i18n-desc': { 'zh-CN': '移除一个自由精灵节点及其整棵子树' },
+  });
+
+const SpriteMoveCommandSchema = z
+  .object({
+    command: z.literal('spriteMove'),
+    name: spriteName,
+    toParent: spriteParentName.optional(),
+    zIndex: nodeZIndex.optional(),
+  })
+  .describe('Move a sprite node to another parent or to the root layer')
+  .meta({
+    title: 'Move Sprite',
+    'x-i18n': { 'zh-CN': '移动精灵' },
+    'x-i18n-desc': { 'zh-CN': '移动自由精灵节点到新的父节点或根层' },
+  });
+
+const SpriteTransEffectCommandSchema = z
+  .discriminatedUnion(
+    'effect',
+    createTransitionEffectCommandSchemas('spriteTransEffect', {
+      name: spriteName.optional(),
+    }),
+  )
+  .describe('Set the transition effect used by free sprite changes')
+  .meta({
+    title: 'Set Sprite Transition Effect',
+    'x-i18n': { 'zh-CN': '设置精灵转场效果' },
+    'x-i18n-desc': { 'zh-CN': '设置自由精灵层或单个精灵节点使用的转场效果' },
+  });
+
+const SpriteTransEffectResetCommandSchema = z
+  .object({
+    command: z.literal('spriteTransEffectReset'),
+    name: spriteName.optional(),
+  })
+  .describe('Reset free sprite transition effect override to the default effect')
+  .meta({
+    title: 'Reset Sprite Transition Effect',
+    'x-i18n': { 'zh-CN': '重置精灵转场效果' },
+    'x-i18n-desc': { 'zh-CN': '重置自由精灵层或单个精灵节点的转场效果配置' },
+  });
+
+/* ------------------------------------------------------------------ */
 /*  Flow Control Commands                                              */
 /* ------------------------------------------------------------------ */
 
@@ -1302,6 +1506,12 @@ export const ScenarioCommandSchema = z.discriminatedUnion('command', [
   CharNameCommandSchema,
   CharPresetCommandSchema,
   CharAutoTintCommandSchema,
+  SpriteCommandSchema,
+  SpriteChangeCommandSchema,
+  SpriteRemoveCommandSchema,
+  SpriteMoveCommandSchema,
+  SpriteTransEffectCommandSchema,
+  SpriteTransEffectResetCommandSchema,
   WaitCommandSchema,
   WaitClickCommandSchema,
   LeaveStageCommandSchema,

@@ -51,6 +51,19 @@ export function applyGameStateSnapshot(loadedGameState: GameState): void {
   // (e.g. from HMR or external tooling) cannot leave the actor stuck.
   gameState.video.visible = false;
   gameState.video.src = '';
+
+  // Free sprite layer always restores to a stable visual state.
+  for (const [name, node] of Object.entries(gameState.freeSprite.nodes)) {
+    if (node.presence === 'leaving') {
+      delete gameState.freeSprite.nodes[name];
+      continue;
+    }
+
+    if (node.presence === 'entering') {
+      node.presence = 'present';
+      node.visible = true;
+    }
+  }
 }
 
 export async function resetScenarioSessionForNewGame(): Promise<void> {

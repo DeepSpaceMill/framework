@@ -50,6 +50,12 @@ import {
   handleOptionShow,
   handleOptionClear,
   handleVideo,
+  handleSprite,
+  handleSpriteChange,
+  handleSpriteRemove,
+  handleSpriteMove,
+  handleSpriteTransEffect,
+  handleSpriteTransEffectReset,
 } from '../commands/handlers';
 import { uiActions } from '../state/ui';
 import { gameState } from '../state/game';
@@ -64,6 +70,7 @@ import { VoiceActor } from '../actors/voice';
 import { SfxActor } from '../actors/sfx';
 import { SoundActor } from '../actors/sound';
 import { VideoActor } from '../actors/video';
+import { FreeSpriteActor } from '../actors/freeSprite';
 import { ScenarioCommandSchema } from '../commands/commands';
 import { SceneTransitionBoundary } from '../components/sceneTransitionBoundary';
 import { useSaveLoad } from '../hooks/useSaveLoad';
@@ -110,6 +117,12 @@ function registerStageHandlers(stage: StageInstance): Array<() => void> {
     stage.registerCommand('optionShow', handleOptionShow),
     stage.registerCommand('optionClear', handleOptionClear),
     stage.registerCommand('video', handleVideo),
+    stage.registerCommand('sprite', handleSprite),
+    stage.registerCommand('spriteChange', handleSpriteChange),
+    stage.registerCommand('spriteRemove', handleSpriteRemove),
+    stage.registerCommand('spriteMove', handleSpriteMove),
+    stage.registerCommand('spriteTransEffect', handleSpriteTransEffect),
+    stage.registerCommand('spriteTransEffectReset', handleSpriteTransEffectReset),
     stage.registerTextLine(handleTextLine),
   ];
 }
@@ -361,6 +374,7 @@ export function Stage() {
             <CharacterActor />
           </CharacterPlane>
         </CameraActor>
+        <FreeSpriteActor />
       </SceneTransitionBoundary>
       <TextBoxActor onButtonClick={handleButtonClick} />
       <BGMActor />

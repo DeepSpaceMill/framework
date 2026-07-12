@@ -77,6 +77,44 @@ export interface CharacterState {
   transitionEffect: BuiltinTransitionEffect;
 }
 
+export type FreeSpriteKind = 'image' | 'video' | 'animation';
+export type FreeSpritePresence = 'present' | 'entering' | 'leaving';
+
+export interface FreeSpriteResource {
+  src: string;
+  kind?: FreeSpriteKind;
+  animationFormat?: 'apng' | 'webp';
+}
+
+export interface FreeSpriteNode extends Animation {
+  name: string;
+  parent?: string;
+  x: number;
+  y: number;
+  scaleX: number;
+  scaleY: number;
+  rotation: number;
+  skewX: number;
+  skewY: number;
+  anchor: Tuple2;
+  pivot: Tuple2;
+  opacity: number;
+  visible: boolean;
+  tint?: string;
+  interactive: boolean;
+  zIndex: number;
+  order: number;
+  presence: FreeSpritePresence;
+  resource: FreeSpriteResource;
+  transitionEffect?: BuiltinTransitionEffect;
+}
+
+export interface FreeSpriteState {
+  nodes: Record<string, FreeSpriteNode>;
+  defaultTransitionEffect: BuiltinTransitionEffect;
+  nextOrder: number;
+}
+
 export interface TextBoxAvatarConfig {
   src: string;
   enable: boolean;
@@ -197,6 +235,7 @@ export interface GameState {
   camera: CameraState;
   sceneTransition: SceneTransitionState;
   character: CharacterState;
+  freeSprite: FreeSpriteState;
   textbox: TextBoxState;
   bgm: BGMState;
   voice: VoiceState;
@@ -244,6 +283,11 @@ const gameStateDefaults: GameState = {
     autoTintEnabled: true,
     autoTint: '#666',
     transitionEffect: { type: 'builtin', name: 'crossfade' },
+  },
+  freeSprite: {
+    nodes: {},
+    defaultTransitionEffect: { type: 'builtin', name: 'crossfade' },
+    nextOrder: 1,
   },
   textbox: {
     name: '',

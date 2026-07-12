@@ -2,6 +2,7 @@ import { getNavigator, getSeekingType, TextLine, type CommandHandler, type TextL
 import {
   gameState,
   resetGameState,
+  type FreeSpriteNode,
   type BuiltinTransitionEffect,
   type SceneTransitionEffect,
   type TextBoxAvatarConfig,
@@ -64,6 +65,118 @@ function toBuiltinTransitionEffect(
   };
 
   return { type: 'builtin', name: effect, ...otherArgs } as BuiltinTransitionEffect;
+}
+
+function getDefaultFreeSpriteNode(name: string, src: string): FreeSpriteNode {
+  return {
+    name,
+    parent: undefined,
+    x: 0,
+    y: 0,
+    scaleX: 1,
+    scaleY: 1,
+    rotation: 0,
+    skewX: 0,
+    skewY: 0,
+    anchor: [0, 0],
+    pivot: [0, 0],
+    opacity: 1,
+    visible: false,
+    tint: undefined,
+    interactive: false,
+    zIndex: 0,
+    order: gameState.freeSprite.nextOrder++,
+    presence: 'entering',
+    fadeTime: 500,
+    resource: {
+      src,
+    },
+    transitionEffect: undefined,
+  };
+}
+
+function findFreeSpriteNode(name: string): FreeSpriteNode | undefined {
+  return gameState.freeSprite.nodes[name];
+}
+
+function freeSpriteExists(name: string): boolean {
+  return gameState.freeSprite.nodes[name] !== undefined;
+}
+
+function assertFreeSpriteParentExists(name: string | undefined): boolean {
+  if (name === undefined) {
+    return true;
+  }
+
+  if (!freeSpriteExists(name)) {
+    console.error(`freeSprite: parent "${name}" not found`);
+    return false;
+  }
+
+  return true;
+}
+
+function isDescendantOfFreeSprite(targetName: string, ancestorName: string): boolean {
+  let current = findFreeSpriteNode(targetName);
+
+  while (current?.parent) {
+    if (current.parent === ancestorName) {
+      return true;
+    }
+
+    current = findFreeSpriteNode(current.parent);
+  }
+
+  return false;
+}
+
+function markFreeSpriteSubtreeLeaving(name: string, fadeMs: number): void {
+  const node = findFreeSpriteNode(name);
+  if (!node) {
+    return;
+  }
+
+  node.fadeTime = fadeMs;
+  node.visible = false;
+  node.presence = 'leaving';
+
+  for (const child of Object.values(gameState.freeSprite.nodes)) {
+    if (child.parent === name) {
+      markFreeSpriteSubtreeLeaving(child.name, fadeMs);
+    }
+  }
+}
+
+function applyFreeSpritePatch(
+  node: FreeSpriteNode,
+  patch: Partial<
+    Pick<
+      FreeSpriteNode,
+      'parent' | 'x' | 'y' | 'scaleX' | 'scaleY' | 'rotation' | 'skewX' | 'skewY' | 'anchor' | 'pivot' | 'opacity' | 'visible' | 'tint' | 'interactive' | 'zIndex' | 'fadeTime'
+    >
+  >,
+  resourcePatch?: Partial<FreeSpriteNode['resource']>,
+) {
+  if (patch.parent !== undefined) node.parent = patch.parent;
+  if (patch.x !== undefined) node.x = patch.x;
+  if (patch.y !== undefined) node.y = patch.y;
+  if (patch.scaleX !== undefined) node.scaleX = patch.scaleX;
+  if (patch.scaleY !== undefined) node.scaleY = patch.scaleY;
+  if (patch.rotation !== undefined) node.rotation = patch.rotation;
+  if (patch.skewX !== undefined) node.skewX = patch.skewX;
+  if (patch.skewY !== undefined) node.skewY = patch.skewY;
+  if (patch.anchor !== undefined) node.anchor = patch.anchor;
+  if (patch.pivot !== undefined) node.pivot = patch.pivot;
+  if (patch.opacity !== undefined) node.opacity = patch.opacity;
+  if (patch.visible !== undefined) node.visible = patch.visible;
+  if (patch.tint !== undefined) node.tint = patch.tint;
+  if (patch.interactive !== undefined) node.interactive = patch.interactive;
+  if (patch.zIndex !== undefined) node.zIndex = patch.zIndex;
+  if (patch.fadeTime !== undefined) node.fadeTime = patch.fadeTime;
+
+  if (resourcePatch?.src !== undefined) node.resource.src = resourcePatch.src;
+  if (resourcePatch?.kind !== undefined) node.resource.kind = resourcePatch.kind;
+  if (resourcePatch?.animationFormat !== undefined) node.resource.animationFormat = resourcePatch.animationFormat;
 }
 
 // ---------------------------------------------------------------------------
@@ -587,6 +700,211 @@ export const handleCharAutoTint: CommandHandler<ScenarioCommandSchemaType> = (cm
   gameState.character.autoTintEnabled = cmd.enabled ?? gameState.character.autoTintEnabled;
   gameState.character.autoTint = cmd.tint ?? gameState.character.autoTint;
   // auto-advance
+};
+
+// ---------------------------------------------------------------------------
+// Free sprite command handlers
+// ---------------------------------------------------------------------------
+
+export const handleSprite: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
+  if (cmd.command !== 'sprite') return;
+
+  if (!assertFreeSpriteParentExists(cmd.parent)) {
+    return;
+  }
+
+  const existing = findFreeSpriteNode(cmd.name);
+  if (existing) {
+    console.warn(`sprite: node "${cmd.name}" already exists, applying partial update`);
+    applyFreeSpritePatch(
+      existing,
+      {
+        parent: cmd.parent,
+        x: cmd.x,
+        y: cmd.y,
+        scaleX: cmd.scaleX,
+        scaleY: cmd.scaleY,
+        rotation: cmd.rotation,
+        skewX: cmd.skewX,
+        skewY: cmd.skewY,
+        anchor: cmd.anchor,
+        pivot: cmd.pivot,
+        opacity: cmd.opacity,
+        visible: cmd.visible,
+        tint: cmd.tint,
+        interactive: cmd.interactive,
+        zIndex: cmd.zIndex,
+        fadeTime: cmd.fadeTime,
+      },
+      {
+        src: cmd.src,
+        kind: cmd.kind,
+        animationFormat: cmd.animationFormat,
+      },
+    );
+    existing.presence = existing.visible ? 'present' : existing.presence;
+  } else {
+    const targetVisible = cmd.visible ?? true;
+    const node = getDefaultFreeSpriteNode(cmd.name, cmd.src);
+    applyFreeSpritePatch(
+      node,
+      {
+        parent: cmd.parent,
+        x: cmd.x,
+        y: cmd.y,
+        scaleX: cmd.scaleX,
+        scaleY: cmd.scaleY,
+        rotation: cmd.rotation,
+        skewX: cmd.skewX,
+        skewY: cmd.skewY,
+        anchor: cmd.anchor,
+        pivot: cmd.pivot,
+        opacity: cmd.opacity,
+        visible: cmd.visible,
+        tint: cmd.tint,
+        interactive: cmd.interactive,
+        zIndex: cmd.zIndex,
+        fadeTime: cmd.fadeTime,
+      },
+      {
+        kind: cmd.kind,
+        animationFormat: cmd.animationFormat,
+      },
+    );
+
+    if (targetVisible) {
+      node.visible = false;
+      node.presence = 'entering';
+    } else {
+      node.visible = false;
+      node.presence = 'present';
+    }
+
+    gameState.freeSprite.nodes[cmd.name] = node;
+  }
+
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
+};
+
+export const handleSpriteChange: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
+  if (cmd.command !== 'spriteChange') return;
+
+  const node = findFreeSpriteNode(cmd.name);
+  if (!node) {
+    console.warn(`spriteChange: node "${cmd.name}" not found`);
+    return;
+  }
+
+  applyFreeSpritePatch(
+    node,
+    {
+      x: cmd.x,
+      y: cmd.y,
+      scaleX: cmd.scaleX,
+      scaleY: cmd.scaleY,
+      rotation: cmd.rotation,
+      skewX: cmd.skewX,
+      skewY: cmd.skewY,
+      anchor: cmd.anchor,
+      pivot: cmd.pivot,
+      opacity: cmd.opacity,
+      visible: cmd.visible,
+      tint: cmd.tint,
+      interactive: cmd.interactive,
+      zIndex: cmd.zIndex,
+      fadeTime: cmd.fadeTime,
+    },
+    {
+      src: cmd.src,
+      kind: cmd.kind,
+      animationFormat: cmd.animationFormat,
+    },
+  );
+
+  if (cmd.visible !== undefined && cmd.visible) {
+    node.presence = 'present';
+  }
+
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
+};
+
+export const handleSpriteRemove: CommandHandler<ScenarioCommandSchemaType> = (cmd, control) => {
+  if (cmd.command !== 'spriteRemove') return;
+
+  if (!findFreeSpriteNode(cmd.name)) {
+    console.warn(`spriteRemove: node "${cmd.name}" not found`);
+    return;
+  }
+
+  markFreeSpriteSubtreeLeaving(cmd.name, cmd.fadeTime);
+
+  if (!cmd.noWait) {
+    control.setWaiting(cmd.fadeTime, cmd.skippable);
+  }
+};
+
+export const handleSpriteMove: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'spriteMove') return;
+
+  const node = findFreeSpriteNode(cmd.name);
+  if (!node) {
+    console.warn(`spriteMove: node "${cmd.name}" not found`);
+    return;
+  }
+
+  if (!assertFreeSpriteParentExists(cmd.toParent)) {
+    return;
+  }
+
+  if (cmd.toParent === cmd.name || (cmd.toParent !== undefined && isDescendantOfFreeSprite(cmd.toParent, cmd.name))) {
+    console.error(`spriteMove: cannot move node "${cmd.name}" under itself or its descendants`);
+    return;
+  }
+
+  node.parent = cmd.toParent;
+  if (cmd.zIndex !== undefined) {
+    node.zIndex = cmd.zIndex;
+  }
+};
+
+export const handleSpriteTransEffect: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'spriteTransEffect') return;
+
+  const effect = toBuiltinTransitionEffect(cmd);
+
+  if (cmd.name === undefined) {
+    gameState.freeSprite.defaultTransitionEffect = effect;
+    return;
+  }
+
+  const node = findFreeSpriteNode(cmd.name);
+  if (!node) {
+    console.warn(`spriteTransEffect: node "${cmd.name}" not found`);
+    return;
+  }
+
+  node.transitionEffect = effect;
+};
+
+export const handleSpriteTransEffectReset: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'spriteTransEffectReset') return;
+
+  if (cmd.name === undefined) {
+    gameState.freeSprite.defaultTransitionEffect = { type: 'builtin', name: 'crossfade' };
+    return;
+  }
+
+  const node = findFreeSpriteNode(cmd.name);
+  if (!node) {
+    console.warn(`spriteTransEffectReset: node "${cmd.name}" not found`);
+    return;
+  }
+
+  node.transitionEffect = undefined;
 };
 
 // ---------------------------------------------------------------------------
