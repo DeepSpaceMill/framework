@@ -1,4 +1,4 @@
-import { executePluginCommand, useNavigation, useSpring, WheelEvent } from '@momoyu-ink/kit';
+import { executePluginCommand, useNavigation, useSpringValue, WheelEvent } from '@momoyu-ink/kit';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { uiActions } from '../state/ui';
 import { restoreGameStateFromScenario } from '../utils/scenarioGameState';
@@ -53,16 +53,12 @@ export function useBacklog({ itemHeight, viewportHeight, minScrollbarHeight = 56
   const [didLoadRecords, setDidLoadRecords] = useState(false);
   const scrollTargetRef = useRef(0);
   const didSetInitialPositionRef = useRef(false);
-  const [{ scrollOffset }, scrollApi] = useSpring(
-    () => ({
-      scrollOffset: 0,
-      config: {
-        tension: 320,
-        friction: 32,
-      },
-    }),
-    [],
-  );
+  const scrollOffset = useSpringValue(0, {
+    config: {
+      tension: 320,
+      friction: 32,
+    },
+  });
 
   const refreshRecords = useCallback(async () => {
     try {
@@ -96,12 +92,9 @@ export function useBacklog({ itemHeight, viewportHeight, minScrollbarHeight = 56
       }
 
       scrollTargetRef.current = offset;
-      scrollApi.start({
-        scrollOffset: offset,
-        immediate,
-      });
+      scrollOffset.start(offset, { immediate });
     },
-    [maxScroll, scrollApi],
+    [maxScroll, scrollOffset],
   );
 
   useEffect(() => {
