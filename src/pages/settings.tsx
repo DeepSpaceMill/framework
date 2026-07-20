@@ -112,7 +112,7 @@ export function Settings() {
 
         <hbox x={180} y={300} gap={139}>
           <vbox gap={36}>
-            <hbox width={581} height={54} justifyContent="space-between">
+            <hbox width={581} height={54} justifyContent="space-between" zIndex={1}>
               <text text="窗口尺寸" fontSize={36} fillColor="#ffffff" />
               <Select
                 fileName={['ui/dialog_confirm.png', 'ui/dialog_confirm_hover.png', 'ui/dialog_confirm_press.png']}
