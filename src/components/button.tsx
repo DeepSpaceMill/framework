@@ -92,6 +92,7 @@ export function Button(props: ButtonProps) {
     shadowWidth,
     onClick,
     anchor,
+    pivot = anchor,
     tint,
     mode,
     bounds,
@@ -145,13 +146,11 @@ export function Button(props: ButtonProps) {
     textAnchor = [1, 0.5];
   }
   return (
-    <container label={label} {...restProps} {...handlers} pivot={anchor} anchor={anchor}>
+    <container label={label} {...restProps} {...handlers} pivot={pivot} anchor={anchor}>
       <animated.sprite
         label={`${label}_sprite`}
         src={fileNames[index]}
         cursor="pointer"
-        pivot={anchor}
-        anchor={anchor}
         tint={tint}
         mode={mode}
         bounds={bounds}

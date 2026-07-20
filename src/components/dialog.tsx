@@ -70,8 +70,8 @@ export function Dialog() {
   return transitions((style, _) => (
     <animated.backdrop filters={[{ type: 'blur', radius: 2 }]} opacity={style.opacity}>
       <container x={stageSize.width / 2} y={stageSize.height / 2} scale={stageSize.height / 1080} interactive={show}>
-        <animated.sprite label="对话框遮罩" src="ui/mask.png" pivot={[0.5, 0.5]} anchor={[0.5, 0.5]} />
-        <animated.sprite label="对话框" src="ui/dialog_bg.png" pivot={[0.5, 0.5]} anchor={[0.5, 0.5]} {...style}>
+        <animated.sprite label="对话框遮罩" src="ui/mask.png" pivot={[0.5, 0.5]} />
+        <animated.sprite label="对话框" src="ui/dialog_bg.png" pivot={[0.5, 0.5]} {...style}>
           <text
             label="对话框内容"
             text={content}

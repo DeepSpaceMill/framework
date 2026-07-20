@@ -225,7 +225,6 @@ export function Backlog() {
                   x={ROW_CARD_WIDTH / 2}
                   y={VIEWPORT_HEIGHT / 2 - 20}
                   pivot={[0.5, 0.5]}
-                  anchor={[0.5, 0.5]}
                 />
               ) : (
                 records.map((record, index) => (

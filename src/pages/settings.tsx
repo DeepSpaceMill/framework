@@ -213,7 +213,7 @@ export function Settings() {
         </container>
 
         <container label="文本框容器" x={262} y={680} onClick={handlePreviewClick}>
-          <sprite label="文本框" src="ui/settings_preview.png" anchor={[0.5, 0.5]} cursor="pointer">
+          <sprite label="文本框" src="ui/settings_preview.png" cursor="pointer">
             <text
               label="对话内容"
               ref={textWindowRef}

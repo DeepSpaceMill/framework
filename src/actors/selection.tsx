@@ -101,7 +101,7 @@ export function SelectionActor() {
               fontSize={32}
               color="#ffffff"
               textAlign="center"
-              anchor={[0.5, 0.5]}
+              pivot={[0.5, 0.5]}
               x={CENTER_X}
               y={startY + index * ITEM_SPACING}
               onClick={() => handleSelect(option.value)}

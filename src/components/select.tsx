@@ -30,6 +30,7 @@ export function Select(props: SelectProps) {
     color = 'black',
     onSelect,
     anchor,
+    pivot = anchor,
     mode,
     bounds,
     targetWidth = 0,
@@ -48,7 +49,7 @@ export function Select(props: SelectProps) {
   const currentOption = options.find((option) => option.value === props.value);
 
   return (
-    <container label={label} {...restProps} pivot={anchor} anchor={anchor}>
+    <container label={label} {...restProps} pivot={pivot} anchor={anchor}>
       <Button
         fileNames={['ui/dropdown.png', 'ui/dropdown_hover.png', 'ui/dropdown_hover.png']}
         text={currentOption?.text}

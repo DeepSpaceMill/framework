@@ -126,14 +126,13 @@ export function VideoActor() {
       opacity={style.opacity}
     >
       {/* Black backdrop so any letterboxed area outside the video is opaque. */}
-      <sprite label="视频遮罩" src="ui/mask.png" pivot={[0.5, 0.5]} anchor={[0.5, 0.5]} />
+      <sprite label="视频遮罩" src="ui/mask.png" pivot={[0.5, 0.5]} />
       <video
         ref={videoRef}
         label="视频"
         src={src}
         autoPlay={true}
         loop={false}
-        anchor={[0.5, 0.5]}
         pivot={[0.5, 0.5]}
         onEnded={finish}
       />

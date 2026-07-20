@@ -17,6 +17,7 @@ const SLIDER_WIDTH = 24;
 export function Slider(props: SliderProps) {
   const {
     anchor,
+    pivot = anchor,
     targetWidth = 0,
     targetHeight = 0,
     onMouseEnter,
@@ -96,15 +97,13 @@ export function Slider(props: SliderProps) {
   }, []);
 
   return (
-    <container {...restProps} {...handlers} pivot={anchor} anchor={anchor}>
+    <container {...restProps} {...handlers} pivot={pivot} anchor={anchor}>
       <sprite
         src={`ui/slider_track${getStateIndex() === 0 ? '' : getStateIndex() === 1 ? '_hover' : '_press'}.png`}
         mode="nineslice"
         bounds={[0, 0, 0, 0]}
         targetWidth={targetWidth}
         targetHeight={targetHeight}
-        pivot={[0, 0.5]}
-        y={(targetHeight / 2) << 0}
         onClick={handleTrackClick}
         onMouseMove={handleMove}
         onMouseDown={handleStart}

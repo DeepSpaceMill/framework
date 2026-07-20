@@ -58,7 +58,6 @@ export function Title() {
           x={960}
           y={670}
           pivot={[0.5, 0.5]}
-          anchor={[0.5, 0.5]}
           onClick={handleStart}
           onMouseEnter={hoverButtonSound}
         />
@@ -70,7 +69,6 @@ export function Title() {
           x={960}
           y={760}
           pivot={[0.5, 0.5]}
-          anchor={[0.5, 0.5]}
           onClick={() => navigation.pushOverlay('saveload', { type: 'load' })}
           onMouseEnter={hoverButtonSound}
         />
@@ -82,7 +80,6 @@ export function Title() {
           x={960}
           y={850}
           pivot={[0.5, 0.5]}
-          anchor={[0.5, 0.5]}
           onClick={() => navigation.pushOverlay('settings')}
           onMouseEnter={hoverButtonSound}
         />
@@ -95,7 +92,6 @@ export function Title() {
           x={960}
           y={940}
           pivot={[0.5, 0.5]}
-          anchor={[0.5, 0.5]}
           onClick={handleExit}
           onMouseEnter={hoverButtonSound}
         />
