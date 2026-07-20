@@ -217,7 +217,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
                 gameState.textbox.visible = false;
               }}
             />
-            <container x={650} y={158}>
+            <hbox x={650} y={158}>
               {[
                 TextBoxButton.QSAVE,
                 TextBoxButton.QLOAD,
@@ -227,11 +227,10 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
                 TextBoxButton.SKIP,
                 TextBoxButton.LOG,
                 TextBoxButton.MENU,
-              ].map((button, index) => (
+              ].map((button) => (
                 <Button
                   key={button}
                   fileNames={[`ui/textbox_button.png`, `ui/textbox_button.png`, `ui/textbox_button.png`]}
-                  x={100 * index}
                   text={button}
                   fontSize={24}
                   color={['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.7)', 'rgba(255,255,255,0.9)']}
@@ -240,7 +239,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
                   }}
                 />
               ))}
-            </container>
+            </hbox>
           </animated.container>
         ))}
 

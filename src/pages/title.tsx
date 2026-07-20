@@ -50,51 +50,40 @@ export function Title() {
       >
         <sprite src="title.webp" />
 
-        <Button
-          fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
-          text={'开始游戏'}
-          fontSize={36}
-          color="#ffffff"
-          x={960}
-          y={670}
-          pivot={[0.5, 0.5]}
-          onClick={handleStart}
-          onMouseEnter={hoverButtonSound}
-        />
-        <Button
-          fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
-          text={'读取存档'}
-          fontSize={36}
-          color="#ffffff"
-          x={960}
-          y={760}
-          pivot={[0.5, 0.5]}
-          onClick={() => navigation.pushOverlay('saveload', { type: 'load' })}
-          onMouseEnter={hoverButtonSound}
-        />
-        <Button
-          fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
-          text={'设置'}
-          fontSize={36}
-          color="#ffffff"
-          x={960}
-          y={850}
-          pivot={[0.5, 0.5]}
-          onClick={() => navigation.pushOverlay('settings')}
-          onMouseEnter={hoverButtonSound}
-        />
-
-        <Button
-          fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
-          text={'退出'}
-          fontSize={36}
-          color="#ffffff"
-          x={960}
-          y={940}
-          pivot={[0.5, 0.5]}
-          onClick={handleExit}
-          onMouseEnter={hoverButtonSound}
-        />
+        <vbox gap={4} pivot={[0.5, 0.5]} x={960} y={805}>
+          <Button
+            fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
+            text={'开始游戏'}
+            fontSize={36}
+            color="#ffffff"
+            onClick={handleStart}
+            onMouseEnter={hoverButtonSound}
+          />
+          <Button
+            fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
+            text={'读取存档'}
+            fontSize={36}
+            color="#ffffff"
+            onClick={() => navigation.pushOverlay('saveload', { type: 'load' })}
+            onMouseEnter={hoverButtonSound}
+          />
+          <Button
+            fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
+            text={'设置'}
+            fontSize={36}
+            color="#ffffff"
+            onClick={() => navigation.pushOverlay('settings')}
+            onMouseEnter={hoverButtonSound}
+          />
+          <Button
+            fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
+            text={'退出'}
+            fontSize={36}
+            color="#ffffff"
+            onClick={handleExit}
+            onMouseEnter={hoverButtonSound}
+          />
+        </vbox>
       </animated.container>
     </container>
   );

@@ -69,46 +69,36 @@ export function Menu() {
     <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity}>
       <animated.sprite label="半透明遮罩" src="ui/mask.png" onClick={handleExit} />
       <animated.sprite label="背景图" src="ui/menu_bg.png" pivot={[0.5, 0.5]} x={960} y={540} {...style}>
-        <Button
-          fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
-          x={0}
-          y={50}
-          anchor={[0.5, 0]}
-          text="继续游戏"
-          color="#f0f0f0"
-          onMouseEnter={hoverButtonSound}
-          onClick={handleExit}
-        />
-        <Button
-          fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
-          x={0}
-          y={50 + 102}
-          anchor={[0.5, 0]}
-          text="设置"
-          color="#f0f0f0"
-          onMouseEnter={hoverButtonSound}
-          onClick={handleToSettings}
-        />
-        <Button
-          fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
-          x={0}
-          y={50 + 102 * 2}
-          anchor={[0.5, 0]}
-          text="回到主界面"
-          color="#f0f0f0"
-          onMouseEnter={hoverButtonSound}
-          onClick={handleToMainMenu}
-        />
-        <Button
-          fileNames={['ui/menu_style1.png', 'ui/menu_style1_hover.png', 'ui/menu_style1_press.png']}
-          x={0}
-          y={50 + 102 * 3}
-          anchor={[0.5, 0]}
-          text="退出到桌面"
-          color="#f0f0f0"
-          onMouseEnter={hoverButtonSound}
-          onClick={handleToQuit}
-        />
+        <vbox gap={35} anchor={[0.5, 0]} pivot={[0.5, 0]} y={50}>
+          <Button
+            fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
+            text="继续游戏"
+            color="#f0f0f0"
+            onMouseEnter={hoverButtonSound}
+            onClick={handleExit}
+          />
+          <Button
+            fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
+            text="设置"
+            color="#f0f0f0"
+            onMouseEnter={hoverButtonSound}
+            onClick={handleToSettings}
+          />
+          <Button
+            fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
+            text="回到主界面"
+            color="#f0f0f0"
+            onMouseEnter={hoverButtonSound}
+            onClick={handleToMainMenu}
+          />
+          <Button
+            fileNames={['ui/menu_style1.png', 'ui/menu_style1_hover.png', 'ui/menu_style1_press.png']}
+            text="退出到桌面"
+            color="#f0f0f0"
+            onMouseEnter={hoverButtonSound}
+            onClick={handleToQuit}
+          />
+        </vbox>
       </animated.sprite>
     </animated.backdrop>
   ));

@@ -110,107 +110,101 @@ export function Settings() {
           onClick={handleExit}
         />
 
-        <container x={180} y={390}>
-          <text text="背景音量" fontSize={36} fillColor="#ffffff" />
-          <Slider
-            x={180}
-            y={7}
-            targetWidth={401}
-            targetHeight={40}
-            value={settings.volume_bgm}
-            onChange={(v) => setValue('volume_bgm', v)}
-            onMouseEnter={hoverButtonSound}
-          />
-        </container>
+        <hbox x={180} y={300} gap={139}>
+          <vbox gap={36}>
+            <hbox width={581} height={54} justifyContent="space-between">
+              <text text="窗口尺寸" fontSize={36} fillColor="#ffffff" />
+              <Select
+                fileName={['ui/dialog_confirm.png', 'ui/dialog_confirm_hover.png', 'ui/dialog_confirm_press.png']}
+                fontSize={32}
+                color="#ffffff"
+                mode="nineslice"
+                bounds={[0.25, 0.25, 0.25, 0.25]}
+                targetWidth={401}
+                targetHeight={54}
+                value={settings.display}
+                options={[
+                  { text: '全屏（无边框窗口）', value: 'fullscreen' },
+                  { text: '1920 x 1080', value: '1080' },
+                  { text: '1280 x 720', value: '720' },
+                ]}
+                onSelect={(value) => setValue('display', value)}
+                onMouseEnter={hoverButtonSound}
+              />
+            </hbox>
+            <hbox width={581} height={54} justifyContent="space-between">
+              <text text="背景音量" fontSize={36} fillColor="#ffffff" />
+              <Slider
+                y={7}
+                targetWidth={401}
+                targetHeight={40}
+                value={settings.volume_bgm}
+                onChange={(v) => setValue('volume_bgm', v)}
+                onMouseEnter={hoverButtonSound}
+              />
+            </hbox>
+            <hbox width={581} height={54} justifyContent="space-between">
+              <text text="音效音量" fontSize={36} fillColor="#ffffff" />
+              <Slider
+                y={7}
+                targetWidth={401}
+                targetHeight={40}
+                value={settings.volume_se}
+                onChange={(v) => setValue('volume_se', v)}
+                onMouseEnter={hoverButtonSound}
+              />
+            </hbox>
+            <hbox width={581} height={54} justifyContent="space-between">
+              <text text="语音音量" fontSize={36} fillColor="#ffffff" />
+              <Slider
+                y={7}
+                targetWidth={401}
+                targetHeight={40}
+                value={settings.volume_voice}
+                onChange={(v) => setValue('volume_voice', v)}
+                onMouseEnter={hoverButtonSound}
+              />
+            </hbox>
+          </vbox>
 
-        <container x={180} y={480}>
-          <text text="音效音量" fontSize={36} fillColor="#ffffff" />
-          <Slider
-            x={180}
-            y={7}
-            targetWidth={401}
-            targetHeight={40}
-            value={settings.volume_se}
-            onChange={(v) => setValue('volume_se', v)}
-            onMouseEnter={hoverButtonSound}
-          />
-        </container>
-
-        <container x={180} y={570}>
-          <text text="语音音量" fontSize={36} fillColor="#ffffff" />
-          <Slider
-            x={180}
-            y={7}
-            targetWidth={401}
-            targetHeight={40}
-            value={settings.volume_voice}
-            onChange={(v) => setValue('volume_voice', v)}
-            onMouseEnter={hoverButtonSound}
-          />
-        </container>
-
-        <container x={180} y={300}>
-          <text text="窗口尺寸" fontSize={36} fillColor="#ffffff" />
-          <Select
-            x={180}
-            fileName={['ui/dialog_confirm.png', 'ui/dialog_confirm_hover.png', 'ui/dialog_confirm_press.png']}
-            fontSize={32}
-            color="#ffffff"
-            mode="nineslice"
-            bounds={[0.25, 0.25, 0.25, 0.25]}
-            targetWidth={401}
-            targetHeight={54}
-            value={settings.display}
-            options={[
-              { text: '全屏（无边框窗口）', value: 'fullscreen' },
-              { text: '1920 x 1080', value: '1080' },
-              { text: '1280 x 720', value: '720' },
-            ]}
-            onSelect={(value) => setValue('display', value)}
-            onMouseEnter={hoverButtonSound}
-          />
-        </container>
-
-        <container x={900} y={300}>
-          <text text="文字速度" fontSize={36} fillColor="#ffffff" />
-          <Slider
-            x={180}
-            y={7}
-            targetWidth={401}
-            targetHeight={40}
-            value={settings.text_speed}
-            onChange={(v) => setValue('text_speed', v)}
-            onMouseEnter={hoverButtonSound}
-          />
-        </container>
-
-        <container x={900} y={390}>
-          <text text="自动间隔" fontSize={36} fillColor="#ffffff" />
-          <Slider
-            x={180}
-            y={7}
-            targetWidth={401}
-            targetHeight={40}
-            value={settings.auto_interval}
-            onChange={(v) => setValue('auto_interval', v)}
-            onMouseEnter={hoverButtonSound}
-          />
-        </container>
-
-        <container x={900} y={480}>
-          <text text="跳过语音" fontSize={36} fillColor="#ffffff" />
-          <Checkbox
-            x={180}
-            y={3}
-            mode="nineslice"
-            bounds={[0.01, 0.01, 0.98, 0.01]}
-            targetWidth={401}
-            targetHeight={48}
-            checked={settings.skip_voice}
-            onChange={(checked) => setValue('skip_voice', checked)}
-            onMouseEnter={hoverButtonSound}
-          />
-        </container>
+          <vbox gap={36}>
+            <hbox width={581} height={54} justifyContent="space-between">
+              <text text="文字速度" fontSize={36} fillColor="#ffffff" />
+              <Slider
+                y={7}
+                targetWidth={401}
+                targetHeight={40}
+                value={settings.text_speed}
+                onChange={(v) => setValue('text_speed', v)}
+                onMouseEnter={hoverButtonSound}
+              />
+            </hbox>
+            <hbox width={581} height={54} justifyContent="space-between">
+              <text text="自动间隔" fontSize={36} fillColor="#ffffff" />
+              <Slider
+                y={7}
+                targetWidth={401}
+                targetHeight={40}
+                value={settings.auto_interval}
+                onChange={(v) => setValue('auto_interval', v)}
+                onMouseEnter={hoverButtonSound}
+              />
+            </hbox>
+            <hbox width={581} height={54} justifyContent="space-between">
+              <text text="跳过语音" fontSize={36} fillColor="#ffffff" />
+              <Checkbox
+                y={3}
+                mode="nineslice"
+                bounds={[0.01, 0.01, 0.98, 0.01]}
+                targetWidth={401}
+                targetHeight={48}
+                checked={settings.skip_voice}
+                onChange={(checked) => setValue('skip_voice', checked)}
+                onMouseEnter={hoverButtonSound}
+              />
+            </hbox>
+          </vbox>
+        </hbox>
 
         <container label="文本框容器" x={262} y={680} onClick={handlePreviewClick}>
           <sprite label="文本框" src="ui/settings_preview.png" cursor="pointer">

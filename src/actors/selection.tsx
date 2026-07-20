@@ -4,14 +4,13 @@ import { useCallback, useEffect } from 'react';
 import { gameState } from '../state/game';
 import { Button } from '../components/button';
 
-// Vertical spacing between selection options (pixels)
-const ITEM_SPACING = 90;
 // Screen center coordinates
 const CENTER_X = 960;
 const CENTER_Y = 540;
 // Button dimensions and nine-slice settings
 const BUTTON_WIDTH = 700;
 const BUTTON_HEIGHT = 67;
+const BUTTON_GAP = 23;
 const NINESLICE_BOUNDS: [number, number, number, number] = [0.3, 0.3, 0.3, 0.3];
 const PANEL_TRANSITION = {
   from: {
@@ -81,12 +80,19 @@ export function SelectionActor() {
   }
 
   return transitions((style, _) => {
-    const startY = CENTER_Y - ((selectionState.options.length - 1) * ITEM_SPACING) / 2;
-
     return (
       <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} interactive={show}>
         <animated.sprite label="选择支遮罩" src="ui/mask-transparent.png" opacity={style.opacity} />
-        <animated.container label="选择支容器" opacity={style.opacity} scale={style.scale} y={style.offsetY} interactive={show}>
+        <animated.vbox
+          label="选择支容器"
+          gap={BUTTON_GAP}
+          pivot={[0.5, 0.5]}
+          x={CENTER_X}
+          y={style.offsetY.to((value) => CENTER_Y + value)}
+          opacity={style.opacity}
+          scale={style.scale}
+          interactive={show}
+        >
           {selectionState.options.map((option, index) => (
             <Button
               // biome-ignore lint/suspicious/noArrayIndexKey: options are static per show cycle
@@ -101,13 +107,10 @@ export function SelectionActor() {
               fontSize={32}
               color="#ffffff"
               textAlign="center"
-              pivot={[0.5, 0.5]}
-              x={CENTER_X}
-              y={startY + index * ITEM_SPACING}
               onClick={() => handleSelect(option.value)}
             />
           ))}
-        </animated.container>
+        </animated.vbox>
       </animated.backdrop>
     );
   });

@@ -72,32 +72,31 @@ export function Select(props: SelectProps) {
           targetHeight={targetHeight * options.length + 3}
           y={targetHeight}
         >
-          {options.map((option, index) => (
-            <Button
-              key={option.value}
-              fileNames={[
-                'ui/dropdown_listitem.png',
-                'ui/dropdown_listitem_hover.png',
-                'ui/dropdown_listitem_press.png',
-              ]}
-              text={option.text}
-              fontSize={fontSize}
-              color={colors}
-              mode="nineslice"
-              bounds={[0.25, 0.25, 0.25, 0.25]}
-              targetWidth={targetWidth - 6}
-              targetHeight={targetHeight}
-              onClick={(_e) => {
-                onSelect?.(option.value, option.text);
-                setActive(false);
-              }}
-              pivot={[0.5, 0]}
-              anchor={[0.5, 0]}
-              textAlign="center"
-              y={targetHeight * index}
-              lockOn={props.value === option.value ? 'press' : undefined}
-            />
-          ))}
+          <vbox x={3}>
+            {options.map((option) => (
+              <Button
+                key={option.value}
+                fileNames={[
+                  'ui/dropdown_listitem.png',
+                  'ui/dropdown_listitem_hover.png',
+                  'ui/dropdown_listitem_press.png',
+                ]}
+                text={option.text}
+                fontSize={fontSize}
+                color={colors}
+                mode="nineslice"
+                bounds={[0.25, 0.25, 0.25, 0.25]}
+                targetWidth={targetWidth - 6}
+                targetHeight={targetHeight}
+                onClick={(_e) => {
+                  onSelect?.(option.value, option.text);
+                  setActive(false);
+                }}
+                textAlign="center"
+                lockOn={props.value === option.value ? 'press' : undefined}
+              />
+            ))}
+          </vbox>
         </sprite>
       )}
     </container>
