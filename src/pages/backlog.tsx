@@ -4,11 +4,13 @@ import {
   executePluginCommand,
   getStageSize,
   type MouseEvent,
+  ScrollView,
+  useScrollView,
   useSoundEffect,
   type TouchEvent,
   useTransition,
 } from '@momoyu-ink/kit';
-import { useCallback, useEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import { Button } from '../components/button';
 import { type BacklogRecord, useBacklog } from '../hooks/useBacklog';
 import { uiActions } from '../state/ui';
@@ -20,13 +22,13 @@ const VIEWPORT_X = 90;
 const VIEWPORT_Y = 166;
 const VIEWPORT_PADDING_X = 22;
 const VIEWPORT_PADDING_Y = 18;
-const ROW_HEIGHT = 110;
 const ROW_CARD_WIDTH = VIEWPORT_WIDTH - VIEWPORT_PADDING_X * 2;
 const BUTTON_WIDTH = 42;
 const CONTENT_WIDTH = ROW_CARD_WIDTH - BUTTON_WIDTH - 88;
 const SCROLLBAR_WIDTH = 20;
 const SCROLLBAR_X = VIEWPORT_X + VIEWPORT_WIDTH - SCROLLBAR_WIDTH - 8;
 const SCROLLBAR_Y = VIEWPORT_Y + VIEWPORT_PADDING_Y;
+const MIN_SCROLLBAR_HEIGHT = 56;
 const SCROLLBAR_BOUNDS: [number, number, number, number] = [0.34, 0.2, 0.34, 0.2];
 const VOICE_BUTTON_X = 0;
 const VOICE_BUTTON_Y = 8;
@@ -99,26 +101,32 @@ export function Backlog() {
     },
   });
 
-  const {
-    records,
-    scrollOffset,
-    maxScroll,
-    showScrollbar,
-    scrollbarHeight,
-    scrollbarOffset,
-    handleWheel,
-    scrollToRatio,
-    jumpToRecord,
-    close,
-  } = useBacklog({
-    itemHeight: ROW_HEIGHT,
-    viewportHeight: VIEWPORT_HEIGHT - VIEWPORT_PADDING_Y * 2,
+  const { records, didLoadRecords, jumpToRecord, close } = useBacklog();
+  const viewportContentHeight = VIEWPORT_HEIGHT - VIEWPORT_PADDING_Y * 2;
+  const scrollView = useScrollView({
+    viewportHeight: viewportContentHeight,
+    initialPosition: 'end',
   });
+  const { contentHeight, maxScroll, scrollOffset, scrollToRatio } = scrollView;
+  const showScrollbar = maxScroll > 0;
+  const scrollbarHeight = useMemo(() => {
+    if (!showScrollbar || contentHeight <= 0) return 0;
+
+    return Math.min(
+      viewportContentHeight,
+      Math.max(MIN_SCROLLBAR_HEIGHT, (viewportContentHeight * viewportContentHeight) / contentHeight),
+    );
+  }, [contentHeight, showScrollbar, viewportContentHeight]);
+  const scrollbarOffset = useMemo(() => {
+    if (!showScrollbar || scrollbarHeight <= 0) return scrollOffset.to(() => 0);
+
+    return scrollOffset.to((value) => (value / maxScroll) * (viewportContentHeight - scrollbarHeight));
+  }, [maxScroll, scrollOffset, scrollbarHeight, showScrollbar, viewportContentHeight]);
 
   const draggingScrollbarRef = useRef(false);
   const dragStartClientYRef = useRef(0);
   const dragStartRatioRef = useRef(0);
-  const scrollbarTravel = VIEWPORT_HEIGHT - VIEWPORT_PADDING_Y * 2 - scrollbarHeight;
+  const scrollbarTravel = viewportContentHeight - scrollbarHeight;
 
   const handleScrollbarDragStart = useCallback(
     (event: MouseEvent | TouchEvent) => {
@@ -148,7 +156,6 @@ export function Backlog() {
 
   useEffect(() => {
     const cleanups = [
-      addEventListener('wheel', handleWheel),
       addEventListener('mousemove', handleScrollbarDragMove),
       addEventListener('touchmove', handleScrollbarDragMove),
       addEventListener('mouseup', handleScrollbarDragEnd),
@@ -161,7 +168,7 @@ export function Backlog() {
         cleanup();
       }
     };
-  }, [handleScrollbarDragEnd, handleScrollbarDragMove, handleWheel]);
+  }, [handleScrollbarDragEnd, handleScrollbarDragMove]);
 
   const requestClose = useCallback(
     (afterClose?: () => void) => {
@@ -213,33 +220,35 @@ export function Backlog() {
             handleClose();
           }}
         />
-        <container x={VIEWPORT_X} y={VIEWPORT_Y}>
-          <clip width={VIEWPORT_WIDTH} height={VIEWPORT_HEIGHT}>
-            <animated.container x={VIEWPORT_PADDING_X} y={scrollOffset.to((value) => VIEWPORT_PADDING_Y - value)}>
-              {records.length === 0 ? (
-                <text
-                  text="暂无历史记录"
-                  fontSize={30}
-                  fillColor="#ffffff"
-                  opacity={0.72}
-                  x={ROW_CARD_WIDTH / 2}
-                  y={VIEWPORT_HEIGHT / 2 - 20}
-                  pivot={[0.5, 0.5]}
+        <container x={VIEWPORT_X + VIEWPORT_PADDING_X} y={VIEWPORT_Y + VIEWPORT_PADDING_Y}>
+          {didLoadRecords && records.length === 0 ? (
+            <text
+              text="暂无历史记录"
+              fontSize={30}
+              fillColor="#ffffff"
+              opacity={0.72}
+              x={ROW_CARD_WIDTH / 2}
+              y={viewportContentHeight / 2}
+              pivot={[0.5, 0.5]}
+            />
+          ) : records.length > 0 ? (
+            <ScrollView
+              width={ROW_CARD_WIDTH}
+              height={viewportContentHeight}
+              controller={scrollView}
+              contentProps={{ width: ROW_CARD_WIDTH }}
+            >
+              {records.map((record) => (
+                <BacklogRow
+                  key={record.id}
+                  record={record}
+                  onJump={() => {
+                    handleJumpRequest(record);
+                  }}
                 />
-              ) : (
-                records.map((record, index) => (
-                  <BacklogRow
-                    key={record.id}
-                    record={record}
-                    y={index * ROW_HEIGHT}
-                    onJump={() => {
-                      handleJumpRequest(record);
-                    }}
-                  />
-                ))
-              )}
-            </animated.container>
-          </clip>
+              ))}
+            </ScrollView>
+          ) : null}
         </container>
         {showScrollbar && (
           <animated.sprite
@@ -249,11 +258,7 @@ export function Backlog() {
             targetWidth={SCROLLBAR_WIDTH}
             targetHeight={scrollbarHeight}
             x={SCROLLBAR_X}
-            y={
-              typeof scrollbarOffset === 'number'
-                ? SCROLLBAR_Y + scrollbarOffset
-                : scrollbarOffset.to((value) => SCROLLBAR_Y + value)
-            }
+            y={scrollbarOffset.to((value) => SCROLLBAR_Y + value)}
             cursor="pointer"
             onMouseDown={handleScrollbarDragStart}
             onTouchStart={handleScrollbarDragStart}
@@ -267,11 +272,10 @@ export function Backlog() {
 
 interface BacklogRowProps {
   record: BacklogRecord;
-  y: number;
   onJump: () => void;
 }
 
-function BacklogRow({ record, y, onJump }: BacklogRowProps) {
+function BacklogRow({ record, onJump }: BacklogRowProps) {
   let title = '';
   let content = '';
   let voice = '';
@@ -300,7 +304,7 @@ function BacklogRow({ record, y, onJump }: BacklogRowProps) {
   const titleX = voice ? VOICE_TITLE_GAP : 0;
 
   return (
-    <container y={y}>
+    <vbox width={ROW_CARD_WIDTH} paddingY={24}>
       <container
         onMouseLeave={() => setHovered(null)}
         onClick={(event) => {
@@ -340,7 +344,6 @@ function BacklogRow({ record, y, onJump }: BacklogRowProps) {
           fontSize={28}
           lineHeight={1.5}
           boxWidth={CONTENT_WIDTH}
-          boxHeight={62}
           fillColor="#f0f0f0"
           tint={hovered === 'text' ? '#D18F52' : '#fff'}
           x={140}
@@ -348,6 +351,6 @@ function BacklogRow({ record, y, onJump }: BacklogRowProps) {
           onMouseEnter={() => setHovered('text')}
         />
       </container>
-    </container>
+    </vbox>
   );
 }
