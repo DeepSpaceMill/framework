@@ -3,11 +3,11 @@ import {
   useNavigation,
   useNavigationParams,
   animated,
+  Button,
   getStageSize,
   useTransition,
   useSoundEffect,
 } from '@momoyu-ink/kit';
-import { Button } from './button';
 
 interface DialogParams {
   message: string;
@@ -85,16 +85,18 @@ export function Dialog() {
           />
           {mode === 'alert' && (
             <Button
-              fileNames={['ui/dialog_confirm.png', 'ui/dialog_confirm_hover.png', 'ui/dialog_confirm_press.png']}
+              sprite={{
+                src: ['ui/dialog_confirm.png', 'ui/dialog_confirm_hover.png', 'ui/dialog_confirm_press.png'],
+                tint: '#ffffff',
+              }}
               label="对话框确认按钮"
               pivot={[0.5, 0.5]}
               anchor={[0.5, 0.5]}
               x={0}
               y={72}
-              tint="#ffffff"
               text="好的"
-              color="#ffffff"
-              onClick={() => {
+              textStyle={{ fillColor: '#ffffff' }}
+              onPress={() => {
                 confirmButtonSound();
                 handleConfirm(true);
               }}
@@ -103,30 +105,32 @@ export function Dialog() {
           {mode === 'confirm' && (
             <>
               <Button
-                fileNames={['ui/dialog_confirm.png', 'ui/dialog_confirm_hover.png', 'ui/dialog_confirm_press.png']}
+                sprite={{
+                  src: ['ui/dialog_confirm.png', 'ui/dialog_confirm_hover.png', 'ui/dialog_confirm_press.png'],
+                  tint: '#ffffff',
+                }}
                 label="对话框同意按钮"
                 pivot={[0.5, 0.5]}
                 anchor={[0.5, 0.5]}
                 x={-178}
                 y={72}
-                tint="#ffffff"
                 text="确定"
-                color="#ffffff"
-                onClick={() => {
+                textStyle={{ fillColor: '#ffffff' }}
+                onPress={() => {
                   confirmButtonSound();
                   handleConfirm(true);
                 }}
               />
               <Button
-                fileNames={['ui/dialog_cancel.png', 'ui/dialog_cancel_hover.png', 'ui/dialog_cancel_press.png']}
+                sprite={{ src: ['ui/dialog_cancel.png', 'ui/dialog_cancel_hover.png', 'ui/dialog_cancel_press.png'] }}
                 label="对话框拒绝按钮"
                 pivot={[0.5, 0.5]}
                 anchor={[0.5, 0.5]}
                 x={178}
                 y={72}
                 text="取消"
-                color="#ffffff"
-                onClick={() => {
+                textStyle={{ fillColor: '#ffffff' }}
+                onPress={() => {
                   cancelButtonSound();
                   handleConfirm(false);
                 }}

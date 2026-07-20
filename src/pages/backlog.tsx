@@ -1,6 +1,7 @@
 import {
   addEventListener,
   animated,
+  Button,
   executePluginCommand,
   getStageSize,
   type MouseEvent,
@@ -11,7 +12,6 @@ import {
   useTransition,
 } from '@momoyu-ink/kit';
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
-import { Button } from '../components/button';
 import { type BacklogRecord, useBacklog } from '../hooks/useBacklog';
 import { uiActions } from '../state/ui';
 
@@ -212,10 +212,10 @@ export function Backlog() {
       >
         <text text="BACKLOG" fontSize={44} fillColor="#ffffff" x={104} y={72} />
         <Button
-          fileNames={['ui/sl_close.png', 'ui/sl_close_hover.png', 'ui/sl_close_press.png']}
+          sprite={{ src: ['ui/sl_close.png', 'ui/sl_close_hover.png', 'ui/sl_close_press.png'] }}
           x={PANEL_WIDTH - 98}
           y={60}
-          onClick={(event) => {
+          onPress={(event) => {
             event.stopPropagation();
             handleClose();
           }}
@@ -315,14 +315,16 @@ function BacklogRow({ record, onJump }: BacklogRowProps) {
       >
         {voice ? (
           <Button
-            fileNames={['ui/backlog_voice.png', 'ui/backlog_voice.png', 'ui/backlog_voice.png']}
+            sprite={{
+              src: 'ui/backlog_voice.png',
+              tint: hovered === 'voice' ? '#D18F52' : 'rgba(255, 255, 255, 0.92)',
+            }}
             label="Replay Voice"
             x={VOICE_BUTTON_X}
             y={VOICE_BUTTON_Y}
             scale={VOICE_BUTTON_SCALE}
-            tint={hovered === 'voice' ? '#D18F52' : 'rgba(255, 255, 255, 0.92)'}
             onMouseEnter={() => setHovered('voice')}
-            onClick={(event) => {
+            onPress={(event) => {
               event.stopPropagation();
               void replayBacklogVoice(title, voice);
             }}

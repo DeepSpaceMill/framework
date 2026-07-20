@@ -1,8 +1,16 @@
-import { animated, executePluginCommand, nextLine, useAutoBlocker, useIsSeeking, useSkipBlocker, useTransition } from '@momoyu-ink/kit';
+import {
+  animated,
+  Button,
+  executePluginCommand,
+  nextLine,
+  useAutoBlocker,
+  useIsSeeking,
+  useSkipBlocker,
+  useTransition,
+} from '@momoyu-ink/kit';
 import { useSnapshot } from 'valtio';
 import { useCallback, useEffect } from 'react';
 import { gameState } from '../state/game';
-import { Button } from '../components/button';
 
 // Screen center coordinates
 const CENTER_X = 960;
@@ -98,16 +106,17 @@ export function SelectionActor() {
               // biome-ignore lint/suspicious/noArrayIndexKey: options are static per show cycle
               key={index}
               label={`选项_${index}`}
-              fileNames={['ui/selection.png', 'ui/selection_hover.png', 'ui/selection_press.png']}
-              mode="nineslice"
-              bounds={NINESLICE_BOUNDS}
-              targetWidth={BUTTON_WIDTH}
-              targetHeight={BUTTON_HEIGHT}
+              sprite={{
+                src: ['ui/selection.png', 'ui/selection_hover.png', 'ui/selection_press.png'],
+                mode: 'nineslice',
+                bounds: NINESLICE_BOUNDS,
+                targetWidth: BUTTON_WIDTH,
+                targetHeight: BUTTON_HEIGHT,
+              }}
               text={option.text}
-              fontSize={32}
-              color="#ffffff"
+              textStyle={{ fontSize: 32, glyphGridSize: 32, fillColor: '#ffffff' }}
               textAlign="center"
-              onClick={() => handleSelect(option.value)}
+              onPress={() => handleSelect(option.value)}
             />
           ))}
         </animated.vbox>

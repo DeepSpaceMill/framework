@@ -1,6 +1,5 @@
-import { useNavigation, animated, useTransition, useSoundEffect } from '@momoyu-ink/kit';
+import { useNavigation, animated, Button, useTransition, useSoundEffect } from '@momoyu-ink/kit';
 import { uiActions } from '../state/ui';
-import { Button } from '../components/button';
 import { executePluginCommand } from '@momoyu-ink/kit';
 import { resetGameState } from '../state/game';
 
@@ -71,32 +70,32 @@ export function Menu() {
       <animated.sprite label="背景图" src="ui/menu_bg.png" pivot={[0.5, 0.5]} x={960} y={540} {...style}>
         <vbox gap={35} anchor={[0.5, 0]} pivot={[0.5, 0]} y={50}>
           <Button
-            fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
+            sprite={{ src: ['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png'] }}
             text="继续游戏"
-            color="#f0f0f0"
+            textStyle={{ fillColor: '#f0f0f0' }}
             onMouseEnter={hoverButtonSound}
-            onClick={handleExit}
+            onPress={handleExit}
           />
           <Button
-            fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
+            sprite={{ src: ['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png'] }}
             text="设置"
-            color="#f0f0f0"
+            textStyle={{ fillColor: '#f0f0f0' }}
             onMouseEnter={hoverButtonSound}
-            onClick={handleToSettings}
+            onPress={handleToSettings}
           />
           <Button
-            fileNames={['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png']}
+            sprite={{ src: ['ui/menu_style2.png', 'ui/menu_style2_hover.png', 'ui/menu_style2_press.png'] }}
             text="回到主界面"
-            color="#f0f0f0"
+            textStyle={{ fillColor: '#f0f0f0' }}
             onMouseEnter={hoverButtonSound}
-            onClick={handleToMainMenu}
+            onPress={handleToMainMenu}
           />
           <Button
-            fileNames={['ui/menu_style1.png', 'ui/menu_style1_hover.png', 'ui/menu_style1_press.png']}
+            sprite={{ src: ['ui/menu_style1.png', 'ui/menu_style1_hover.png', 'ui/menu_style1_press.png'] }}
             text="退出到桌面"
-            color="#f0f0f0"
+            textStyle={{ fillColor: '#f0f0f0' }}
             onMouseEnter={hoverButtonSound}
-            onClick={handleToQuit}
+            onPress={handleToQuit}
           />
         </vbox>
       </animated.sprite>

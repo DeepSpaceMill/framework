@@ -1,6 +1,13 @@
 import { useRef, useState } from 'react';
-import { useNavigation, useNavigationParams, animated, getStageSize, useSoundEffect, useTransition } from '@momoyu-ink/kit';
-import { Button } from '../components/button';
+import {
+  useNavigation,
+  useNavigationParams,
+  animated,
+  Button,
+  getStageSize,
+  useSoundEffect,
+  useTransition,
+} from '@momoyu-ink/kit';
 import { uiActions } from '../state/ui';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 
@@ -134,20 +141,20 @@ export function SaveLoad() {
       >
         <text label="标题" text={type?.toUpperCase()} fontSize={48} fillColor="white" x={64} y={54} />
         <Button
-          fileNames={['ui/sl_close.png', 'ui/sl_close_hover.png', 'ui/sl_close_press.png']}
+          sprite={{ src: ['ui/sl_close.png', 'ui/sl_close_hover.png', 'ui/sl_close_press.png'] }}
           x={1532}
           y={62}
-          onClick={handleExit}
+          onPress={handleExit}
         />
         <hbox x={606} y={60} gap={30}>
           {[...Array(5)].map((_, index) => (
             <Button
               key={`nav-button-${String(index)}`}
-              fileNames={['ui/sl_nav.png', 'ui/sl_nav_hover.png', 'ui/sl_nav_press.png']}
+              sprite={{ src: ['ui/sl_nav.png', 'ui/sl_nav_hover.png', 'ui/sl_nav_press.png'] }}
               text={`${index + 1}`}
-              color={currentPage === index ? 'black' : 'white'}
+              textStyle={{ fillColor: currentPage === index ? 'black' : 'white' }}
               lockOn={currentPage === index ? 'press' : undefined}
-              onClick={() => {
+              onPress={() => {
                 setCurrentPage(index);
               }}
             />
@@ -169,10 +176,10 @@ export function SaveLoad() {
                   <hbox key={slotId} width={712} height={130}>
                     <container>
                       <Button
-                        fileNames={['ui/sl_item.png', 'ui/sl_item_hover.png', 'ui/sl_item_press.png']}
+                        sprite={{ src: ['ui/sl_item.png', 'ui/sl_item_hover.png', 'ui/sl_item_press.png'] }}
                         onMouseEnter={hoverButtonSound}
                         interactive={isInteractive}
-                        onClick={() => handleSlotAction(slotId)}
+                        onPress={() => handleSlotAction(slotId)}
                       />
                       {!slotData && (
                         <container interactive={false}>
@@ -222,10 +229,12 @@ export function SaveLoad() {
                           </container>
                           {type === 'load' && (
                             <Button
-                              fileNames={['ui/sl_item_del.png', 'ui/sl_item_del_hover.png', 'ui/sl_item_del_press.png']}
+                              sprite={{
+                                src: ['ui/sl_item_del.png', 'ui/sl_item_del_hover.png', 'ui/sl_item_del_press.png'],
+                              }}
                               x={676}
                               y={15}
-                              onClick={(e) => {
+                              onPress={(e) => {
                                 e.stopPropagation();
                                 handleDeleteSlot(slotId);
                               }}

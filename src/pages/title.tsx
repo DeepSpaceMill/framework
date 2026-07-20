@@ -1,6 +1,13 @@
 import { useEffect } from 'react';
-import { MouseEvent, useFadeIn, useSoundEffect, useNavigation, animated, executePluginCommand } from '@momoyu-ink/kit';
-import { Button } from '../components/button';
+import {
+  Button,
+  type PressEvent,
+  useFadeIn,
+  useSoundEffect,
+  useNavigation,
+  animated,
+  executePluginCommand,
+} from '@momoyu-ink/kit';
 import { uiActions } from '../state/ui';
 
 export function Title() {
@@ -10,7 +17,7 @@ export function Title() {
   const hoverButtonSound = useSoundEffect('audio/cursor_style_4.opus');
   const clickButtonSound = useSoundEffect('audio/confirm_style_5_echo_001.opus');
 
-  const handleStart = (e: MouseEvent) => {
+  const handleStart = (e: PressEvent) => {
     clickButtonSound();
     contentApi.start({
       to: { opacity: 0 },
@@ -23,7 +30,7 @@ export function Title() {
     e.stopPropagation();
   };
 
-  const handleExit = (e: MouseEvent) => {
+  const handleExit = (e: PressEvent) => {
     clickButtonSound();
     uiActions.confirmUnique('exit-game', '确定要退出游戏吗？', () => {
       executePluginCommand('system', {
@@ -52,35 +59,31 @@ export function Title() {
 
         <vbox gap={4} pivot={[0.5, 0.5]} x={960} y={805}>
           <Button
-            fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
+            sprite={{ src: ['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png'] }}
             text={'开始游戏'}
-            fontSize={36}
-            color="#ffffff"
-            onClick={handleStart}
+            textStyle={{ fontSize: 36, glyphGridSize: 36, fillColor: '#ffffff' }}
+            onPress={handleStart}
             onMouseEnter={hoverButtonSound}
           />
           <Button
-            fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
+            sprite={{ src: ['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png'] }}
             text={'读取存档'}
-            fontSize={36}
-            color="#ffffff"
-            onClick={() => navigation.pushOverlay('saveload', { type: 'load' })}
+            textStyle={{ fontSize: 36, glyphGridSize: 36, fillColor: '#ffffff' }}
+            onPress={() => navigation.pushOverlay('saveload', { type: 'load' })}
             onMouseEnter={hoverButtonSound}
           />
           <Button
-            fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
+            sprite={{ src: ['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png'] }}
             text={'设置'}
-            fontSize={36}
-            color="#ffffff"
-            onClick={() => navigation.pushOverlay('settings')}
+            textStyle={{ fontSize: 36, glyphGridSize: 36, fillColor: '#ffffff' }}
+            onPress={() => navigation.pushOverlay('settings')}
             onMouseEnter={hoverButtonSound}
           />
           <Button
-            fileNames={['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png']}
+            sprite={{ src: ['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png'] }}
             text={'退出'}
-            fontSize={36}
-            color="#ffffff"
-            onClick={handleExit}
+            textStyle={{ fontSize: 36, glyphGridSize: 36, fillColor: '#ffffff' }}
+            onPress={handleExit}
             onMouseEnter={hoverButtonSound}
           />
         </vbox>

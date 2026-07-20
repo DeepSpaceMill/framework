@@ -1,6 +1,13 @@
-import { useNavigation, animated, getStageSize, type Node, useSoundEffect, useTransition } from '@momoyu-ink/kit';
+import {
+  useNavigation,
+  animated,
+  Button,
+  getStageSize,
+  type Node,
+  useSoundEffect,
+  useTransition,
+} from '@momoyu-ink/kit';
 import { useRef, useState } from 'react';
-import { Button } from '../components/button';
 import { Checkbox } from '../components/checkbox';
 import { Select } from '../components/select';
 import { Slider } from '../components/slider';
@@ -104,10 +111,10 @@ export function Settings() {
       >
         <text label="标题" text="SETTINGS" fontSize={48} fillColor="white" x={64} y={54} />
         <Button
-          fileNames={['ui/sl_close.png', 'ui/sl_close_hover.png', 'ui/sl_close_press.png']}
+          sprite={{ src: ['ui/sl_close.png', 'ui/sl_close_hover.png', 'ui/sl_close_press.png'] }}
           x={1532}
           y={62}
-          onClick={handleExit}
+          onPress={handleExit}
         />
 
         <hbox x={180} y={300} gap={139}>
@@ -115,7 +122,6 @@ export function Settings() {
             <hbox width={581} height={54} justifyContent="space-between" zIndex={1}>
               <text text="窗口尺寸" fontSize={36} fillColor="#ffffff" />
               <Select
-                fileName={['ui/dialog_confirm.png', 'ui/dialog_confirm_hover.png', 'ui/dialog_confirm_press.png']}
                 fontSize={32}
                 color="#ffffff"
                 mode="nineslice"
@@ -128,7 +134,7 @@ export function Settings() {
                   { text: '1920 x 1080', value: '1080' },
                   { text: '1280 x 720', value: '720' },
                 ]}
-                onSelect={(value) => setValue('display', value)}
+                onValueChange={(value) => setValue('display', value)}
                 onMouseEnter={hoverButtonSound}
               />
             </hbox>
@@ -139,7 +145,7 @@ export function Settings() {
                 targetWidth={401}
                 targetHeight={40}
                 value={settings.volume_bgm}
-                onChange={(v) => setValue('volume_bgm', v)}
+                onValueChange={(v) => setValue('volume_bgm', v)}
                 onMouseEnter={hoverButtonSound}
               />
             </hbox>
@@ -150,7 +156,7 @@ export function Settings() {
                 targetWidth={401}
                 targetHeight={40}
                 value={settings.volume_se}
-                onChange={(v) => setValue('volume_se', v)}
+                onValueChange={(v) => setValue('volume_se', v)}
                 onMouseEnter={hoverButtonSound}
               />
             </hbox>
@@ -161,7 +167,7 @@ export function Settings() {
                 targetWidth={401}
                 targetHeight={40}
                 value={settings.volume_voice}
-                onChange={(v) => setValue('volume_voice', v)}
+                onValueChange={(v) => setValue('volume_voice', v)}
                 onMouseEnter={hoverButtonSound}
               />
             </hbox>
@@ -175,7 +181,7 @@ export function Settings() {
                 targetWidth={401}
                 targetHeight={40}
                 value={settings.text_speed}
-                onChange={(v) => setValue('text_speed', v)}
+                onValueChange={(v) => setValue('text_speed', v)}
                 onMouseEnter={hoverButtonSound}
               />
             </hbox>
@@ -186,7 +192,7 @@ export function Settings() {
                 targetWidth={401}
                 targetHeight={40}
                 value={settings.auto_interval}
-                onChange={(v) => setValue('auto_interval', v)}
+                onValueChange={(v) => setValue('auto_interval', v)}
                 onMouseEnter={hoverButtonSound}
               />
             </hbox>
@@ -199,7 +205,7 @@ export function Settings() {
                 targetWidth={401}
                 targetHeight={48}
                 checked={settings.skip_voice}
-                onChange={(checked) => setValue('skip_voice', checked)}
+                onCheckedChange={(checked) => setValue('skip_voice', checked)}
                 onMouseEnter={hoverButtonSound}
               />
             </hbox>

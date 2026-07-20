@@ -1,5 +1,6 @@
 import {
   animated,
+  Button,
   useAutoTicket,
   useBeforeHandleCommandCallback,
   type AutoTicketHandle,
@@ -15,7 +16,6 @@ import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { gameState, type TextBoxAvatarConfig, type TextBoxState } from '../state/game';
 import { settingsState } from '../state/settings';
-import { Button } from '../components/button';
 
 export enum TextBoxButton {
   QSAVE = 'QSAV',
@@ -209,10 +209,10 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
         {buttonTransitions((style) => (
           <animated.container label="文本框按钮组" opacity={style.opacity}>
             <Button
-              fileNames={['ui/textbox_close.png', 'ui/textbox_close_hover.png', 'ui/textbox_close_press.png']}
+              sprite={{ src: ['ui/textbox_close.png', 'ui/textbox_close_hover.png', 'ui/textbox_close_press.png'] }}
               x={1466}
               y={18}
-              onClick={() => {
+              onPress={() => {
                 gameState.textbox.hideReason = 'manual';
                 gameState.textbox.visible = false;
               }}
@@ -230,11 +230,14 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
               ].map((button) => (
                 <Button
                   key={button}
-                  fileNames={[`ui/textbox_button.png`, `ui/textbox_button.png`, `ui/textbox_button.png`]}
+                  sprite={{ src: 'ui/textbox_button.png' }}
                   text={button}
-                  fontSize={24}
-                  color={['rgba(255,255,255,0.3)', 'rgba(255,255,255,0.7)', 'rgba(255,255,255,0.9)']}
-                  onClick={() => {
+                  textStyle={[
+                    { fontSize: 24, glyphGridSize: 24, fillColor: 'rgba(255,255,255,0.3)' },
+                    { fontSize: 24, glyphGridSize: 24, fillColor: 'rgba(255,255,255,0.7)' },
+                    { fontSize: 24, glyphGridSize: 24, fillColor: 'rgba(255,255,255,0.9)' },
+                  ]}
+                  onPress={() => {
                     onButtonClick(button);
                   }}
                 />
