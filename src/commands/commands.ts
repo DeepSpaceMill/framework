@@ -1530,6 +1530,106 @@ const WaitClickCommandSchema = z
   });
 
 /* ------------------------------------------------------------------ */
+/*  Steam Achievement Commands                                        */
+/* ------------------------------------------------------------------ */
+
+const achievementName = z
+  .string()
+  .describe('Achievement API name configured in Steamworks')
+  .meta({
+    title: 'Achievement Name',
+    'x-i18n': { 'zh-CN': '成就名称' },
+    'x-i18n-desc': { 'zh-CN': '在 Steamworks 中配置的成就 API 名称' },
+  });
+
+const AchievementSetCommandSchema = z
+  .object({
+    command: z.literal('achievementSet'),
+    name: achievementName,
+  })
+  .describe('Unlock a Steam achievement')
+  .meta({
+    title: 'Unlock Steam Achievement',
+    'x-i18n': { 'zh-CN': '解锁 Steam 成就' },
+    'x-i18n-desc': { 'zh-CN': '解锁指定 Steam 成就并立即提交状态' },
+  });
+
+const AchievementClearCommandSchema = z
+  .object({
+    command: z.literal('achievementClear'),
+    name: achievementName,
+  })
+  .describe('Clear a Steam achievement')
+  .meta({
+    title: 'Clear Steam Achievement',
+    'x-i18n': { 'zh-CN': '清除 Steam 成就' },
+    'x-i18n-desc': { 'zh-CN': '清除指定 Steam 成就并立即提交状态' },
+  });
+
+const AchievementClearAllCommandSchema = z
+  .object({
+    command: z.literal('achievementClearAll'),
+  })
+  .describe('Clear all Steam achievements')
+  .meta({
+    title: 'Clear All Steam Achievements',
+    'x-i18n': { 'zh-CN': '清除全部 Steam 成就' },
+    'x-i18n-desc': { 'zh-CN': '清除全部 Steam 成就并立即提交状态' },
+  });
+
+const AchievementGetCommandSchema = z
+  .object({
+    command: z.literal('achievementGet'),
+    name: achievementName,
+    saveTo: z
+      .string()
+      .describe('Local variable name to save the achievement state to')
+      .meta({
+        title: 'Save To',
+        'x-i18n': { 'zh-CN': '局部变量' },
+        'x-i18n-desc': { 'zh-CN': '保存成就是否已解锁的局部变量名' },
+      }),
+  })
+  .describe('Get whether a Steam achievement is unlocked')
+  .meta({
+    title: 'Get Steam Achievement',
+    'x-i18n': { 'zh-CN': '查询 Steam 成就' },
+    'x-i18n-desc': { 'zh-CN': '查询指定 Steam 成就是否已解锁' },
+  });
+
+const AchievementIndicateProgressCommandSchema = z
+  .object({
+    command: z.literal('achievementIndicateProgress'),
+    name: achievementName,
+    current: z
+      .number()
+      .int()
+      .nonnegative()
+      .describe('Current achievement progress')
+      .meta({
+        title: 'Current Progress',
+        'x-i18n': { 'zh-CN': '当前进度' },
+        'x-i18n-desc': { 'zh-CN': '当前成就进度，必须小于最大进度' },
+      }),
+    max: z
+      .number()
+      .int()
+      .positive()
+      .describe('Maximum achievement progress')
+      .meta({
+        title: 'Maximum Progress',
+        'x-i18n': { 'zh-CN': '最大进度' },
+        'x-i18n-desc': { 'zh-CN': '成就最大进度，必须大于 0' },
+      }),
+  })
+  .describe('Show Steam achievement progress without storing it')
+  .meta({
+    title: 'Indicate Steam Achievement Progress',
+    'x-i18n': { 'zh-CN': '显示 Steam 成就进度' },
+    'x-i18n-desc': { 'zh-CN': '显示指定 Steam 成就的进度提示，但不保存进度值' },
+  });
+
+/* ------------------------------------------------------------------ */
 /*  Misc Commands                                                      */
 /* ------------------------------------------------------------------ */
 
@@ -1676,6 +1776,11 @@ export const ScenarioCommandSchema = z.discriminatedUnion('command', [
   SpriteTransEffectResetCommandSchema,
   WaitCommandSchema,
   WaitClickCommandSchema,
+  AchievementSetCommandSchema,
+  AchievementClearCommandSchema,
+  AchievementClearAllCommandSchema,
+  AchievementGetCommandSchema,
+  AchievementIndicateProgressCommandSchema,
   LeaveStageCommandSchema,
   TitleCommandSchema,
   OptionAddCommandSchema,
