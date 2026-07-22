@@ -180,6 +180,7 @@ export function SaveLoad() {
                         onMouseEnter={hoverButtonSound}
                         interactive={isInteractive}
                         onPress={() => handleSlotAction(slotId)}
+                        zIndex={1}
                       />
                       {!slotData && (
                         <container interactive={false}>
