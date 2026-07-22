@@ -5367,6 +5367,196 @@
       "properties": {
         "command": {
           "type": "string",
+          "const": "achievementSet"
+        },
+        "name": {
+          "type": "string",
+          "description": "Achievement API name configured in Steamworks",
+          "title": "Achievement Name",
+          "x-i18n": {
+            "zh-CN": "成就名称"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "在 Steamworks 中配置的成就 API 名称"
+          }
+        }
+      },
+      "required": [
+        "command",
+        "name"
+      ],
+      "description": "Unlock a Steam achievement",
+      "title": "Unlock Steam Achievement",
+      "x-i18n": {
+        "zh-CN": "解锁 Steam 成就"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "解锁指定 Steam 成就并立即提交状态"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "achievementClear"
+        },
+        "name": {
+          "type": "string",
+          "description": "Achievement API name configured in Steamworks",
+          "title": "Achievement Name",
+          "x-i18n": {
+            "zh-CN": "成就名称"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "在 Steamworks 中配置的成就 API 名称"
+          }
+        }
+      },
+      "required": [
+        "command",
+        "name"
+      ],
+      "description": "Clear a Steam achievement",
+      "title": "Clear Steam Achievement",
+      "x-i18n": {
+        "zh-CN": "清除 Steam 成就"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "清除指定 Steam 成就并立即提交状态"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "achievementClearAll"
+        }
+      },
+      "required": [
+        "command"
+      ],
+      "description": "Clear all Steam achievements",
+      "title": "Clear All Steam Achievements",
+      "x-i18n": {
+        "zh-CN": "清除全部 Steam 成就"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "清除全部 Steam 成就并立即提交状态"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "achievementGet"
+        },
+        "name": {
+          "type": "string",
+          "description": "Achievement API name configured in Steamworks",
+          "title": "Achievement Name",
+          "x-i18n": {
+            "zh-CN": "成就名称"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "在 Steamworks 中配置的成就 API 名称"
+          }
+        },
+        "saveTo": {
+          "type": "string",
+          "description": "Local variable name to save the achievement state to",
+          "title": "Save To",
+          "x-i18n": {
+            "zh-CN": "局部变量"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "保存成就是否已解锁的局部变量名"
+          }
+        }
+      },
+      "required": [
+        "command",
+        "name",
+        "saveTo"
+      ],
+      "description": "Get whether a Steam achievement is unlocked",
+      "title": "Get Steam Achievement",
+      "x-i18n": {
+        "zh-CN": "查询 Steam 成就"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "查询指定 Steam 成就是否已解锁"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
+          "const": "achievementIndicateProgress"
+        },
+        "name": {
+          "type": "string",
+          "description": "Achievement API name configured in Steamworks",
+          "title": "Achievement Name",
+          "x-i18n": {
+            "zh-CN": "成就名称"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "在 Steamworks 中配置的成就 API 名称"
+          }
+        },
+        "current": {
+          "type": "integer",
+          "minimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Current achievement progress",
+          "title": "Current Progress",
+          "x-step": 1,
+          "x-i18n": {
+            "zh-CN": "当前进度"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "当前成就进度，必须小于最大进度"
+          }
+        },
+        "max": {
+          "type": "integer",
+          "exclusiveMinimum": 0,
+          "maximum": 9007199254740991,
+          "description": "Maximum achievement progress",
+          "title": "Maximum Progress",
+          "x-step": 1,
+          "x-i18n": {
+            "zh-CN": "最大进度"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "成就最大进度，必须大于 0"
+          }
+        }
+      },
+      "required": [
+        "command",
+        "name",
+        "current",
+        "max"
+      ],
+      "description": "Show Steam achievement progress without storing it",
+      "title": "Indicate Steam Achievement Progress",
+      "x-i18n": {
+        "zh-CN": "显示 Steam 成就进度"
+      },
+      "x-i18n-desc": {
+        "zh-CN": "显示指定 Steam 成就的进度提示，但不保存进度值"
+      }
+    },
+    {
+      "type": "object",
+      "properties": {
+        "command": {
+          "type": "string",
           "const": "leaveStage"
         },
         "gotoPage": {

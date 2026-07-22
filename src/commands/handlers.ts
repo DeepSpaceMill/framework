@@ -1,4 +1,4 @@
-import { getNavigator, getSeekingType, TextLine, type CommandHandler, type TextLineHandler } from '@momoyu-ink/kit';
+import { executePluginCommand, getNavigator, getSeekingType, TextLine, type CommandHandler, type TextLineHandler } from '@momoyu-ink/kit';
 import {
   gameState,
   resetGameState,
@@ -920,6 +920,50 @@ export const handleWait: CommandHandler<ScenarioCommandSchemaType> = (cmd, contr
 /** Wait for user click. */
 export const handleWaitClick: CommandHandler<ScenarioCommandSchemaType> = (_cmd, control) => {
   control.hold();
+};
+
+// ---------------------------------------------------------------------------
+// Steam achievement command handlers
+// ---------------------------------------------------------------------------
+
+/** Unlock a Steam achievement and submit the updated state. */
+export const handleAchievementSet: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'achievementSet' || getSeekingType() === 'warp') return;
+  executePluginCommand('steam', { subCommand: 'achievementSet', name: cmd.name });
+};
+
+/** Clear a Steam achievement and submit the updated state. */
+export const handleAchievementClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'achievementClear' || getSeekingType() === 'warp') return;
+  executePluginCommand('steam', { subCommand: 'achievementClear', name: cmd.name });
+};
+
+/** Clear all Steam achievements and submit the updated state. */
+export const handleAchievementClearAll: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'achievementClearAll' || getSeekingType() === 'warp') return;
+  executePluginCommand('steam', { subCommand: 'achievementClearAll' });
+};
+
+/** Query a Steam achievement and save the result to a scenario local variable. */
+export const handleAchievementGet: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'achievementGet' || getSeekingType() === 'warp') return;
+  const achieved = executePluginCommand('steam', { subCommand: 'achievementGet', name: cmd.name });
+  executePluginCommand('scenario', {
+    subCommand: 'setLocalVariable',
+    name: cmd.saveTo,
+    value: achieved,
+  });
+};
+
+/** Show Steam achievement progress without storing it. */
+export const handleAchievementIndicateProgress: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
+  if (cmd.command !== 'achievementIndicateProgress' || getSeekingType() === 'warp') return;
+  executePluginCommand('steam', {
+    subCommand: 'achievementIndicateProgress',
+    name: cmd.name,
+    current: cmd.current,
+    max: cmd.max,
+  });
 };
 
 // ---------------------------------------------------------------------------
