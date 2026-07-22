@@ -1,23 +1,23 @@
 import {
+  type AutoTicketHandle,
   animated,
+  Button,
+  type Node,
   useAutoTicket,
   useBeforeHandleCommandCallback,
-  useIsSeeking,
   useInterruptCallback,
   useIsAutoing,
+  useIsSeeking,
   useIsSkipping,
-  useTransition,
-  type AutoTicketHandle,
-  type Node,
   useNavigationState,
+  useTransition,
   useUiData,
 } from '@momoyu-ink/kit';
-import { useSnapshot } from 'valtio';
 import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useSnapshot } from 'valtio';
+import type { StageTextBoxUiData } from '../data/ui';
 import { gameState, type TextBoxAvatarConfig, type TextBoxState } from '../state/game';
 import { settingsState } from '../state/settings';
-import { Button } from '../components/button';
-import type { StageTextBoxUiData } from '../data/ui';
 
 export enum TextBoxButton {
   QSAVE = 'QSAV',
@@ -220,11 +220,12 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
         {buttonTransitions((style) => (
           <animated.container label="文本框按钮组" opacity={style.opacity}>
             <Button
-              fileNames={textBoxUi.controls.closeButton.fileNames}
+              sprite={{ src: textBoxUi.controls.closeButton.fileNames }}
               x={textBoxUi.controls.closeButton.position.x}
               y={textBoxUi.controls.closeButton.position.y}
               anchor={textBoxUi.controls.closeButton.anchor}
-              onClick={() => {
+              pivot={textBoxUi.controls.closeButton.pivot}
+              onPress={() => {
                 gameState.textbox.hideReason = 'manual';
                 gameState.textbox.visible = false;
               }}
@@ -233,13 +234,25 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
               {textBoxUi.controls.buttons.map((button) => (
                 <Button
                   key={`${button.action}-${button.position.x}-${button.position.y}`}
-                  fileNames={button.fileNames}
+                  sprite={{ src: button.fileNames }}
                   x={button.position.x}
                   y={button.position.y}
                   anchor={button.anchor}
+                  pivot={button.pivot}
                   text={button.text}
-                  fontSize={button.fontSize}
-                  color={button.color}
+                  textStyle={
+                    typeof button.color === 'string'
+                      ? { fontSize: button.fontSize, glyphGridSize: button.fontSize, fillColor: button.color }
+                      : (button.color.map((fillColor) => ({
+                          fontSize: button.fontSize,
+                          glyphGridSize: button.fontSize,
+                          fillColor,
+                        })) as [
+                          { fontSize: number; glyphGridSize: number; fillColor: string },
+                          { fontSize: number; glyphGridSize: number; fillColor: string },
+                          { fontSize: number; glyphGridSize: number; fillColor: string },
+                        ])
+                  }
                   textOffsetX={button.textOffsetX}
                   textOffsetY={button.textOffsetY}
                   lockOn={
@@ -249,7 +262,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
                       ? 'press'
                       : undefined
                   }
-                  onClick={() => {
+                  onPress={() => {
                     onButtonClick(button.action as TextBoxButton);
                   }}
                 />

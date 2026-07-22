@@ -1,14 +1,14 @@
-import { useState, useRef } from 'react';
 import {
+  animated,
+  Button,
+  getStageSize,
   useNavigation,
   useNavigationParams,
-  animated,
-  getStageSize,
-  useTransition,
   useSoundEffect,
+  useTransition,
   useUiData,
 } from '@momoyu-ink/kit';
-import { Button } from './button';
+import { useRef, useState } from 'react';
 
 interface DialogParams {
   message?: string;
@@ -72,8 +72,8 @@ export function Dialog() {
   return transitions((style, _) => (
     <animated.backdrop filters={[{ type: 'blur', radius: 2 }]} opacity={style.opacity}>
       <container x={stageSize.width / 2} y={stageSize.height / 2} scale={stageSize.height / 1080} interactive={show}>
-        <animated.sprite label="对话框遮罩" src={confirmUi.mask} pivot={[0.5, 0.5]} anchor={[0.5, 0.5]} />
-        <animated.sprite label="对话框" src={confirmUi.background} pivot={[0.5, 0.5]} anchor={[0.5, 0.5]} {...style}>
+        <animated.sprite label="对话框遮罩" src={confirmUi.mask} pivot={[0.5, 0.5]} />
+        <animated.sprite label="对话框" src={confirmUi.background} pivot={[0.5, 0.5]} {...style}>
           <text
             label="对话框内容"
             text={content}
@@ -87,17 +87,19 @@ export function Dialog() {
           />
           {mode === 'alert' && (
             <Button
-              fileNames={confirmUi.alertButton.fileNames}
+              sprite={{ src: confirmUi.alertButton.fileNames, tint: '#ffffff' }}
               label="对话框确认按钮"
               pivot={[0.5, 0.5]}
               anchor={[0.5, 0.5]}
               x={confirmUi.alertButton.position.x}
               y={confirmUi.alertButton.position.y}
-              tint="#ffffff"
               text={confirmUi.alertButton.text}
-              color={confirmUi.alertButton.color}
-              fontSize={confirmUi.alertButton.fontSize}
-              onClick={() => {
+              textStyle={{
+                fontSize: confirmUi.alertButton.fontSize,
+                glyphGridSize: confirmUi.alertButton.fontSize,
+                fillColor: confirmUi.alertButton.color,
+              }}
+              onPress={() => {
                 confirmButtonSound();
                 handleConfirm(true);
               }}
@@ -106,32 +108,37 @@ export function Dialog() {
           {mode === 'confirm' && (
             <>
               <Button
-                fileNames={confirmUi.confirmButton.fileNames}
+                sprite={{ src: confirmUi.confirmButton.fileNames, tint: '#ffffff' }}
                 label="对话框同意按钮"
                 pivot={[0.5, 0.5]}
                 anchor={[0.5, 0.5]}
                 x={confirmUi.confirmButton.position.x}
                 y={confirmUi.confirmButton.position.y}
-                tint="#ffffff"
                 text={confirmUi.confirmButton.text}
-                color={confirmUi.confirmButton.color}
-                fontSize={confirmUi.confirmButton.fontSize}
-                onClick={() => {
+                textStyle={{
+                  fontSize: confirmUi.confirmButton.fontSize,
+                  glyphGridSize: confirmUi.confirmButton.fontSize,
+                  fillColor: confirmUi.confirmButton.color,
+                }}
+                onPress={() => {
                   confirmButtonSound();
                   handleConfirm(true);
                 }}
               />
               <Button
-                fileNames={confirmUi.cancelButton.fileNames}
+                sprite={{ src: confirmUi.cancelButton.fileNames }}
                 label="对话框拒绝按钮"
                 pivot={[0.5, 0.5]}
                 anchor={[0.5, 0.5]}
                 x={confirmUi.cancelButton.position.x}
                 y={confirmUi.cancelButton.position.y}
                 text={confirmUi.cancelButton.text}
-                color={confirmUi.cancelButton.color}
-                fontSize={confirmUi.cancelButton.fontSize}
-                onClick={() => {
+                textStyle={{
+                  fontSize: confirmUi.cancelButton.fontSize,
+                  glyphGridSize: confirmUi.cancelButton.fontSize,
+                  fillColor: confirmUi.cancelButton.color,
+                }}
+                onPress={() => {
                   cancelButtonSound();
                   handleConfirm(false);
                 }}

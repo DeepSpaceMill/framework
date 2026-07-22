@@ -1,8 +1,16 @@
+import {
+  animated,
+  Button,
+  getStageSize,
+  useNavigation,
+  useNavigationParams,
+  useSoundEffect,
+  useTransition,
+  useUiData,
+} from '@momoyu-ink/kit';
 import { useEffect, useRef, useState } from 'react';
-import { useNavigation, useNavigationParams, animated, getStageSize, useSoundEffect, useTransition, useUiData } from '@momoyu-ink/kit';
-import { Button } from '../components/button';
-import { uiActions } from '../state/ui';
 import { useSaveLoad } from '../hooks/useSaveLoad';
+import { uiActions } from '../state/ui';
 
 interface SaveLoadParams {
   type?: 'save' | 'load';
@@ -65,7 +73,8 @@ export function SaveLoad() {
     }
   }, [activePage, currentPage]);
 
-  const getSlotLabel = (slotId: string) => (slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId.replace('save-', '')}`);
+  const getSlotLabel = (slotId: string) =>
+    slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId.replace('save-', '')}`;
 
   const requestClose = (afterClose?: () => void) => {
     pendingCloseActionRef.current = afterClose ?? (() => navigation.popOverlay());
@@ -153,22 +162,25 @@ export function SaveLoad() {
           y={saveLoadUi.title.position.y}
         />
         <Button
-          fileNames={saveLoadUi.closeButton.fileNames}
+          sprite={{ src: saveLoadUi.closeButton.fileNames }}
           x={saveLoadUi.closeButton.position.x}
           y={saveLoadUi.closeButton.position.y}
-          onClick={handleExit}
+          onPress={handleExit}
         />
         {saveLoadUi.pageButtons.map((button, index) => (
           <Button
             key={`nav-button-${String(index)}`}
-            fileNames={button.fileNames}
+            sprite={{ src: button.fileNames }}
             x={button.position.x}
             y={button.position.y}
             text={button.text ?? `${index + 1}`}
-            fontSize={button.fontSize}
-            color={activePage === index ? button.activeTextColor : button.inactiveTextColor}
+            textStyle={{
+              fontSize: button.fontSize,
+              glyphGridSize: button.fontSize,
+              fillColor: activePage === index ? button.activeTextColor : button.inactiveTextColor,
+            }}
             lockOn={activePage === index ? 'press' : undefined}
-            onClick={() => {
+            onPress={() => {
               setCurrentPage(index);
             }}
           />
@@ -183,10 +195,11 @@ export function SaveLoad() {
           return (
             <container key={slotId} x={slot.position.x} y={slot.position.y}>
               <Button
-                fileNames={slot.fileNames}
+                sprite={{ src: slot.fileNames }}
                 onMouseEnter={hoverButtonSound}
                 interactive={isInteractive}
-                onClick={() => handleSlotAction(slotId)}
+                onPress={() => handleSlotAction(slotId)}
+                zIndex={1}
               />
               {!slotData && saveLoadUi.slotContent.emptyText.enabled && (
                 <container interactive={false}>
@@ -212,7 +225,9 @@ export function SaveLoad() {
                     />
                     {saveLoadUi.slotContent.name.enabled && (
                       <text
-                        text={slotData.name === 'auto-save' ? '（快速存档）' : `存档 ${slotData.name.replace('save-', '')}`}
+                        text={
+                          slotData.name === 'auto-save' ? '（快速存档）' : `存档 ${slotData.name.replace('save-', '')}`
+                        }
                         fontSize={saveLoadUi.slotContent.name.fontSize}
                         lineHeight={1.2}
                         fillColor={saveLoadUi.slotContent.name.color}
@@ -246,10 +261,10 @@ export function SaveLoad() {
                   </container>
                   {type === 'load' && (
                     <Button
-                      fileNames={saveLoadUi.slotContent.deleteButton.fileNames}
+                      sprite={{ src: saveLoadUi.slotContent.deleteButton.fileNames }}
                       x={saveLoadUi.slotContent.deleteButton.position.x}
                       y={saveLoadUi.slotContent.deleteButton.position.y}
-                      onClick={(e) => {
+                      onPress={(e) => {
                         e.stopPropagation();
                         handleDeleteSlot(slotId);
                       }}

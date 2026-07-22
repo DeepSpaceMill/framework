@@ -1,9 +1,15 @@
-import { useNavigation, animated, useTransition, useSoundEffect, useUiData } from '@momoyu-ink/kit';
-import { uiActions } from '../state/ui';
-import { Button } from '../components/button';
-import { executePluginCommand } from '@momoyu-ink/kit';
-import { resetGameState } from '../state/game';
+import {
+  animated,
+  Button,
+  executePluginCommand,
+  useNavigation,
+  useSoundEffect,
+  useTransition,
+  useUiData,
+} from '@momoyu-ink/kit';
 import type { MenuButtonAction } from '../data/ui';
+import { resetGameState } from '../state/game';
+import { uiActions } from '../state/ui';
 
 export function Menu() {
   const menuUi = useUiData('menu');
@@ -91,14 +97,15 @@ export function Menu() {
         {menuUi.buttons.map((button, index) => (
           <Button
             key={`${button.text}-${index}`}
-            fileNames={button.fileNames}
+            sprite={{ src: button.fileNames }}
             x={button.position.x}
             y={button.position.y}
             anchor={[0.5, 0]}
+            pivot={[0.5, 0]}
             text={button.text}
-            color={button.color}
+            textStyle={{ fillColor: button.color }}
             onMouseEnter={hoverButtonSound}
-            onClick={handleButtonClick(button.action)}
+            onPress={handleButtonClick(button.action)}
           />
         ))}
       </animated.sprite>

@@ -1,19 +1,20 @@
 import {
   addEventListener,
   animated,
+  Button,
   executePluginCommand,
   getStageSize,
   type MouseEvent,
-  useSoundEffect,
-  useUiData,
   type TouchEvent,
+  useSoundEffect,
   useTransition,
+  useUiData,
 } from '@momoyu-ink/kit';
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { Button } from '../components/button';
 import type { BacklogUiData } from '../data/ui';
 import { type BacklogRecord, useBacklog } from '../hooks/useBacklog';
 import { uiActions } from '../state/ui';
+
 const BACKLOG_VOICE_CHANNEL_PREFIX = 'voice:backlog';
 const PANEL_TRANSITION = {
   from: {
@@ -209,10 +210,10 @@ export function Backlog() {
           y={backlogUi.title.position.y}
         />
         <Button
-          fileNames={backlogUi.closeButton.fileNames}
+          sprite={{ src: backlogUi.closeButton.fileNames }}
           x={backlogUi.closeButton.position.x}
           y={backlogUi.closeButton.position.y}
-          onClick={(event) => {
+          onPress={(event) => {
             event.stopPropagation();
             handleClose();
           }}
@@ -329,14 +330,16 @@ function BacklogRow({ record, ui, y, onJump }: BacklogRowProps) {
       >
         {voice ? (
           <Button
-            fileNames={ui.item.voiceButton.fileNames}
+            sprite={{
+              src: ui.item.voiceButton.fileNames,
+              tint: hovered === 'voice' ? ui.item.voiceButton.hoverTint : ui.item.voiceButton.idleTint,
+            }}
             label="Replay Voice"
             x={ui.item.voiceButton.position.x}
             y={ui.item.voiceButton.position.y}
             scale={1}
-            tint={hovered === 'voice' ? ui.item.voiceButton.hoverTint : ui.item.voiceButton.idleTint}
             onMouseEnter={() => setHovered('voice')}
-            onClick={(event) => {
+            onPress={(event) => {
               event.stopPropagation();
               void replayBacklogVoice(title, voice, ui.messages.replayVoiceFailed);
             }}

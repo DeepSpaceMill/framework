@@ -1,16 +1,16 @@
-import { useEffect, useRef, useState } from 'react';
 import {
-  MouseEvent,
   animated,
+  Button,
   ensureArchiveVariableDefaults,
   executePluginCommand,
+  type PressEvent,
   useNavigation,
   useSoundEffect,
   useSpringRef,
   useTransition,
   useUiData,
 } from '@momoyu-ink/kit';
-import { Button } from '../components/button';
+import { useEffect, useRef, useState } from 'react';
 import type { TitleButtonAction } from '../data/ui';
 import { uiActions } from '../state/ui';
 import { resetScenarioSessionForNewGame } from '../utils/scenarioGameState';
@@ -58,7 +58,7 @@ export function Title() {
     transRef.set({ opacity: visible ? 1 : 0 });
   };
 
-  const handleButtonClick = (action: TitleButtonAction) => (e: MouseEvent) => {
+  const handleButtonClick = (action: TitleButtonAction) => (e: PressEvent) => {
     if (action.type === 'gotoPage') {
       clickButtonSound();
       pendingActionRef.current = () => {
@@ -123,15 +123,13 @@ export function Title() {
               {titleUi.buttons.map((button, index) => (
                 <Button
                   key={`${button.text}-${index}`}
-                  fileNames={button.fileNames}
+                  sprite={{ src: button.fileNames }}
                   text={button.text}
-                  fontSize={button.fontSize}
-                  color={button.color}
+                  textStyle={{ fontSize: button.fontSize, glyphGridSize: button.fontSize, fillColor: button.color }}
                   x={button.position.x}
                   y={button.position.y}
                   pivot={[0.5, 0.5]}
-                  anchor={[0.5, 0.5]}
-                  onClick={handleButtonClick(button.action)}
+                  onPress={handleButtonClick(button.action)}
                   onMouseEnter={hoverButtonSound}
                 />
               ))}
