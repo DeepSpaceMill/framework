@@ -57,9 +57,8 @@ function resolveActiveAvatar(textboxState: TextBoxState): TextBoxAvatarConfig | 
 
   // Prefer a named variant match, fall back to the unnamed default for this character
   const matched =
-    textboxState.avatarFor.findLast(
-      (a) => a.character === character && a.name !== undefined && a.name === avatarName,
-    ) ?? textboxState.avatarFor.findLast((a) => a.character === character && a.name === undefined);
+    textboxState.avatarFor.findLast((a) => a.character === character && a.name && a.name === avatarName) ??
+    textboxState.avatarFor.findLast((a) => a.character === character && !a.name);
 
   return matched?.enable ? matched : globalAvatar;
 }
