@@ -22,9 +22,8 @@ import { uiActions } from '../state/ui';
  *   1. handler sets gameState.video.visible=true and calls control.hold().
  *   2. local `showing` flips on, useTransition runs the enter animation.
  *   3. video plays. When it ends naturally OR the user confirms a skip,
- *      `finish()` toggles `showing` off (starts leave animation) and queues
- *      a timer to clear gameState.video.visible and call nextLine() once
- *      the leave animation completes.
+ *      `finish()` toggles `showing` off (starts leave animation); its
+ *      completion clears state and calls nextLine().
  *
  * gameState.video.visible stays true throughout the leave animation so that
  * skip / auto blockers and the interrupt callback keep swallowing user
@@ -41,18 +40,24 @@ export function VideoActor() {
   // finish so that useTransition can play the leave animation while the
   // outer state still blocks input.
   const [showing, setShowing] = useState(false);
+  // Tracks the current `visible` activation. A leave animation keeps
+  // gameState.video.visible true, so it must not be treated as a new request.
+  const visibleRef = useRef(false);
   // Guards against double-finish (e.g. onEnded firing during a confirm flow).
   const finishingRef = useRef(false);
-  // Pending timer that finalizes state and advances the scenario after the
-  // leave animation completes. Cleaned up on unmount.
-  const finishTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   // Sync `showing` from valtio state when a new video is requested.
   useEffect(() => {
-    if (videoSnap.visible && !showing && !finishingRef.current && !seeking) {
+    if (!videoSnap.visible) {
+      visibleRef.current = false;
+      return;
+    }
+
+    if (!visibleRef.current && !seeking) {
+      visibleRef.current = true;
       setShowing(true);
     }
-  }, [videoSnap.visible, showing, seeking]);
+  }, [videoSnap.visible, seeking]);
 
   // Block skip and auto modes while the video is active. handler's
   // control.hold() consults these on dispatch and stops the active mode.
@@ -64,14 +69,6 @@ export function VideoActor() {
     if (finishingRef.current) return;
     finishingRef.current = true;
     setShowing(false);
-    const fadeMs = gameState.video.fadeTime;
-    finishTimerRef.current = setTimeout(() => {
-      finishTimerRef.current = null;
-      finishingRef.current = false;
-      gameState.video.visible = false;
-      gameState.video.src = '';
-      void nextLine();
-    }, fadeMs);
   }, []);
 
   // Consume click attempts while the video is on screen. Returns true to
@@ -99,22 +96,20 @@ export function VideoActor() {
   }, [finish]);
   useInterruptCallback(handleInterrupt);
 
-  // Cancel any pending finalize timer if the actor unmounts mid fade-out.
-  useEffect(() => {
-    return () => {
-      if (finishTimerRef.current !== null) {
-        clearTimeout(finishTimerRef.current);
-        finishTimerRef.current = null;
-      }
-    };
-  }, []);
-
   const transitions = useTransition(!seeking && showing ? [videoSnap.src] : [], {
     keys: (src) => src,
     from: { opacity: 0 },
     enter: { opacity: 1 },
     leave: { opacity: 0 },
     config: { duration: videoSnap.fadeTime },
+    onRest: (result) => {
+      if (!finishingRef.current || result.value.opacity !== 0) return;
+
+      gameState.video.visible = false;
+      gameState.video.src = '';
+      finishingRef.current = false;
+      void nextLine();
+    },
   });
 
   return transitions((style, src) => (
@@ -127,15 +122,7 @@ export function VideoActor() {
     >
       {/* Black backdrop so any letterboxed area outside the video is opaque. */}
       <sprite label="视频遮罩" src="ui/mask.png" pivot={[0.5, 0.5]} />
-      <video
-        ref={videoRef}
-        label="视频"
-        src={src}
-        autoPlay={true}
-        loop={false}
-        pivot={[0.5, 0.5]}
-        onEnded={finish}
-      />
+      <video ref={videoRef} label="视频" src={src} autoPlay={true} loop={false} pivot={[0.5, 0.5]} onEnded={finish} />
     </animated.container>
   ));
 }
