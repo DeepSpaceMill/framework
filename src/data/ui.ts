@@ -1808,10 +1808,141 @@ export const StageTextBoxNvlUiSchema = z
     'x-i18n-desc': { 'zh-CN': '舞台 NVL 文本框主题、正文、姓名、控件与历史段落配置' },
   });
 
+export const StageSelectionUiSchema = z
+  .object({
+    backdrop: z
+      .object({
+        mask: z
+          .string()
+          .describe('Selection overlay mask image')
+          .meta({
+            title: 'Mask',
+            format: 'asset',
+            'x-asset-kind': 'image',
+            'x-i18n': { 'zh-CN': '遮罩图' },
+            'x-i18n-desc': { 'zh-CN': '选择支背景遮罩图片' },
+          }),
+        blurRadius: z
+          .number()
+          .min(0)
+          .optional()
+          .default(4)
+          .describe('Selection background blur radius')
+          .meta({
+            title: 'Blur Radius',
+            'x-i18n': { 'zh-CN': '模糊半径' },
+            'x-i18n-desc': { 'zh-CN': '显示选择支时背景的模糊半径' },
+          }),
+      })
+      .describe('Selection backdrop configuration')
+      .meta({
+        title: 'Backdrop',
+        'x-i18n': { 'zh-CN': '背景' },
+        'x-i18n-desc': { 'zh-CN': '选择支背景遮罩和模糊效果配置' },
+      }),
+    panel: z
+      .object({
+        position: positionSchema,
+        gap: z
+          .number()
+          .min(0)
+          .optional()
+          .default(23)
+          .describe('Gap between selection buttons')
+          .meta({
+            title: 'Gap',
+            'x-i18n': { 'zh-CN': '选项间距' },
+            'x-i18n-desc': { 'zh-CN': '选择支按钮之间的垂直间距' },
+          }),
+      })
+      .describe('Selection panel layout')
+      .meta({
+        title: 'Panel',
+        'x-i18n': { 'zh-CN': '面板' },
+        'x-i18n-desc': { 'zh-CN': '选择支列表的位置和间距配置' },
+      }),
+    button: z
+      .object({
+        fileNames: buttonSchema,
+        bounds: ninesliceBoundsSchema.optional().default([0.3, 0.3, 0.3, 0.3]),
+        targetWidth: z
+          .number()
+          .min(0)
+          .optional()
+          .default(700)
+          .describe('Selection button width')
+          .meta({
+            title: 'Width',
+            'x-i18n': { 'zh-CN': '宽度' },
+            'x-i18n-desc': { 'zh-CN': '选择支按钮的目标宽度' },
+          }),
+        targetHeight: z
+          .number()
+          .min(0)
+          .optional()
+          .default(67)
+          .describe('Selection button height')
+          .meta({
+            title: 'Height',
+            'x-i18n': { 'zh-CN': '高度' },
+            'x-i18n-desc': { 'zh-CN': '选择支按钮的目标高度' },
+          }),
+        textStyle: createTextStyleWithDefaults({
+          fontSize: 32,
+          fillColor: '#ffffff',
+        }),
+        textAlign: z
+          .enum(['left', 'center', 'right'])
+          .optional()
+          .default('center')
+          .describe('Selection button text alignment')
+          .meta({
+            title: 'Text Alignment',
+            'x-i18n': { 'zh-CN': '文字对齐' },
+            'x-i18n-desc': { 'zh-CN': '选择支按钮文字的水平对齐方式' },
+          }),
+      })
+      .describe('Selection button configuration')
+      .meta({
+        title: 'Button',
+        'x-i18n': { 'zh-CN': '按钮' },
+        'x-i18n-desc': { 'zh-CN': '选择支按钮的图片、尺寸和文字样式配置' },
+      }),
+    hoverSound: z
+      .string()
+      .optional()
+      .describe('Sound effect played when hovering a selection button')
+      .meta({
+        title: 'Hover Sound',
+        format: 'asset',
+        'x-asset-kind': 'audio',
+        'x-i18n': { 'zh-CN': '悬停音效' },
+        'x-i18n-desc': { 'zh-CN': '鼠标悬停到选择支按钮时播放的音效' },
+      }),
+    clickSound: z
+      .string()
+      .optional()
+      .describe('Sound effect played when pressing a selection button')
+      .meta({
+        title: 'Click Sound',
+        format: 'asset',
+        'x-asset-kind': 'audio',
+        'x-i18n': { 'zh-CN': '点击音效' },
+        'x-i18n-desc': { 'zh-CN': '按下选择支按钮后播放的音效' },
+      }),
+  })
+  .describe('Stage selection UI configuration')
+  .meta({
+    title: 'Selection',
+    'x-i18n': { 'zh-CN': '选择支' },
+    'x-i18n-desc': { 'zh-CN': '舞台选择支的遮罩、布局、按钮和音效配置' },
+  });
+
 export const StageUiSchema = z
   .object({
     textbox: StageTextBoxUiSchema,
     textboxNVL: StageTextBoxNvlUiSchema,
+    selection: StageSelectionUiSchema,
     backlog: BacklogUiSchema,
   })
   .describe('Stage UI configuration')
@@ -1841,6 +1972,7 @@ export type ConfirmUiData = z.infer<typeof ConfirmUiSchema>;
 export type TextStyleUiData = z.infer<typeof textStyleSchema>;
 export type StageTextBoxUiData = z.infer<typeof StageTextBoxUiSchema>;
 export type StageTextBoxNvlUiData = z.infer<typeof StageTextBoxNvlUiSchema>;
+export type StageSelectionUiData = z.infer<typeof StageSelectionUiSchema>;
 export type StageUiData = z.infer<typeof StageUiSchema>;
 export type GameUiData = z.infer<typeof GameUiSchema>;
 

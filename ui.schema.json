@@ -3556,6 +3556,495 @@
             "zh-CN": "舞台 NVL 文本框主题、正文、姓名、控件与历史段落配置"
           }
         },
+        "selection": {
+          "type": "object",
+          "properties": {
+            "backdrop": {
+              "type": "object",
+              "properties": {
+                "mask": {
+                  "type": "string",
+                  "description": "Selection overlay mask image",
+                  "title": "Mask",
+                  "format": "asset",
+                  "x-asset-kind": "image",
+                  "x-i18n": {
+                    "zh-CN": "遮罩图"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "选择支背景遮罩图片"
+                  }
+                },
+                "blurRadius": {
+                  "default": 4,
+                  "description": "Selection background blur radius",
+                  "title": "Blur Radius",
+                  "x-i18n": {
+                    "zh-CN": "模糊半径"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "显示选择支时背景的模糊半径"
+                  },
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "mask"
+              ],
+              "description": "Selection backdrop configuration",
+              "title": "Backdrop",
+              "x-i18n": {
+                "zh-CN": "背景"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "选择支背景遮罩和模糊效果配置"
+              }
+            },
+            "panel": {
+              "type": "object",
+              "properties": {
+                "position": {
+                  "type": "object",
+                  "properties": {
+                    "x": {
+                      "type": "number",
+                      "title": "X",
+                      "x-i18n": {
+                        "zh-CN": "X 坐标"
+                      }
+                    },
+                    "y": {
+                      "type": "number",
+                      "title": "Y",
+                      "x-i18n": {
+                        "zh-CN": "Y 坐标"
+                      }
+                    }
+                  },
+                  "required": [
+                    "x",
+                    "y"
+                  ],
+                  "title": "Coordinates",
+                  "x-i18n": {
+                    "zh-CN": "坐标"
+                  },
+                  "format": "position"
+                },
+                "gap": {
+                  "default": 23,
+                  "description": "Gap between selection buttons",
+                  "title": "Gap",
+                  "x-i18n": {
+                    "zh-CN": "选项间距"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "选择支按钮之间的垂直间距"
+                  },
+                  "type": "number",
+                  "minimum": 0
+                }
+              },
+              "required": [
+                "position"
+              ],
+              "description": "Selection panel layout",
+              "title": "Panel",
+              "x-i18n": {
+                "zh-CN": "面板"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "选择支列表的位置和间距配置"
+              }
+            },
+            "button": {
+              "type": "object",
+              "properties": {
+                "fileNames": {
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "type": "string",
+                      "description": "Idle state image",
+                      "title": "Idle",
+                      "format": "asset",
+                      "x-asset-kind": "image",
+                      "x-i18n": {
+                        "zh-CN": "空闲"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "按钮空闲状态的图片"
+                      }
+                    },
+                    {
+                      "type": "string",
+                      "description": "Hover state image",
+                      "title": "Hover",
+                      "format": "asset",
+                      "x-asset-kind": "image",
+                      "x-i18n": {
+                        "zh-CN": "悬停"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "按钮悬停状态的图片"
+                      }
+                    },
+                    {
+                      "type": "string",
+                      "description": "Pressed state image",
+                      "title": "Pressed",
+                      "format": "asset",
+                      "x-asset-kind": "image",
+                      "x-i18n": {
+                        "zh-CN": "按下"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "按钮按下状态的图片"
+                      }
+                    }
+                  ],
+                  "description": "Button images in idle, hover, and pressed states",
+                  "title": "Button Images",
+                  "x-i18n": {
+                    "zh-CN": "按钮图片"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "按钮空闲、悬停和按下状态的图片"
+                  }
+                },
+                "bounds": {
+                  "default": [
+                    0.3,
+                    0.3,
+                    0.3,
+                    0.3
+                  ],
+                  "type": "array",
+                  "prefixItems": [
+                    {
+                      "default": 0,
+                      "x-step": 0.01,
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    {
+                      "default": 0,
+                      "x-step": 0.01,
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    {
+                      "default": 0,
+                      "x-step": 0.01,
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    },
+                    {
+                      "default": 0,
+                      "x-step": 0.01,
+                      "type": "number",
+                      "minimum": 0,
+                      "maximum": 1
+                    }
+                  ],
+                  "format": "bounds",
+                  "description": "Nine-slice bounds [left, top, right, bottom]",
+                  "title": "Bounds",
+                  "x-i18n": {
+                    "zh-CN": "九宫格边界"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "九宫格缩放使用的边界 [left, top, right, bottom]"
+                  }
+                },
+                "targetWidth": {
+                  "default": 700,
+                  "description": "Selection button width",
+                  "title": "Width",
+                  "x-i18n": {
+                    "zh-CN": "宽度"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "选择支按钮的目标宽度"
+                  },
+                  "type": "number",
+                  "minimum": 0
+                },
+                "targetHeight": {
+                  "default": 67,
+                  "description": "Selection button height",
+                  "title": "Height",
+                  "x-i18n": {
+                    "zh-CN": "高度"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "选择支按钮的目标高度"
+                  },
+                  "type": "number",
+                  "minimum": 0
+                },
+                "textStyle": {
+                  "type": "object",
+                  "properties": {
+                    "fontSize": {
+                      "default": 32,
+                      "description": "Text font size",
+                      "title": "Font Size",
+                      "x-i18n": {
+                        "zh-CN": "字号"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文本字号"
+                      },
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "fillColor": {
+                      "default": "#ffffff",
+                      "description": "Text color",
+                      "title": "Fill Color",
+                      "format": "color",
+                      "x-i18n": {
+                        "zh-CN": "文字颜色"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文字填充颜色"
+                      },
+                      "type": "string"
+                    },
+                    "lineHeight": {
+                      "default": 1.5,
+                      "description": "Line height multiplier",
+                      "title": "Line Height",
+                      "x-step": 0.1,
+                      "x-i18n": {
+                        "zh-CN": "行高"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "行高倍数"
+                      },
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "indent": {
+                      "default": 0,
+                      "description": "First-line indentation in pixels",
+                      "title": "Indent",
+                      "x-step": 0.1,
+                      "x-i18n": {
+                        "zh-CN": "缩进"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "段落首行缩进（像素）"
+                      },
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "stroke": {
+                      "default": false,
+                      "description": "Whether to apply text stroke",
+                      "title": "Stroke",
+                      "x-i18n": {
+                        "zh-CN": "描边"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "是否启用文字描边"
+                      },
+                      "type": "boolean"
+                    },
+                    "strokeColor": {
+                      "default": "#000000",
+                      "description": "Stroke color",
+                      "title": "Stroke Color",
+                      "format": "color",
+                      "x-i18n": {
+                        "zh-CN": "描边颜色"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文字描边颜色"
+                      },
+                      "type": "string"
+                    },
+                    "strokeWidth": {
+                      "default": 2,
+                      "description": "Stroke width in pixels",
+                      "title": "Stroke Width",
+                      "x-step": 0.01,
+                      "x-i18n": {
+                        "zh-CN": "描边宽度"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文字描边宽度（像素）"
+                      },
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "shadow": {
+                      "default": false,
+                      "description": "Whether to apply text shadow",
+                      "title": "Shadow",
+                      "x-i18n": {
+                        "zh-CN": "阴影"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "是否启用文字阴影"
+                      },
+                      "type": "boolean"
+                    },
+                    "shadowColor": {
+                      "default": "#000000",
+                      "description": "Shadow color",
+                      "title": "Shadow Color",
+                      "format": "color",
+                      "x-i18n": {
+                        "zh-CN": "阴影颜色"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "文字阴影颜色"
+                      },
+                      "type": "string"
+                    },
+                    "shadowOffsetX": {
+                      "default": 0,
+                      "description": "Shadow X offset in pixels",
+                      "title": "Shadow Offset X",
+                      "x-step": 0.01,
+                      "x-i18n": {
+                        "zh-CN": "阴影偏移 X"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "阴影 X 轴偏移（像素）"
+                      },
+                      "type": "number"
+                    },
+                    "shadowOffsetY": {
+                      "default": 0,
+                      "description": "Shadow Y offset in pixels",
+                      "title": "Shadow Offset Y",
+                      "x-step": 0.01,
+                      "x-i18n": {
+                        "zh-CN": "阴影偏移 Y"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "阴影 Y 轴偏移（像素）"
+                      },
+                      "type": "number"
+                    },
+                    "shadowBlur": {
+                      "default": 0,
+                      "description": "Shadow blur radius in pixels",
+                      "title": "Shadow Blur",
+                      "x-step": 0.01,
+                      "x-i18n": {
+                        "zh-CN": "阴影模糊"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "阴影模糊半径（像素）"
+                      },
+                      "type": "number",
+                      "minimum": 0
+                    },
+                    "shadowWidth": {
+                      "default": 0,
+                      "description": "Shadow width in pixels, only effective when shadow is enabled",
+                      "title": "Shadow Width",
+                      "x-step": 0.01,
+                      "x-i18n": {
+                        "zh-CN": "阴影宽度"
+                      },
+                      "x-i18n-desc": {
+                        "zh-CN": "阴影宽度（像素），仅在启用阴影时生效"
+                      },
+                      "type": "number",
+                      "minimum": 0
+                    }
+                  },
+                  "description": "Text style configuration",
+                  "title": "Text Style",
+                  "format": "text-style",
+                  "x-i18n": {
+                    "zh-CN": "文字样式"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "文本渲染使用的样式配置"
+                  }
+                },
+                "textAlign": {
+                  "default": "center",
+                  "description": "Selection button text alignment",
+                  "title": "Text Alignment",
+                  "x-i18n": {
+                    "zh-CN": "文字对齐"
+                  },
+                  "x-i18n-desc": {
+                    "zh-CN": "选择支按钮文字的水平对齐方式"
+                  },
+                  "type": "string",
+                  "enum": [
+                    "left",
+                    "center",
+                    "right"
+                  ]
+                }
+              },
+              "required": [
+                "fileNames",
+                "textStyle"
+              ],
+              "description": "Selection button configuration",
+              "title": "Button",
+              "x-i18n": {
+                "zh-CN": "按钮"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "选择支按钮的图片、尺寸和文字样式配置"
+              }
+            },
+            "hoverSound": {
+              "description": "Sound effect played when hovering a selection button",
+              "title": "Hover Sound",
+              "format": "asset",
+              "x-asset-kind": "audio",
+              "x-i18n": {
+                "zh-CN": "悬停音效"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "鼠标悬停到选择支按钮时播放的音效"
+              },
+              "type": "string"
+            },
+            "clickSound": {
+              "description": "Sound effect played when pressing a selection button",
+              "title": "Click Sound",
+              "format": "asset",
+              "x-asset-kind": "audio",
+              "x-i18n": {
+                "zh-CN": "点击音效"
+              },
+              "x-i18n-desc": {
+                "zh-CN": "按下选择支按钮后播放的音效"
+              },
+              "type": "string"
+            }
+          },
+          "required": [
+            "backdrop",
+            "panel",
+            "button"
+          ],
+          "description": "Stage selection UI configuration",
+          "title": "Selection",
+          "x-i18n": {
+            "zh-CN": "选择支"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "舞台选择支的遮罩、布局、按钮和音效配置"
+          }
+        },
         "backlog": {
           "type": "object",
           "properties": {
@@ -5424,6 +5913,7 @@
       "required": [
         "textbox",
         "textboxNVL",
+        "selection",
         "backlog"
       ],
       "description": "Stage UI configuration",

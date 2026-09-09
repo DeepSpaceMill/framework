@@ -6,20 +6,14 @@ import {
   useAutoBlocker,
   useIsSeeking,
   useSkipBlocker,
+  useSoundEffect,
   useTransition,
+  useUiData,
 } from '@momoyu-ink/kit';
 import { useCallback, useEffect } from 'react';
 import { useSnapshot } from 'valtio';
 import { gameState } from '../state/game';
 
-// Screen center coordinates
-const CENTER_X = 960;
-const CENTER_Y = 540;
-// Button dimensions and nine-slice settings
-const BUTTON_WIDTH = 700;
-const BUTTON_HEIGHT = 67;
-const BUTTON_GAP = 23;
-const NINESLICE_BOUNDS: [number, number, number, number] = [0.3, 0.3, 0.3, 0.3];
 const PANEL_TRANSITION = {
   from: {
     opacity: 0,
@@ -44,7 +38,10 @@ const PANEL_TRANSITION = {
 
 export function SelectionActor() {
   const selectionState = useSnapshot(gameState.selection);
+  const selectionUi = useUiData('stage').selection;
   const seeking = useIsSeeking();
+  const hoverSound = useSoundEffect(selectionUi.hoverSound);
+  const clickSound = useSoundEffect(selectionUi.clickSound);
 
   // Block skip and auto entirely while selection is visible.
   // hold() checks blockers synchronously and stops auto/skip if active.
@@ -53,6 +50,8 @@ export function SelectionActor() {
   useAutoBlocker(blockDuringSelection);
 
   const handleSelect = (value: string | number) => {
+    clickSound();
+
     if (selectionState.saveTo) {
       executePluginCommand('scenario', {
         subCommand: 'setLocalVariable',
@@ -89,14 +88,18 @@ export function SelectionActor() {
 
   return transitions((style, _) => {
     return (
-      <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} interactive={show}>
-        <animated.sprite label="选择支遮罩" src="ui/mask-transparent.png" opacity={style.opacity} />
+      <animated.backdrop
+        filters={[{ type: 'blur', radius: selectionUi.backdrop.blurRadius }]}
+        opacity={style.opacity}
+        interactive={show}
+      >
+        <animated.sprite label="选择支遮罩" src={selectionUi.backdrop.mask} opacity={style.opacity} />
         <animated.vbox
           label="选择支容器"
-          gap={BUTTON_GAP}
+          gap={selectionUi.panel.gap}
           pivot={[0.5, 0.5]}
-          x={CENTER_X}
-          y={style.offsetY.to((value) => CENTER_Y + value)}
+          x={selectionUi.panel.position.x}
+          y={style.offsetY.to((value) => selectionUi.panel.position.y + value)}
           opacity={style.opacity}
           scale={style.scale}
           interactive={show}
@@ -107,15 +110,16 @@ export function SelectionActor() {
               key={index}
               label={`选项_${index}`}
               sprite={{
-                src: ['ui/selection.png', 'ui/selection_hover.png', 'ui/selection_press.png'],
+                src: selectionUi.button.fileNames,
                 mode: 'nineslice',
-                bounds: NINESLICE_BOUNDS,
-                targetWidth: BUTTON_WIDTH,
-                targetHeight: BUTTON_HEIGHT,
+                bounds: selectionUi.button.bounds,
+                targetWidth: selectionUi.button.targetWidth,
+                targetHeight: selectionUi.button.targetHeight,
               }}
               text={option.text}
-              textStyle={{ fontSize: 32, glyphGridSize: 32, fillColor: '#ffffff' }}
-              textAlign="center"
+              textStyle={{ ...selectionUi.button.textStyle, glyphGridSize: selectionUi.button.textStyle.fontSize }}
+              textAlign={selectionUi.button.textAlign}
+              onMouseEnter={hoverSound}
               onPress={() => handleSelect(option.value)}
             />
           ))}
