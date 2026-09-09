@@ -11,7 +11,13 @@ export interface Animation {
   fadeTime: number;
 }
 
-export type BuiltinTransitionEffect = Extract<KitShaderSource, { type: 'builtin' }>;
+type KitBuiltinTransitionEffect = Extract<KitShaderSource, { type: 'builtin' }>;
+type KitMaskTransitionEffect = Extract<KitBuiltinTransitionEffect, { name: 'mask' }> & {
+  /** Asset path for the mask texture rendered in shader channel 2. */
+  rule: string;
+};
+
+export type BuiltinTransitionEffect = Exclude<KitBuiltinTransitionEffect, { name: 'mask' }> | KitMaskTransitionEffect;
 
 export interface StoryState {
   title: string;

@@ -58,10 +58,11 @@ function applyAvatarPatch(
 function toBuiltinTransitionEffect(
   cmd: Extract<ScenarioCommandSchemaType, { effect: string }>,
 ): BuiltinTransitionEffect {
-  const { command: _, effect, fadeTime: __, skippable: ___, noWait: ____, ...otherArgs } = cmd as typeof cmd & {
+  const { command: _, effect, fadeTime: __, skippable: ___, noWait: ____, name: _____, ...otherArgs } = cmd as typeof cmd & {
     fadeTime?: number;
     skippable?: boolean;
     noWait?: boolean;
+    name?: string;
   };
 
   return { type: 'builtin', name: effect, ...otherArgs } as BuiltinTransitionEffect;
@@ -236,6 +237,7 @@ export const handleTextBox: CommandHandler<ScenarioCommandSchemaType> = (cmd, _c
   }
   if (cmd.printMode !== undefined) tb.printMode = cmd.printMode;
   if (cmd.printSpeed !== undefined) tb.printSpeed = cmd.printSpeed;
+  if (cmd.fontSize !== undefined) tb.textStyle.fontSize = cmd.fontSize;
   if (cmd.fillColor !== undefined) tb.textStyle.fillColor = cmd.fillColor;
   if (cmd.lineHeight !== undefined) tb.textStyle.lineHeight = cmd.lineHeight;
   if (cmd.indent !== undefined) tb.textStyle.indent = cmd.indent;
