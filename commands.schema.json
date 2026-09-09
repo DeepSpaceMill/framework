@@ -120,6 +120,77 @@
           "type": "string",
           "const": "textBox"
         },
+        "mode": {
+          "description": "Text box presentation mode",
+          "title": "Mode",
+          "x-i18n": {
+            "zh-CN": "模式"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "文本框呈现模式"
+          },
+          "type": "string",
+          "enum": [
+            "adv",
+            "nvl"
+          ]
+        },
+        "showName": {
+          "description": "Whether to show speaker names in NVL mode",
+          "title": "Show Name",
+          "x-i18n": {
+            "zh-CN": "显示姓名"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否在 NVL 模式显示说话人姓名"
+          },
+          "type": "boolean"
+        },
+        "paragraphGap": {
+          "description": "Gap between NVL paragraphs in pixels",
+          "title": "Paragraph Gap",
+          "x-i18n": {
+            "zh-CN": "段落间距"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "NVL 相邻段落之间的间距（像素）"
+          },
+          "type": "number"
+        },
+        "pastColorEnabled": {
+          "description": "Whether to use the historical paragraph color in NVL mode",
+          "title": "Past Color Enabled",
+          "x-i18n": {
+            "zh-CN": "启用历史文字颜色"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "是否在 NVL 模式使用历史段落文字颜色"
+          },
+          "type": "boolean"
+        },
+        "pastFillColor": {
+          "description": "Historical paragraph color in NVL mode",
+          "title": "Past Text Color",
+          "format": "color",
+          "x-i18n": {
+            "zh-CN": "历史文字颜色"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "NVL 模式中历史段落使用的文字颜色"
+          },
+          "type": "string"
+        },
+        "pastFadeTime": {
+          "description": "Historical paragraph color transition time in milliseconds",
+          "title": "Past Color Fade Time",
+          "x-i18n": {
+            "zh-CN": "历史文字颜色过渡时长"
+          },
+          "x-i18n-desc": {
+            "zh-CN": "NVL 历史文字颜色过渡时长（毫秒）"
+          },
+          "type": "number"
+        },
         "position": {
           "description": "Text box position (x, y)",
           "title": "Position",

@@ -1549,31 +1549,49 @@ export const StageTextBoxUiSchema = z
         'x-i18n': { 'zh-CN': '头像' },
         'x-i18n-desc': { 'zh-CN': '文本框头像的默认位置与锚点；命令中的 offset 会相对此位置生效' },
       }),
-    controls: z
+    controls: createTextBoxControlsUiSchema(),
+  })
+  .describe('Stage textbox UI configuration')
+  .meta({
+    title: 'Textbox',
+    'x-i18n': { 'zh-CN': '文本框' },
+    'x-i18n-desc': { 'zh-CN': '舞台 ADV 文本框、正文、姓名框与头像的布局配置' },
+  });
+
+function createTextBoxControlsUiSchema() {
+  return z.object({
+    closeButton: z
       .object({
-        closeButton: z
-          .object({
-            position: positionSchema,
-            fileNames: buttonSchema,
-            anchor: anchorSchema.optional(),
-            pivot: pivotSchema.optional(),
-          })
-          .describe('Close button configuration')
-          .meta({
-            title: 'Close Button',
-            'x-i18n': { 'zh-CN': '关闭按钮' },
-            'x-i18n-desc': { 'zh-CN': '文本框右上角关闭按钮配置' },
-          }),
-        buttons: z
-          .array(TextBoxActionButtonUiSchema)
-          .describe('Textbox action buttons')
-          .meta({
-            title: 'Buttons',
-            'x-i18n': { 'zh-CN': '按钮列表' },
-            'x-i18n-desc': { 'zh-CN': '文本框功能按钮列表' },
-          }),
-        cursor: z
-          .object({
+        position: positionSchema,
+        fileNames: buttonSchema,
+        anchor: anchorSchema.optional(),
+        pivot: pivotSchema.optional(),
+      })
+      .describe('Close button configuration')
+      .meta({
+        title: 'Close Button',
+        'x-i18n': { 'zh-CN': '关闭按钮' },
+        'x-i18n-desc': { 'zh-CN': '文本框右上角关闭按钮配置' },
+      }),
+    buttonsPosition: positionSchema
+      .optional()
+      .default({ x: 650, y: 158 })
+      .describe('Textbox action button group position')
+      .meta({
+        title: 'Button Group Position',
+        'x-i18n': { 'zh-CN': '按钮组位置' },
+        'x-i18n-desc': { 'zh-CN': '文本框功能按钮组相对于背景的坐标' },
+      }),
+    buttons: z
+      .array(TextBoxActionButtonUiSchema)
+      .describe('Textbox action buttons')
+      .meta({
+        title: 'Buttons',
+        'x-i18n': { 'zh-CN': '按钮列表' },
+        'x-i18n-desc': { 'zh-CN': '文本框功能按钮列表' },
+      }),
+    cursor: z
+      .object({
             enabled: z
               .boolean()
               .optional()
@@ -1625,15 +1643,15 @@ export const StageTextBoxUiSchema = z
                 'x-i18n': { 'zh-CN': '偏移 Y' },
                 'x-i18n-desc': { 'zh-CN': '相对于文字光标位置的垂直偏移' },
               }),
-          })
-          .describe('Textbox cursor configuration')
-          .meta({
-            title: 'Cursor',
-            'x-i18n': { 'zh-CN': '光标' },
-            'x-i18n-desc': { 'zh-CN': '文本框打字光标的显示配置' },
-          }),
-        hover: z
-          .object({
+      })
+      .describe('Textbox cursor configuration')
+      .meta({
+        title: 'Cursor',
+        'x-i18n': { 'zh-CN': '光标' },
+        'x-i18n-desc': { 'zh-CN': '文本框打字光标的显示配置' },
+      }),
+    hover: z
+      .object({
             showOnHover: z
               .boolean()
               .optional()
@@ -1664,31 +1682,136 @@ export const StageTextBoxUiSchema = z
                 'x-i18n': { 'zh-CN': '淡入淡出时长' },
                 'x-i18n-desc': { 'zh-CN': '按钮组淡入淡出的持续时间（毫秒）' },
               }),
-          })
-          .describe('Textbox hover behavior')
-          .meta({
-            title: 'Hover',
-            'x-i18n': { 'zh-CN': '悬停行为' },
-            'x-i18n-desc': { 'zh-CN': '文本框按钮在悬停时的显示行为配置' },
-          }),
       })
-      .describe('Textbox controls configuration')
+      .describe('Textbox hover behavior')
       .meta({
-        title: 'Controls',
-        'x-i18n': { 'zh-CN': '控件' },
-        'x-i18n-desc': { 'zh-CN': '文本框按钮、光标与悬停行为配置' },
+        title: 'Hover',
+        'x-i18n': { 'zh-CN': '悬停行为' },
+        'x-i18n-desc': { 'zh-CN': '文本框按钮在悬停时的显示行为配置' },
       }),
   })
-  .describe('Stage textbox UI configuration')
+    .describe('Textbox controls configuration')
+    .meta({
+      title: 'Controls',
+      'x-i18n': { 'zh-CN': '控件' },
+      'x-i18n-desc': { 'zh-CN': '文本框按钮、光标与悬停行为配置' },
+    });
+}
+
+export const StageTextBoxNvlUiSchema = z
+  .object({
+    background: TextboxImageUiSchema,
+    content: z
+      .object({
+        position: positionSchema,
+        boxWidth: boxWidthSchema,
+        boxHeight: boxHeightSchema,
+        printMode: printModeSchema,
+        printSpeed: printSpeedSchema,
+        textStyle: textStyleSchema,
+      })
+      .describe('NVL content viewport layout')
+      .meta({
+        title: 'Content',
+        'x-i18n': { 'zh-CN': '正文区域' },
+        'x-i18n-desc': { 'zh-CN': 'NVL 正文裁剪区域的位置、尺寸和默认文字样式' },
+      }),
+    name: z
+      .object({
+        show: z
+          .boolean()
+          .optional()
+          .default(true)
+          .describe('Whether to show speaker names in NVL mode')
+          .meta({
+            title: 'Show Name',
+            'x-i18n': { 'zh-CN': '显示姓名' },
+            'x-i18n-desc': { 'zh-CN': '是否在 NVL 模式中显示说话人姓名' },
+          }),
+        textStyle: textStyleSchema,
+      })
+      .describe('NVL speaker name configuration')
+      .meta({
+        title: 'Name',
+        'x-i18n': { 'zh-CN': '姓名' },
+        'x-i18n-desc': { 'zh-CN': 'NVL 姓名显示和文字样式配置' },
+      }),
+    paragraphGap: z
+      .number()
+      .min(0)
+      .optional()
+      .default(16)
+      .describe('Gap between NVL paragraphs in pixels')
+      .meta({
+        title: 'Paragraph Gap',
+        'x-i18n': { 'zh-CN': '段落间距' },
+        'x-i18n-desc': { 'zh-CN': 'NVL 相邻段落之间的间距（像素）' },
+      }),
+    past: z
+      .object({
+        colorEnabled: z
+          .boolean()
+          .optional()
+          .default(true)
+          .describe('Whether to use the historical paragraph color')
+          .meta({
+            title: 'Color Enabled',
+            'x-i18n': { 'zh-CN': '启用历史文字颜色' },
+            'x-i18n-desc': { 'zh-CN': '是否为 NVL 历史段落使用单独颜色' },
+          }),
+        fillColor: z
+          .string()
+          .optional()
+          .default('#a0a0a0')
+          .describe('Historical paragraph color')
+          .meta({
+            title: 'Text Color',
+            format: 'color',
+            'x-i18n': { 'zh-CN': '历史文字颜色' },
+            'x-i18n-desc': { 'zh-CN': 'NVL 历史段落使用的文字颜色' },
+          }),
+        fadeTime: z
+          .number()
+          .min(0)
+          .optional()
+          .default(180)
+          .describe('Historical paragraph color transition time in milliseconds')
+          .meta({
+            title: 'Color Fade Time',
+            'x-i18n': { 'zh-CN': '历史文字颜色过渡时长' },
+            'x-i18n-desc': { 'zh-CN': 'NVL 历史文字颜色过渡时长（毫秒）' },
+          }),
+      })
+      .describe('NVL historical paragraph appearance')
+      .meta({
+        title: 'History',
+        'x-i18n': { 'zh-CN': '历史段落' },
+        'x-i18n-desc': { 'zh-CN': 'NVL 历史段落的颜色和过渡配置' },
+      }),
+    controls: createTextBoxControlsUiSchema(),
+    visibilityFadeTime: z
+      .number()
+      .min(0)
+      .optional()
+      .default(180)
+      .describe('NVL visibility transition time in milliseconds')
+      .meta({
+        title: 'Visibility Fade Time',
+        'x-i18n': { 'zh-CN': '显隐过渡时长' },
+        'x-i18n-desc': { 'zh-CN': 'NVL 文本框显隐过渡时长（毫秒）' },
+      }),
+  })
+  .describe('Stage NVL textbox UI configuration')
   .meta({
-    title: 'Textbox',
-    'x-i18n': { 'zh-CN': '文本框' },
-    'x-i18n-desc': { 'zh-CN': '舞台文本框、正文、姓名框与头像的布局配置' },
+    title: 'NVL Textbox',
+    'x-i18n': { 'zh-CN': 'NVL 文本框' },
+    'x-i18n-desc': { 'zh-CN': '舞台 NVL 文本框主题、正文、姓名、控件与历史段落配置' },
   });
 
 export const StageUiSchema = z
   .object({
     textbox: StageTextBoxUiSchema,
+    textboxNVL: StageTextBoxNvlUiSchema,
     backlog: BacklogUiSchema,
   })
   .describe('Stage UI configuration')
@@ -1717,6 +1840,7 @@ export type BacklogUiData = z.infer<typeof BacklogUiSchema>;
 export type ConfirmUiData = z.infer<typeof ConfirmUiSchema>;
 export type TextStyleUiData = z.infer<typeof textStyleSchema>;
 export type StageTextBoxUiData = z.infer<typeof StageTextBoxUiSchema>;
+export type StageTextBoxNvlUiData = z.infer<typeof StageTextBoxNvlUiSchema>;
 export type StageUiData = z.infer<typeof StageUiSchema>;
 export type GameUiData = z.infer<typeof GameUiSchema>;
 

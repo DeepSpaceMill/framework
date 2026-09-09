@@ -451,6 +451,61 @@ const TextClearCommandSchema = z
 const TextBoxCommandSchema = z
   .object({
     command: z.literal('textBox'),
+    mode: z
+      .enum(['adv', 'nvl'])
+      .optional()
+      .describe('Text box presentation mode')
+      .meta({
+        title: 'Mode',
+        'x-i18n': { 'zh-CN': '模式' },
+        'x-i18n-desc': { 'zh-CN': '文本框呈现模式' },
+      }),
+    showName: z
+      .boolean()
+      .optional()
+      .describe('Whether to show speaker names in NVL mode')
+      .meta({
+        title: 'Show Name',
+        'x-i18n': { 'zh-CN': '显示姓名' },
+        'x-i18n-desc': { 'zh-CN': '是否在 NVL 模式显示说话人姓名' },
+      }),
+    paragraphGap: z
+      .number()
+      .optional()
+      .describe('Gap between NVL paragraphs in pixels')
+      .meta({
+        title: 'Paragraph Gap',
+        'x-i18n': { 'zh-CN': '段落间距' },
+        'x-i18n-desc': { 'zh-CN': 'NVL 相邻段落之间的间距（像素）' },
+      }),
+    pastColorEnabled: z
+      .boolean()
+      .optional()
+      .describe('Whether to use the historical paragraph color in NVL mode')
+      .meta({
+        title: 'Past Color Enabled',
+        'x-i18n': { 'zh-CN': '启用历史文字颜色' },
+        'x-i18n-desc': { 'zh-CN': '是否在 NVL 模式使用历史段落文字颜色' },
+      }),
+    pastFillColor: z
+      .string()
+      .optional()
+      .describe('Historical paragraph color in NVL mode')
+      .meta({
+        title: 'Past Text Color',
+        format: 'color',
+        'x-i18n': { 'zh-CN': '历史文字颜色' },
+        'x-i18n-desc': { 'zh-CN': 'NVL 模式中历史段落使用的文字颜色' },
+      }),
+    pastFadeTime: z
+      .number()
+      .optional()
+      .describe('Historical paragraph color transition time in milliseconds')
+      .meta({
+        title: 'Past Color Fade Time',
+        'x-i18n': { 'zh-CN': '历史文字颜色过渡时长' },
+        'x-i18n-desc': { 'zh-CN': 'NVL 历史文字颜色过渡时长（毫秒）' },
+      }),
     position: z
       .array(z.number())
       .length(2)

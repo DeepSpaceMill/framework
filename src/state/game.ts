@@ -145,11 +145,20 @@ export interface TextStyle {
   shadowWidth?: number;
 }
 
-// TextBox state interface
-export interface TextBoxState {
+export interface TextEntry {
   name: string;
   text: string;
   avatarName: string;
+}
+
+export interface TextBoxState {
+  mode: 'adv' | 'nvl';
+  entries: TextEntry[];
+  showName?: boolean;
+  paragraphGap?: number;
+  pastColorEnabled?: boolean;
+  pastFillColor?: string;
+  pastFadeTime?: number;
   x?: number;
   y?: number;
   visible: boolean;
@@ -290,9 +299,8 @@ const gameStateDefaults: GameState = {
     nextOrder: 1,
   },
   textbox: {
-    name: '',
-    text: '',
-    avatarName: '',
+    mode: 'adv',
+    entries: [],
     visible: true,
     hideReason: undefined,
     printMode: undefined,

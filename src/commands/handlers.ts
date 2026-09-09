@@ -213,9 +213,9 @@ export const handleText: CommandHandler<ScenarioCommandSchemaType> = (cmd, contr
 /** Clear text box content. */
 export const handleTextClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'textClear') return;
-  gameState.textbox.text = '';
-  gameState.textbox.name = '';
-  gameState.textbox.avatarName = '';
+  gameState.textbox.entries.length = 0;
+  gameState.textbox.shouldClear = undefined;
+  gameState.textbox.shouldAddNewline = undefined;
   gameState.character.currentSpeaker = undefined;
   // auto-advance
 };
@@ -224,6 +224,12 @@ export const handleTextClear: CommandHandler<ScenarioCommandSchemaType> = (cmd, 
 export const handleTextBox: CommandHandler<ScenarioCommandSchemaType> = (cmd, _control) => {
   if (cmd.command !== 'textBox') return;
   const tb = gameState.textbox;
+  if (cmd.mode !== undefined) tb.mode = cmd.mode;
+  if (cmd.showName !== undefined) tb.showName = cmd.showName;
+  if (cmd.paragraphGap !== undefined) tb.paragraphGap = cmd.paragraphGap;
+  if (cmd.pastColorEnabled !== undefined) tb.pastColorEnabled = cmd.pastColorEnabled;
+  if (cmd.pastFillColor !== undefined) tb.pastFillColor = cmd.pastFillColor;
+  if (cmd.pastFadeTime !== undefined) tb.pastFadeTime = cmd.pastFadeTime;
   if (cmd.position !== undefined) {
     tb.x = cmd.position[0];
     tb.y = cmd.position[1];
@@ -251,6 +257,11 @@ export const handleTextBoxReset: CommandHandler<ScenarioCommandSchemaType> = (cm
   gameState.textbox.printMode = undefined;
   gameState.textbox.printSpeed = undefined;
   gameState.textbox.textStyle = {};
+  gameState.textbox.showName = undefined;
+  gameState.textbox.paragraphGap = undefined;
+  gameState.textbox.pastColorEnabled = undefined;
+  gameState.textbox.pastFillColor = undefined;
+  gameState.textbox.pastFadeTime = undefined;
   // auto-advance
 };
 
@@ -1055,21 +1066,22 @@ export const handleTextLine: TextLineHandler = (e, control) => {
   }
 
   gameState.character.currentSpeaker = speaker || undefined;
-  gameState.textbox.name = speaker;
-  gameState.textbox.avatarName = avatarName;
+  const textbox = gameState.textbox;
 
-  if (gameState.textbox.shouldAddNewline) {
-    gameState.textbox.text += '\n';
+  if (textbox.mode === 'adv' && textbox.shouldClear && textbox.shouldAddNewline) {
+    textbox.entries.length = 0;
   }
 
-  if (gameState.textbox.shouldClear) {
-    gameState.textbox.text = '';
+  const text = e.text ?? '';
+  const currentEntry = textbox.entries[textbox.entries.length - 1];
+  if (!textbox.shouldAddNewline && currentEntry) {
+    currentEntry.text += text;
+  } else {
+    textbox.entries.push({ name: speaker, text, avatarName });
   }
 
-  gameState.textbox.text += e.text ?? '';
-
-  gameState.textbox.shouldClear = !e.tailing?.includes('+');
-  gameState.textbox.shouldAddNewline = !e.tailing?.includes('&');
+  textbox.shouldClear = !e.tailing?.includes('+');
+  textbox.shouldAddNewline = !e.tailing?.includes('&');
 
   recordBacklog(control, {
     kind: 'text',

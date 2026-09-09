@@ -10,13 +10,14 @@ import {
   useIsSeeking,
   useIsSkipping,
   useNavigationState,
+  useSpring,
   useTransition,
   useUiData,
 } from '@momoyu-ink/kit';
-import { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useCallback, useEffect, useLayoutEffect, useRef, useState, type RefObject } from 'react';
 import { useSnapshot } from 'valtio';
-import type { StageTextBoxUiData } from '../data/ui';
-import { gameState, type TextBoxAvatarConfig, type TextBoxState } from '../state/game';
+import type { StageTextBoxNvlUiData, StageTextBoxUiData, TextStyleUiData } from '../data/ui';
+import { gameState, type TextBoxAvatarConfig, type TextBoxState, type TextEntry } from '../state/game';
 import { settingsState } from '../state/settings';
 
 export enum TextBoxButton {
@@ -35,8 +36,9 @@ interface TextBoxActorProps {
 }
 
 function resolveActiveAvatar(textboxState: TextBoxState): TextBoxAvatarConfig | null {
-  const character = textboxState.name.trim();
-  const avatarName = textboxState.avatarName.trim();
+  const entry = textboxState.entries[textboxState.entries.length - 1];
+  const character = entry?.name.trim() ?? '';
+  const avatarName = entry?.avatarName.trim() ?? '';
   const globalAvatar = textboxState.avatar.enable ? textboxState.avatar : null;
 
   if (!character) {
@@ -82,6 +84,91 @@ function resolveNineSlice(imageConfig: StageTextBoxUiData['background']) {
   return {};
 }
 
+interface NvlParagraphProps {
+  entry: TextEntry;
+  isCurrent: boolean;
+  isPrevious: boolean;
+  isPrinting: boolean;
+  textWindowRef: RefObject<Node | null>;
+  printMode: 'instant' | 'typewriter' | 'printer';
+  printSpeed: number;
+  boxWidth: number;
+  textStyle: TextStyleUiData;
+  pastColorEnabled: boolean;
+  pastFillColor: string;
+  pastFadeTime: number;
+  cursorPosition: [number, number] | null;
+  cursor: StageTextBoxNvlUiData['controls']['cursor'];
+  onStart: () => void;
+  onProgress: (progress: number) => void;
+  onFinish: () => void;
+}
+
+function NvlParagraph({
+  entry,
+  isCurrent,
+  isPrevious,
+  isPrinting,
+  textWindowRef,
+  printMode,
+  printSpeed,
+  boxWidth,
+  textStyle,
+  pastColorEnabled,
+  pastFillColor,
+  pastFadeTime,
+  cursorPosition,
+  cursor,
+  onStart,
+  onProgress,
+  onFinish,
+}: NvlParagraphProps) {
+  const targetFillColor = !pastColorEnabled || isCurrent ? textStyle.fillColor : pastFillColor;
+  const paragraphStyle = useSpring({
+    fillColor: targetFillColor,
+    config: { duration: pastColorEnabled && isPrevious ? pastFadeTime : 0 },
+  });
+
+  return (
+    <animated.text
+      label="NVL 对话内容"
+      ref={isPrinting ? textWindowRef : undefined}
+      text={entry.text}
+      fontSize={textStyle.fontSize}
+      lineHeight={textStyle.lineHeight}
+      boxWidth={boxWidth}
+      fillColor={paragraphStyle.fillColor}
+      printMode={isPrinting ? printMode : 'instant'}
+      printSpeed={printSpeed}
+      indent={textStyle.indent}
+      stroke={textStyle.stroke}
+      shadow={textStyle.shadow}
+      strokeColor={textStyle.strokeColor}
+      strokeWidth={textStyle.strokeWidth}
+      shadowColor={textStyle.shadowColor}
+      shadowOffsetX={textStyle.shadowOffsetX}
+      shadowOffsetY={textStyle.shadowOffsetY}
+      shadowBlur={textStyle.shadowBlur}
+      shadowWidth={textStyle.shadowWidth}
+      onStart={isPrinting ? onStart : undefined}
+      onProgress={isPrinting ? onProgress : undefined}
+      onFinish={isPrinting ? onFinish : undefined}
+      interactive={false}
+    >
+      {isPrinting && cursorPosition && cursor.enabled ? (
+        <animation
+          src={cursor.src}
+          format="apng"
+          tint={cursor.tint}
+          x={cursorPosition[0] + cursor.offsetX}
+          y={cursorPosition[1] + cursor.offsetY}
+          interactive={false}
+        />
+      ) : null}
+    </animated.text>
+  );
+}
+
 export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   const autoing = useIsAutoing();
   const skipping = useIsSkipping();
@@ -94,14 +181,31 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
 
   const textBoxState = useSnapshot(gameState.textbox);
   const settings = useSnapshot(settingsState);
-  const textBoxUi = useUiData('stage').textbox;
+  const { textbox: advUi, textboxNVL: nvlUi } = useUiData('stage');
   const navState = useNavigationState();
   const hasOverlay = navState.overlayStack.length > 0;
   const activeAvatar = resolveActiveAvatar(textBoxState as TextBoxState);
-  const layout = resolveTextLayout(textBoxUi, activeAvatar);
-  const mergedTextStyle = { ...textBoxUi.content.textStyle, ...textBoxState.textStyle };
-  const mergedNameTextStyle = textBoxUi.nameBox.text.textStyle;
-  const hoverUi = textBoxUi.controls.hover;
+  const layout = resolveTextLayout(advUi, activeAvatar);
+  const currentEntry = textBoxState.entries[textBoxState.entries.length - 1];
+  const advText = textBoxState.entries.map((entry) => entry.text).join('\n');
+  const advTextStyle = { ...advUi.content.textStyle, ...textBoxState.textStyle };
+  const nvlTextStyle = { ...nvlUi.content.textStyle, ...textBoxState.textStyle };
+  const activeUi = textBoxState.mode === 'adv' ? advUi : nvlUi;
+  const hoverUi = activeUi.controls.hover;
+  const activeContent = textBoxState.mode === 'adv' ? advUi.content : nvlUi.content;
+  const mergedPrintMode = textBoxState.printMode ?? activeContent.printMode;
+  const mergedPrintSpeed = textBoxState.printSpeed ?? activeContent.printSpeed;
+  const effectivePrintMode = skipping || seeking ? 'instant' : mergedPrintMode;
+  const effectivePrintSpeed =
+    effectivePrintMode === 'instant' ? mergedPrintSpeed : Math.max(1, mergedPrintSpeed * settings.text_speed);
+  const advVisible = textBoxState.mode === 'adv' && textBoxState.visible && !hasOverlay;
+  const nvlVisible = textBoxState.mode === 'nvl' && textBoxState.visible && !hasOverlay;
+  const activePrintMode = advVisible || nvlVisible ? effectivePrintMode : 'instant';
+  const nvlPanelStyle = useSpring({
+    opacity: nvlVisible ? 1 : 0,
+    immediate: skipping || seeking,
+    config: { duration: nvlUi.visibilityFadeTime },
+  });
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -129,7 +233,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
       const pos = textWindowRef.current?.executeCommand({
         subCommand: 'getCursorPosition',
       });
-      if (gameState.textbox.text.length > 0) {
+      if (gameState.textbox.entries.length > 0) {
         setCurPos(pos as [number, number]);
       }
     } catch (error) {
@@ -157,15 +261,20 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   // a optionAdd/optionShow — in that case keep the text so it remains visible
   // during the selection phase.
   useBeforeHandleCommandCallback(({ command }) => {
-    if (gameState.textbox.shouldClear && command !== 'optionAdd' && command !== 'optionShow') {
-      gameState.textbox.text = '';
+    if (
+      gameState.textbox.mode === 'adv' &&
+      gameState.textbox.shouldClear &&
+      command !== 'optionAdd' &&
+      command !== 'optionShow'
+    ) {
+      gameState.textbox.entries.length = 0;
     }
   });
 
   // biome-ignore lint/correctness/useExhaustiveDependencies: we must reset curPos when text changes
   useEffect(() => {
     setCurPos(null);
-  }, [textBoxState.text]);
+  }, [currentEntry?.text, textBoxState.mode]);
 
   // Cancel ticket when auto stops; also clean up on unmount via the returned cleanup.
   useEffect(() => {
@@ -179,186 +288,287 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
     autoTicketRef.current = null;
   }, [autoing]);
 
-  const mergedPrintMode = textBoxState.printMode ?? textBoxUi.content.printMode;
-  const mergedPrintSpeed = textBoxState.printSpeed ?? textBoxUi.content.printSpeed;
-
-  const effectivePrintMode = skipping || seeking ? 'instant' : mergedPrintMode;
-  const effectivePrintSpeed =
-    effectivePrintMode === 'instant' ? mergedPrintSpeed : Math.max(1, mergedPrintSpeed * settings.text_speed);
-
   useLayoutEffect(() => {
     if (!autoing || seeking) {
       return;
     }
 
-    if (effectivePrintMode === 'instant' || textBoxState.text.length === 0) {
+    if (activePrintMode === 'instant' || !currentEntry?.text) {
       return;
     }
 
     autoTicketRef.current?.cancel();
     autoTicketRef.current = issueAutoTicket({ label: 'textbox-printing' });
-  }, [autoing, effectivePrintMode, seeking, issueAutoTicket, textBoxState.text]);
+  }, [activePrintMode, autoing, currentEntry?.text, seeking, issueAutoTicket]);
+
+  const controls = (controlsUi: StageTextBoxUiData['controls'] | StageTextBoxNvlUiData['controls']) =>
+    buttonTransitions((style) => (
+      <animated.container label="文本框按钮组" opacity={style.opacity}>
+        <Button
+          sprite={{ src: controlsUi.closeButton.fileNames }}
+          x={controlsUi.closeButton.position.x}
+          y={controlsUi.closeButton.position.y}
+          anchor={controlsUi.closeButton.anchor}
+          pivot={controlsUi.closeButton.pivot}
+          onPress={() => {
+            gameState.textbox.hideReason = 'manual';
+            gameState.textbox.visible = false;
+          }}
+        />
+        <container x={controlsUi.buttonsPosition.x} y={controlsUi.buttonsPosition.y}>
+          {controlsUi.buttons.map((button) => (
+            <Button
+              key={`${button.action}-${button.position.x}-${button.position.y}`}
+              sprite={{ src: button.fileNames }}
+              x={button.position.x}
+              y={button.position.y}
+              anchor={button.anchor}
+              pivot={button.pivot}
+              text={button.text}
+              textStyle={
+                typeof button.color === 'string'
+                  ? { fontSize: button.fontSize, glyphGridSize: button.fontSize, fillColor: button.color }
+                  : (button.color.map((fillColor) => ({
+                      fontSize: button.fontSize,
+                      glyphGridSize: button.fontSize,
+                      fillColor,
+                    })) as [
+                      { fontSize: number; glyphGridSize: number; fillColor: string },
+                      { fontSize: number; glyphGridSize: number; fillColor: string },
+                      { fontSize: number; glyphGridSize: number; fillColor: string },
+                    ])
+              }
+              textOffsetX={button.textOffsetX}
+              textOffsetY={button.textOffsetY}
+              lockOn={
+                button.lockOnActive &&
+                ((button.action === TextBoxButton.AUTO && autoing) ||
+                  (button.action === TextBoxButton.SKIP && skipping))
+                  ? 'press'
+                  : undefined
+              }
+              onPress={() => {
+                onButtonClick(button.action as TextBoxButton);
+              }}
+            />
+          ))}
+        </container>
+      </animated.container>
+    ));
 
   return (
     <container
       label="文本框容器"
-      visible={textBoxState.visible && !hasOverlay}
+      visible
       interactive={textBoxState.visible && !hasOverlay && !seeking}
     >
       <sprite
         label="文本框"
-        src={textBoxUi.background.src}
-        x={textBoxUi.background.position.x}
-        y={textBoxUi.background.position.y}
-        anchor={textBoxUi.background.anchor}
-        pivot={textBoxUi.background.pivot}
-        {...resolveNineSlice(textBoxUi.background)}
+        src={advUi.background.src}
+        x={advUi.background.position.x}
+        y={advUi.background.position.y}
+        anchor={advUi.background.anchor}
+        pivot={advUi.background.pivot}
+        visible={advVisible}
+        interactive={advVisible}
+        {...resolveNineSlice(advUi.background)}
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        {buttonTransitions((style) => (
-          <animated.container label="文本框按钮组" opacity={style.opacity}>
-            <Button
-              sprite={{ src: textBoxUi.controls.closeButton.fileNames }}
-              x={textBoxUi.controls.closeButton.position.x}
-              y={textBoxUi.controls.closeButton.position.y}
-              anchor={textBoxUi.controls.closeButton.anchor}
-              pivot={textBoxUi.controls.closeButton.pivot}
-              onPress={() => {
-                gameState.textbox.hideReason = 'manual';
-                gameState.textbox.visible = false;
-              }}
-            />
-            <container x={650} y={158}>
-              {textBoxUi.controls.buttons.map((button) => (
-                <Button
-                  key={`${button.action}-${button.position.x}-${button.position.y}`}
-                  sprite={{ src: button.fileNames }}
-                  x={button.position.x}
-                  y={button.position.y}
-                  anchor={button.anchor}
-                  pivot={button.pivot}
-                  text={button.text}
-                  textStyle={
-                    typeof button.color === 'string'
-                      ? { fontSize: button.fontSize, glyphGridSize: button.fontSize, fillColor: button.color }
-                      : (button.color.map((fillColor) => ({
-                          fontSize: button.fontSize,
-                          glyphGridSize: button.fontSize,
-                          fillColor,
-                        })) as [
-                          { fontSize: number; glyphGridSize: number; fillColor: string },
-                          { fontSize: number; glyphGridSize: number; fillColor: string },
-                          { fontSize: number; glyphGridSize: number; fillColor: string },
-                        ])
-                  }
-                  textOffsetX={button.textOffsetX}
-                  textOffsetY={button.textOffsetY}
-                  lockOn={
-                    button.lockOnActive &&
-                    ((button.action === TextBoxButton.AUTO && autoing) ||
-                      (button.action === TextBoxButton.SKIP && skipping))
-                      ? 'press'
-                      : undefined
-                  }
-                  onPress={() => {
-                    onButtonClick(button.action as TextBoxButton);
-                  }}
-                />
-              ))}
-            </container>
-          </animated.container>
-        ))}
+        {advVisible ? controls(advUi.controls) : null}
 
         {activeAvatar ? (
           <sprite
             label="文本框头像"
             src={activeAvatar.src}
-            x={textBoxUi.avatar.position.x + activeAvatar.offsetX}
-            y={textBoxUi.avatar.position.y + activeAvatar.offsetY}
-            pivot={textBoxUi.avatar.pivot}
+            x={advUi.avatar.position.x + activeAvatar.offsetX}
+            y={advUi.avatar.position.y + activeAvatar.offsetY}
+            anchor={advUi.avatar.anchor}
+            pivot={advUi.avatar.pivot}
           />
         ) : null}
 
-        <container x={layout.textX} y={textBoxUi.content.position.y}>
+        <container x={layout.textX} y={advUi.content.position.y}>
           <text
             label="对话内容"
-            ref={textWindowRef}
-            text={textBoxState.text}
-            fontSize={mergedTextStyle.fontSize}
-            lineHeight={mergedTextStyle.lineHeight}
+            ref={advVisible ? textWindowRef : undefined}
+            text={advText}
+            fontSize={advTextStyle.fontSize}
+            lineHeight={advTextStyle.lineHeight}
             boxWidth={layout.textWidth}
-            boxHeight={textBoxUi.content.boxHeight}
-            fillColor={mergedTextStyle.fillColor}
-            printMode={effectivePrintMode}
+            boxHeight={advUi.content.boxHeight}
+            fillColor={advTextStyle.fillColor}
+            printMode={advVisible ? effectivePrintMode : 'instant'}
             printSpeed={effectivePrintSpeed}
-            indent={mergedTextStyle.indent}
-            stroke={mergedTextStyle.stroke}
-            shadow={mergedTextStyle.shadow}
-            strokeColor={mergedTextStyle.strokeColor}
-            strokeWidth={mergedTextStyle.strokeWidth}
-            shadowColor={mergedTextStyle.shadowColor}
-            shadowOffsetX={mergedTextStyle.shadowOffsetX}
-            shadowOffsetY={mergedTextStyle.shadowOffsetY}
-            shadowBlur={mergedTextStyle.shadowBlur}
-            shadowWidth={mergedTextStyle.shadowWidth}
-            onStart={() => {
-              progress.current = 0;
-            }}
-            onProgress={(v) => {
-              progress.current = v;
-            }}
-            onFinish={() => {
-              progress.current = 1;
-              autoTicketRef.current?.done();
-              autoTicketRef.current = null;
-              showCurPos();
-            }}
+            indent={advTextStyle.indent}
+            stroke={advTextStyle.stroke}
+            shadow={advTextStyle.shadow}
+            strokeColor={advTextStyle.strokeColor}
+            strokeWidth={advTextStyle.strokeWidth}
+            shadowColor={advTextStyle.shadowColor}
+            shadowOffsetX={advTextStyle.shadowOffsetX}
+            shadowOffsetY={advTextStyle.shadowOffsetY}
+            shadowBlur={advTextStyle.shadowBlur}
+            shadowWidth={advTextStyle.shadowWidth}
+            onStart={
+              advVisible
+                ? () => {
+                    progress.current = 0;
+                  }
+                : undefined
+            }
+            onProgress={
+              advVisible
+                ? (value) => {
+                    progress.current = value;
+                  }
+                : undefined
+            }
+            onFinish={
+              advVisible
+                ? () => {
+                    progress.current = 1;
+                    autoTicketRef.current?.done();
+                    autoTicketRef.current = null;
+                    showCurPos();
+                  }
+                : undefined
+            }
             interactive={false}
           />
-          {curPos && textBoxUi.controls.cursor.enabled ? (
+          {advVisible && curPos && advUi.controls.cursor.enabled ? (
             <animation
-              src={textBoxUi.controls.cursor.src}
+              src={advUi.controls.cursor.src}
               format="apng"
-              tint={textBoxUi.controls.cursor.tint}
-              x={curPos[0] + textBoxUi.controls.cursor.offsetX}
-              y={curPos[1] + textBoxUi.controls.cursor.offsetY}
+              tint={advUi.controls.cursor.tint}
+              x={curPos[0] + advUi.controls.cursor.offsetX}
+              y={curPos[1] + advUi.controls.cursor.offsetY}
             />
           ) : null}
         </container>
       </sprite>
       <sprite
         label="姓名框"
-        src={textBoxUi.nameBox.background.src}
+        src={advUi.nameBox.background.src}
         x={layout.nameBoxX}
-        y={textBoxUi.nameBox.background.position.y}
-        anchor={textBoxUi.nameBox.background.anchor}
-        pivot={textBoxUi.nameBox.background.pivot}
-        {...resolveNineSlice(textBoxUi.nameBox.background)}
-        opacity={textBoxState.name.length > 0 ? 1 : 0}
+        y={advUi.nameBox.background.position.y}
+        anchor={advUi.nameBox.background.anchor}
+        pivot={advUi.nameBox.background.pivot}
+        visible={advVisible}
+        {...resolveNineSlice(advUi.nameBox.background)}
+        opacity={currentEntry?.name.length ? 1 : 0}
       >
         <text
           label="姓名"
-          text={textBoxState.name}
-          fontSize={mergedNameTextStyle.fontSize}
-          lineHeight={mergedNameTextStyle.lineHeight}
-          fillColor={mergedNameTextStyle.fillColor}
-          anchor={textBoxUi.nameBox.text.anchor}
-          pivot={textBoxUi.nameBox.text.pivot}
-          x={textBoxUi.nameBox.text.position.x}
-          y={textBoxUi.nameBox.text.position.y}
-          indent={mergedNameTextStyle.indent}
-          stroke={mergedNameTextStyle.stroke}
-          shadow={mergedNameTextStyle.shadow}
-          strokeColor={mergedNameTextStyle.strokeColor}
-          strokeWidth={mergedNameTextStyle.strokeWidth}
-          shadowColor={mergedNameTextStyle.shadowColor}
-          shadowOffsetX={mergedNameTextStyle.shadowOffsetX}
-          shadowOffsetY={mergedNameTextStyle.shadowOffsetY}
-          shadowBlur={mergedNameTextStyle.shadowBlur}
-          shadowWidth={mergedNameTextStyle.shadowWidth}
+          text={currentEntry?.name ?? ''}
+          fontSize={advUi.nameBox.text.textStyle.fontSize}
+          lineHeight={advUi.nameBox.text.textStyle.lineHeight}
+          fillColor={advUi.nameBox.text.textStyle.fillColor}
+          anchor={advUi.nameBox.text.anchor}
+          pivot={advUi.nameBox.text.pivot}
+          x={advUi.nameBox.text.position.x}
+          y={advUi.nameBox.text.position.y}
+          indent={advUi.nameBox.text.textStyle.indent}
+          stroke={advUi.nameBox.text.textStyle.stroke}
+          shadow={advUi.nameBox.text.textStyle.shadow}
+          strokeColor={advUi.nameBox.text.textStyle.strokeColor}
+          strokeWidth={advUi.nameBox.text.textStyle.strokeWidth}
+          shadowColor={advUi.nameBox.text.textStyle.shadowColor}
+          shadowOffsetX={advUi.nameBox.text.textStyle.shadowOffsetX}
+          shadowOffsetY={advUi.nameBox.text.textStyle.shadowOffsetY}
+          shadowBlur={advUi.nameBox.text.textStyle.shadowBlur}
+          shadowWidth={advUi.nameBox.text.textStyle.shadowWidth}
         />
       </sprite>
+      <animated.sprite
+        label="NVL 文本框"
+        src={nvlUi.background.src}
+        x={nvlUi.background.position.x}
+        y={nvlUi.background.position.y}
+        anchor={nvlUi.background.anchor}
+        pivot={nvlUi.background.pivot}
+        opacity={nvlPanelStyle.opacity}
+        interactive={nvlVisible}
+        {...resolveNineSlice(nvlUi.background)}
+        onMouseEnter={handleMouseEnter}
+        onMouseLeave={handleMouseLeave}
+      >
+        {nvlVisible ? controls(nvlUi.controls) : null}
+        <clip
+          x={nvlUi.content.position.x}
+          y={nvlUi.content.position.y}
+          width={nvlUi.content.boxWidth}
+          height={nvlUi.content.boxHeight}
+        >
+          <vbox width={nvlUi.content.boxWidth} gap={textBoxState.paragraphGap ?? nvlUi.paragraphGap}>
+            {textBoxState.entries.map((entry, index) => {
+              const previousEntry = textBoxState.entries[index - 1];
+              const isCurrent = index === textBoxState.entries.length - 1;
+              const isPrevious = index === textBoxState.entries.length - 2;
+              const showName =
+                (textBoxState.showName ?? nvlUi.name.show) && entry.name && entry.name !== previousEntry?.name;
+              const pastColorEnabled = textBoxState.pastColorEnabled ?? nvlUi.past.colorEnabled;
+              const pastFillColor = textBoxState.pastFillColor ?? nvlUi.past.fillColor;
+              const pastFadeTime = textBoxState.pastFadeTime ?? nvlUi.past.fadeTime;
+
+              return (
+                <vbox key={`${index}:${entry.name}:${entry.avatarName}`} width={nvlUi.content.boxWidth} gap={0}>
+                  {showName ? (
+                    <text
+                      label="NVL 姓名"
+                      text={entry.name}
+                      fontSize={nvlUi.name.textStyle.fontSize}
+                      lineHeight={nvlUi.name.textStyle.lineHeight}
+                      boxWidth={nvlUi.content.boxWidth}
+                      fillColor={nvlUi.name.textStyle.fillColor}
+                      printMode="instant"
+                      indent={nvlUi.name.textStyle.indent}
+                      stroke={nvlUi.name.textStyle.stroke}
+                      shadow={nvlUi.name.textStyle.shadow}
+                      strokeColor={nvlUi.name.textStyle.strokeColor}
+                      strokeWidth={nvlUi.name.textStyle.strokeWidth}
+                      shadowColor={nvlUi.name.textStyle.shadowColor}
+                      shadowOffsetX={nvlUi.name.textStyle.shadowOffsetX}
+                      shadowOffsetY={nvlUi.name.textStyle.shadowOffsetY}
+                      shadowBlur={nvlUi.name.textStyle.shadowBlur}
+                      shadowWidth={nvlUi.name.textStyle.shadowWidth}
+                      interactive={false}
+                    />
+                  ) : null}
+                  <NvlParagraph
+                    entry={entry}
+                    isCurrent={isCurrent}
+                    isPrevious={isPrevious}
+                    isPrinting={isCurrent && nvlVisible}
+                    textWindowRef={textWindowRef}
+                    printMode={effectivePrintMode}
+                    printSpeed={effectivePrintSpeed}
+                    boxWidth={nvlUi.content.boxWidth}
+                    textStyle={nvlTextStyle}
+                    pastColorEnabled={pastColorEnabled}
+                    pastFillColor={pastFillColor}
+                    pastFadeTime={pastFadeTime}
+                    cursorPosition={curPos}
+                    cursor={nvlUi.controls.cursor}
+                    onStart={() => {
+                      progress.current = 0;
+                    }}
+                    onProgress={(value) => {
+                      progress.current = value;
+                    }}
+                    onFinish={() => {
+                      progress.current = 1;
+                      autoTicketRef.current?.done();
+                      autoTicketRef.current = null;
+                      showCurPos();
+                    }}
+                  />
+                </vbox>
+              );
+            })}
+          </vbox>
+        </clip>
+      </animated.sprite>
     </container>
   );
 }
