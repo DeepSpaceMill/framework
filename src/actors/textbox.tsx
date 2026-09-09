@@ -337,11 +337,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
     ));
 
   return (
-    <container
-      label="文本框容器"
-      visible={true}
-      interactive={textBoxState.visible && !hasOverlay && !seeking}
-    >
+    <container label="文本框容器" visible={true} interactive={textBoxState.visible && !hasOverlay && !seeking}>
       <sprite
         label="文本框"
         src="ui/textbox.png"
@@ -447,67 +443,65 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-          {nvlVisible ? controls(NVL_BUTTONS_X, NVL_BUTTONS_Y, 1720, 36) : null}
-          <clip x={NVL_CONTENT_X} y={NVL_CONTENT_Y} width={NVL_CONTENT_WIDTH} height={NVL_CONTENT_HEIGHT}>
-            <vbox width={NVL_CONTENT_WIDTH} gap={textBoxState.paragraphGap}>
-              {textBoxState.entries.map((entry, index) => {
-                const previousEntry = textBoxState.entries[index - 1];
-                const isCurrent = index === textBoxState.entries.length - 1;
-                const isPrevious = index === textBoxState.entries.length - 2;
-                const showName = textBoxState.showName && entry.name && entry.name !== previousEntry?.name;
+        {nvlVisible ? controls(NVL_BUTTONS_X, NVL_BUTTONS_Y, 1720, 36) : null}
+        <vbox x={NVL_CONTENT_X} y={NVL_CONTENT_Y} width={NVL_CONTENT_WIDTH} gap={textBoxState.paragraphGap}>
+          {textBoxState.entries.map((entry, index) => {
+            const previousEntry = textBoxState.entries[index - 1];
+            const isCurrent = index === textBoxState.entries.length - 1;
+            const isPrevious = index === textBoxState.entries.length - 2;
+            const showName = textBoxState.showName && entry.name && entry.name !== previousEntry?.name;
 
-                return (
-                  <vbox key={`${index}:${entry.name}:${entry.avatarName}`} width={NVL_CONTENT_WIDTH} gap={0}>
-                    {showName ? (
-                      <text
-                        label="NVL 姓名"
-                        text={entry.name}
-                        fontSize={32}
-                        lineHeight={textBoxState.lineHeight}
-                        boxWidth={NVL_CONTENT_WIDTH}
-                        fillColor={textBoxState.fillColor}
-                        printMode="instant"
-                        indent={textBoxState.indent}
-                        stroke={textBoxState.stroke}
-                        shadow={textBoxState.shadow}
-                        strokeColor={textBoxState.strokeColor}
-                        strokeWidth={textBoxState.strokeWidth}
-                        shadowColor={textBoxState.shadowColor}
-                        shadowOffsetX={textBoxState.shadowOffsetX}
-                        shadowOffsetY={textBoxState.shadowOffsetY}
-                        shadowBlur={textBoxState.shadowBlur}
-                        shadowWidth={textBoxState.shadowWidth}
-                        interactive={false}
-                      />
-                    ) : null}
-                    <NvlParagraph
-                      entry={entry}
-                      isCurrent={isCurrent}
-                      isPrevious={isPrevious}
-                      isPrinting={isCurrent && nvlVisible}
-                      textWindowRef={textWindowRef}
-                      effectivePrintMode={effectivePrintMode}
-                      effectivePrintSpeed={effectivePrintSpeed}
-                      textBoxState={textBoxState as TextBoxState}
-                      cursorPosition={curPos}
-                      onStart={() => {
-                        progress.current = 0;
-                      }}
-                      onProgress={(v) => {
-                        progress.current = v;
-                      }}
-                      onFinish={() => {
-                        progress.current = 1;
-                        autoTicketRef.current?.done();
-                        autoTicketRef.current = null;
-                        showCurPos();
-                      }}
-                    />
-                  </vbox>
-                );
-              })}
-            </vbox>
-          </clip>
+            return (
+              <vbox key={`${index}:${entry.name}:${entry.avatarName}`} width={NVL_CONTENT_WIDTH} gap={0}>
+                {showName ? (
+                  <text
+                    label="NVL 姓名"
+                    text={entry.name}
+                    fontSize={32}
+                    lineHeight={textBoxState.lineHeight}
+                    boxWidth={NVL_CONTENT_WIDTH}
+                    fillColor={textBoxState.fillColor}
+                    printMode="instant"
+                    indent={textBoxState.indent}
+                    stroke={textBoxState.stroke}
+                    shadow={textBoxState.shadow}
+                    strokeColor={textBoxState.strokeColor}
+                    strokeWidth={textBoxState.strokeWidth}
+                    shadowColor={textBoxState.shadowColor}
+                    shadowOffsetX={textBoxState.shadowOffsetX}
+                    shadowOffsetY={textBoxState.shadowOffsetY}
+                    shadowBlur={textBoxState.shadowBlur}
+                    shadowWidth={textBoxState.shadowWidth}
+                    interactive={false}
+                  />
+                ) : null}
+                <NvlParagraph
+                  entry={entry}
+                  isCurrent={isCurrent}
+                  isPrevious={isPrevious}
+                  isPrinting={isCurrent && nvlVisible}
+                  textWindowRef={textWindowRef}
+                  effectivePrintMode={effectivePrintMode}
+                  effectivePrintSpeed={effectivePrintSpeed}
+                  textBoxState={textBoxState as TextBoxState}
+                  cursorPosition={curPos}
+                  onStart={() => {
+                    progress.current = 0;
+                  }}
+                  onProgress={(v) => {
+                    progress.current = v;
+                  }}
+                  onFinish={() => {
+                    progress.current = 1;
+                    autoTicketRef.current?.done();
+                    autoTicketRef.current = null;
+                    showCurPos();
+                  }}
+                />
+              </vbox>
+            );
+          })}
+        </vbox>
       </animated.sprite>
     </container>
   );
