@@ -65,7 +65,7 @@ export function useSaveLoad() {
         subCommand: 'saveGame',
         name: slotId,
         extra: {
-          text: currentGameState.textbox.text,
+          text: currentGameState.textbox.entries[currentGameState.textbox.entries.length - 1]?.text ?? '',
         },
       });
 
