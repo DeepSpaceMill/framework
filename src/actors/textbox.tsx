@@ -357,11 +357,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
     ));
 
   return (
-    <container
-      label="文本框容器"
-      visible
-      interactive={textBoxState.visible && !hasOverlay && !seeking}
-    >
+    <container label="文本框容器" visible interactive={textBoxState.visible && !hasOverlay && !seeking}>
       <sprite
         label="文本框"
         src={advUi.background.src}
@@ -494,80 +490,78 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
         onMouseLeave={handleMouseLeave}
       >
         {nvlVisible ? controls(nvlUi.controls) : null}
-        <clip
+        <vbox
           x={nvlUi.content.position.x}
           y={nvlUi.content.position.y}
           width={nvlUi.content.boxWidth}
-          height={nvlUi.content.boxHeight}
+          gap={textBoxState.paragraphGap ?? nvlUi.paragraphGap}
         >
-          <vbox width={nvlUi.content.boxWidth} gap={textBoxState.paragraphGap ?? nvlUi.paragraphGap}>
-            {textBoxState.entries.map((entry, index) => {
-              const previousEntry = textBoxState.entries[index - 1];
-              const isCurrent = index === textBoxState.entries.length - 1;
-              const isPrevious = index === textBoxState.entries.length - 2;
-              const showName =
-                (textBoxState.showName ?? nvlUi.name.show) && entry.name && entry.name !== previousEntry?.name;
-              const pastColorEnabled = textBoxState.pastColorEnabled ?? nvlUi.past.colorEnabled;
-              const pastFillColor = textBoxState.pastFillColor ?? nvlUi.past.fillColor;
-              const pastFadeTime = textBoxState.pastFadeTime ?? nvlUi.past.fadeTime;
+          {textBoxState.entries.map((entry, index) => {
+            const previousEntry = textBoxState.entries[index - 1];
+            const isCurrent = index === textBoxState.entries.length - 1;
+            const isPrevious = index === textBoxState.entries.length - 2;
+            const showName =
+              (textBoxState.showName ?? nvlUi.name.show) && entry.name && entry.name !== previousEntry?.name;
+            const pastColorEnabled = textBoxState.pastColorEnabled ?? nvlUi.past.colorEnabled;
+            const pastFillColor = textBoxState.pastFillColor ?? nvlUi.past.fillColor;
+            const pastFadeTime = textBoxState.pastFadeTime ?? nvlUi.past.fadeTime;
 
-              return (
-                <vbox key={`${index}:${entry.name}:${entry.avatarName}`} width={nvlUi.content.boxWidth} gap={0}>
-                  {showName ? (
-                    <text
-                      label="NVL 姓名"
-                      text={entry.name}
-                      fontSize={nvlUi.name.textStyle.fontSize}
-                      lineHeight={nvlUi.name.textStyle.lineHeight}
-                      boxWidth={nvlUi.content.boxWidth}
-                      fillColor={nvlUi.name.textStyle.fillColor}
-                      printMode="instant"
-                      indent={nvlUi.name.textStyle.indent}
-                      stroke={nvlUi.name.textStyle.stroke}
-                      shadow={nvlUi.name.textStyle.shadow}
-                      strokeColor={nvlUi.name.textStyle.strokeColor}
-                      strokeWidth={nvlUi.name.textStyle.strokeWidth}
-                      shadowColor={nvlUi.name.textStyle.shadowColor}
-                      shadowOffsetX={nvlUi.name.textStyle.shadowOffsetX}
-                      shadowOffsetY={nvlUi.name.textStyle.shadowOffsetY}
-                      shadowBlur={nvlUi.name.textStyle.shadowBlur}
-                      shadowWidth={nvlUi.name.textStyle.shadowWidth}
-                      interactive={false}
-                    />
-                  ) : null}
-                  <NvlParagraph
-                    entry={entry}
-                    isCurrent={isCurrent}
-                    isPrevious={isPrevious}
-                    isPrinting={isCurrent && nvlVisible}
-                    textWindowRef={textWindowRef}
-                    printMode={effectivePrintMode}
-                    printSpeed={effectivePrintSpeed}
+            return (
+              <vbox key={`${index}:${entry.name}:${entry.avatarName}`} width={nvlUi.content.boxWidth} gap={0}>
+                {showName ? (
+                  <text
+                    label="NVL 姓名"
+                    text={entry.name}
+                    fontSize={nvlUi.name.textStyle.fontSize}
+                    lineHeight={nvlUi.name.textStyle.lineHeight}
                     boxWidth={nvlUi.content.boxWidth}
-                    textStyle={nvlTextStyle}
-                    pastColorEnabled={pastColorEnabled}
-                    pastFillColor={pastFillColor}
-                    pastFadeTime={pastFadeTime}
-                    cursorPosition={curPos}
-                    cursor={nvlUi.controls.cursor}
-                    onStart={() => {
-                      progress.current = 0;
-                    }}
-                    onProgress={(value) => {
-                      progress.current = value;
-                    }}
-                    onFinish={() => {
-                      progress.current = 1;
-                      autoTicketRef.current?.done();
-                      autoTicketRef.current = null;
-                      showCurPos();
-                    }}
+                    fillColor={nvlUi.name.textStyle.fillColor}
+                    printMode="instant"
+                    indent={nvlUi.name.textStyle.indent}
+                    stroke={nvlUi.name.textStyle.stroke}
+                    shadow={nvlUi.name.textStyle.shadow}
+                    strokeColor={nvlUi.name.textStyle.strokeColor}
+                    strokeWidth={nvlUi.name.textStyle.strokeWidth}
+                    shadowColor={nvlUi.name.textStyle.shadowColor}
+                    shadowOffsetX={nvlUi.name.textStyle.shadowOffsetX}
+                    shadowOffsetY={nvlUi.name.textStyle.shadowOffsetY}
+                    shadowBlur={nvlUi.name.textStyle.shadowBlur}
+                    shadowWidth={nvlUi.name.textStyle.shadowWidth}
+                    interactive={false}
                   />
-                </vbox>
-              );
-            })}
-          </vbox>
-        </clip>
+                ) : null}
+                <NvlParagraph
+                  entry={entry}
+                  isCurrent={isCurrent}
+                  isPrevious={isPrevious}
+                  isPrinting={isCurrent && nvlVisible}
+                  textWindowRef={textWindowRef}
+                  printMode={effectivePrintMode}
+                  printSpeed={effectivePrintSpeed}
+                  boxWidth={nvlUi.content.boxWidth}
+                  textStyle={nvlTextStyle}
+                  pastColorEnabled={pastColorEnabled}
+                  pastFillColor={pastFillColor}
+                  pastFadeTime={pastFadeTime}
+                  cursorPosition={curPos}
+                  cursor={nvlUi.controls.cursor}
+                  onStart={() => {
+                    progress.current = 0;
+                  }}
+                  onProgress={(value) => {
+                    progress.current = value;
+                  }}
+                  onFinish={() => {
+                    progress.current = 1;
+                    autoTicketRef.current?.done();
+                    autoTicketRef.current = null;
+                    showCurPos();
+                  }}
+                />
+              </vbox>
+            );
+          })}
+        </vbox>
       </animated.sprite>
     </container>
   );
