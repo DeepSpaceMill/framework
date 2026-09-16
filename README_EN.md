@@ -17,6 +17,7 @@
 If you already cloned this repository, skip to the next step.
 
 ```bash
+# Git LFS support is required
 git clone https://github.com/DeepSpaceMill/framework.git my-vn-project
 cd my-vn-project
 ```
@@ -25,7 +26,7 @@ You can also download the repository as a ZIP file if you do not want to use Git
 
 ### 2. Prepare Node.js and Yarn
 
-- Node.js `22.20` or newer is required
+- Node.js `22.20` or newer is required, you can download it from the [Node.js website](https://nodejs.org/en/download) and install it.
 - This project uses Yarn 4. On a fresh machine, enable Corepack first:
 
 ```bash

@@ -17,6 +17,7 @@
 如果你已经把这个仓库克隆到本地，可以直接跳到下一步。
 
 ```bash
+# Git 需要开启 LFS 支持
 git clone https://github.com/DeepSpaceMill/framework.git my-vn-project
 cd my-vn-project
 ```
@@ -25,7 +26,7 @@ cd my-vn-project
 
 ### 2. 准备 Node.js 和 Yarn
 
-- Node.js 需要 `22.20` 或更高版本
+- Node.js 需要 `22.20` 或更高版本，你可以在[Node.js 官网](https://nodejs.org/zh-cn/download)下载并安装。
 - 这个项目使用 Yarn 4。第一次在新机器上运行时，先启用 Corepack：
 
 ```bash
