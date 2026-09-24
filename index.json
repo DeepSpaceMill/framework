@@ -7,6 +7,6 @@
   "windowTitle": "My First Game",
   "entryFilename": "./main.js",
   "autorun": "all",
-  "fontFile": "fonts/SourceHanSansSC-Regular.otf",
+  "fontFile": "fonts/SourceHanSansCN-VF.otf",
   "enableGamepads": true
 }
