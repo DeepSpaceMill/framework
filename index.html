@@ -57,16 +57,31 @@
       }
 
       #wrapper {
-        width: 100vw;
-        height: 100vh;
-        display: flex;
-        justify-content: center;
-        align-items: center;
+        width: 100%;
+        height: 100%;
         position: relative;
       }
 
+      /* The engine fills the element it is mounted in, so the page owns the size of the game
+         area. */
       #root {
+        width: 100%;
+        height: 100%;
+        overflow: hidden;
         z-index: 10;
+      }
+
+      /* Portrait touch devices get a landscape game area, rotated to fit the screen. The engine
+         reads the unrotated box, so the rotation only affects how the result is displayed. */
+      @media (orientation: portrait) and (hover: none) and (pointer: coarse) {
+        #root {
+          position: absolute;
+          top: 50%;
+          left: 50%;
+          width: 100dvh;
+          height: 100dvw;
+          transform: translate(-50%, -50%) rotate(90deg);
+        }
       }
 
       .copyright {
@@ -272,167 +287,6 @@
       let loading = true;
       let startAfterLoad = false;
 
-      // 判断设备类型
-      function checkBrowserType() {
-        const ua = navigator.userAgent.toLowerCase();
-        const isMobile = /android|webos|iphone|ipad|ipod|blackberry|iemobile|opera mini/i.test(ua);
-        return isMobile ? 'mobile' : 'desktop';
-      }
-
-      // 获取 canvas 实际渲染尺寸
-      function getCanvasActualSize(canvas) {
-        console.info('Canvas size:', { width: canvas.width, height: canvas.height, dpr: window.devicePixelRatio });
-        return {
-          width: canvas.width / window.devicePixelRatio,
-          height: canvas.height / window.devicePixelRatio,
-        };
-      }
-
-      // 桌面端适配
-      function adaptForDesktop(canvas) {
-        const rootEl = document.getElementById('root');
-        const actualSize = getCanvasActualSize(canvas);
-
-        console.info('[Desktop] Canvas actual size:', actualSize);
-
-        rootEl.style.width = `${actualSize.width}px`;
-        rootEl.style.height = `${actualSize.height}px`;
-        rootEl.style.overflow = 'hidden';
-      }
-
-      // 移动端适配
-      function adaptForMobile(canvas) {
-        const rootEl = document.getElementById('root');
-        const actualSize = getCanvasActualSize(canvas);
-
-        // 游戏内容尺寸
-        const gameWidth = actualSize.width;
-        const gameHeight = actualSize.height;
-        const gameIsLandscape = gameWidth > gameHeight;
-
-        // 视口尺寸
-        const viewportWidth = window.innerWidth;
-        const viewportHeight = window.innerHeight;
-        const viewportIsLandscape = viewportWidth > viewportHeight;
-
-        console.info('[Mobile] Game size:', { width: gameWidth, height: gameHeight, isLandscape: gameIsLandscape });
-        console.info('[Mobile] Viewport size:', {
-          width: viewportWidth,
-          height: viewportHeight,
-          isLandscape: viewportIsLandscape,
-        });
-
-        // 判断是否需要旋转：游戏横屏但设备竖屏，或游戏竖屏但设备横屏
-        const needRotate = gameIsLandscape !== viewportIsLandscape;
-
-        let scale, translateX, translateY;
-
-        if (needRotate) {
-          // 需要旋转 90 度
-          // 旋转后，游戏的宽度会占据视口的高度，游戏的高度会占据视口的宽度
-          const scaleX = viewportHeight / gameWidth;
-          const scaleY = viewportWidth / gameHeight;
-          scale = Math.min(scaleX, scaleY);
-
-          // 旋转后需要平移，让内容居中
-          translateX = viewportWidth;
-          translateY = viewportHeight / 2 - (gameWidth * scale) / 2;
-
-          console.info('[Mobile] Rotate 90deg, scale:', scale);
-        } else {
-          // 不需要旋转
-          const scaleX = viewportWidth / gameWidth;
-          const scaleY = viewportHeight / gameHeight;
-          scale = Math.min(scaleX, scaleY);
-
-          translateX = viewportWidth / 2 - (gameWidth * scale) / 2;
-          translateY = 0;
-
-          console.info('[Mobile] No rotation, scale:', scale);
-        }
-
-        // 应用样式
-        rootEl.style.width = `${gameWidth}px`;
-        rootEl.style.height = `${gameHeight}px`;
-        rootEl.style.transformOrigin = 'top left';
-        rootEl.style.overflow = 'hidden';
-        rootEl.style.position = 'absolute';
-        rootEl.style.left = '0';
-        rootEl.style.top = '0';
-
-        if (needRotate) {
-          rootEl.style.transform = `translate(${translateX}px, ${translateY}px) rotate(90deg) scale(${scale})`;
-        } else {
-          rootEl.style.transform = `translate(${translateX}px, ${translateY}px) scale(${scale})`;
-        }
-      }
-
-      // 设置 canvas 监听
-      function setupCanvasObserver() {
-        const rootEl = document.getElementById('root');
-        const browserType = checkBrowserType();
-
-        console.info('[Adapt] Browser type:', browserType);
-
-        // 使用 MutationObserver 监听 canvas 的出现
-        const mutationObserver = new MutationObserver((mutations) => {
-          for (const mutation of mutations) {
-            for (const node of mutation.addedNodes) {
-              if (node.tagName === 'CANVAS') {
-                console.info('[Adapt] Canvas detected');
-
-                // 找到 canvas 后，开始监听尺寸变化
-                const canvas = node;
-
-                // 立即执行一次适配
-                if (browserType === 'desktop') {
-                  adaptForDesktop(canvas);
-                } else {
-                  adaptForMobile(canvas);
-                }
-
-                // 使用 ResizeObserver 监听 canvas 尺寸变化
-                const resizeObserver = new ResizeObserver(() => {
-                  console.info('[Adapt] Canvas size changed');
-                  if (browserType === 'desktop') {
-                    adaptForDesktop(canvas);
-                  } else {
-                    adaptForMobile(canvas);
-                  }
-                });
-
-                resizeObserver.observe(canvas);
-
-                // 移动端监听屏幕旋转
-                if (browserType === 'mobile') {
-                  window.addEventListener('orientationchange', () => {
-                    console.info('[Adapt] Orientation changed');
-                    setTimeout(() => {
-                      adaptForMobile(canvas);
-                    }, 100);
-                  });
-
-                  window.addEventListener('resize', () => {
-                    console.info('[Adapt] Window resized');
-                    adaptForMobile(canvas);
-                  });
-                }
-
-                // 停止监听 DOM 变化
-                mutationObserver.disconnect();
-                break;
-              }
-            }
-          }
-        });
-
-        // 开始监听
-        mutationObserver.observe(rootEl, {
-          childList: true,
-          subtree: true,
-        });
-      }
-
       // 点击开始按钮后初始化游戏
       const startButton = document.getElementById('start-button');
       const startScreen = document.getElementById('start-screen');
@@ -444,11 +298,7 @@
         // 等待动画完成后初始化游戏
         setTimeout(() => {
           moyu.moyu_init('root');
-          setupCanvasObserver();
         }, 600);
-        setTimeout(() => {
-          // 初始化完成后，设置 canvas 监听
-        }, 1000);
 
         window.onbeforeunload = function (e) {
           return '';
