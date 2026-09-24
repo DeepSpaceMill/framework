@@ -22,6 +22,7 @@
 2. **不支持 react-dom**：入口用 kit 的 `createRoot()`。
 3. **优先复用 kit**：导航 / 事件 / 音频 / 动画 / stage 管理都在 kit 里。新增抽象前先查 kit。
 4. **资源路径相对 `assets/`**：`<sprite src="image.png" />` 指 `assets/image.png`。
+5. **文本默认解析富文本标签**：`<text>` 的 `text` 与剧本对话文本会把 `<标签>内容</标签>` 当作富文本处理，例如 `<color=#E7931C>`、`<bold>`、`<link id="guide" target="/guide">`。展示字面量 `<` / `>` 时写成 `<<` / `>>`，整段不需要解析时设置 `parseMarkup={false}`。详见[富文本](https://momoyu.ink/start/rich-text/)。
 
 ---
 
@@ -183,6 +184,54 @@ gameState.selection   // { visible, options[], saveTo? }
 ---
 
 ## 常见定制任务
+
+### 编写富文本
+
+`<text>` 的 `text`、剧本对话文本与 `text` 命令的 `content` 默认解析 `<标签>内容</标签>` 形式的富文本标签，用于局部改色、加粗、描边和链接交互。剧本文本经 `handleTextLine` 写入 `gameState.textbox.entries`，由 textbox actor 的 `<text>` 渲染，未关闭富文本解析。
+
+```tsx
+<text
+  text={'提示：<color=#E7931C>存档已损坏</color>，<bold>请重新读取</bold>。'}
+  fontSize={28}
+/>
+```
+
+```sixu
+[Alice] 欢迎回来，<color=#E7931C>旅行者</color>。<bold>请仔细阅读。</bold>
+```
+
+常用标签：
+
+| 标签 | 效果 | 示例 |
+| --- | --- | --- |
+| `color`、`fillColor` | 文字颜色 | `<color=#E7931C>金色文字</color>` |
+| `size` | 字号 | `<size=36>大字</size>` |
+| `bold`、`weight` | 字重 | `<weight=600>中等字重</weight>` |
+| `italic` | 斜体 | `<italic>斜体文字</italic>` |
+| `font` | 选择已配置字体 | `<font="Inter">Text</font>` |
+| `stroke` | 描边 | `<stroke color=black width=2>描边</stroke>` |
+| `shadow` | 阴影 | `<shadow color=#0008 offsetX=2 offsetY=3 blur=4>阴影</shadow>` |
+| `baseline` | 基线上下偏移 | `E = mc<baseline=-8 size=18>2</baseline>` |
+| `link` | 可交互链接文字 | `<link id="guide" target="/guide">指南</link>` |
+
+标签可嵌套，内层结束后恢复外层样式。显示字面量 `<`、`>` 时写成 `<<`、`>>`；整段不需要解析时给 `<text>` 设置 `parseMarkup={false}`。
+
+`link` 必须提供 `target`；需要接收 `onInteraction` 时再提供非空 `id`（`kind` 为 `over` / `enter` / `leave` / `down` / `up` / `click`）：
+
+```tsx
+<text
+  text={'阅读<link id="guide" target="/guide">使用指南</link>'}
+  interactive
+  cursor="pointer"
+  onInteraction={({ id, kind }) => {
+    if (id === 'guide' && kind === 'click') {
+      // 在这里执行跳转或其他操作
+    }
+  }}
+/>
+```
+
+标签、属性、转义规则与开发中能力详见[富文本](https://momoyu.ink/start/rich-text/)。
 
 ### 新增一个命令
 
