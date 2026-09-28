@@ -47,8 +47,7 @@
     <div id="root"></div>
 
     <script type="module">
-      const urlParams = new URLSearchParams(window.location.search);
-      window.__moyu_entry = urlParams.get('entry') || '/index.json';
+      window.__moyu_entry = new URL('./index.json', window.location.href).href;
 
       import * as moyu from './moyu.js';
 
