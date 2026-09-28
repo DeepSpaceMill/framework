@@ -42,22 +42,24 @@ export function CharacterActor() {
   const stageSize = getStageSize();
 
   return (
-    <container label="立绘容器" x={stageSize.width / 2} y={stageSize.height}>
-      {characterState.characters.map((character) => {
-        const slotKey = getCharacterSlotKey(character.name);
-        const characterLabel = character.name ?? character.src;
+    <clip width={stageSize.width} height={stageSize.height}>
+      <container label="立绘容器" x={stageSize.width / 2} y={stageSize.height}>
+        {characterState.characters.map((character) => {
+          const slotKey = getCharacterSlotKey(character.name);
+          const characterLabel = character.name ?? character.src;
 
-        return (
-          <CharacterSprite
-            key={slotKey}
-            slotKey={slotKey}
-            characterLabel={characterLabel}
-            fallbackCharacter={character}
-            onExited={handleCharacterExited}
-          />
-        );
-      })}
-    </container>
+          return (
+            <CharacterSprite
+              key={slotKey}
+              slotKey={slotKey}
+              characterLabel={characterLabel}
+              fallbackCharacter={character}
+              onExited={handleCharacterExited}
+            />
+          );
+        })}
+      </container>
+    </clip>
   );
 }
 
