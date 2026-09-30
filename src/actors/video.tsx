@@ -117,7 +117,6 @@ export function VideoActor() {
       label="视频层"
       x={stageSize.width / 2}
       y={stageSize.height / 2}
-      scale={stageSize.height / 1080}
       opacity={style.opacity}
     >
       {/* Black backdrop so any letterboxed area outside the video is opaque. */}

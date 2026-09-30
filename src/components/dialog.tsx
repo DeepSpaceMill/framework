@@ -71,7 +71,7 @@ export function Dialog() {
 
   return transitions((style, _) => (
     <animated.backdrop filters={[{ type: 'blur', radius: 2 }]} opacity={style.opacity}>
-      <container x={stageSize.width / 2} y={stageSize.height / 2} scale={stageSize.height / 1080} interactive={show}>
+      <container x={stageSize.width / 2} y={stageSize.height / 2} interactive={show}>
         <animated.sprite label="对话框遮罩" src={confirmUi.mask} pivot={[0.5, 0.5]} />
         <animated.sprite label="对话框" src={confirmUi.background} pivot={[0.5, 0.5]} {...style}>
           <text

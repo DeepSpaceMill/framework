@@ -1,7 +1,6 @@
 import {
   animated,
   Button,
-  getStageSize,
   useNavigation,
   useNavigationParams,
   useSoundEffect,
@@ -138,11 +137,8 @@ export function SaveLoad() {
     requestClose();
   };
 
-  const stageSize = getStageSize();
-  const scale = stageSize.width / 1920;
-
   return transitions((style, _) => (
-    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} scale={scale} interactive={show}>
+    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} interactive={show}>
       <animated.sprite label="透明遮罩" src={saveLoadUi.mask} onClick={handleExit} />
       <animated.sprite
         label="背景图"

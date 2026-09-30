@@ -3,7 +3,6 @@ import {
   animated,
   Button,
   executePluginCommand,
-  getStageSize,
   type MouseEvent,
   type TouchEvent,
   useSoundEffect,
@@ -67,8 +66,6 @@ async function replayBacklogVoice(speaker: string, voice: string, replayVoiceFai
 
 export function Backlog() {
   const backlogUi = useUiData('stage').backlog;
-  const stageSize = getStageSize();
-  const scale = stageSize.width / 1920;
   const backButtonSound = useSoundEffect(backlogUi.backButtonSound);
   const pendingCloseActionRef = useRef<(() => void) | null>(null);
   const [show, setShow] = useState(true);
@@ -173,7 +170,7 @@ export function Backlog() {
   };
 
   return transitions((style, _) => (
-    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} scale={scale} interactive={show}>
+    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} interactive={show}>
       <animated.sprite
         label="透明遮罩"
         src={backlogUi.mask}
