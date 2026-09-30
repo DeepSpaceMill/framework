@@ -4,7 +4,6 @@ import {
   useNavigationParams,
   animated,
   Button,
-  getStageSize,
   useSoundEffect,
   useTransition,
 } from '@momoyu-ink/kit';
@@ -124,11 +123,8 @@ export function SaveLoad() {
     requestClose();
   };
 
-  const stageSize = getStageSize();
-  const scale = stageSize.width / 1920;
-
   return transitions((style, _) => (
-    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} scale={scale} interactive={show}>
+    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} interactive={show}>
       <animated.sprite label="透明遮罩" src="ui/mask-transparent.png" onClick={handleExit} />
       <animated.sprite
         label="背景图"

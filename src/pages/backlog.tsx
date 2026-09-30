@@ -3,7 +3,6 @@ import {
   animated,
   Button,
   executePluginCommand,
-  getStageSize,
   type MouseEvent,
   ScrollView,
   useScrollView,
@@ -85,8 +84,6 @@ async function replayBacklogVoice(speaker: string, voice: string) {
 }
 
 export function Backlog() {
-  const stageSize = getStageSize();
-  const scale = stageSize.width / 1920;
   const backButtonSound = useSoundEffect('audio/back_style_5_001.opus');
   const pendingCloseActionRef = useRef<(() => void) | null>(null);
   const [show, setShow] = useState(true);
@@ -192,7 +189,7 @@ export function Backlog() {
   };
 
   return transitions((style, _) => (
-    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} scale={scale} interactive={show}>
+    <animated.backdrop filters={[{ type: 'blur', radius: 4 }]} opacity={style.opacity} interactive={show}>
       <animated.sprite
         label="透明遮罩"
         src="ui/mask-transparent.png"

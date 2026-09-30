@@ -7,9 +7,8 @@ import { uiState, type NotificationInfo } from '../state/ui';
  */
 function NotificationItem({ item, index, style }: { item: NotificationInfo; index: number; style: any }) {
   const stageSize = getStageSize();
-  const scale = stageSize.height / 1080;
   // Calculate vertical position based on index
-  const targetY = 20 + index * 80 * scale;
+  const targetY = 20 + index * 80;
 
   // Animate the y position when index changes (e.g., when a notification above is removed)
   const spring = useSpring({
@@ -24,7 +23,7 @@ function NotificationItem({ item, index, style }: { item: NotificationInfo; inde
       x={stageSize.width / 2}
       y={spring.y}
       opacity={style.opacity}
-      scale={style.scale.to((s: number) => s * scale)}
+      scale={style.scale}
       pivot={[0.5, 0]}
     >
       <text
