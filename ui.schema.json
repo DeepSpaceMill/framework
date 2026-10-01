@@ -4842,8 +4842,8 @@
                     },
                     "anchor": {
                       "default": [
-                        0.5,
-                        0.5
+                        0,
+                        0
                       ],
                       "type": "array",
                       "prefixItems": [

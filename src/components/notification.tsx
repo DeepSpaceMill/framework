@@ -25,7 +25,6 @@ function NotificationItem({ item, index, style }: { item: NotificationInfo; inde
       opacity={style.opacity}
       scale={style.scale}
       pivot={[0.5, 0]}
-      anchor={[0.5, 0]}
     >
       <text
         label="Notification Text"

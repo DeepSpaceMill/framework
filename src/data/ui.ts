@@ -1007,7 +1007,7 @@ const BacklogEmptyStateUiSchema = z
         'x-i18n': { 'zh-CN': '透明度' },
         'x-i18n-desc': { 'zh-CN': '空状态文字的透明度' },
       }),
-    anchor: anchorSchema.optional().default([0.5, 0.5]),
+    anchor: anchorSchema.optional().default([0, 0]),
     pivot: pivotSchema.optional().default([0.5, 0.5]),
   })
   .describe('Backlog empty state configuration')
