@@ -492,6 +492,72 @@ yarn engine:update    # 更新引擎二进制
 yarn generate:schema  # 从 Zod 生成 commands.schema.json（含 meta 元数据）
 ```
 
+---
+
+## 引擎 MCP 调试
+
+仓库根目录的 `.mcp.json` 以可移植格式（顶层 `mcpServers`）注册 `@momoyu-ink/cli` 的 MCP 服务器：VS Code（含 Agent Host）可直接读取，Claude Code 等兼容工具同样支持。宿主启动该服务器后，AI 可以按结构化参数直接调用工具来启动项目引擎、检查运行时状态，无需手拼命令行：
+
+```json
+{
+  "mcpServers": {
+    "moyu": {
+      "type": "stdio",
+      "command": "yarn",
+      "args": ["moyu", "mcp"]
+    }
+  }
+}
+```
+
+命令写成 `yarn moyu mcp`：`moyu` 是 CLI 已注册的 bin，Yarn 会从 `node_modules/.bin` 解析，因此配置不含绝对路径；项目根由 CLI 从当前目录向上查找 `index.json` 定位，也无需传参。迁移到其他项目时原样复制即可。
+
+启动会话的前提：
+
+- 引擎已下载并激活（`.moyu/engine`，缺失时先跑 `yarn engine:download`）；
+- 项目 dev server 正在运行（`yarn dev`，端口 6020）：native 会话默认从这里加载游戏入口，web 会话的 bundle 产物也经它代理。
+
+### 工具列表
+
+| 工具 | 说明 |
+| --- | --- |
+| `debug_start` | 启动带调试桥的引擎并等它就绪（会替换上一个会话）。参数：`web`（浏览器会话，返回需打开的页面 URL）、`port`（web 服务端口，默认 6320）、`entry`（native 入口文件）、`projectRoot`、`attach`（只监听端口等待手动启动的引擎连入，返回需设置的 `MOYU_ENGINE_DEBUG_WS`）、`listen`（attach 监听端口，默认 6321） |
+| `debug_stop` | 停止会话启动的引擎与监听 |
+| `debug_state` | 读取入口文件、平台、版本、舞台尺寸、节点数、运行时长、是否完成启动 |
+| `debug_eval` | 在引擎里执行 JavaScript（`code`、`timeoutMs`，默认 5000ms） |
+| `debug_logs` | 读取引擎日志缓冲（`level` / `limit` / `sinceSeq`），按返回的 `nextSeq` 增量续读 |
+| `debug_tree` | 列出节点树（`nodeId` 起始节点、`depth` 层级，默认 4） |
+| `debug_props` | 读取某节点属性：JS 请求的值与引擎推导的值并列，含舞台像素尺寸与包围盒 |
+| `debug_screenshot` | 截取下一帧渲染画面（`maxWidth` / `maxHeight` 缩放） |
+| `debug_mouse` | 模拟鼠标动作（`move` / `down` / `up` / `click` / `wheel`）：用 `x` + `y`（舞台逻辑坐标）或 `nodeId`（节点包围盒中心）定位；返回命中节点、冒泡链与实际派发的事件 |
+| `debug_touch` | 模拟触摸相位（`start` / `move` / `end` / `cancel`）：`start` 必带位置，后续相位可省略坐标；`identifier` 默认 0 |
+| `debug_key` | 模拟键盘事件（`down` / `up` / `press`）：`key` 为 `event.key` 值（如 `Escape`、`Enter`），`code` 缺省同 `key` |
+
+### 常用调用示例
+
+1. **启动并确认就绪**：`debug_start` → `debug_state`；迟迟未就绪时用 `debug_logs` 查看原因。
+2. **调试本地构建 / 打包成品**：`debug_start`（`attach: true`）只监听端口并返回 `MOYU_ENGINE_DEBUG_WS`，用它启动引擎（如 `target/release/moyu`）后，其余工具照常使用。
+3. **检查当前画面**：`debug_screenshot`，直接返回图像。
+4. **排查渲染问题**：`debug_tree` 找到 `nodeId` → `debug_props` 对比属性是否按预期生效。
+5. **增量看日志**：先用一次 `debug_logs` 取到 `nextSeq`，之后 `debug_logs({ sinceSeq })` 只取新增部分。
+6. **触发交互**：`debug_mouse`（`action: "click"` + `nodeId`）点击按钮；点击任意非 UI 区域或 `debug_key`（`Enter` / `Space`）推进剧情；`debug_mouse`（`wheel`）滚动打开 backlog。
+7. **工具覆盖不到时**：`debug_eval` 在引擎运行时里直接求值，例如检查框架 stage 单例：
+
+   ```javascript
+   ({ stage: typeof globalThis.__MOYU_FRAMEWORK_STAGE__ })
+   ```
+
+   native 会话的 `globalThis` 跨调用共享；对象字面量需要加括号，否则会被当作代码块。
+8. **结束会话**：`debug_stop`。
+
+### 重要事项
+
+- 除 `debug_start` / `debug_stop` 外，其余工具都要求已有会话，没有会话时调用会报 "No session is running"；发请求前会自动等待引擎启动完成。
+- 会话跨调用保活：启动一次引擎后可反复查询，不必每次重启；同一时刻只保留一个会话。
+- 引擎进程与 web 静态服务器由 MCP 服务器托管，`debug_stop` 或宿主断开连接时一并停止；attach 会话不托管任何进程，`debug_stop` 仅关闭监听。
+- 手动验证配置：在仓库根目录执行 `yarn moyu mcp`，stdout 只写 JSON-RPC 协议帧，诊断输出在 stderr。
+- 可通过 eval 执行的引擎命令可以在[引擎API文档](https://momoyu.ink/engine-api/overview/)查询。
+
 ## 更多资料
 
 如果你需要更详细的文档资料，或者想了解引擎层的设计与 API，查阅如下地址：

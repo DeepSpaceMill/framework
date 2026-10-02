@@ -1,0 +1,9 @@
+{
+  "mcpServers": {
+    "moyu": {
+      "type": "stdio",
+      "command": "yarn",
+      "args": ["moyu", "mcp"]
+    }
+  }
+}
