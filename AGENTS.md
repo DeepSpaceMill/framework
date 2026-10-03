@@ -128,6 +128,7 @@ export function Stage() {
 
 Stage 同时处理顶层输入：
 
+- 剧情推进只监听 `click`：触摸 tap 会由引擎补发鼠标兼容事件（`MouseMove` / `MouseDown` / `MouseUp` / `Click`），所以 `onClick` 与 `onPress` 在鼠标与触摸下走同一条路径；同时监听 `touchend` 会让一次 tap 推进两行。
 - 点击 / 触摸结束时，若 overlay 可见或选项菜单可见，则不推进剧情。
 - 若 textbox 当前不可见，则本次点击会先重新显示 textbox，并消费掉这次输入，不会继续推进剧情。
 - 在可推进状态下，Stage 会先让 `tryInterrupt()` 消费输入（例如完成打字机）；只有没有 interrupt callback 接管时才会 `nextLine()`。
@@ -530,7 +531,7 @@ yarn generate:schema  # 从 Zod 生成 commands.schema.json（含 meta 元数据
 | `debug_props` | 读取某节点属性：JS 请求的值与引擎推导的值并列，含舞台像素尺寸与包围盒 |
 | `debug_screenshot` | 截取下一帧渲染画面（`maxWidth` / `maxHeight` 缩放） |
 | `debug_mouse` | 模拟鼠标动作（`move` / `down` / `up` / `click` / `wheel`）：用 `x` + `y`（舞台逻辑坐标）或 `nodeId`（节点包围盒中心）定位；返回命中节点、冒泡链与实际派发的事件 |
-| `debug_touch` | 模拟触摸相位（`start` / `move` / `end` / `cancel`）：`start` 必带位置，后续相位可省略坐标；`identifier` 默认 0 |
+| `debug_touch` | 模拟触摸相位（`start` / `move` / `end` / `cancel`）：`start` 必带位置，后续相位可省略坐标；`identifier` 默认 0。单击 tap 会一并产生鼠标兼容事件（`MouseMove` / `MouseDown` / `MouseUp` / `Click`） |
 | `debug_key` | 模拟键盘事件（`down` / `up` / `press`）：`key` 为 `event.key` 值（如 `Escape`、`Enter`），`code` 缺省同 `key` |
 
 ### 常用调用示例
