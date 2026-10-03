@@ -172,7 +172,6 @@ export function SaveLoad() {
             text={button.text ?? `${index + 1}`}
             textStyle={{
               fontSize: button.fontSize,
-              glyphGridSize: button.fontSize,
               fillColor: activePage === index ? button.activeTextColor : button.inactiveTextColor,
             }}
             lockOn={activePage === index ? 'press' : undefined}

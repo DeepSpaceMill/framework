@@ -117,7 +117,7 @@ export function SelectionActor() {
                 targetHeight: selectionUi.button.targetHeight,
               }}
               text={option.text}
-              textStyle={{ ...selectionUi.button.textStyle, glyphGridSize: selectionUi.button.textStyle.fontSize }}
+              textStyle={{ ...selectionUi.button.textStyle }}
               textAlign={selectionUi.button.textAlign}
               onMouseEnter={hoverSound}
               onPress={() => handleSelect(option.value)}

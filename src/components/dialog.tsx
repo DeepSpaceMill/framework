@@ -96,7 +96,6 @@ export function Dialog() {
               text={confirmUi.alertButton.text}
               textStyle={{
                 fontSize: confirmUi.alertButton.fontSize,
-                glyphGridSize: confirmUi.alertButton.fontSize,
                 fillColor: confirmUi.alertButton.color,
               }}
               onPress={() => {
@@ -117,7 +116,6 @@ export function Dialog() {
                 text={confirmUi.confirmButton.text}
                 textStyle={{
                   fontSize: confirmUi.confirmButton.fontSize,
-                  glyphGridSize: confirmUi.confirmButton.fontSize,
                   fillColor: confirmUi.confirmButton.color,
                 }}
                 onPress={() => {
@@ -135,7 +133,6 @@ export function Dialog() {
                 text={confirmUi.cancelButton.text}
                 textStyle={{
                   fontSize: confirmUi.cancelButton.fontSize,
-                  glyphGridSize: confirmUi.cancelButton.fontSize,
                   fillColor: confirmUi.cancelButton.color,
                 }}
                 onPress={() => {

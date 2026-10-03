@@ -327,15 +327,14 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
               text={button.text}
               textStyle={
                 typeof button.color === 'string'
-                  ? { fontSize: button.fontSize, glyphGridSize: button.fontSize, fillColor: button.color }
+                  ? { fontSize: button.fontSize, fillColor: button.color }
                   : (button.color.map((fillColor) => ({
                       fontSize: button.fontSize,
-                      glyphGridSize: button.fontSize,
                       fillColor,
                     })) as [
-                      { fontSize: number; glyphGridSize: number; fillColor: string },
-                      { fontSize: number; glyphGridSize: number; fillColor: string },
-                      { fontSize: number; glyphGridSize: number; fillColor: string },
+                      { fontSize: number; fillColor: string },
+                      { fontSize: number; fillColor: string },
+                      { fontSize: number; fillColor: string },
                     ])
               }
               textOffsetX={button.textOffsetX}

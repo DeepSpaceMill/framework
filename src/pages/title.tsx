@@ -125,7 +125,7 @@ export function Title() {
                   key={`${button.text}-${index}`}
                   sprite={{ src: button.fileNames }}
                   text={button.text}
-                  textStyle={{ fontSize: button.fontSize, glyphGridSize: button.fontSize, fillColor: button.color }}
+                  textStyle={{ fontSize: button.fontSize, fillColor: button.color }}
                   x={button.position.x}
                   y={button.position.y}
                   pivot={[0.5, 0.5]}
