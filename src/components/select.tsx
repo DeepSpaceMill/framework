@@ -20,7 +20,7 @@ export function Select({
   targetHeight = 0,
   ...props
 }: SelectProps) {
-  const createTextStyle = (fillColor: string) => ({ fontSize, glyphGridSize: fontSize, fillColor });
+  const createTextStyle = (fillColor: string) => ({ fontSize, fillColor });
   const textStyle =
     typeof color === 'string'
       ? createTextStyle(color)

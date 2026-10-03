@@ -323,9 +323,9 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
               sprite={{ src: 'ui/textbox_button.png' }}
               text={button}
               textStyle={[
-                { fontSize: 24, glyphGridSize: 24, fillColor: 'rgba(255,255,255,0.3)' },
-                { fontSize: 24, glyphGridSize: 24, fillColor: 'rgba(255,255,255,0.7)' },
-                { fontSize: 24, glyphGridSize: 24, fillColor: 'rgba(255,255,255,0.9)' },
+                { fontSize: 24, fillColor: 'rgba(255,255,255,0.3)' },
+                { fontSize: 24, fillColor: 'rgba(255,255,255,0.7)' },
+                { fontSize: 24, fillColor: 'rgba(255,255,255,0.9)' },
               ]}
               onPress={() => {
                 onButtonClick(button);

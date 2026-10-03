@@ -114,7 +114,7 @@ export function SelectionActor() {
                 targetHeight: BUTTON_HEIGHT,
               }}
               text={option.text}
-              textStyle={{ fontSize: 32, glyphGridSize: 32, fillColor: '#ffffff' }}
+              textStyle={{ fontSize: 32, fillColor: '#ffffff' }}
               textAlign="center"
               onPress={() => handleSelect(option.value)}
             />

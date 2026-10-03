@@ -61,28 +61,28 @@ export function Title() {
           <Button
             sprite={{ src: ['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png'] }}
             text={'开始游戏'}
-            textStyle={{ fontSize: 36, glyphGridSize: 36, fillColor: '#ffffff' }}
+            textStyle={{ fontSize: 36, fillColor: '#ffffff' }}
             onPress={handleStart}
             onMouseEnter={hoverButtonSound}
           />
           <Button
             sprite={{ src: ['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png'] }}
             text={'读取存档'}
-            textStyle={{ fontSize: 36, glyphGridSize: 36, fillColor: '#ffffff' }}
+            textStyle={{ fontSize: 36, fillColor: '#ffffff' }}
             onPress={() => navigation.pushOverlay('saveload', { type: 'load' })}
             onMouseEnter={hoverButtonSound}
           />
           <Button
             sprite={{ src: ['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png'] }}
             text={'设置'}
-            textStyle={{ fontSize: 36, glyphGridSize: 36, fillColor: '#ffffff' }}
+            textStyle={{ fontSize: 36, fillColor: '#ffffff' }}
             onPress={() => navigation.pushOverlay('settings')}
             onMouseEnter={hoverButtonSound}
           />
           <Button
             sprite={{ src: ['ui/mainmenu_button.png', 'ui/mainmenu_button_hover.png', 'ui/mainmenu_button_press.png'] }}
             text={'退出'}
-            textStyle={{ fontSize: 36, glyphGridSize: 36, fillColor: '#ffffff' }}
+            textStyle={{ fontSize: 36, fillColor: '#ffffff' }}
             onPress={handleExit}
             onMouseEnter={hoverButtonSound}
           />
