@@ -351,12 +351,10 @@ export function Stage() {
   }, []);
 
   useEffect(() => {
-    const c1 = addEventListener('click', handleClick);
-    const c2 = addEventListener('touchend', handleClick);
-    return () => {
-      c1();
-      c2();
-    };
+    // Story advance listens to click only: a touch tap reaches it as the mouse
+    // compatibility click the engine synthesizes, so listening to touchend as well
+    // would advance twice per tap.
+    return addEventListener('click', handleClick);
   }, [handleClick]);
 
   useEffect(() => {

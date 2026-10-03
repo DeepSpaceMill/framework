@@ -11,6 +11,7 @@ import {
   useIsSkipping,
   useNavigationState,
   useSpring,
+  useTouchInput,
   useTransition,
   useUiData,
 } from '@momoyu-ink/kit';
@@ -178,6 +179,9 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
   const autoTicketRef = useRef<AutoTicketHandle | null>(null);
   const progress = useRef(1);
   const [isHovered, setIsHovered] = useState(false);
+  // Touch input has no hover, so the button group stays visible once the device is used
+  // by hand, until the mouse is used again.
+  const touchInput = useTouchInput();
 
   const textBoxState = useSnapshot(gameState.textbox);
   const settings = useSnapshot(settingsState);
@@ -215,7 +219,7 @@ export function TextBoxActor({ onButtonClick }: TextBoxActorProps) {
     setIsHovered(false);
   };
 
-  const buttonsVisible = (hoverUi.showOnHover ? isHovered : true) && textBoxState.visible && !hasOverlay;
+  const buttonsVisible = (touchInput || !hoverUi.showOnHover || isHovered) && textBoxState.visible && !hasOverlay;
 
   const buttonTransitions = useTransition(buttonsVisible ? [0] : [], {
     from: { opacity: 0 },
