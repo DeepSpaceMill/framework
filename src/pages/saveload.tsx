@@ -1,12 +1,5 @@
 import { useRef, useState } from 'react';
-import {
-  useNavigation,
-  useNavigationParams,
-  animated,
-  Button,
-  useSoundEffect,
-  useTransition,
-} from '@momoyu-ink/kit';
+import { useNavigation, useNavigationParams, animated, Button, useSoundEffect, useTransition } from '@momoyu-ink/kit';
 import { uiActions } from '../state/ui';
 import { useSaveLoad } from '../hooks/useSaveLoad';
 
@@ -110,8 +103,11 @@ export function SaveLoad() {
 
   const handleDeleteSlot = async (slotId: string) => {
     try {
-      await deleteSaveSlot(slotId);
-      uiActions.notify(`删除存档槽 ${slotId} 成功`);
+      const slotName = slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId}`;
+      uiActions.confirm(`确定要删除${slotName}吗？`, () => {
+        deleteSaveSlot(slotId);
+        uiActions.notify(`删除存档槽 ${slotId} 成功`);
+      });
     } catch (error) {
       console.error('Delete slot failed:', error);
       uiActions.notify(`删除存档槽 ${slotId} 失败`);
@@ -193,51 +189,50 @@ export function SaveLoad() {
                         </container>
                       )}
                       {slotData && (
-                        <container>
-                          <container interactive={false}>
-                            <sprite src={slotData.snapshot} x={2} y={2} />
-                            <text
-                              text={`${slotData.name === 'auto-save' ? '（快速存档）' : slotData.name.replace('save-', '存档 ')}`}
-                              fontSize={28}
-                              lineHeight={1.2}
-                              fillColor="#ffffff"
-                              x={250}
-                              y={7}
-                            />
-                            <text
-                              text={slotData.extra?.text ?? ''}
-                              fontSize={20}
-                              lineHeight={1.3}
-                              boxWidth={442}
-                              boxHeight={52}
-                              fillColor="#ffffff"
-                              x={250}
-                              y={50}
-                            />
-                            <text
-                              text={formatTimestamp(slotData.metadata.timestamp)}
-                              fontSize={16}
-                              lineHeight={1.2}
-                              fillColor="#ffffff"
-                              pivot={[1, 0]}
-                              x={689}
-                              y={104}
-                            />
-                          </container>
-                          {type === 'load' && (
-                            <Button
-                              sprite={{
-                                src: ['ui/sl_item_del.png', 'ui/sl_item_del_hover.png', 'ui/sl_item_del_press.png'],
-                              }}
-                              x={676}
-                              y={15}
-                              onPress={(e) => {
-                                e.stopPropagation();
-                                handleDeleteSlot(slotId);
-                              }}
-                            />
-                          )}
+                        <container interactive={false}>
+                          <sprite src={slotData.snapshot} x={2} y={2} />
+                          <text
+                            text={`${slotData.name === 'auto-save' ? '（快速存档）' : slotData.name.replace('save-', '存档 ')}`}
+                            fontSize={28}
+                            lineHeight={1.2}
+                            fillColor="#ffffff"
+                            x={250}
+                            y={7}
+                          />
+                          <text
+                            text={slotData.extra?.text ?? ''}
+                            fontSize={20}
+                            lineHeight={1.3}
+                            boxWidth={442}
+                            boxHeight={52}
+                            fillColor="#ffffff"
+                            x={250}
+                            y={50}
+                          />
+                          <text
+                            text={formatTimestamp(slotData.metadata.timestamp)}
+                            fontSize={16}
+                            lineHeight={1.2}
+                            fillColor="#ffffff"
+                            pivot={[1, 0]}
+                            x={689}
+                            y={104}
+                          />
                         </container>
+                      )}
+                      {slotData && type === 'load' && (
+                        <Button
+                          sprite={{
+                            src: ['ui/sl_item_del.png', 'ui/sl_item_del_hover.png', 'ui/sl_item_del_press.png'],
+                          }}
+                          x={676}
+                          y={15}
+                          zIndex={2}
+                          onPress={(e) => {
+                            e.stopPropagation();
+                            handleDeleteSlot(slotId);
+                          }}
+                        />
                       )}
                     </container>
                   </hbox>
