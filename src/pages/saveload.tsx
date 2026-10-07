@@ -124,8 +124,11 @@ export function SaveLoad() {
 
   const handleDeleteSlot = async (slotId: string) => {
     try {
-      await deleteSaveSlot(slotId);
-      uiActions.notify(`删除${getSlotLabel(slotId)}成功`);
+      const slotName = slotId === 'auto-save' ? '快速存档' : `存档槽 ${slotId}`;
+      uiActions.confirm(`确定要删除${slotName}吗？`, () => {
+        deleteSaveSlot(slotId);
+        uiActions.notify(`删除存档槽 ${slotId} 成功`);
+      });
     } catch (error) {
       console.error('Delete slot failed:', error);
       uiActions.notify(`删除${getSlotLabel(slotId)}失败`);
@@ -211,61 +214,60 @@ export function SaveLoad() {
                 </container>
               )}
               {slotData && (
-                <container>
-                  <container interactive={false}>
-                    <sprite
-                      src={slotData.snapshot}
-                      x={saveLoadUi.slotContent.snapshot.position.x}
-                      y={saveLoadUi.slotContent.snapshot.position.y}
+                <container interactive={false}>
+                  <sprite
+                    src={slotData.snapshot}
+                    x={saveLoadUi.slotContent.snapshot.position.x}
+                    y={saveLoadUi.slotContent.snapshot.position.y}
+                  />
+                  {saveLoadUi.slotContent.name.enabled && (
+                    <text
+                      text={
+                        slotData.name === 'auto-save' ? '（快速存档）' : `存档 ${slotData.name.replace('save-', '')}`
+                      }
+                      fontSize={saveLoadUi.slotContent.name.fontSize}
+                      lineHeight={1.2}
+                      fillColor={saveLoadUi.slotContent.name.color}
+                      x={saveLoadUi.slotContent.name.position.x}
+                      y={saveLoadUi.slotContent.name.position.y}
                     />
-                    {saveLoadUi.slotContent.name.enabled && (
-                      <text
-                        text={
-                          slotData.name === 'auto-save' ? '（快速存档）' : `存档 ${slotData.name.replace('save-', '')}`
-                        }
-                        fontSize={saveLoadUi.slotContent.name.fontSize}
-                        lineHeight={1.2}
-                        fillColor={saveLoadUi.slotContent.name.color}
-                        x={saveLoadUi.slotContent.name.position.x}
-                        y={saveLoadUi.slotContent.name.position.y}
-                      />
-                    )}
-                    {saveLoadUi.slotContent.summary.enabled && (
-                      <text
-                        text={slotData.extra?.text ?? ''}
-                        fontSize={saveLoadUi.slotContent.summary.fontSize}
-                        lineHeight={1.3}
-                        boxWidth={saveLoadUi.slotContent.summary.boxWidth}
-                        boxHeight={saveLoadUi.slotContent.summary.boxHeight}
-                        fillColor={saveLoadUi.slotContent.summary.color}
-                        x={saveLoadUi.slotContent.summary.position.x}
-                        y={saveLoadUi.slotContent.summary.position.y}
-                      />
-                    )}
-                    {saveLoadUi.slotContent.timestamp.enabled && (
-                      <text
-                        text={formatTimestamp(slotData.metadata.timestamp)}
-                        fontSize={saveLoadUi.slotContent.timestamp.fontSize}
-                        lineHeight={1.2}
-                        fillColor={saveLoadUi.slotContent.timestamp.color}
-                        pivot={[1, 0]}
-                        x={saveLoadUi.slotContent.timestamp.position.x}
-                        y={saveLoadUi.slotContent.timestamp.position.y}
-                      />
-                    )}
-                  </container>
-                  {type === 'load' && (
-                    <Button
-                      sprite={{ src: saveLoadUi.slotContent.deleteButton.fileNames }}
-                      x={saveLoadUi.slotContent.deleteButton.position.x}
-                      y={saveLoadUi.slotContent.deleteButton.position.y}
-                      onPress={(e) => {
-                        e.stopPropagation();
-                        handleDeleteSlot(slotId);
-                      }}
+                  )}
+                  {saveLoadUi.slotContent.summary.enabled && (
+                    <text
+                      text={slotData.extra?.text ?? ''}
+                      fontSize={saveLoadUi.slotContent.summary.fontSize}
+                      lineHeight={1.3}
+                      boxWidth={saveLoadUi.slotContent.summary.boxWidth}
+                      boxHeight={saveLoadUi.slotContent.summary.boxHeight}
+                      fillColor={saveLoadUi.slotContent.summary.color}
+                      x={saveLoadUi.slotContent.summary.position.x}
+                      y={saveLoadUi.slotContent.summary.position.y}
+                    />
+                  )}
+                  {saveLoadUi.slotContent.timestamp.enabled && (
+                    <text
+                      text={formatTimestamp(slotData.metadata.timestamp)}
+                      fontSize={saveLoadUi.slotContent.timestamp.fontSize}
+                      lineHeight={1.2}
+                      fillColor={saveLoadUi.slotContent.timestamp.color}
+                      pivot={[1, 0]}
+                      x={saveLoadUi.slotContent.timestamp.position.x}
+                      y={saveLoadUi.slotContent.timestamp.position.y}
                     />
                   )}
                 </container>
+              )}
+              {slotData && type === 'load' && (
+                <Button
+                  sprite={{ src: saveLoadUi.slotContent.deleteButton.fileNames }}
+                  x={saveLoadUi.slotContent.deleteButton.position.x}
+                  y={saveLoadUi.slotContent.deleteButton.position.y}
+                  zIndex={2}
+                  onPress={(e) => {
+                    e.stopPropagation();
+                    handleDeleteSlot(slotId);
+                  }}
+                />
               )}
             </container>
           );
